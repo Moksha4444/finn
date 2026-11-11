@@ -2,7 +2,7 @@
 sees page 1-2 of the PDF only when no rule matches (generic subjects like "Disclosure under Regulation 30")."""
 import re, hashlib
 from finn import llm
-from finn.config import TIERS
+from finn.config import TIERS, LITIGATION_MIN_CR, DEBT_MIN_CR
 from finn.sources import pdf
 
 TIER_OF = {c: t for t, cs in TIERS.items() for c in cs}
@@ -48,6 +48,55 @@ SCHEMA = {"type": "object", "properties": {
     "headline": {"type": "string"}}, "required": ["category", "headline"]}
 
 
+EQUITY = r"\bqip\b|qualified institution|rights issue|rights entitlement|preferential|warrant|buy-?back|initial public offer|\bipo\b|red herring|call on partly paid"
+DEBT = r"\bncds?\b|non-convertible|debenture|commercial paper|\bcps?\b|\bbonds?\b"
+ESOP = r"esop|esos|esps|employee stock|stock option"
+AMT = re.compile(r"(?:\brs\b\.?|\binr\b|₹)\s*(\d[\d,]*(?:\.\d+)?)\s*(?:/-)?\s*(crores?|cr\b|lakhs?|lacs?|millions?|mn\b|billions?|bn\b)?", re.I)
+UNIT_CR = {"cr": 1, "lak": 0.01, "lac": 0.01, "mil": 0.1, "mn": 0.1, "bil": 100, "bn": 100}
+
+
+def amounts_cr(text: str) -> list[float]:
+    """Every rupee amount in the text, in ₹ crore ("Rs 1,60,000" -> 0.016, "INR 6 billion" -> 600)."""
+    out = []
+    for m in AMT.finditer(text):
+        v, unit = float(m.group(1).replace(",", "")), (m.group(2) or "").lower()
+        out.append(v * next((k for u, k in UNIT_CR.items() if unit.startswith(u)), 1e-7))
+    return out
+
+
+def inr(cr: float) -> str:
+    return f"₹{cr:,.0f} cr" if cr >= 1 else f"₹{cr * 100:,.1f} lakh"
+
+
+def _fund(t: str, amounts: list[float], lender: bool) -> tuple[str, str | None] | None:
+    """(tier, note) from one text, or None if this text doesn't say what kind of raise it is."""
+    if re.search(EQUITY, t):  # before ESOP: a preferential-issue letter mentions ESOPs in its shareholding table
+        return "P1", None
+    if re.search(ESOP, t):
+        return "P3", "Employee stock allotment"
+    if re.search(DEBT, t):
+        if lender:
+            return "P3", "Routine borrowing by a lender"
+        a = max(amounts, default=None)  # max = tranche or its authorised limit; errs towards P1
+        if a is not None and a >= DEBT_MIN_CR:
+            return "P1", None
+        return "P3", f"Debt raise {inr(a)}, below {inr(DEBT_MIN_CR)}" if a else "Debt raise, amount not stated"
+    return None
+
+
+def size(cat: str, head: str, body: str, lender: bool) -> tuple[str, str | None] | None:
+    """Rules-only sizing for P1 litigation / fund-raise. head = subject + headline, body = PDF pages 1-2 text.
+    Returns (tier, note) to override, or None to keep P1."""
+    amounts = amounts_cr(head + " " + body)
+    if cat == "litigation":
+        a = max(amounts, default=None)  # no amount found: stays P1, unsized litigation is not hidden
+        return ("P3", f"{inr(a)} at stake, below {inr(LITIGATION_MIN_CR)}") if a is not None and a < LITIGATION_MIN_CR else None
+    if cat == "fund_raise":  # the subject decides first; the PDF only if the subject is generic ("Allotment")
+        r = _fund(head, amounts, lender) or _fund(body, amounts, lender)
+        return None if r == ("P1", None) else (r or ("P3", "Allotment, no equity raise or large debt found"))
+    return None
+
+
 def text_of(row: dict) -> str:
     return " | ".join(str(row.get(k) or "") for k in ("CATEGORYNAME", "SUBCATNAME", "NEWSSUB", "HEADLINE")).lower()
 
@@ -69,9 +118,9 @@ def by_rules(row: dict) -> str | None:
     return cat
 
 
-def classify(row: dict, get_pdf=None) -> dict:
-    """{'category', 'tier', 'by': rule|llm|default, 'headline'?}. get_pdf() -> attachment bytes (may raise).
-    LLM errors fall through to 'unclassified' so one bad filing never stops ingest."""
+def classify(row: dict, get_pdf=None, lender: bool = False) -> dict:
+    """{'category', 'tier', 'by': rule|llm|default, 'headline'?, 'note'?}. get_pdf() -> attachment bytes (may raise).
+    lender: bank/NBFC (their debt raises are routine). LLM errors fall through to 'unclassified'."""
     cat = by_rules(row)
     out = {"by": "rule" if cat else "default"}
     if cat is None and get_pdf:
@@ -90,4 +139,12 @@ def classify(row: dict, get_pdf=None) -> dict:
         tier = "P3"
     elif cat == "results" and re.search(SUPPORTING, text_of(row)):
         tier = "P2"
+    if tier == "P1" and cat in ("litigation", "fund_raise"):
+        head = " | ".join(str(row.get(k) or "") for k in ("NEWSSUB", "HEADLINE")).lower()
+        try:
+            body = " ".join(pdf.pages(pdf.open_pdf(get_pdf()))[:2]).lower() if get_pdf else ""
+        except Exception:
+            body = ""  # no PDF: size on the subject alone
+        if s := size(cat, head, " ".join(body.split()), lender):
+            tier, out["note"] = s
     return out | {"category": cat, "tier": tier}

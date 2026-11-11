@@ -20,3 +20,7 @@ TIERS = {
 # Defaults only; the user changes them in the app (localStorage).
 VOLUME_MULTIPLE = 2.0   # alert when EOD volume >= N x 20-day average
 EXCESS_MOVE_PCT = 3.0   # alert when |stock % - Nifty %| >= X
+
+# Sizing (rules, no LLM). Every portfolio name is a large cap, so a flat floor is enough here.
+LITIGATION_MIN_CR = 1      # penalties / fines / demands below this -> P3 with a note
+DEBT_MIN_CR = 1000         # a non-lender's debt raise below this -> P3; lenders' debt is always routine

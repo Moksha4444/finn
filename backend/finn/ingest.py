@@ -51,17 +51,18 @@ def ticker(sym: str, start: dt.date, end: dt.date, nifty) -> tuple[list[dict], l
             raise
         errors.append(f"BSE failed, used NSE: {_err(e)}")
         source, rows = "nse", nse.announcements(sym, start, end)
+    lender = "Financing Profit" in co.get("quarters", {}).get("rows", {})  # screener's bank/NBFC table layout
     h = prices.history(sym)
     last_bar = h.index[-1].isoformat() if len(h) else None
 
     items, has_results_card = [], False
     for row in rows:
         get_pdf = lambda row=row: _pdf(row)
-        c = classify.classify(row, get_pdf)
+        c = classify.classify(row, get_pdf, lender)
         rday = rank.reaction_day(row["NEWS_DT"])
         item = {
             "id": row["NEWSID"], "symbol": sym, "name": co["name"], "filed": row["NEWS_DT"][:16],
-            "subject": row.get("NEWSSUB"), "headline": c.get("headline") or row.get("HEADLINE"), "category": c["category"], "tier": c["tier"],
+            "subject": row.get("NEWSSUB"), "headline": c.get("headline") or row.get("HEADLINE"), "note": c.get("note"), "category": c["category"], "tier": c["tier"],
             "classified_by": c["by"], "classify_error": c.get("error"), "url": row.get("url"), "source": source,
             "reaction_day": rday.isoformat(), "last_bar": last_bar,
             "reaction": prices.day_stats(h, nifty, rday) if len(h) else None,
@@ -124,7 +125,7 @@ def print_digest(feed: dict) -> None:
     print(f"\nFINN digest {feed['window'][0]} → {feed['window'][1]} · {len(shown)} shown · {hidden} routine hidden")
     for i in shown:
         print(f"\n[{i['tier']}] {i['symbol']} · {i['filed']} · {i['reason']}")
-        print(f"     {i['headline'] or i['subject']}")
+        print(f"     {i['headline'] or i['subject']}" + (f"  [{i['note']}]" if i.get("note") else ""))
         card = i.get("card")
         if card and card["type"] == "results":
             print(f"     {card['basis']}, ₹ crore · {' / '.join(card['periods'])}")
