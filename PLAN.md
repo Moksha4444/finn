@@ -1,7 +1,7 @@
 # FINN — build plan (11–15 Nov 2026)
 
 Single source of truth for the build. Scope and hard rules live in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.
-Status at time of writing (11 Nov): repo initialised, 3 de-risk spikes passed (`spikes/`). No module code yet.
+Current status: see §3b "Status at end of Day 1".
 
 ---
 
@@ -89,12 +89,33 @@ Cheap model reads each transcript once → `{metric, target, period, quote, page
 ---
 
 ## 3. Spike findings (11 Nov) — see `spikes/`
-1. **BSE:** needs full browser headers (`Origin` + `sec-fetch-*`); no cookies. Works locally; **cloud IP untested**.
+1. **BSE:** needs full browser headers (`Origin` + `sec-fetch-*`); no cookies. Works locally **and from Render (Singapore)**: tested 11 Nov.
 2. **Classification:** HDFCBANK filed results under "Board Meeting / Outcome of Board Meeting", so a keyword rule on the subject ("financial results") is needed.
 3. **Screener:** resolves any symbol (incl. renamed ETERNAL), transcripts are clean text, the quarterly table has 5 quarters. Banks lack an NII line (Python computes it). Concall lists include non-results calls.
 4. **Gemini:** `gemini-3.5-flash-lite` extracted 25/25 checked numbers exactly (TCS clean text, HDFCBANK scanned with "O" for zero). No Pro model on a new free key. Occasional 503 overload (retry worked). The full PDF cost ~12k tokens in / 500 out.
 
 ---
+
+## 3b. Status at end of Day 1 (11 Nov)
+
+**Done**
+- Skeleton (`backend/finn/`), pinned `requirements.txt`, `pytest.ini`.
+- `llm.py`: task→model router, retry→fallback, disk cache keyed on prompt text, token/cost log (`cache/llm_calls.jsonl`).
+- `sources/`: `bse.py`, `screener.py`, `prices.py`, `pdf.py`.
+- Results extraction + card math (`push/cards.py`): PDF-page path only, after the token comparison (table in DECISIONS.md).
+- Tests: 11 passing (page finder on 3 real filings, card math, price stats, 3 live extractions exact vs hand-read numbers).
+- `api.py`: `/health`, `/health/bse`. GitHub repo pushed; Render live at https://finn-api-72tc.onrender.com.
+- **Cloud-IP test passed:** `/health/bse` from Render returned live BSE rows. Live pull is viable as designed.
+- LLM spend so far: ~$0.03 across 12 calls.
+
+**Not done (carried to Day 2)**
+- Classifier (rules + "financial results" keyword rule), mgmt-change card, `rank.py`, `db.py`, `ingest.py` + JSON export for 20 tickers.
+
+**Open issues**
+- Screener slug fallback: some NSE symbols may not match screener's URL slug. Add a search-API fallback if the 20-ticker ingest hits a 404.
+- yfinance's last bar was 9 Nov when checked on 11 Nov (pre-market); confirm whether that is a holiday or a data lag before relying on reaction-day stats.
+- Exceptional-items sign varies by model output; the card uses abs(). Revisit if a positive one-off (a gain) needs a different label.
+- Render free tier cold starts (~30–60 s): mitigated by static JSON; live-pull UI must show staged loading text.
 
 ## 4. Day-by-day
 

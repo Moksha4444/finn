@@ -27,7 +27,7 @@ Format: **Decision** · Why · What we gave up.
 - **One-off flag is pure Python.** If "Exceptional items" ≠ 0, the card says e.g. "Includes ₹668 cr one-off". No LLM judgment about what counts as one-off.
 
 ## Spike findings (11 Nov)
-- **BSE API needs full browser headers** (`Origin` + `sec-fetch-*`), not just User-Agent + Referer. Without them it returns 403. No cookies needed. Not yet tested from a cloud IP.
+- **BSE API needs full browser headers** (`Origin` + `sec-fetch-*`), not just User-Agent + Referer. Without them it returns 403. No cookies needed. **Works from a cloud IP:** `/health/bse` on Render (Singapore, free tier) returned live rows on 11 Nov, so live pull and cloud ingest can call BSE directly. Gave up: nothing; the local-ingest fallback wasn't needed.
 - **BSE's category alone misses results.** HDFCBANK filed Q2 results under "Board Meeting / Outcome of Board Meeting". The classifier needs a keyword rule on the subject ("financial results").
 - **Screener resolves symbols programmatically**, including renamed ETERNAL (BSE 543320). Concall lists can contain non-results calls (e.g. HDFCBANK "Mar 2026"), so PvD must select the results calls, not just the last 4 rows.
 - **Banks: screener has no NII line.** NII = interest earned − interest expended, computed in Python.
