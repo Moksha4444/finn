@@ -9,15 +9,18 @@ TRUTH = {
     "TCS_results.pdf": dict(page=8, bank=False,
         revenue_from_operations=[73188, 72275, 65799], finance_costs=[252, 273, 229],
         depreciation_amortisation=[1262, 1239, 1413], exceptional_items=[0, 668, 1135],
-        profit_before_tax=[18638, 17944, 16068], profit_after_tax=[13934, 13420, 12131]),
+        profit_before_tax=[18638, 17944, 16068], profit_after_tax=[13934, 13420, 12131],
+        profit_attributable_to_owners=[13884, 13349, 12075]),
     "HDFCBANK_results.pdf": dict(page=9, bank=True,
         interest_earned=[95131.63, 90575.33, 86993.84], interest_expended=[50667.43, 47625.63, 46740.86],
         total_income=[129358.69, 133110.36, 118560.63],
-        profit_before_tax=[28662.54, 27193.16, 26658.89], profit_after_tax=[21537.09, 20382.69, 20363.77]),
+        profit_before_tax=[28662.54, 27193.16, 26658.89], profit_after_tax=[21537.09, 20382.69, 20363.77],
+        profit_attributable_to_owners=[20700.03, 19244.71, 19610.67]),
     "BAJFINANCE_results_p4_p14.pdf": dict(page=2, bank=True,
         interest_earned=[21936.39, 20512.73, 17795.97], interest_expended=[8601.73, 7942.09, 7010.60],
         total_income=[24575.82, 23166.42, 19992.38],
-        profit_before_tax=[8537.20, 8149.00, 6608.13], profit_after_tax=[6366.57, 6080.60, 4947.76]),
+        profit_before_tax=[8537.20, 8149.00, 6608.13], profit_after_tax=[6366.57, 6080.60, 4947.76],
+        profit_attributable_to_owners=[6266.20, 5985.75, 4875.36]),
 }
 FIELDS = lambda t: {k: v for k, v in t.items() if isinstance(v, list)}
 
@@ -45,19 +48,29 @@ def test_card_math_nonbank_ebitda_and_one_offs():
 
 def test_card_math_bank_nii():
     lines = {l["name"]: l for l in results_card(_fake("HDFCBANK_results.pdf"))["lines"]}
-    assert list(lines) == ["NII", "Total income", "PBT", "PAT"]
+    assert list(lines) == ["NII", "Total income", "PBT", "PAT (to owners)"]
+    assert lines["PAT (to owners)"]["value"] == 20700.03
     assert lines["NII"]["value"] == round(95131.63 - 50667.43, 2)
 
 
 def test_card_converts_lakh_to_crore():
     lines = {l["name"]: l for l in results_card(_fake("TCS_results.pdf", unit="₹ in lakhs"))["lines"]}
-    assert lines["PAT"]["value"] == 139.34
+    assert lines["PAT (to owners)"]["value"] == 138.84
+
+
+def test_card_falls_back_to_total_pat_when_owners_line_missing():
+    ex = _fake("TCS_results.pdf")
+    ex["data"]["columns"][2]["profit_attributable_to_owners"] = None  # one column lacks it -> total PAT for all 3
+    lines = {l["name"]: l for l in results_card(ex)["lines"]}
+    assert "PAT (to owners)" not in lines and lines["PAT"]["value"] == 13934
+
 
 
 @pytest.mark.skipif(not os.getenv("GEMINI_API_KEY"), reason="live LLM test needs GEMINI_API_KEY (cached after first run)")
 @pytest.mark.parametrize("name", TRUTH)
 def test_live_extraction_matches_filing(name):
     ex = extract_results((FIX / name).read_bytes())
+    assert extract_results((FIX / name).read_bytes())["cached"]  # cache key must be stable across calls
     assert ex["path"] == "pdf_pages"
     assert ex["data"]["basis"] == "consolidated"
     for field, want in FIELDS(TRUTH[name]).items():

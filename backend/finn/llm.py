@@ -63,12 +63,13 @@ def _call(spec: str, parts: list, schema: dict, tries: int = 3):
             time.sleep(2 ** (n + 1))
 
 
-def run(task: str, prompt_name: str, inputs: list, schema: dict, **log) -> dict:
+def run(task: str, prompt_name: str, inputs: list, schema: dict, key: str | None = None, **log) -> dict:
     """inputs: strings and/or PDF bytes. Returns {"data", "model", "model_note", "cached"}.
-    Extra keyword args (e.g. path="text") go into the cost log."""
+    key: cache key for the inputs (e.g. source-PDF hash + pages) when the input bytes themselves aren't
+    stable; PyMuPDF page subsets differ byte-wise between runs. Extra keyword args go into the cost log."""
     text = prompt(prompt_name)
     h = hashlib.sha256(f"{task}\0{text}\0{json.dumps(schema, sort_keys=True)}".encode())
-    for p in inputs:
+    for p in [key] if key else inputs:
         h.update(p if isinstance(p, bytes) else p.encode())
     f = CACHE / "llm" / f"{task}-{h.hexdigest()[:24]}.json"
     if f.exists():

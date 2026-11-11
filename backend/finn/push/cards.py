@@ -1,4 +1,5 @@
 """Rich cards. Results: LLM copies numbers from the filing; Python does every calculation."""
+import hashlib
 from finn import llm
 from finn.sources import pdf
 
@@ -13,7 +14,7 @@ RESULTS_SCHEMA = {
             "period_label": {"type": "string"},
             **{k: _num for k in ["revenue_from_operations", "total_income", "interest_earned", "interest_expended",
                                  "finance_costs", "depreciation_amortisation", "exceptional_items",
-                                 "profit_before_tax", "profit_after_tax"]},
+                                 "profit_before_tax", "profit_after_tax", "profit_attributable_to_owners"]},
         }, "required": ["period_label", "profit_before_tax", "profit_after_tax"]}},
     },
     "required": ["basis", "unit", "is_bank_or_nbfc", "columns"],
@@ -33,7 +34,8 @@ def extract_results(pdf_bytes: bytes, path: str = "pdf_pages") -> dict:
     inputs = {"full_pdf": lambda: [pdf_bytes], "pdf_pages": lambda: [pdf.subset(doc, idx)],
               "text": lambda: [pdf.marked_text(texts, idx)]}[path]()
     pages = [i + 1 for i in idx] or list(range(1, len(texts) + 1))
-    out = llm.run("extract_results", "extract_results", inputs, RESULTS_SCHEMA, path=path, pages=pages)
+    key = f"{hashlib.sha256(pdf_bytes).hexdigest()}:{path}:{pages}"
+    out = llm.run("extract_results", "extract_results", inputs, RESULTS_SCHEMA, key=key, path=path, pages=pages)
     return out | {"path": path, "pages": pages}
 
 
@@ -68,7 +70,10 @@ def results_card(ex: dict) -> dict:
         lines = {"Revenue": [c.get("revenue_from_operations") for c in cols],
                  "EBITDA": [_add(c["profit_before_tax"], c.get("finance_costs"), c.get("depreciation_amortisation")) for c in cols]}
         note = EBITDA_NOTE
-    lines |= {"PBT": [c["profit_before_tax"] for c in cols], "PAT": [c["profit_after_tax"] for c in cols]}
+    # Owners' share matches the headline net profit and EPS; only if all 3 columns have it, so QoQ/YoY compare like with like.
+    owners = [c.get("profit_attributable_to_owners") for c in cols]
+    pat = ("PAT (to owners)", owners) if None not in owners else ("PAT", [c["profit_after_tax"] for c in cols])
+    lines |= {"PBT": [c["profit_before_tax"] for c in cols], pat[0]: pat[1]}
 
     one_offs = []
     for c, label in zip(cols, ["This quarter", "Previous quarter", "Year-ago quarter"]):
