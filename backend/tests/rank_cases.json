@@ -156,5 +156,26 @@
    "boosted": false,
    "collapsed": true
   }
+ },
+ {
+  "name": "exact .x5 ties round half-even like Python's format (TS port must match)",
+  "item": {
+   "tier": "P2",
+   "category": "press_release",
+   "reaction_day": "2026-11-09",
+   "last_bar": "2026-11-11",
+   "reaction": {
+    "move_pct": 3.25,
+    "nifty_pct": 0.0,
+    "excess_pct": 3.25,
+    "vol_ratio": 2.25
+   }
+  },
+  "want": {
+   "score": 350,
+   "reason": "Ranked high: press release · +3.2% (+3.2% vs Nifty) · 2.2× volume",
+   "boosted": true,
+   "collapsed": false
+  }
  }
 ]
