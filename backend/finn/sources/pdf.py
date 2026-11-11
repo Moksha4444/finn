@@ -1,4 +1,5 @@
 """PDF helpers: per-page text, results-page finder, page subset."""
+import re
 import pymupdf
 
 # Lines of a P&L statement; any 3 on one page means "this is the results table".
@@ -22,6 +23,9 @@ def find_results_pages(texts: list[str]) -> tuple[list[int], str | None]:
     for i, t in enumerate(texts):
         low = t.lower()
         score = sum(k in low for k in PNL) - 3 * sum(k in low for k in NOT_PNL)
+        # the SEBI statement's title; survives bad OCR better than line items, and investor-report
+        # summary pages (2 columns, no preceding quarter; e.g. BHARTIARTL) don't carry it
+        score += 3 * bool(re.search(r"results for the (quarter|three months|period)", low))
         if score < 3:
             continue
         basis = "consolidated" if low.count("consolidated") > low.count("standalone") else "standalone"

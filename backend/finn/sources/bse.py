@@ -16,7 +16,7 @@ def announcements(scrip: str, start: dt.date, end: dt.date, max_age: float = 360
     """All announcements for one BSE scrip code in [start, end], newest first. BSE pages at 50 rows."""
     rows, page = [], 1
     while True:
-        body = fetch(API, headers=HEADERS, max_age=max_age, params={
+        body = fetch(API, headers=HEADERS, max_age=max_age, expect=b"{", params={
             "pageno": page, "strCat": -1, "subcategory": -1, "strSearch": "P", "strType": "C",
             "strPrevDate": start.strftime("%Y%m%d"), "strToDate": end.strftime("%Y%m%d"), "strScrip": scrip})
         j = json.loads(body)
@@ -36,7 +36,7 @@ def attachment(name: str) -> bytes:
     """Attachment bytes (cached forever). Older filings sometimes only exist under AttachHis."""
     for folder in ("AttachLive", "AttachHis"):
         try:
-            b = fetch(ATTACH.format(folder, name), headers=HEADERS)
+            b = fetch(ATTACH.format(folder, name), headers=HEADERS, expect=b"%PDF")
         except Exception:
             continue
         if b[:4] == b"%PDF":

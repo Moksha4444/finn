@@ -19,7 +19,7 @@ RESULTS_SCHEMA = {
     },
     "required": ["basis", "unit", "is_bank_or_nbfc", "columns"],
 }
-TO_CRORE = {"crore": 1, "lakh": 0.01, "lac": 0.01, "million": 0.1, "billion": 100, "thousand": 1e-4}
+TO_CRORE = {"crore": 1, "lakh": 0.01, "lac": 0.01, "million": 0.1, "mn": 0.1, "billion": 100, "bn": 100, "thousand": 1e-4}
 EBITDA_NOTE = "EBITDA = PBT + finance costs + D&A; other income not excluded"
 
 
@@ -60,8 +60,9 @@ def results_card(ex: dict) -> dict:
     if k is None or not any(r in unit for r in ("₹", "rs", "inr", "rupee", "crore", "lakh", "lac")):
         raise ValueError(f"unknown unit: {d['unit']}")
     cols = [{f: (v * k if isinstance(v, (int, float)) else v) for f, v in c.items()} for c in d["columns"][:3]]
-    if len(cols) < 3:
-        raise ValueError("need current, previous and year-ago columns")
+    # a page without all 3 quarters makes the model pad columns, and a YoY number gets shown as QoQ
+    if len(cols) < 3 or any(c.get("profit_before_tax") is None or c.get("profit_after_tax") is None for c in cols)             or len({c["period_label"] for c in cols}) < 3:
+        raise ValueError("need current, previous and year-ago columns with PBT and PAT")
 
     if d["is_bank_or_nbfc"]:
         lines = {"NII": [_sub(c.get("interest_earned"), c.get("interest_expended")) for c in cols],

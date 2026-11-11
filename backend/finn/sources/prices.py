@@ -12,7 +12,11 @@ def history(symbol: str, period: str = "3mo") -> pd.DataFrame:
     h = yf.Ticker(symbol if symbol.startswith("^") else f"{symbol}.NS").history(period=period, auto_adjust=False)
     if h.empty:
         return pd.DataFrame(columns=["Close", "Volume"])
+    h = h.dropna(subset=["Close"])  # yfinance posts a stub bar (volume, NaN close) for hours after the close: not a bar yet
     h.index = h.index.date
+    now = dt.datetime.now(dt.timezone(dt.timedelta(hours=5, minutes=30)))
+    if now.time() < dt.time(16, 0):  # before the close yfinance serves today's partial bar: not an EOD reaction
+        h = h[h.index < now.date()]
     return h[["Close", "Volume"]]
 
 

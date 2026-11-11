@@ -78,3 +78,17 @@ def test_live_extraction_matches_filing(name):
         if field == "exceptional_items":  # sign varies (charge printed as +/-); the card uses abs()
             got, want = [abs(x) for x in got], [abs(x) for x in want]
         assert got == pytest.approx(want), field
+
+
+def test_card_rejects_padded_columns():
+    # BHARTIARTL 12 Nov: a 2-column summary page; model padded a 3rd column and YoY showed as QoQ
+    ex = _fake("TCS_results.pdf")
+    ex["data"]["columns"][2]["profit_before_tax"] = None
+    with pytest.raises(ValueError):
+        results_card(ex)
+
+
+def test_prefers_sebi_statement_over_clean_summary_page():
+    # BHARTIARTL: p.1 = OCR-garbled SEBI statement (3 quarters), p.2 = clean 2-column investor-report summary
+    idx, basis = pdf.find_results_pages(pdf.pages(pdf.open_pdf((FIX / "BHARTIARTL_statement_p2_summary_p33.pdf").read_bytes())))
+    assert idx[0] == 0 and basis == "consolidated"

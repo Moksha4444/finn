@@ -1,0 +1,160 @@
+[
+ {
+  "name": "quiet results day",
+  "item": {
+   "tier": "P1",
+   "category": "results",
+   "reaction_day": "2026-11-09",
+   "last_bar": "2026-11-11",
+   "reaction": {
+    "move_pct": 0.6,
+    "nifty_pct": 0.2,
+    "excess_pct": 0.4,
+    "vol_ratio": 1.1
+   }
+  },
+  "want": {
+   "score": 300,
+   "reason": "results · +0.4% vs Nifty",
+   "boosted": false,
+   "collapsed": false
+  }
+ },
+ {
+  "name": "excess-move boost",
+  "item": {
+   "tier": "P1",
+   "category": "results",
+   "reaction_day": "2026-11-09",
+   "last_bar": "2026-11-11",
+   "reaction": {
+    "move_pct": -4.1,
+    "nifty_pct": -0.5,
+    "excess_pct": -3.6,
+    "vol_ratio": 1.4
+   }
+  },
+  "want": {
+   "score": 450,
+   "reason": "Ranked high: results · −4.1% (−3.6% vs Nifty)",
+   "boosted": true,
+   "collapsed": false
+  }
+ },
+ {
+  "name": "volume boost lifts a P2 above a quiet P1",
+  "item": {
+   "tier": "P2",
+   "category": "press_release",
+   "reaction_day": "2026-11-09",
+   "last_bar": "2026-11-11",
+   "reaction": {
+    "move_pct": 1.0,
+    "nifty_pct": 0.8,
+    "excess_pct": 0.2,
+    "vol_ratio": 2.3
+   }
+  },
+  "want": {
+   "score": 350,
+   "reason": "Ranked high: press release · 2.3× volume",
+   "boosted": true,
+   "collapsed": false
+  }
+ },
+ {
+  "name": "big raw move but flat vs Nifty: no boost",
+  "item": {
+   "tier": "P2",
+   "category": "dividend",
+   "reaction_day": "2026-11-09",
+   "last_bar": "2026-11-11",
+   "reaction": {
+    "move_pct": -3.5,
+    "nifty_pct": -3.2,
+    "excess_pct": -0.3,
+    "vol_ratio": 1.0
+   }
+  },
+  "want": {
+   "score": 200,
+   "reason": "dividend · −0.3% vs Nifty",
+   "boosted": false,
+   "collapsed": false
+  }
+ },
+ {
+  "name": "bar not yet available",
+  "item": {
+   "tier": "P1",
+   "category": "management_change",
+   "reaction_day": "2026-11-12",
+   "last_bar": "2026-11-11",
+   "reaction": null
+  },
+  "want": {
+   "score": 300,
+   "reason": "management change · Reaction pending",
+   "boosted": false,
+   "collapsed": false
+  }
+ },
+ {
+  "name": "no price data at all",
+  "item": {
+   "tier": "P3",
+   "category": "agm_egm",
+   "reaction_day": "2026-11-09",
+   "last_bar": null,
+   "reaction": null
+  },
+  "want": {
+   "score": 100,
+   "reason": "AGM/EGM · No price data",
+   "boosted": false,
+   "collapsed": true
+  }
+ },
+ {
+  "name": "nifty bar missing: raw move used",
+  "item": {
+   "tier": "P2",
+   "category": "press_release",
+   "reaction_day": "2026-11-09",
+   "last_bar": "2026-11-11",
+   "reaction": {
+    "move_pct": 5.0,
+    "nifty_pct": null,
+    "excess_pct": null,
+    "vol_ratio": null
+   }
+  },
+  "want": {
+   "score": 350,
+   "reason": "Ranked high: press release · +5.0%",
+   "boosted": true,
+   "collapsed": false
+  }
+ },
+ {
+  "name": "routine P3 never boosted, stays collapsed",
+  "item": {
+   "tier": "P3",
+   "category": "investor_meetings",
+   "reaction_day": "2026-11-11",
+   "last_bar": "2026-11-11",
+   "reaction": {
+    "move_pct": 0.9,
+    "nifty_pct": 0.1,
+    "excess_pct": 0.8,
+    "vol_ratio": 3.3
+   }
+  },
+  "want": {
+   "score": 100,
+   "reason": "investor meetings · +0.8% vs Nifty",
+   "boosted": false,
+   "collapsed": true
+  }
+ }
+]

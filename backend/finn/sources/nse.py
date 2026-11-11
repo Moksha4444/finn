@@ -9,7 +9,7 @@ HEADERS = {"Accept": "*/*", "Accept-Language": "en-US,en;q=0.9", "Referer": "htt
 
 
 def announcements(symbol: str, start: dt.date, end: dt.date, max_age: float = 3600) -> list[dict]:
-    body = fetch(API, headers=HEADERS, max_age=max_age, params={
+    body = fetch(API, headers=HEADERS, max_age=max_age, expect=b"[", params={
         "index": "equities", "symbol": symbol, "from_date": start.strftime("%d-%m-%Y"), "to_date": end.strftime("%d-%m-%Y")})
     return [{
         "NEWSID": x.get("seq_id"), "SCRIP_CD": None, "SLONGNAME": x.get("sm_name"),
