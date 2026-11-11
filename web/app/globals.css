@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+/* "Morning paper": warm paper, near-black ink, one deep ink-blue accent.
+   Ink-blue rather than oxblood because losses are muted red; an oxblood marker would read as "down". */
+@theme {
+  --color-paper: oklch(97.6% 0.009 84);
+  --color-paper-2: oklch(94.6% 0.011 82);
+  --color-ink: oklch(22% 0.012 60);
+  --color-ink-2: oklch(46% 0.014 62);
+  --color-rule: oklch(87.5% 0.012 78);
+  --color-accent: oklch(37% 0.1 258);
+  --color-gain: oklch(45% 0.1 152);
+  --color-loss: oklch(47% 0.135 27);
+
+  --font-sans: var(--font-franklin), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-source-serif), ui-serif, Georgia, serif;
+}
+
+html {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+::selection {
+  background: color-mix(in oklch, var(--color-accent) 18%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+a {
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+
+input[type="checkbox"] {
+  accent-color: var(--color-accent);
+}
