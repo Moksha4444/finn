@@ -41,7 +41,7 @@ export default function SettingsPage() {
 
 function CatGroup({ title, cats, s, toggle }: { title: string; cats: string[]; s: Settings; toggle: (c: string) => void }) {
   return (
-    <fieldset className="pt-3">
+    <fieldset className="pt-3 [&+&]:pt-6">
       <legend className="text-[0.8125rem] text-ink-2">{title}</legend>
       <ul className="mt-1">
         {cats.map((c) => (

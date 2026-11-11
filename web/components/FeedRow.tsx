@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
-import { filedAt, sentence, type MgmtCard, type RankedItem, type ResultsCard, type ResultsLine } from "@/lib/feed";
+import { filedAt, sentence, shortDate, type MgmtCard, type RankedItem, type ResultsCard, type ResultsLine } from "@/lib/feed";
 import { label, pct } from "@/lib/rank";
 import { Signed } from "./Signed";
+import { period } from "@/lib/period";
 
 // What the row says before you tap: numbers-first for results, the person for mgmt changes, else the filing's own line.
 function keyFact(i: RankedItem): string {
@@ -21,11 +22,18 @@ function keyFact(i: RankedItem): string {
   return i.headline || i.subject || "Filing";
 }
 
-// rank() reasons start with the category, which line 1 already shows.
+// rank() reasons start with the category, which line 1 already shows. On the row, a move that crossed
+// the threshold shows only its vs-Nifty part (the part that triggered it); the expanded view has the full string.
 function reasonText(i: RankedItem): string {
   const lab = label(i.category);
-  return i.boosted ? "Ranked high · " + i.reason.slice(`Ranked high: ${lab} · `.length) : i.reason.slice(`${lab} · `.length);
+  if (!i.boosted) return i.reason.slice(`${lab} · `.length);
+  return i.reason
+    .slice(`Ranked high: ${lab} · `.length)
+    .replace(/[+−]\d+\.\d% \(([+−]\d+\.\d%) vs Nifty\)/, "$1 vs Nifty")
+    .replace("× volume", "× vol");
 }
+
+const SHORT_LABEL: Record<string, string> = { management_change: "Mgmt change" };
 
 export function FeedRow({ item: i }: { item: RankedItem }) {
   const [open, setOpen] = useState(false);
@@ -41,25 +49,27 @@ export function FeedRow({ item: i }: { item: RankedItem }) {
         onClick={() => setOpen(!open)}
         className="block w-full py-3 text-left"
       >
-        <span className="flex items-baseline gap-2">
+        {/* line 1: who, what, and the market's verdict; line 2: the fact and when. Both single-line. */}
+        <span className="flex items-baseline gap-2 whitespace-nowrap">
           <span className="text-[0.9375rem] font-semibold tracking-[0.01em]">{i.symbol}</span>
-          <span className="text-[0.875rem] text-ink-2">{sentence(label(i.category))}</span>
+          <span className="min-w-0 truncate text-[0.875rem] text-ink-2">{SHORT_LABEL[i.category] ?? sentence(label(i.category))}</span>
           {i.tier === "P1" && (
             <span className="inline-block size-[0.4375rem] shrink-0 -translate-y-px rounded-[1px] bg-accent" role="img" aria-label="Material" />
           )}
-          <span className="ml-auto shrink-0 pl-2 text-[0.8125rem] text-ink-2">{filedAt(i.filed)}</span>
-        </span>
-        <span className="mt-0.5 line-clamp-2 block text-[0.875rem] leading-[1.4]">
-          <Signed text={keyFact(i)} />
-          <span className="text-ink-2"> · </span>
-          <span className={quietReason ? "text-ink-2 italic" : i.boosted ? "font-medium" : "text-ink-2"}>
+          <span className={`ml-auto shrink-0 pl-2 text-[0.8125rem] ${quietReason ? "text-ink-2 italic" : i.boosted ? "font-semibold" : "text-ink-2"}`}>
+            {i.boosted && <span className="sr-only">Ranked high: </span>}
             <Signed text={reason} />
           </span>
         </span>
+        <span className="mt-0.5 flex items-baseline gap-3 text-[0.875rem] leading-[1.4] whitespace-nowrap">
+          <span className="min-w-0 truncate"><Signed text={keyFact(i)} /></span>
+          <span className="ml-auto shrink-0 text-[0.8125rem] text-ink-2">{filedAt(i.filed)}</span>
+        </span>
       </button>
       {open && (
-        <div id={id} className="pb-4 text-[0.875rem] leading-[1.45]">
+        <div id={id} className="pb-4 pt-1 text-[0.875rem] leading-[1.45]">
           {i.card?.type === "results" ? <Results c={i.card} /> : i.card?.type === "management_change" ? <Mgmt c={i.card} /> : <Other i={i} />}
+          <Why i={i} />
           <Source i={i} page={i.card?.type === "results" ? i.card.pages[0] : undefined} />
         </div>
       )}
@@ -67,11 +77,19 @@ export function FeedRow({ item: i }: { item: RankedItem }) {
   );
 }
 
+function Why({ i }: { i: RankedItem }) {
+  const day = i.reaction ? ` on ${shortDate(i.reaction_day)}` : "";
+  return (
+    <p className="mt-2 text-[0.8125rem] text-ink-2">
+      <span className="font-medium text-ink">Why it&rsquo;s here: </span>
+      <Signed text={i.reason.replace(/^Ranked high: /, "ranked high: ")} />
+      {day}
+    </p>
+  );
+}
+
 const crore = (v: number | null) =>
   v == null ? "not disclosed" : v.toLocaleString("en-IN", { maximumFractionDigits: Math.abs(v) < 100 ? 1 : 0 });
-
-// "30-Sep-26" -> "Sep ’26"; anything else is shown as printed.
-const period = (p: string) => (/^\d{1,2}-[A-Za-z]{3}-\d{2}$/.test(p) ? `${p.slice(-6, -3)} ’${p.slice(-2)}` : p);
 
 function Change({ v }: { v: number | null }) {
   return v == null ? <span className="text-ink-2">–</span> : <Signed text={pct(v)} />;
