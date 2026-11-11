@@ -1,0 +1,51 @@
+"""PDF helpers: per-page text, results-page finder, page subset."""
+import pymupdf
+
+# Lines of a P&L statement; any 3 on one page means "this is the results table".
+PNL = ["revenue from operations", "interest earned", "interest income", "total income", "before tax",
+       "tax expense", "net profit", "profit for the period", "profit after tax", "exceptional"]
+NOT_PNL = ["segment revenue", "assets and liabilities", "cash flows from operating"]
+
+
+def open_pdf(b: bytes) -> pymupdf.Document:
+    return pymupdf.open(stream=b, filetype="pdf")
+
+
+def pages(doc: pymupdf.Document) -> list[str]:
+    return [p.get_text() for p in doc]
+
+
+def find_results_pages(texts: list[str]) -> tuple[list[int], str | None]:
+    """0-based page indices of the P&L table and its basis. Consolidated preferred, standalone fallback.
+    Returns ([], None) if nothing looks like a results table (caller then sends the whole PDF)."""
+    best = {}
+    for i, t in enumerate(texts):
+        low = t.lower()
+        score = sum(k in low for k in PNL) - 3 * sum(k in low for k in NOT_PNL)
+        if score < 3:
+            continue
+        basis = "consolidated" if low.count("consolidated") > low.count("standalone") else "standalone"
+        if score > best.get(basis, (-1, 0))[0]:
+            best[basis] = (score, i)
+    for basis in ("consolidated", "standalone"):
+        if basis in best:
+            i = best[basis][1]
+            idx = [i]
+            # table may spill onto the next page when PAT isn't on this one
+            low = texts[i].lower()
+            if i + 1 < len(texts) and not any(k in low for k in ("net profit", "profit for the period", "profit after tax")):
+                idx.append(i + 1)
+            return idx, basis
+    return [], None
+
+
+def subset(doc: pymupdf.Document, idx: list[int]) -> bytes:
+    out = pymupdf.open()
+    for i in idx:
+        out.insert_pdf(doc, from_page=i, to_page=i)
+    return out.tobytes()
+
+
+def marked_text(texts: list[str], idx: list[int]) -> str:
+    """Page text with [p.N] markers (1-based) so citations survive."""
+    return "\n".join(f"[p.{i + 1}]\n{texts[i]}" for i in idx)
