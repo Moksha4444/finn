@@ -1,7 +1,7 @@
 # FINN — build plan (11–15 Nov 2026)
 
 Single source of truth for the build. Scope and hard rules live in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.
-Current status: see §3c "Status at 12 Nov, early morning". Day plan: §4 (re-planned 12 Nov).
+Current status: see §3c "Status at 12 Nov, early morning". Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
 
 ---
 
@@ -126,36 +126,46 @@ Cheap model reads each transcript once → `{metric, target, period, quote, page
 - `push/rank.py`: +150 Nifty-relative boost for P1/P2, reason strings, "Reaction pending", price alerts. Shared case table `tests/rank_cases.json` (8 cases) for the TS port.
 - `ingest.py`: all 20 tickers, 7-day window, ~3.5 min cold / seconds cached → `web/public/data/feed.json` + CLI digest. Last run: 22 shown, 30 routine hidden, 20 alerts, 0 failed tickers.
 - Results-card gate + SEBI-title page scoring after a real BHARTIARTL miss (YoY shown as QoQ); fixture added. 42 tests pass.
-- LLM spend to date: **$0.065 / 39 calls**.
+- Sizing rules (rules only): litigation < ₹1 cr → P3; fund-raise P1 only for equity raises or non-lender debt ≥ ₹1,000 cr; lenders' NCD/CP and ESOP allotments → P3. 13 tests.
+- Accuracy spot-check: TATAPOWER, ASIANPAINT, ETERNAL cards hand-read against the PDFs, 72/72 numbers exact. Found and fixed: EBITDA included TATAPOWER's ₹119 cr exceptional gain; it now starts from the pre-exceptional line, and one-offs are signed (gain/charge).
+- 57 tests pass. Feed P1 count this week: 9.
+- LLM spend to date: **$0.079 / 47 calls**.
 
 **Findings that change the plan**
 - yfinance lags: 11 Nov bars were NaN-close stubs at 03:30 on 12 Nov. → Cron runs **twice** (≈18:30 IST for filings, ≈08:30 IST next day to fill reactions); every run re-ranks the whole window.
 - CDSL is NSE-only, so the NSE fallback is now part of the design, not an afterthought.
 
 **Open issues**
-- Litigation and fund-raise aren't sized (₹1.6 lakh penalty = P1; every NCD/CP allotment = P1). Fund-raise allotments are the noisiest P1; candidate rule: CP/NCD allotments → P2.
+- Sizing thresholds are flat (fine for this all-large-cap portfolio); market-cap-relative is the next step for small caps.
 - Bios run past 35 words; UI clamps.
-- Exceptional-items sign still abs() (unchanged).
 
 ## 4. Day-by-day
 
 **Wed 11 (done):** repo init, spikes, decisions. Session export.
 
-**Thu 12 (re-planned 12 Nov, early morning)**
-- ~~Classifier, mgmt card, rank, ingest for 20 tickers~~ done (see §3c).
-- **Feed UI** (impeccable skill, 390px first): Next.js static export reading `feed.json`. Ranked digest with reaction reasons + "Reaction pending", results card (+ one-off flag; chip slot left empty until PvD), mgmt card, quiet-day state, P3 collapse, alert inbox + badge, settings (alert categories, N×, ±X% in localStorage). TS port of `rank()` passing `rank_cases.json`.
+**Thu 12 (re-planned 12 Nov, early morning; confirmed by the user)**
+- ~~Classifier, mgmt card, rank, ingest for 20 tickers, sizing rules, results spot-check~~ done (see §3c).
+- **Morning, separate session, user asleep: PvD backend** (see §4a). Runs headless; ends with a commit + push and a summary in §3c.
+- **Feed UI** (this track; impeccable skill, 390px first): Next.js static export reading `feed.json`. Ranked digest with reaction reasons + "Reaction pending", sizing notes, results card (+ signed one-off flag; chip slot empty until PvD), mgmt card, quiet-day state, P3 collapse, alert inbox + badge, settings (alert categories, N×, ±X% in localStorage). TS port of `rank()` passing `rank_cases.json`.
 - **Deploy step 3 (Vercel):** stop and give click-by-click instructions first.
-- Evening: re-run ingest; confirm 11 Nov "Reaction pending" items resolve once yfinance fills the bar (evidence for the writeup).
+- Evening: re-run ingest; confirm the 11 Nov "Reaction pending" items resolve once yfinance fills the bar (evidence for the writeup).
 
-**Fri 13: PvD day (hero)**
-- Transcript selection: the 4 latest *results* calls from screener (skip non-results calls). Cheap model: guidance per transcript → `{metric, target, period, quote, page}`.
-- Actuals from screener's quarterly table (Python). Strong model: verdict hit / miss / partial / not-yet-measurable + citations. Judge quality on TCS + HDFCBANK; switch to Claude only if shallow.
-- Credibility chip on results cards (Python, from cached PvD). Financial snapshot (no LLM). Bull/bear (3 each, cited).
+**Fri 13: PvD quality + research content**
+- Review the PvD session's output on TCS + HDFCBANK; judge verdict quality; switch PvD/bull-bear to Claude only if shallow.
+- Credibility chip on results cards (Python, from cached PvD). Financial snapshot (no LLM). Bull/bear (3 each, cited). Research page UI (impeccable).
 
-**Sat 14: live pull + research page**
-- `api.py`: POST /research/{symbol} → job id; GET /jobs/{id} with stage text. Research page UI (impeccable). Precompute 4 research tickers (TCS, HDFCBANK + 2 outside the portfolio).
+**Sat 14: live pull + hardening**
+- `api.py`: POST /research/{symbol} → job id; GET /jobs/{id} with stage text. Precompute 4 research tickers (TCS, HDFCBANK + 2 outside the portfolio).
 - Graceful-failure pass across feed + research. GH Actions cron (2 runs/day) + secret: deploy step 4, with instructions first.
 - Business snapshot only if time (first cut). Real-phone test, unseen-ticker test, cost total into DECISIONS.md.
+
+### 4a. Handoff for the PvD backend session (12 Nov morning)
+Read CLAUDE.md, this file's §1/§2 "PvD" and DECISIONS.md first. Scope: **backend only**, nothing under `web/`.
+- **Build:** `backend/finn/pull/pvd.py` + prompts `extract_guidance.md`, `pvd_verdict.md`; CLI `python -m finn.pull.pvd SYMBOL` printing the promise table; tests in `backend/tests/test_pvd.py` with 2 saved transcript fixtures.
+- **Reuse, don't rebuild:** `llm.run(task, prompt, inputs, schema, key=...)` (tasks `extract_guidance` = cheap, `pvd_verdict` = strong are already routed; pass `key=` = source hash when inputs are derived bytes). `screener.company(sym)` → `concalls` (period, transcript URL) and `quarters` (₹ cr, oldest first). `fetch(url, expect=b"%PDF")` for transcripts. `pdf.pages()` for text with page numbers.
+- **Rules:** select the 4 latest *results* calls (skip non-results calls such as HDFCBANK "Mar 2026"). Every promise carries transcript + page. Actuals come from screener's quarterly table, cited as such; Python computes growth, the LLM never does arithmetic. Verdicts: hit / miss / partial / not-yet-measurable. Missing facts → "not disclosed".
+- **Don't touch** `push/`, `ingest.py`, `rank.py` (the UI track depends on their output shape). Output JSON shape for the UI: `{symbol, model_note, promises: [{metric, target, period, said_in, quote, page, actual, actual_source, verdict, why}]}`; also export `web/public/data/research/{SYMBOL}.json`.
+- **Done when:** TCS and HDFCBANK print sensible tables, tests pass, cost logged; then commit + push and add a 5-line status to §3c. Stop there; no UI.
 
 **Sun 15:** writeup, build-history export, submit.
 
