@@ -17,7 +17,7 @@ export function FeedSkeleton({ rows = 7, header = true }: { rows?: number; heade
         {Array.from({ length: rows }, (_, k) => (
           <li key={k} className="border-b border-rule py-3">
             <span className="flex justify-between"><Bar w={k % 2 ? "w-36" : "w-44"} h="h-3.5" /><Bar w="w-20" /></span>
-            <span className="mt-2 block"><Bar w={k % 3 ? "w-[85%]" : "w-[70%]"} /></span>
+            <span className="mt-2 flex justify-between gap-3"><Bar w={k % 3 ? "w-[62%]" : "w-[50%]"} /><Bar w="w-24" /></span>
           </li>
         ))}
       </ol>

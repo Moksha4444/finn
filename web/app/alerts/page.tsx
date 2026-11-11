@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { eventLabel, keyFact } from "@/components/FeedRow";
 import { Signed } from "@/components/Signed";
 import { FeedSkeleton, LoadFailed } from "@/components/States";
 import { buildAlerts, shortDate, useFeed, useSettings, useUnseen, type Alert } from "@/lib/feed";
@@ -47,11 +48,11 @@ export default function Alerts() {
                 <li key={a.key} className="border-b border-rule py-2.5">
                   <p className="flex items-baseline gap-2">
                     <span className="text-[0.9375rem] font-semibold tracking-[0.01em]">{a.symbol}</span>
-                    <span className="text-[0.875rem] text-ink-2">{KIND[a.kind]}</span>
+                    <span className="text-[0.875rem] text-ink-2">{a.item ? eventLabel(a.item) : KIND[a.kind]}</span>
                     {fresh?.has(a.key) && <span className="ml-auto text-[0.75rem] font-semibold text-accent">New</span>}
                   </p>
                   <p className={`mt-0.5 text-[0.875rem] leading-[1.4] ${a.kind === "error" ? "text-ink-2" : ""}`}>
-                    <Signed text={a.text} />
+                    <Signed text={a.item ? keyFact(a.item) : a.text} />
                     {a.url && (
                       <>
                         {" "}

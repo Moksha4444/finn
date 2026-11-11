@@ -1,19 +1,19 @@
 "use client";
 import { useState } from "react";
-import { filedAt, sentence, shortDate, type MgmtCard, type RankedItem, type ResultsCard, type ResultsLine } from "@/lib/feed";
+import { filedAt, sentence, shortDate, type Item, type MgmtCard, type RankedItem, type ResultsCard, type ResultsLine } from "@/lib/feed";
 import { label, pct } from "@/lib/rank";
 import { Signed } from "./Signed";
 import { period } from "@/lib/period";
 
 // What the row says before you tap: numbers-first for results, the person for mgmt changes, else the filing's own line.
-function keyFact(i: RankedItem): string {
+// Results use one basis (YoY) so two figures are never compared across different periods; the table has QoQ.
+export function keyFact(i: Item): string {
   const c = i.card;
   if (c?.type === "results") {
-    const first = c.lines[0], last = c.lines[c.lines.length - 1];
-    const bit = (l: ResultsLine | undefined, k: "qoq_pct" | "yoy_pct", tag: string) =>
-      l && l[k] != null ? `${l.name.replace(/^Revenue$/, "Rev").replace(/ \(to owners\)$/, "")} ${pct(l[k]!)} ${tag}` : null;
-    const s = [bit(first, "qoq_pct", "QoQ"), bit(last, "yoy_pct", "YoY")].filter(Boolean).join(" · ");
-    if (s) return s;
+    const bit = (l: ResultsLine | undefined) =>
+      l?.yoy_pct != null ? `${l.name.replace(/^Revenue$/, "Rev").replace(/ \(to owners\)$/, "")} ${pct(l.yoy_pct)}` : null;
+    const s = [bit(c.lines[0]), bit(c.lines[c.lines.length - 1])].filter(Boolean).join(" · ");
+    if (s) return `${s} YoY`;
   }
   if (c?.type === "management_change" && c.people[0]) {
     const p = c.people[0];
@@ -35,6 +35,12 @@ function reasonText(i: RankedItem): string {
 
 const SHORT_LABEL: Record<string, string> = { management_change: "Mgmt change" };
 
+// Line-1 event name. Results filings without figures that aren't P1 (decks, re-filings) say so, so their rank reads.
+export function eventLabel(i: Item): string {
+  if (i.category === "results" && !i.card && i.tier !== "P1") return "Results doc";
+  return SHORT_LABEL[i.category] ?? sentence(label(i.category));
+}
+
 export function FeedRow({ item: i }: { item: RankedItem }) {
   const [open, setOpen] = useState(false);
   const reason = reasonText(i);
@@ -51,12 +57,12 @@ export function FeedRow({ item: i }: { item: RankedItem }) {
       >
         {/* line 1: who, what, and the market's verdict; line 2: the fact and when. Both single-line. */}
         <span className="flex items-baseline gap-2 whitespace-nowrap">
-          <span className="text-[0.9375rem] font-semibold tracking-[0.01em]">{i.symbol}</span>
-          <span className="min-w-0 truncate text-[0.875rem] text-ink-2">{SHORT_LABEL[i.category] ?? sentence(label(i.category))}</span>
+          <span className="shrink-0 text-[0.9375rem] font-semibold tracking-[0.01em]">{i.symbol}</span>
+          <span className="shrink-0 text-[0.875rem] text-ink-2">{eventLabel(i)}</span>
           {i.tier === "P1" && (
             <span className="inline-block size-[0.4375rem] shrink-0 -translate-y-px rounded-[1px] bg-accent" role="img" aria-label="Material" />
           )}
-          <span className={`ml-auto shrink-0 pl-2 text-[0.8125rem] ${quietReason ? "text-ink-2 italic" : i.boosted ? "font-semibold" : "text-ink-2"}`}>
+          <span className={`ml-auto min-w-0 truncate pl-2 text-[0.8125rem] ${quietReason ? "text-ink-2 italic" : i.boosted ? "font-semibold" : "text-ink-2"}`}>
             {i.boosted && <span className="sr-only">Ranked high: </span>}
             <Signed text={reason} />
           </span>

@@ -22,11 +22,15 @@ export default function Brief() {
   const routine = all.filter((i) => i.collapsed);
   const matter = shown.filter((i) => i.tier === "P1" || i.boosted).length;
   const period = WIN_PERIOD[win];
+  const cos = new Set(shown.filter((i) => i.tier === "P1" || i.boosted).map((i) => i.symbol)).size;
+  // Over a week or month a filing count stops being a judgment; the number of companies with material news stays one.
   const headline =
-    matter > 0 ? `${matter} ${matter === 1 ? "thing matters" : "things matter"} ${period}.`
+    matter > 0 && win !== "24h" ? `Material news at ${cos} ${cos === 1 ? "company" : "companies"} ${period}.`
+    : matter > 0 ? `${matter} ${matter === 1 ? "thing matters" : "things matter"} ${period}.`
     : shown.length ? `Nothing urgent ${period}.`
     : `Nothing material ${period}.`;
   const sub = [
+    matter > 0 && win !== "24h" && `${matter} material ${matter === 1 ? "filing" : "filings"}`,
     matter > 0 && shown.length > matter && `${shown.length - matter} more to note`,
     matter === 0 && shown.length > 0 && `${shown.length} to note`,
     routine.length > 0 && `${routine.length} routine ${routine.length === 1 ? "filing" : "filings"} hidden`,

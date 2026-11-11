@@ -101,7 +101,7 @@ export function ranked(items: Item[], s: Settings): RankedItem[] {
 }
 
 // ---- alerts (recomputed here so threshold/category changes apply immediately) ----
-export type Alert = { key: string; symbol: string; date: string; kind: "price" | "filing" | "error"; text: string; url?: string | null };
+export type Alert = { key: string; symbol: string; date: string; kind: "price" | "filing" | "error"; text: string; url?: string | null; item?: Item };
 
 export function buildAlerts(feed: Feed, s: Settings): Alert[] {
   const out: Alert[] = [];
@@ -114,7 +114,7 @@ export function buildAlerts(feed: Feed, s: Settings): Alert[] {
     const key = `filing|${i.symbol}|${i.filed.slice(0, 10)}|${i.category}`;
     if (i.tier === "P3" || !s.cats.includes(i.category) || seen.has(key)) continue;
     seen.add(key);
-    out.push({ key, symbol: i.symbol, date: i.filed.slice(0, 10), kind: "filing", text: `${sentence(label(i.category))}: ${i.headline || i.subject}`, url: i.url });
+    out.push({ key, symbol: i.symbol, date: i.filed.slice(0, 10), kind: "filing", text: `${sentence(label(i.category))}: ${i.headline || i.subject}`, url: i.url, item: i });
   }
   for (const a of feed.alerts.filter((a) => a.kind === "error"))
     out.push({ key: `error|${a.symbol}|${a.date}`, symbol: a.symbol, date: a.date, kind: "error", text: a.text });

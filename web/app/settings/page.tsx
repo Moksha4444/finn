@@ -41,9 +41,9 @@ export default function SettingsPage() {
 
 function CatGroup({ title, cats, s, toggle }: { title: string; cats: string[]; s: Settings; toggle: (c: string) => void }) {
   return (
-    <fieldset className="pt-3 [&+&]:pt-6">
+    <fieldset className="mt-6 first-of-type:mt-3">
       <legend className="text-[0.8125rem] text-ink-2">{title}</legend>
-      <ul className="mt-1">
+      <ul>
         {cats.map((c) => (
           <li key={c} className="border-b border-rule">
             <label className="flex min-h-11 cursor-pointer items-center justify-between gap-3 text-[0.9375rem]">
