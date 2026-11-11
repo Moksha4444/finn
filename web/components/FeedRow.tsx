@@ -62,9 +62,12 @@ export function FeedRow({ item: i }: { item: RankedItem }) {
           {i.tier === "P1" && (
             <span className="inline-block size-[0.4375rem] shrink-0 -translate-y-px rounded-[1px] bg-accent" role="img" aria-label="Material" />
           )}
-          <span className={`ml-auto min-w-0 truncate pl-2 text-[0.8125rem] ${quietReason ? "text-ink-2 italic" : i.boosted ? "font-semibold" : "text-ink-2"}`}>
+          {/* Each reason part is a unit; one that doesn't fit wraps onto the clipped second line, so a part is dropped whole, never cut. */}
+          <span className={`ml-auto flex h-5 min-w-0 flex-wrap justify-end gap-x-1 overflow-hidden pl-2 text-[0.8125rem] leading-5 ${quietReason ? "text-ink-2 italic" : i.boosted ? "font-semibold" : "text-ink-2"}`}>
             {i.boosted && <span className="sr-only">Ranked high: </span>}
-            <Signed text={reason} />
+            {reason.split(" · ").map((u, k) => (
+              <span key={k}>{k > 0 && "· "}<Signed text={u} /></span>
+            ))}
           </span>
         </span>
         <span className="mt-0.5 flex items-baseline gap-3 text-[0.875rem] leading-[1.4] whitespace-nowrap">
