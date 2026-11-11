@@ -13,14 +13,14 @@ RESULTS_SCHEMA = {
         "columns": {"type": "array", "items": {"type": "object", "properties": {
             "period_label": {"type": "string"},
             **{k: _num for k in ["revenue_from_operations", "total_income", "interest_earned", "interest_expended",
-                                 "finance_costs", "depreciation_amortisation", "exceptional_items",
+                                 "finance_costs", "depreciation_amortisation", "exceptional_items", "profit_before_exceptional_and_tax",
                                  "profit_before_tax", "profit_after_tax", "profit_attributable_to_owners"]},
         }, "required": ["period_label", "profit_before_tax", "profit_after_tax"]}},
     },
     "required": ["basis", "unit", "is_bank_or_nbfc", "columns"],
 }
 TO_CRORE = {"crore": 1, "lakh": 0.01, "lac": 0.01, "million": 0.1, "mn": 0.1, "billion": 100, "bn": 100, "thousand": 1e-4}
-EBITDA_NOTE = "EBITDA = PBT + finance costs + D&A; other income not excluded"
+EBITDA_NOTE = "EBITDA = profit before exceptional items & tax + finance costs + D&A; other income not excluded"
 
 
 def extract_results(pdf_bytes: bytes, path: str = "pdf_pages") -> dict:
@@ -64,24 +64,33 @@ def results_card(ex: dict) -> dict:
     if len(cols) < 3 or any(c.get("profit_before_tax") is None or c.get("profit_after_tax") is None for c in cols)             or len({c["period_label"] for c in cols}) < 3:
         raise ValueError("need current, previous and year-ago columns with PBT and PAT")
 
+    # One-offs out of EBITDA: start from the printed pre-exceptional line (TATAPOWER Q2 had a ₹119 cr exceptional
+    # gain inside PBT). One-off = PBT - that line, so Python gets the sign; the LLM's sign for exceptional_items varies.
+    pbe = [c.get("profit_before_exceptional_and_tax") for c in cols]
+    has_pbe = None not in pbe
     if d["is_bank_or_nbfc"]:
         lines = {"NII": [_sub(c.get("interest_earned"), c.get("interest_expended")) for c in cols],
                  "Total income": [c.get("total_income") for c in cols]}
         note = "NII = interest earned − interest expended"
     else:
         lines = {"Revenue": [c.get("revenue_from_operations") for c in cols],
-                 "EBITDA": [_add(c["profit_before_tax"], c.get("finance_costs"), c.get("depreciation_amortisation")) for c in cols]}
-        note = EBITDA_NOTE
+                 "EBITDA": [_add(p if has_pbe else c["profit_before_tax"], c.get("finance_costs"), c.get("depreciation_amortisation"))
+                            for p, c in zip(pbe, cols)]}
+        note = EBITDA_NOTE if has_pbe else EBITDA_NOTE.replace("profit before exceptional items & tax", "PBT (no pre-exceptional line)")
     # Owners' share matches the headline net profit and EPS; only if all 3 columns have it, so QoQ/YoY compare like with like.
     owners = [c.get("profit_attributable_to_owners") for c in cols]
     pat = ("PAT (to owners)", owners) if None not in owners else ("PAT", [c["profit_after_tax"] for c in cols])
     lines |= {"PBT": [c["profit_before_tax"] for c in cols], pat[0]: pat[1]}
 
     one_offs = []
-    for c, label in zip(cols, ["This quarter", "Previous quarter", "Year-ago quarter"]):
-        x = c.get("exceptional_items")
-        if x:
-            one_offs.append(f"{label} includes ₹{abs(x):,.0f} cr one-off")
+    for p, c, label in zip(pbe, cols, ["This quarter", "Previous quarter", "Year-ago quarter"]):
+        if has_pbe:
+            x = round(c["profit_before_tax"] - p, 2)
+            kind = " gain" if x > 0 else " charge"
+        else:  # no pre-exceptional line: magnitude only
+            x, kind = c.get("exceptional_items"), ""
+        if x and abs(x) >= 0.5:
+            one_offs.append(f"{label} includes ₹{abs(x):,.0f} cr one-off{kind}")
     return {
         "basis": d["basis"], "unit": "₹ crore", "note": note, "periods": [c["period_label"] for c in cols],
         "lines": [{"name": n, "value": None if v[0] is None else round(v[0], 2), "qoq_pct": _pct(v[0], v[1]), "yoy_pct": _pct(v[0], v[2])}

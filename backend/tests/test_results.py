@@ -9,6 +9,7 @@ TRUTH = {
     "TCS_results.pdf": dict(page=8, bank=False,
         revenue_from_operations=[73188, 72275, 65799], finance_costs=[252, 273, 229],
         depreciation_amortisation=[1262, 1239, 1413], exceptional_items=[0, 668, 1135],
+        profit_before_exceptional_and_tax=[18638, 18612, 17203],
         profit_before_tax=[18638, 17944, 16068], profit_after_tax=[13934, 13420, 12131],
         profit_attributable_to_owners=[13884, 13349, 12075]),
     "HDFCBANK_results.pdf": dict(page=9, bank=True,
@@ -18,7 +19,7 @@ TRUTH = {
         profit_attributable_to_owners=[20700.03, 19244.71, 19610.67]),
     "BAJFINANCE_results_p4_p14.pdf": dict(page=2, bank=True,
         interest_earned=[21936.39, 20512.73, 17795.97], interest_expended=[8601.73, 7942.09, 7010.60],
-        total_income=[24575.82, 23166.42, 19992.38],
+        total_income=[24575.82, 23166.42, 19992.38], profit_before_exceptional_and_tax=[8537.20, 8149.00, 6608.13],
         profit_before_tax=[8537.20, 8149.00, 6608.13], profit_after_tax=[6366.57, 6080.60, 4947.76],
         profit_attributable_to_owners=[6266.20, 5985.75, 4875.36]),
 }
@@ -43,6 +44,30 @@ def test_card_math_nonbank_ebitda_and_one_offs():
     assert lines["EBITDA"]["value"] == 18638 + 252 + 1262
     assert lines["PBT"]["qoq_pct"] == round((18638 - 17944) / 17944 * 100, 1)
     assert lines["Revenue"]["yoy_pct"] == 11.2
+    assert c["one_offs"] == ["Previous quarter includes ₹668 cr one-off charge", "Year-ago quarter includes ₹1,135 cr one-off charge"]
+    assert lines["EBITDA"]["qoq_pct"] == round((20152 - (18612 + 273 + 1239)) / (18612 + 273 + 1239) * 100, 1)  # Q1 legal charge excluded
+
+
+def test_ebitda_excludes_exceptional_gain():
+    # TATAPOWER Q2 FY27 (spot-checked 12 Nov): ₹119.18 cr net exceptional gain inside PBT
+    cols = [dict(period_label=p, revenue_from_operations=r, finance_costs=f, depreciation_amortisation=da, exceptional_items=e,
+                 profit_before_exceptional_and_tax=pbe, profit_before_tax=pbt, profit_after_tax=pat, profit_attributable_to_owners=o)
+            for p, r, f, da, e, pbe, pbt, pat, o in [
+                ("30-Sep-26", 19635.94, 1384.93, 1286.55, 119.18, 2060.67, 2179.85, 1652.04, 1366.11),
+                ("30-Jun-26", 19051.26, 1406.78, 1259.86, 0, 1823.34, 1823.34, 1400.86, 1175.93),
+                ("30-Sep-25", 15544.91, 1318.65, 1162.05, 0, 1679.90, 1679.90, 1245.39, 919.44)]]
+    c = results_card({"data": {"basis": "consolidated", "unit": "₹ crore", "is_bank_or_nbfc": False, "columns": cols}, "pages": [8]})
+    lines = {l["name"]: l for l in c["lines"]}
+    assert lines["EBITDA"]["value"] == round(2060.67 + 1384.93 + 1286.55, 2)  # 4732.15, not 4851.33
+    assert c["one_offs"] == ["This quarter includes ₹119 cr one-off gain"]
+
+
+def test_no_pre_exceptional_line_falls_back_to_pbt_and_says_so():
+    ex = _fake("TCS_results.pdf")
+    for col in ex["data"]["columns"]:
+        col["profit_before_exceptional_and_tax"] = None
+    c = results_card(ex)
+    assert "PBT (no pre-exceptional line)" in c["note"]
     assert c["one_offs"] == ["Previous quarter includes ₹668 cr one-off", "Year-ago quarter includes ₹1,135 cr one-off"]
 
 
