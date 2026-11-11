@@ -1,0 +1,3120 @@
+
+> Read CLAUDE.md, PLAN.md (including "3b. Status at end of Day 1") and
+  DECISIONS.md.
+  1. Fix the PAT rule: use profit attributable to owners of the company when
+  the filing reports it; otherwise total PAT. Label it "PAT (to owners)" vs
+  "PAT". Reason: it matches the headline net profit and EPS investors see in
+  press releases. Update fixture test expectations and log it in DECISIONS.md
+  as superseding the earlier rule.
+  2. Finish the Day 1 leftovers: rules-first classifier (including the keyword
+  rule for results filed under "Board Meeting"), management-change card (bio
+  from the filing), rank.py with the Nifty-relative reaction boost and reason
+  strings, and ingest.py across all 20 portfolio tickers (catch any screener
+  slug mismatches). Goal: the CLI prints a ranked 7-day digest plus alerts for
+  all 20 tickers.
+  3. Check whether yfinance's missing 10 Nov bar was a market holiday or a data
+  lag. If bars can lag, filings without a reaction bar yet should show
+  "Reaction pending" rather than silently getting no boost.
+  4. Then re-plan Thu–Sat in PLAN.md based on actual progress, keeping the
+  never-cut list. Stop and show me the re-plan before starting UI work.
+
+● I'll start by reading the project docs and current code.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Tests first, and I'll pull the owners-attributable lines from the three
+  fixtures for the PAT fix.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● BAJFINANCE live extraction is already failing; I'll check why, and find the
+  owners lines for TCS/HDFCBANK (they may use other wording).
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Owners-attributable PAT ground truth is set for TCS, HDFCBANK and BAJFINANCE
+  from the fixture pages; I'm now looking into the BAJFINANCE failure. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The call missed the cache even though this filing was extracted yesterday, and
+  the model left NBFC interest_earned null. I'm checking whether PyMuPDF's
+  subset bytes vary between runs. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● PyMuPDF changes the document ID on every save, which made the cache key
+  unstable, and no_new_id=True fixes that. I'm reading the reference PDF's
+  category list and checking real BSE category values before writing the
+  classifier. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Now I'll resolve all 20 tickers through screener and pull 30 days of BSE
+  filings, so the classifier rules are built from real category and subject
+  strings rather than guesses.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● 19 of 20 symbols resolve cleanly, but CDSL has no BSE code, so BSE
+  announcements can't cover it. I'm checking whether NSE's announcements API
+  works with a cookie-primed session next. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● NSE's API returned CDSL filings without cookies, so a small NSE fallback for
+  tickers lacking a BSE code is cheap. Since many subjects are generic, I'm
+  checking whether BSE's HEADLINE field holds the real content. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Generic-subject filings (about a third) can't be classified from BSE
+  categories, so page 1 of the PDF goes to the cheap LLM; next I'm fixing
+  yfinance's missing 10 Nov bar. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● 10 Nov is missing for Nifty and every stock while 11 Nov is present, which
+  looks like a holiday (Diwali Balipratipada falls on Tue 10 Nov 2026). I'll
+  confirm against NSE's holiday list.
+
+● Web Search("NSE trading holidays 2026 list Diwali Balipratipada November 10
+            2026")
+  ⎿  Did 1 search in 6s
+
+● The market holiday is confirmed, so the lag is ruled out, though I'm keeping
+  "Reaction pending" in case ingest runs before the day's bar posts. Next I'll
+  do the PAT rule, the cache-key fix, and the NBFC prompt fix. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'EOF'
+      import re, pathlib…)
+  ⎿  Updated backend\finn\prompts\extract_results.md (+15 -14)
+       1 -Extract the quarterly profit and loss table from this Indian li
+         -sted-company results filing.                                   
+       2 -                                                               
+       3 -Rules:                                                         
+       4 -- Use the CONSOLIDATED statement if present, otherwise standalo
+         -ne. Set `basis` accordingly.                                   
+       5 -- Return exactly three columns in this order: current quarter, 
+         -preceding quarter, same quarter last year. Ignore half-year and
+         - full-year columns.                                            
+       6 -- Copy every number exactly as printed. No arithmetic, no round
+         -ing, no unit conversion. Brackets mean negative.               
+       7 -- `unit` is the unit printed on the table (e.g. "₹ crore", "₹ l
+         -akh", "₹ million").                                            
+       8 -- Use null when a line is not in the table. Do not use outside 
+         -knowledge.                                                     
+       9 -- `exceptional_items`: the total of exceptional items for that 
+         -column (0 if the line shows "-"; null if there is no such line)
+         -.                                                              
+      10 -- `profit_before_tax`: profit before tax after exceptional item
+         -s.                                                             
+      11 -- `profit_after_tax`: profit for the period / net profit, befor
+         -e other comprehensive income. For consolidated tables use the t
+         -otal before minority / non-controlling interest, not the share 
+         -attributable to owners.                                        
+      12 -- Banks: `interest_earned` = Interest earned, `interest_expende
+         -d` = Interest expended.                                        
+      13 -- NBFCs and other lenders: `interest_earned` = Interest income,
+         - `interest_expended` = Finance costs.                          
+      14 -- The text may contain [p.N] page markers; they are page number
+         -s, not data.                                                   
+       1 +Extract the quarterly profit and loss table from this Indian li
+         +sted-company results filing.                                   
+       2 +                                                               
+       3 +Rules:                                                         
+       4 +- Use the CONSOLIDATED statement if present, otherwise standalo
+         +ne. Set `basis` accordingly.                                   
+       5 +- Return exactly three columns in this order: current quarter, 
+         +preceding quarter, same quarter last year. Ignore half-year and
+         + full-year columns.                                            
+       6 +- Copy every number exactly as printed. No arithmetic, no round
+         +ing, no unit conversion. Brackets mean negative.               
+       7 +- `unit` is the unit printed on the table (e.g. "₹ crore", "₹ l
+         +akh", "₹ million").                                            
+       8 +- Use null when a line is not in the table. Do not use outside 
+         +knowledge.                                                     
+       9 +- `exceptional_items`: the total of exceptional items for that 
+         +column (0 if the line shows "-"; null if there is no such line)
+         +.                                                              
+      10 +- `profit_before_tax`: profit before tax after exceptional item
+         +s.                                                             
+      11 +- `profit_after_tax`: profit for the period / net profit, befor
+         +e other comprehensive income. For consolidated tables use the t
+         +otal before minority / non-controlling interest.               
+      12 +- `profit_attributable_to_owners`: the "profit for the period a
+         +ttributable to owners / shareholders / equity holders of the co
+         +mpany" line, or "net profit after minority interest". null if t
+         +he table does not print it. Do not use the other-comprehensive-
+         +income or total-comprehensive-income split.                    
+      13 +- Banks: `interest_earned` = Interest earned (the total), `inte
+         +rest_expended` = Interest expended.                            
+      14 +- NBFCs and other lenders: `interest_earned` = Interest income 
+         +(often a sub-line under Revenue from operations), `interest_exp
+         +ended` = Finance costs. Fill both even though the same numbers 
+         +also appear in other fields.                                   
+      15 +- The text may contain [p.N] page markers; they are page number
+         +s, not data.                                                   
+  ⎿  Updated backend\finn\push\cards.py (+5 -2)
+      13              "period_label": {"type": "string"},
+      14              **{k: _num for k in ["revenue_from_operations", "to
+          tal_income", "interest_earned", "interest_expended",
+      15                                   "finance_costs", "depreciation
+          _amortisation", "exceptional_items",
+      16 -                                 "profit_before_tax", "profit_a
+         -fter_tax"]},                                                   
+      16 +                                 "profit_before_tax", "profit_a
+         +fter_tax", "profit_attributable_to_owners"]},                  
+      17          }, "required": ["period_label", "profit_before_tax", "p
+          rofit_after_tax"]}},
+      18      },
+      19      "required": ["basis", "unit", "is_bank_or_nbfc", "columns"]
+          ,
+     ...
+      68          lines = {"Revenue": [c.get("revenue_from_operations") f
+          or c in cols],
+      69                   "EBITDA": [_add(c["profit_before_tax"], c.get(
+          "finance_costs"), c.get("depreciation_amortisation")) for c in 
+          cols]}
+      70          note = EBITDA_NOTE
+      71 -    lines |= {"PBT": [c["profit_before_tax"] for c in cols], "P
+         -AT": [c["profit_after_tax"] for c in cols]}                    
+      71 +    # Owners' share matches the headline net profit and EPS; on
+         +ly if all 3 columns have it, so QoQ/YoY compare like with like.
+      72 +    owners = [c.get("profit_attributable_to_owners") for c in c
+         +ols]                                                           
+      73 +    pat = ("PAT (to owners)", owners) if None not in owners els
+         +e ("PAT", [c["profit_after_tax"] for c in cols])               
+      74 +    lines |= {"PBT": [c["profit_before_tax"] for c in cols], pa
+         +t[0]: pat[1]}                                                  
+      75  
+      76      one_offs = []
+      77      for c, label in zip(cols, ["This quarter", "Previous quarte
+          r", "Year-ago quarter"]):
+  ⎿  Updated backend\finn\sources\pdf.py (+1 -1)
+      43      out = pymupdf.open()
+      44      for i in idx:
+      45          out.insert_pdf(doc, from_page=i, to_page=i)
+      46 -    return out.tobytes()                                       
+      46 +    return out.tobytes(no_new_id=True)  # deterministic bytes, 
+         +else the LLM cache key changes every run                       
+      47  
+      48  
+      49  def marked_text(texts: list[str], idx: list[int]) -> str:
+  ⎿  Updated backend\tests\test_results.py (+21 -5)
+       9      "TCS_results.pdf": dict(page=8, bank=False,
+      10          revenue_from_operations=[73188, 72275, 65799], finance_
+          costs=[252, 273, 229],
+      11          depreciation_amortisation=[1262, 1239, 1413], exception
+          al_items=[0, 668, 1135],
+      12 -        profit_before_tax=[18638, 17944, 16068], profit_after_t
+         -ax=[13934, 13420, 12131]),                                     
+      12 +        profit_before_tax=[18638, 17944, 16068], profit_after_t
+         +ax=[13934, 13420, 12131],                                      
+      13 +        profit_attributable_to_owners=[13884, 13349, 12075]),  
+      14      "HDFCBANK_results.pdf": dict(page=9, bank=True,
+      15          interest_earned=[95131.63, 90575.33, 86993.84], interes
+          t_expended=[50667.43, 47625.63, 46740.86],
+      16          total_income=[129358.69, 133110.36, 118560.63],
+      16 -        profit_before_tax=[28662.54, 27193.16, 26658.89], profi
+         -t_after_tax=[21537.09, 20382.69, 20363.77]),                   
+      17 +        profit_before_tax=[28662.54, 27193.16, 26658.89], profi
+         +t_after_tax=[21537.09, 20382.69, 20363.77],                    
+      18 +        profit_attributable_to_owners=[20700.03, 19244.71, 1961
+         +0.67]),                                                        
+      19      "BAJFINANCE_results_p4_p14.pdf": dict(page=2, bank=True,
+      20          interest_earned=[21936.39, 20512.73, 17795.97], interes
+          t_expended=[8601.73, 7942.09, 7010.60],
+      21          total_income=[24575.82, 23166.42, 19992.38],
+      20 -        profit_before_tax=[8537.20, 8149.00, 6608.13], profit_a
+         -fter_tax=[6366.57, 6080.60, 4947.76]),                         
+      22 +        profit_before_tax=[8537.20, 8149.00, 6608.13], profit_a
+         +fter_tax=[6366.57, 6080.60, 4947.76],                          
+      23 +        profit_attributable_to_owners=[6266.20, 5985.75, 4875.3
+         +6]),                                                           
+      24  }
+      25  FIELDS = lambda t: {k: v for k, v in t.items() if isinstance(v,
+           list)}
+      26  
+     ...
+      48  
+      49  def test_card_math_bank_nii():
+      50      lines = {l["name"]: l for l in results_card(_fake("HDFCBANK
+          _results.pdf"))["lines"]}
+      48 -    assert list(lines) == ["NII", "Total income", "PBT", "PAT"]
+      51 +    assert list(lines) == ["NII", "Total income", "PBT", "PAT (
+         +to owners)"]                                                   
+      52 +    assert lines["PAT (to owners)"]["value"] == 20700.03       
+      53      assert lines["NII"]["value"] == round(95131.63 - 50667.43, 
+          2)
+      54  
+      55  
+      56  def test_card_converts_lakh_to_crore():
+      57      lines = {l["name"]: l for l in results_card(_fake("TCS_resu
+          lts.pdf", unit="₹ in lakhs"))["lines"]}
+      54 -    assert lines["PAT"]["value"] == 139.34                     
+      58 +    assert lines["PAT (to owners)"]["value"] == 138.84         
+      59 +                                                               
+      60 +                                                               
+      61 +def test_card_falls_back_to_total_pat_when_owners_line_missing(
+         +):                                                             
+      62 +    ex = _fake("TCS_results.pdf")                              
+      63 +    ex["data"]["columns"][2]["profit_attributable_to_owners"] =
+         + None  # one column lacks it -> total PAT for all 3            
+      64 +    lines = {l["name"]: l for l in results_card(ex)["lines"]}  
+     … 9 more lines (ctrl+o to expand)
+  ⎿  (timeout 5m)
+
+● The live extractions all pass, including BAJFINANCE NBFC and the owners line.
+  The determinism test still fails, so I'll check what differs between the two
+  subsets.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Byte-level fixes won't work, since the first subset is 117 KB and later ones
+  57 KB because PyMuPDF changes state on first copy. I'll key the cache on the
+  source document hash plus pages, as CLAUDE.md specifies. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\llm.py (+100 -99)
+        1 -"""One router for every LLM call: task -> provider:model, cach
+          -e, retry, fallback, token + cost log.                         
+        2 -                                                              
+        3 -Cache key = hash(task, prompt text, schema, inputs). The promp
+          -t file's content *is* its version:                            
+        4 -edit a prompt and old cache entries stop matching automaticall
+          -y.                                                            
+        5 -"""                                                           
+        6 -import os, json, time, hashlib, datetime as dt                
+        7 -from finn.config import CACHE, ROOT                           
+        8 -                                                              
+        9 -PROMPTS = ROOT / "backend" / "finn" / "prompts"               
+       10 -LOG = CACHE / "llm_calls.jsonl"                               
+       11 -                                                              
+       12 -TIER = {  # task -> tier; tier -> env var                     
+       13 -    "classify": "CHEAP", "extract_results": "CHEAP", "extract_
+          -guidance": "CHEAP", "extract_bio": "CHEAP",                   
+       14 -    "business_snapshot": "CHEAP", "pvd_verdict": "STRONG", "bu
+          -ll_bear": "STRONG",                                           
+       15 -}                                                             
+       16 -DEFAULTS = {"CHEAP": "gemini:gemini-3.5-flash-lite", "STRONG":
+          - "gemini:gemini-3.8-flash",                                   
+       17 -            "FALLBACK": "gemini:gemini-3.5-flash"}            
+       18 -# USD per 1M tokens (in, out), paid standard tier, from ai.goo
+          -gle.dev pricing, Nov 2026.                                    
+       19 -# We run on the free tier, so this is "what it would cost", wh
+          -ich is what the writeup reports.                              
+       20 -PRICE = {"gemini-3.5-flash-lite": (0.30, 2.50), "gemini-3.8-fl
+          -ash": (0.75, 3.75), "gemini-3.5-flash": (1.50, 9.00)}         
+       21 -                                                              
+       22 -                                                              
+       23 -def model_for(task: str) -> str:                              
+       24 -    return os.getenv(f"FINN_TASK_{task.upper()}") or os.getenv
+          -(f"FINN_{TIER[task]}") or DEFAULTS[TIER[task]]                
+       25 -                                                              
+       26 -                                                              
+       27 -def prompt(name: str) -> str:                                 
+       28 -    return (PROMPTS / f"{name}.md").read_text(encoding="utf-8"
+          -)                                                             
+       29 -                                                              
+       30 -                                                              
+       31 -class Retryable(Exception):                                   
+       32 -    """Overloaded / rate-limited: worth retrying, then falling
+          - back."""                                                     
+       33 -                                                              
+       34 -                                                              
+       35 -def _gemini(model: str, parts: list, schema: dict) -> tuple[di
+          -ct, int, int]:                                                
+       36 -    from google import genai                                  
+       37 -    from google.genai import types, errors                    
+       38 -    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"]
+          -)                                                             
+       39 -    contents = [types.Part.from_bytes(data=p, mime_type="appli
+          -cation/pdf") if isinstance(p, bytes) else p for p in parts]   
+       40 -    try:                                                      
+     … 159 more lines (ctrl+o to expand)
+  ⎿  Updated backend\finn\push\cards.py (+3 -1)
+      1  """Rich cards. Results: LLM copies numbers from the filing; Pyth
+         on does every calculation."""
+      2 +import hashlib                                                  
+      3  from finn import llm
+      4  from finn.sources import pdf
+      5  
+     ...
+      34      inputs = {"full_pdf": lambda: [pdf_bytes], "pdf_pages": lam
+          bda: [pdf.subset(doc, idx)],
+      35                "text": lambda: [pdf.marked_text(texts, idx)]}[pa
+          th]()
+      36      pages = [i + 1 for i in idx] or list(range(1, len(texts) + 
+          1))
+      36 -    out = llm.run("extract_results", "extract_results", inputs,
+         - RESULTS_SCHEMA, path=path, pages=pages)                       
+      37 +    key = f"{hashlib.sha256(pdf_bytes).hexdigest()}:{path}:{pag
+         +es}"                                                           
+      38 +    out = llm.run("extract_results", "extract_results", inputs,
+         + RESULTS_SCHEMA, key=key, path=path, pages=pages)              
+      39      return out | {"path": path, "pages": pages}
+      40  
+      41  
+  ⎿  Updated backend\finn\sources\pdf.py (+1 -1)
+      43      out = pymupdf.open()
+      44      for i in idx:
+      45          out.insert_pdf(doc, from_page=i, to_page=i)
+      46 -    return out.tobytes(no_new_id=True)  # deterministic bytes, 
+         -else the LLM cache key changes every run                       
+      46 +    return out.tobytes()                                       
+      47  
+      48  
+      49  def marked_text(texts: list[str], idx: list[int]) -> str:
+  ⎿  Updated backend\tests\test_results.py (+1 -4)
+      65      assert "PAT (to owners)" not in lines and lines["PAT"]["val
+          ue"] == 13934
+      66  
+      67  
+      68 -def test_pdf_subset_is_deterministic():  # the LLM cache key de
+         -pends on these bytes                                           
+      69 -    doc = pdf.open_pdf((FIX / "TCS_results.pdf").read_bytes()) 
+      70 -    assert pdf.subset(doc, [7]) == pdf.subset(doc, [7])        
+      71 -                                                               
+      68  
+      69  @pytest.mark.skipif(not os.getenv("GEMINI_API_KEY"), reason="li
+          ve LLM test needs GEMINI_API_KEY (cached after first run)")
+      70  @pytest.mark.parametrize("name", TRUTH)
+      71  def test_live_extraction_matches_filing(name):
+      72      ex = extract_results((FIX / name).read_bytes())
+      73 +    assert extract_results((FIX / name).read_bytes())["cached"]
+         +  # cache key must be stable across calls                      
+      74      assert ex["path"] == "pdf_pages"
+      75      assert ex["data"]["basis"] == "consolidated"
+      76      for field, want in FIELDS(TRUTH[name]).items():
+  ⎿  (timeout 5m)
+
+● All 12 tests pass, including a new assertion that a second extraction hits the
+  cache. Logging both changes in DECISIONS.md and committing.
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && ./.venv/Scripts/python -
+      <<'EOF'
+      import pathlib…)
+  ⎿  Updated DECISIONS.md (+4 -1)
+      20  
+      21    \*Exceptional items came back as −668 instead of 668; the car
+          d uses the absolute value. Gemini bills a PDF page at a roughly
+           flat rate, while extracted text is padded with whitespace, so 
+          page images are ~3× cheaper than text and ~15× cheaper than the
+           whole PDF, at ~$0.0015 per filing. They are also the only path
+           that survives scans (text got 1/15 on HDFCBANK). The planned "
+          garble check" was deleted: there's nothing left to route. Gave 
+          up: nothing measurable. If page-finding fails, the whole PDF is
+           still sent.
+      22  - **Results pages are found by keyword score, not layout.** A p
+          age that has ≥3 P&L line names ("before tax", "tax expense", "i
+          nterest earned"…) and is not a segment, balance-sheet or cash-f
+          low page is a candidate; consolidated beats standalone. It work
+          ed on all 3 fixtures, including OCR text.
+      23 -- **PAT = total profit before minority interest**, for every co
+         -mpany. HDFCBANK prints both (₹21,537 cr vs ₹20,700 cr attributa
+         -ble to owners). We chose one consistent rule and wrote it in th
+         -e prompt. Gave up: the "attributable to owners" figure some new
+         -s headlines quote.                                             
+      23 +- ~~**PAT = total profit before minority interest**, for every 
+         +company.~~ **Superseded 12 Nov, see below.**                   
+      24 +- **PAT (12 Nov, supersedes the rule above): profit attributabl
+         +e to owners when the filing prints it, otherwise total PAT; the
+         + card labels it "PAT (to owners)" or "PAT".** The owners' share
+         + is the headline net profit and the basis of EPS in press relea
+         +ses (HDFCBANK ₹20,700 cr owners vs ₹21,537 cr total; TCS ₹13,88
+         +4 cr vs ₹13,934 cr). The LLM copies both lines; Python uses the
+         + owners line only if all three columns have it, so QoQ/YoY alwa
+         +ys compare like with like. Gave up: nothing; total PAT is still
+         + extracted.                                                    
+      25 +- **LLM cache key for PDF pages = source-PDF hash + page number
+         +s** (12 Nov). PyMuPDF's page subsets aren't byte-identical acro
+         +ss calls, so keying on them caused a cache miss (and a paid re-
+         +call) every run. The test now asserts a second extraction is a 
+         +cache hit.                                                     
+      26 +- **NBFC prompt fix** (12 Nov): one re-run of BAJFINANCE return
+         +ed null interest income (the model put it only under revenue). 
+         +The prompt now says to fill `interest_earned` / `interest_expen
+         +ded` even when the same numbers appear elsewhere. 3/3 fixtures 
+         +pass again.                                                    
+      27  - **Prompt version = hash of the prompt file.** Editing a promp
+          t invalidates its cache automatically. No version numbers to fo
+          rget to bump.
+      28  - **Cost log uses paid-tier list prices** (flash-lite $0.30/$2.
+          50 per 1M in/out; 3.8-flash $0.75/$3.75 introductory; 3.5-flash
+           $1.50/$9.00), even though we run on the free tier. The writeup
+           reports what this would cost a paying user.
+      29  - **Dependencies pinned** to the versions tested locally, so a 
+          Render rebuild can't pull an untested release.
+
+● Step 1 is committed. Now the classifier. I'll check the date formats first,
+  since the reaction-day rule depends on filing time.
+
+  Ran 1 shell command (ctrl+o to expand)
+● NSE works without cookies and its attachments download, so the fallback is a
+  ~20-line sources/nse.py that returns rows in BSE's shape. Writing it and the
+  classifier now.
+
+● Write(backend\finn\sources\nse.py)
+  ⎿  Wrote 19 lines to backend\finn\sources\nse.py
+      1 """NSE announcements: fallback only, for NSE-only listings with n
+        o BSE scrip code (e.g. CDSL).
+      2 Rows come back in bse.announcements() shape so the rest of the pi
+        peline doesn't care.
+      3 No cookies needed for this endpoint as of 12 Nov 2026 (tested loc
+        ally)."""
+      4 import json, datetime as dt
+      5 from finn.sources import fetch
+      6
+      7 API = "https://www.nseindia.com/api/corporate-announcements"
+     … +12 lines (ctrl+o to expand)
+
+● The classifier will use ordered regex rules on BSE category, subcategory,
+  subject and headline, plus a few routine downgrades, and fall back to the
+  cheap LLM on pages 1–2 only when no rule matches. · summary
+
+● Write(backend\finn\push\classify.py)
+  ⎿  Wrote 77 lines to backend\finn\push\classify.py
+       1 """Filing -> category + tier. Rules first (BSE category/subcateg
+         ory + subject keywords); the cheap LLM
+       2 sees page 1-2 of the PDF only when no rule matches (generic subj
+         ects like "Disclosure under Regulation 30")."""
+       3 import re, hashlib
+       4 from finn import llm
+       5 from finn.config import TIERS
+       6 from finn.sources import pdf
+       7
+       8 TIER_OF = {c: t for t, cs in TIERS.items() for c in cs}
+     … +69 lines (ctrl+o to expand)
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'EOF'
+      import pathlib…)
+  ⎿  Created backend\finn\prompts\classify.md (+20 -0)
+       1 +Classify this Indian stock-exchange filing. You get its subject
+         + line and the first page(s) of the attached PDF.               
+       2 +                                                               
+       3 +Categories:                                                    
+       4 +- results: quarterly/annual results, the board meeting approvin
+         +g them, results decks, shareholder letters.                    
+       5 +- m_and_a: acquisition, merger, demerger, joint venture, invest
+         +ing in or selling a stake in a subsidiary.                     
+       6 +- fund_raise: rights issue, QIP, preferential allotment, warran
+         +ts, buyback, NCDs, commercial paper, IPO of a subsidiary.      
+       7 +- management_change: a CEO, CFO, MD, KMP, senior management or 
+         +director joining, resigning, retiring or re-appointed.         
+       8 +- litigation: lawsuits, regulatory orders, fines, penalties, ta
+         +x demands, insolvency proceedings.                             
+       9 +- insider_trading: a promoter or insider buying or selling thei
+         +r own shares (SAST / PIT disclosures).                         
+      10 +- earnings_call: notice, transcript or recording of the results
+         + conference call.                                              
+      11 +- investor_meetings: meetings with specific investors or funds,
+         + investor conferences.                                         
+      12 +- credit_rating_downgrade: a credit rating downgraded or put on
+         + negative watch.                                               
+      13 +- credit_rating: any other credit rating action (assigned, reaf
+         +firmed, upgraded).                                             
+      14 +- dividend, bonus_split, capex (new plant / capacity), postal_b
+         +allot, agm_egm, pledging.                                      
+      15 +- press_release: order wins, new products, partnerships, rumour
+         + clarifications, operating updates.                            
+      16 +- unclassified: routine paperwork (ESOP allotments, compliance 
+         +certificates, ESG ratings, auditor matters, RTA changes, policy
+         + disclosures).                                                 
+      17 +                                                               
+      18 +Rules:                                                         
+      19 +- Use only the filing. If it does not say enough to decide, use
+         + unclassified.                                                 
+      20 +- `headline`: at most 12 words saying what this filing disclose
+         +s, in plain English, from the filing only. No adjectives, no op
+         +inion. Example: "Board approved Q2 results and ₹7 interim divid
+         +end".                                                          
+  ⎿  Updated backend\finn\push\classify.py (+77 -77)
+       1 -"""Filing -> category + tier. Rules first (BSE category/subcate
+         -gory + subject keywords); the cheap LLM                        
+       2 -sees page 1-2 of the PDF only when no rule matches (generic sub
+         -jects like "Disclosure under Regulation 30")."""               
+       3 -import re, hashlib                                             
+       4 -from finn import llm                                           
+       5 -from finn.config import TIERS                                  
+       6 -from finn.sources import pdf                                   
+       7 -                                                               
+       8 -TIER_OF = {c: t for t, cs in TIERS.items() for c in cs}        
+       9 -                                                               
+      10 -# First match wins, so order matters: routine paperwork before 
+         -management_change ("appointment of                             
+      11 -# statutory auditors"), management_change before results, earni
+         -ngs_call before investor_meetings.                             
+      12 -RULES = [                                                      
+      13 -    ("unclassified", r"statutory auditor|secretarial audit|reg\
+         -. 74 ?\(5\)|esop|esps|stock option|iepf|investor education"    
+      14 -                     r"|registrar and share transfer|\brta\b|tr
+         -ading window|duplicate share|loss of share|compliance certifica
+         -te"                                                            
+      15 -                     r"|esg rating|monitoring agency|statement 
+         -of deviation|half yearly report|strike off|reg(ulation)? 30 ?\(
+         -5\)"),                                                         
+      16 -    ("management_change", r"change in management|change in dire
+         -ctorate|cessation|retirement|resignation|re-?appointment"      
+      17 -                          r"|appointment of (mr|ms|shri|smt|dr)
+         -|(managing director|chief executive|\bceo\b|\bcfo\b|key manager
+         -ial)"),                                                        
+      18 -    ("results", r"financial results|financial statements|result
+         -s presentation|shareholders'? letter|investor presentation"    
+      19 -                r"|earnings presentation|analyst presentation|q
+         -uarterly report w\.r\.t"),                                     
+      20 -    ("earnings_call", r"earnings?( conference)? call|concall|co
+         -n\. call|call transcript|audio recording|video recording|invest
+         -or call"                                                       
+      21 -                      r"|schedule of conference call"),        
+      22 -    ("investor_meetings", r"analyst|investor(s|\(s\))? meet|inv
+         -estor conference|institutional investor|road ?show"),          
+      23 -    ("pledging", r"pledge|encumbrance|reg\. 31"),              
+      24 -    ("insider_trading", r"insider trading|\bsast\b|substantial 
+         -acquisition|reg\. 29|regulation 7 ?\(2\)"),                    
+      25 -    ("litigation", r"litigation|penalt|fines? levied|show cause
+         -|insolvency|\bcirp\b|nclt|tribunal|arbitration|court|tax demand
+         -|demand order"),                                               
+      26 -    ("fund_raise", r"\bqip\b|qualified institution|rights issue
+         -|preferential|warrant|buy-?back|commercial paper|\bncds?\b"    
+      27 -                   r"|non-convertible|debenture|issue of securi
+         -ties|allotment of (equity )?shares|initial public offer|\bipo\b
+         -"                                                              
+      28 -                   r"|red herring|call on partly paid"),       
+      29 -    ("m_and_a", r"acquisition|acquire|merger|amalgamation|demer
+         -ger|joint venture|scheme of arrangement|share purchase"        
+      30 -                r"|business transfer|disinvestment|divest|stake
+         - sale|sale of (entire )?stake|restructuring"),                 
+      31 -    ("credit_rating_downgrade", r"rating.*downgrad|downgrad.*ra
+         -ting"),                                                        
+      32 -    ("credit_rating", r"credit rating|\brating"),              
+      33 -    ("dividend", r"dividend|record date"),                     
+      34 -    ("bonus_split", r"bonus|split|sub-?division"),             
+      35 -    ("capex", r"capex|capacity addition|capacity expansion|new 
+         -(plant|facility)|commission(ed|ing)|greenfield|brownfield"),   
+      36 -    ("postal_ballot", r"postal ballot"),                       
+      37 -    ("agm_egm", r"\bagm\b|\begm\b|general meeting"),           
+      38 -    ("press_release", r"press release|media release|media state
+         -ment|bagging|order\(s\)|award of order|receipt of order"       
+      39 -                      r"|clarification|rumour|production volume
+         -|sales volume|launch"),                                        
+      40 -]                                                              
+     … 114 more lines (ctrl+o to expand)
+
+● That "changed on disk" note is my own Python edit. 57 P1 results across 30
+  days looks too many, so I'll inspect the P1 rows and what's still unmatched.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Free-text keywords are overriding BSE subcategories and misfiling
+  investor-meet filings, so I'm switching rules to match subcategory first; ESOP
+  allotments and results decks need guards as well. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\push\classify.py (+13 -1)
+      40  ]
+      41  # Notices and copies of something filed elsewhere: shown, but n
+          ever ranked as the news itself.
+      42  ROUTINE = r"board meeting intimation|prior intimation|newspaper
+          |clipping|audio recording|video recording|schedule of"
+      43 +# Results decks / media releases accompany the results filing; 
+         +the filing itself stays P1.                                    
+      44 +SUPPORTING = r"presentation|press release|media|shareholders'? 
+         +letter|quarterly report|analyst|investor meet"                 
+      45  CATEGORIES = sorted({c for c, _ in RULES} | set(TIER_OF))
+      46  SCHEMA = {"type": "object", "properties": {
+      47      "category": {"type": "string", "enum": CATEGORIES},
+     ...
+      52      return " | ".join(str(row.get(k) or "") for k in ("CATEGORY
+          NAME", "SUBCATNAME", "NEWSSUB", "HEADLINE")).lower()
+      53  
+      54  
+      55 +def _match(t: str) -> str | None:                              
+      56 +    return next((c for c, rx in RULES if re.search(rx, t)), Non
+         +e)                                                             
+      57 +                                                               
+      58 +                                                               
+      59  def by_rules(row: dict) -> str | None:
+      60 +    """BSE subcategory first (headlines often mention "financia
+         +l results" on unrelated filings), then subject + headline."""  
+      61      t = text_of(row)
+      55 -    return next((c for c, rx in RULES if re.search(rx, t)), Non
+         -e)                                                             
+      62 +    cat = _match((row.get("SUBCATNAME") or "").lower()) or _mat
+         +ch(t)                                                          
+      63 +    if cat == "fund_raise" and re.search(r"esop|esos|stock opti
+         +on|employee", t):                                              
+      64 +        cat = "unclassified"  # ESOP allotments are filed as "A
+         +llotment of Equity Shares"                                     
+      65 +    return cat                                                 
+      66  
+      67  
+      68  def classify(row: dict, get_pdf=None) -> dict:
+     ...
+      84      tier = TIER_OF.get(cat, "P3")
+      85      if re.search(ROUTINE, text_of(row)):
+      86          tier = "P3"
+      87 +    elif cat == "results" and re.search(SUPPORTING, text_of(row
+         +)):                                                            
+      88 +        tier = "P2"                                            
+      89      return out | {"category": cat, "tier": tier}
+
+● Unclassified filings are now just generic subjects, so I'm building the
+  management-change card next, with a guard that rejects non-rupee units
+  (MARUTI's results belong to its parent). · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Picking three for fixtures: HDFCBANK's MD & CEO change, TRENT's chairman
+  change, and ASIANPAINT's independent director appointment. I'll read them by
+  hand to set the ground truth.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● The HDFCBANK filing has no profile and only points back to an earlier 1 Oct
+  intimation, so the card will say "profile not in this filing" rather than
+  invent one. I'm saving the other two next. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      PYTHONIOENCODING=utf-8 ../.venv/Scripts/python -c "
+      from finn.sources import bse, pdf…)
+  ⎿  2 files changed (binary, mode only or too large to show)
+
+● TRENT has a good multi-person case: one retirement and three appointments, two
+  with profiles on p.4. HDFCBANK and ASIANPAINT only point back to an earlier
+  letter, so I'm checking whether TATAPOWER's 11 Nov filing has a profile to use
+  instead. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && rm
+      tests/fixtures/ASIANPAINT_mgmt.pdf && PYTHONIOENCODING=utf-8
+      ../.venv/Scripts/python -c "
+      from finn.s…)
+  ⎿  2 files changed (binary, mode only or too large to show)
+
+● TATAPOWER is the clean "Reaction pending" case, since its CEO-designate filing
+  from 11 Nov makes today's reaction day with no bar yet. I'm writing the card
+  with HDFCBANK, TRENT and TATAPOWER as fixtures. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && cat >
+      finn/prompts/extract_bio.md <<'EOF'
+      This is a management-change disclosure filed by an Indian list…)
+  ⎿  Created backend\finn\prompts\extract_bio.md (+11 -0)
+       1 +This is a management-change disclosure filed by an Indian liste
+         +d company. List every person whose role changes.               
+       2 +                                                               
+       3 +Rules:                                                         
+       4 +- Use only this filing. No outside knowledge, even if you recog
+         +nise the person.                                               
+       5 +- `change`: appointed, re-appointed, redesignated, resigned, re
+         +tired or ceased.                                               
+       6 +- `role`: the role as the filing states it, short (e.g. "MD & C
+         +EO", "Independent Director", "Chairman").                      
+       7 +- `effective`: the effective date as printed, or null.         
+       8 +- `bio`: only if this filing contains a profile of the person. 
+         +At most 35 words: current/previous roles, years of experience, 
+         +education, copied or condensed from the profile. No praise, no 
+         +adjectives the filing doesn't use. null if there is no profile 
+         +in this filing.                                                
+       9 +- `bio_page`: the page number of the profile within this PDF (f
+         +irst page = 1), or null.                                       
+      10 +- `profile_ref`: if the filing says the profile was disclosed e
+         +arlier, the reference as printed (e.g. "intimation dated Octobe
+         +r 1, 2026"); otherwise null.                                   
+      11 +- Ignore people only listed as contacts or signatories.        
+  ⎿  Updated backend\finn\push\cards.py (+30 -1)
+      56      d = ex["data"]
+      57      unit = d["unit"].lower()
+      58      k = next((v for u, v in TO_CRORE.items() if u in unit), Non
+          e)
+      59 -    if k is None:                                              
+      59 +    # e.g. MARUTI filing its Japanese parent's results: "millio
+         +n yen" must not become ₹ crore                                 
+      60 +    if k is None or not any(r in unit for r in ("₹", "rs", "inr
+         +", "rupee", "crore", "lakh", "lac")):                          
+      61          raise ValueError(f"unknown unit: {d['unit']}")
+      62      cols = [{f: (v * k if isinstance(v, (int, float)) else v) f
+          or f, v in c.items()} for c in d["columns"][:3]]
+      63      if len(cols) < 3:
+     ...
+       87                    for n, v in lines.items()],
+       88          "one_offs": one_offs, "pages": ex["pages"], "model_not
+           e": ex.get("model_note"),
+       89      }
+       90 +                                                              
+       91 +                                                              
+       92 +_str = {"type": "string", "nullable": True}                   
+       93 +BIO_SCHEMA = {"type": "object", "properties": {"people": {"typ
+          +e": "array", "items": {"type": "object", "properties": {      
+       94 +    "name": {"type": "string"},                               
+       95 +    "change": {"type": "string", "enum": ["appointed", "re-app
+          +ointed", "redesignated", "resigned", "retired", "ceased"]},   
+       96 +    "role": {"type": "string"}, "effective": _str, "bio": _str
+          +,                                                             
+       97 +    "bio_page": {"type": "integer", "nullable": True}, "profil
+          +e_ref": _str,                                                 
+       98 +}, "required": ["name", "change", "role"]}}}, "required": ["pe
+          +ople"]}                                                       
+       99 +INCOMING = ("appointed", "re-appointed", "redesignated")      
+      100 +                                                              
+      101 +                                                              
+      102 +def mgmt_card(pdf_bytes: bytes) -> dict:                      
+      103 +    """Who changed, and the incoming person's profile as the f
+          +iling states it (SEBI LODR requires one).                     
+      104 +    Long filings: page 1 + pages that look like a profile, at 
+          +most 6, to keep the call cheap."""                            
+      105 +    doc = pdf.open_pdf(pdf_bytes)                             
+      106 +    texts = pdf.pages(doc)                                    
+      107 +    idx = [0] + [i for i, t in enumerate(texts) if i and any(k
+          + in t.lower() for k in ("profile", "experience", "qualificatio
+          +n"))]                                                         
+      108 +    idx = idx[:6] if len(texts) > 6 else list(range(len(texts)
+          +))                                                            
+      109 +    key = f"{hashlib.sha256(pdf_bytes).hexdigest()}:{idx}"    
+      110 +    ex = llm.run("extract_bio", "extract_bio", [pdf.subset(doc
+          +, idx)], BIO_SCHEMA, key=key, pages=[i + 1 for i in idx])     
+      111 +    people = sorted(ex["data"]["people"], key=lambda p: p["cha
+          +nge"] not in INCOMING)  # incoming first                      
+      112 +    for p in people:                                          
+      113 +        if p.get("bio_page"):                                 
+      114 +            p["bio_page"] = idx[p["bio_page"] - 1] + 1 if p["b
+          +io_page"] <= len(idx) else None  # subset page -> filing page 
+      115 +        if not p.get("bio") and p["change"] in INCOMING:      
+      116 +            p["bio"] = "Profile not in this filing" + (f"; see
+          + {p['profile_ref']}" if p.get("profile_ref") else "")         
+      117 +    return {"people": people, "model_note": ex.get("model_note
+          +")}                                                           
+  ⎿  (timeout 5m)
+
+● The rewrite should go in English here, since the narration is English. Kalpana
+  Merchant's tense is wrong in the prompt (she's described as a current
+  partner, though the filing says she has been associated), Sanjay Banga's
+  current role is missing from his bio, and duplicate entries appear when
+  someone holds two roles; I'm fixing these in the prompt next. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\prompts\extract_bio.md (+11 -11)
+       1 -This is a management-change disclosure filed by an Indian liste
+         -d company. List every person whose role changes.               
+       2 -                                                               
+       3 -Rules:                                                         
+       4 -- Use only this filing. No outside knowledge, even if you recog
+         -nise the person.                                               
+       5 -- `change`: appointed, re-appointed, redesignated, resigned, re
+         -tired or ceased.                                               
+       6 -- `role`: the role as the filing states it, short (e.g. "MD & C
+         -EO", "Independent Director", "Chairman").                      
+       7 -- `effective`: the effective date as printed, or null.         
+       8 -- `bio`: only if this filing contains a profile of the person. 
+         -At most 35 words: current/previous roles, years of experience, 
+         -education, copied or condensed from the profile. No praise, no 
+         -adjectives the filing doesn't use. null if there is no profile 
+         -in this filing.                                                
+       9 -- `bio_page`: the page number of the profile within this PDF (f
+         -irst page = 1), or null.                                       
+      10 -- `profile_ref`: if the filing says the profile was disclosed e
+         -arlier, the reference as printed (e.g. "intimation dated Octobe
+         -r 1, 2026"); otherwise null.                                   
+      11 -- Ignore people only listed as contacts or signatories.        
+       1 +This is a management-change disclosure filed by an Indian liste
+         +d company. List every person whose role changes, one entry per 
+         +person.                                                        
+       2 +                                                               
+       3 +Rules:                                                         
+       4 +- Use only this filing. No outside knowledge, even if you recog
+         +nise the person.                                               
+       5 +- `change`: appointed, re-appointed, redesignated, resigned, re
+         +tired or ceased.                                               
+       6 +- `role`: the role as the filing states it, short (e.g. "MD & C
+         +EO", "Independent Director", "Chairman"). If one person gets se
+         +veral roles, put them all in this one entry (e.g. "CEO Designat
+         +e; CEO & MD from May 1, 2027"). `change` is the main change (a 
+         +retirement with an honorary title is "retired").               
+       7 +- `effective`: the effective date as printed, or null.         
+       8 +- `bio`: only if this filing contains a profile of the person. 
+         +At most 35 words, condensed from the profile in this order: cur
+         +rent role, notable previous roles, years of experience, educati
+         +on. Keep the filing's tense ("has been a partner at" must not b
+         +ecome "is a partner at"). No praise, no adjectives the filing d
+         +oesn't use. null if there is no profile in this filing.        
+       9 +- `bio_page`: the page number of the profile within this PDF (f
+         +irst page = 1), or null.                                       
+      10 +- `profile_ref`: if the filing says the profile was disclosed e
+         +arlier, the reference as printed (e.g. "intimation dated Octobe
+         +r 1, 2026"); otherwise null.                                   
+      11 +- Ignore people only listed as contacts or signatories.        
+  ⎿  (timeout 5m)
+
+● Bios now report the current role first and show Noel Tata as retired, though
+  they still run about 60 words against the 35-word target, so I'll clamp them
+  to three lines in the UI. Next I'm writing tests for the classifier and the
+  mgmt card. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && cat >
+      tests/test_classify.py <<'EOF'
+      """Rules on real BSE rows (category | subcategory | subject | headl…)
+  ⎿  Created backend\tests\test_classify.py (+35 -0)
+       1 +"""Rules on real BSE rows (category | subcategory | subject | h
+         +eadline), copied from the 30-day pull on 12 Nov."""            
+       2 +import pytest                                                  
+       3 +from finn.push.classify import classify                        
+       4 +                                                               
+       5 +CASES = [  # (CATEGORYNAME, SUBCATNAME, NEWSSUB, HEADLINE) -> (
+         +category, tier)                                                
+       6 +    # HDFCBANK filed Q2 results under Board Meeting, not Result
+         +: the keyword rule must still catch it                         
+       7 +    (("Board Meeting", "Outcome of Board Meeting", "Board Meeti
+         +ng Outcome for Approval Of Unaudited Standalone And Consolidate
+         +d Financial Results Of The Bank", ""), ("results", "P1")),     
+       8 +    (("Result", "Financial Results", "Unaudited Financial Resul
+         +ts For The Quarter And Half Year Ended 30 September 2026", ""),
+         + ("results", "P1")),                                           
+       9 +    (("Board Meeting", "Board Meeting", "Board Meeting Intimati
+         +on for Considering The Unaudited Financial Results", ""), ("res
+         +ults", "P3")),                                                 
+      10 +    (("Company Update", "Investor Presentation", "Announcement 
+         +under Regulation 30 (LODR)-Investor Presentation", ""), ("resul
+         +ts", "P2")),                                                   
+      11 +    # headline mentions results, but BSE's subcategory says inv
+         +estor meet: subcategory wins                                   
+      12 +    (("Company Update", "Analyst / Investor Meet", "Announcemen
+         +t under Regulation 30 (LODR)-Analyst / Investor Meet - Intimati
+         +on", "post the financial results"), ("investor_meetings", "P3")
+         +),                                                             
+      13 +    (("Company Update", "Allotment of Equity Shares", "Announce
+         +ment under Regulation 30 (LODR)-Allotment", "Outcome of QIP 202
+         +6 - Allotment"), ("fund_raise", "P1")),                        
+      14 +    (("Company Update", "Allotment of Equity Shares", "Announce
+         +ment under Regulation 30 (LODR)-Allotment", "Allotment pursuant
+         + to Employee Stock Option Scheme"), ("unclassified", "P3")),   
+      15 +    (("Company Update", "General", "Appointment Of Statutory Au
+         +ditors Pursuant To Mandatory Auditor Rotation", ""), ("unclassi
+         +fied", "P3")),                                                 
+      16 +    (("Company Update", "Retirement", "Announcement under Regul
+         +ation 30 (LODR)-Retirement", "Retirement of Mr. Noel N Tata as 
+         +the Chairman"), ("management_change", "P1")),                  
+      17 +    (("Company Update", "General", "Newspaper Clippings - Propo
+         +sed Initial Public Offer Of Jio Platforms Limited", ""), ("fund
+         +_raise", "P3")),                                               
+      18 +    (("Company Update", "General", "Regulation 30 Capacity Addi
+         +tion", ""), ("capex", "P2")),                                  
+      19 +    ((None, None, "Announcement under Regulation 30 (LODR) - Ba
+         +gging/receiving of order(s) or contract(s)", ""), ("press_relea
+         +se", "P2")),                                                   
+      20 +    ((None, "Analysts/Institutional Investor Meet/Con. Call Upd
+         +ates", "CDSL has informed the Exchange about Schedule of Analys
+         +t Call with J.P. Morgan", None), ("investor_meetings", "P3")), 
+      21 +]                                                              
+      22 +                                                               
+      23 +                                                               
+      24 +@pytest.mark.parametrize("row,want", CASES)                    
+      25 +def test_rules(row, want):                                     
+      26 +    r = dict(zip(("CATEGORYNAME", "SUBCATNAME", "NEWSSUB", "HEA
+         +DLINE"), row))                                                 
+      27 +    got = classify(r)                                          
+      28 +    assert (got["category"], got["tier"], got["by"]) == (*want,
+         + "rule")                                                       
+      29 +                                                               
+      30 +                                                               
+      31 +def test_generic_subject_without_pdf_is_unclassified_not_a_cras
+         +h():                                                           
+      32 +    r = {"SUBCATNAME": "General", "NEWSSUB": "Disclosure Under 
+         +Regulation 30 Of SEBI (LODR) Regulations, 2015"}               
+      33 +    assert classify(r) == {"by": "default", "category": "unclas
+         +sified", "tier": "P3"}                                         
+      34 +    def boom(): raise FileNotFoundError("attachment gone")     
+      35 +    assert classify(r, boom)["by"] == "default"                
+  ⎿  Created backend\tests\test_mgmt.py (+32 -0)
+       1 +"""Mgmt-change card on 3 real filings. Ground truth read by han
+         +d off the PDFs."""                                             
+       2 +import os, pathlib, pytest                                     
+       3 +from finn.push.cards import mgmt_card                          
+       4 +                                                               
+       5 +FIX = pathlib.Path(__file__).parent / "fixtures"               
+       6 +live = pytest.mark.skipif(not os.getenv("GEMINI_API_KEY"), reas
+         +on="live LLM test (cached after first run)")                   
+       7 +                                                               
+       8 +                                                               
+       9 +@live                                                          
+      10 +def test_profile_missing_from_filing_is_said_not_invented():   
+      11 +    # HDFCBANK: new MD & CEO; the filing points to the 1 Oct in
+         +timation for his profile                                       
+      12 +    p = mgmt_card((FIX / "HDFCBANK_mgmt.pdf").read_bytes())["pe
+         +ople"]                                                         
+      13 +    assert [(x["name"], x["change"]) for x in p][0] == ("Anup B
+         +agchi", "appointed")                                           
+      14 +    assert p[0]["bio"].startswith("Profile not in this filing")
+         + and "October 1, 2026" in p[0]["bio"]                          
+      15 +    assert {x["name"] for x in p} == {"Anup Bagchi", "Sashidhar
+         + Jagdishan"}                                                   
+      16 +                                                               
+      17 +                                                               
+      18 +@live                                                          
+      19 +def test_profiles_cited_to_their_page():                       
+      20 +    # TRENT: Noel Tata retires; Vakil (no profile), Dube and Me
+         +rchant (profiles on p.4) come in                               
+      21 +    p = {x["name"].replace("Mr. ", "").replace("Ms. ", ""): x f
+         +or x in mgmt_card((FIX / "TRENT_mgmt.pdf").read_bytes())["peopl
+         +e"]}                                                           
+      22 +    assert p["Noel N. Tata"]["change"] == "retired"            
+      23 +    assert p["Rajiv Dube"]["bio_page"] == 4 and "Aditya Birla" 
+         +in p["Rajiv Dube"]["bio"]                                      
+      24 +    assert p["Kalpana Merchant"]["bio_page"] == 4 and "45 years
+         +" in p["Kalpana Merchant"]["bio"]                              
+      25 +    assert p["Bahram Vakil"]["bio"] == "Profile not in this fil
+         +ing"                                                           
+      26 +                                                               
+      27 +                                                               
+      28 +@live                                                          
+      29 +def test_one_entry_per_person():                               
+      30 +    p = mgmt_card((FIX / "TATAPOWER_mgmt.pdf").read_bytes())["p
+         +eople"]                                                        
+      31 +    assert len(p) == 1 and p[0]["name"].endswith("Sanjay Banga"
+         +) and p[0]["bio_page"] == 2                                    
+      32 +    assert "Renewable" in p[0]["bio"]                          
+  ⎿  (timeout 5m)
+
+● NSE's subcategory "Analysts/Institutional Investor Meet/Con. Call Updates"
+  matches two categories, so the subcategory-first rule only applies when it's
+  unambiguous. I'm fixing that now. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\push\classify.py (+6 -2)
+      16      ("management_change", r"change in management|change in dire
+          ctorate|cessation|retirement|resignation|re-?appointment"
+      17                            r"|appointment of (mr|ms|shri|smt|dr)
+          |(managing director|chief executive|\bceo\b|\bcfo\b|key manager
+          ial)"),
+      18      ("results", r"financial results|financial statements|result
+          s presentation|shareholders'? letter|investor presentation"
+      19 -                r"|earnings presentation|analyst presentation|q
+         -uarterly report w\.r\.t"),                                     
+      19 +                r"|earnings presentation|analyst presentation|p
+         +resentation for the (quarter|year)|quarterly report w\.r\.t"), 
+      20      ("earnings_call", r"earnings?( conference)? call|concall|co
+          n\. call|call transcript|audio recording|video recording|invest
+          or call"
+      21                        r"|schedule of conference call"),
+      22      ("investor_meetings", r"analyst|investor(s|\(s\))? meet|inv
+          estor conference|institutional investor|road ?show"),
+     ...
+      59  def by_rules(row: dict) -> str | None:
+      60      """BSE subcategory first (headlines often mention "financia
+          l results" on unrelated filings), then subject + headline."""
+      61      t = text_of(row)
+      62 -    cat = _match((row.get("SUBCATNAME") or "").lower()) or _mat
+         -ch(t)                                                          
+      62 +    sub = [c for c, rx in RULES if re.search(rx, (row.get("SUBC
+         +ATNAME") or "").lower())]                                      
+      63 +    if len(sub) == 1:                                          
+      64 +        cat = sub[0]                                           
+      65 +    else:  # no or ambiguous subcategory (NSE's "Investor Meet/
+         +Con. Call Updates"): decide on subject + headline              
+      66 +        cat = _match(" | ".join(str(row.get(k) or "") for k in 
+         +("NEWSSUB", "HEADLINE")).lower()) or (sub or [None])[0]        
+      67      if cat == "fund_raise" and re.search(r"esop|esos|stock opti
+          on|employee", t):
+      68          cat = "unclassified"  # ESOP allotments are filed as "A
+          llotment of Equity Shares"
+      69      return cat
+  ⎿  (timeout 5m)
+
+● 29 pass, and the distribution is now sensible: 28 P1 results across 20
+  companies in a results month. Committing the classifier, NSE fallback and mgmt
+  card.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● I'm moving the ranking test cases into a JSON table for the TypeScript port,
+  and adding a guard so intraday partial bars from yfinance don't fake a
+  reaction. · summary
+
+● Write(backend\finn\push\rank.py)
+  ⎿  Wrote 65 lines to backend\finn\push\rank.py
+       1 """Materiality rank: tier + market-reaction boost, with a reason
+          string the card shows.
+       2 Kept tiny and pure on purpose: the web app re-implements it in T
+         S so thresholds re-rank client-side;
+       3 both run the same cases in tests/rank_cases.json."""
+       4 import datetime as dt
+       5 from finn.config import VOLUME_MULTIPLE, EXCESS_MOVE_PCT, TIERS
+       6
+       7 IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
+       8 CLOSE = dt.time(15, 30)
+     … +57 lines (ctrl+o to expand)
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && cat >
+      tests/rank_cases.json <<'EOF'
+      […)
+  ⎿  Updated backend\finn\sources\prices.py (+3 -0)
+      13      if h.empty:
+      14          return pd.DataFrame(columns=["Close", "Volume"])
+      15      h.index = h.index.date
+      16 +    now = dt.datetime.now(dt.timezone(dt.timedelta(hours=5, min
+         +utes=30)))                                                     
+      17 +    if now.time() < dt.time(16, 0):  # before the close yfinanc
+         +e serves today's partial bar: not an EOD reaction              
+      18 +        h = h[h.index < now.date()]                            
+      19      return h[["Close", "Volume"]]
+      20  
+      21  
+  ⎿  Created backend\tests\rank_cases.json (+21 -0)
+       1 +[                                                              
+       2 +  {"name": "quiet results day", "item": {"tier": "P1", "categor
+         +y": "results", "reaction_day": "2026-11-09", "last_bar": "2026-
+         +11-11",                                                        
+       3 +    "reaction": {"move_pct": 0.6, "nifty_pct": 0.2, "excess_pct
+         +": 0.4, "vol_ratio": 1.1}},                                    
+       4 +   "want": {"score": 300, "reason": "results · +0.4% vs Nifty",
+         + "boosted": false, "collapsed": false}},                       
+       5 +  {"name": "excess-move boost", "item": {"tier": "P1", "categor
+         +y": "results", "reaction_day": "2026-11-09", "last_bar": "2026-
+         +11-11",                                                        
+       6 +    "reaction": {"move_pct": -4.1, "nifty_pct": -0.5, "excess_p
+         +ct": -3.6, "vol_ratio": 1.4}},                                 
+       7 +   "want": {"score": 450, "reason": "Ranked high: results · −4.
+         +1% (−3.6% vs Nifty)", "boosted": true, "collapsed": false}},   
+       8 +  {"name": "volume boost lifts a P2 above a quiet P1", "item": 
+         +{"tier": "P2", "category": "press_release", "reaction_day": "20
+         +26-11-09", "last_bar": "2026-11-11",                           
+       9 +    "reaction": {"move_pct": 1.0, "nifty_pct": 0.8, "excess_pct
+         +": 0.2, "vol_ratio": 2.3}},                                    
+      10 +   "want": {"score": 350, "reason": "Ranked high: press release
+         + · 2.3× volume", "boosted": true, "collapsed": false}},        
+      11 +  {"name": "big raw move but flat vs Nifty: no boost", "item": 
+         +{"tier": "P2", "category": "dividend", "reaction_day": "2026-11
+         +-09", "last_bar": "2026-11-11",                                
+      12 +    "reaction": {"move_pct": -3.5, "nifty_pct": -3.2, "excess_p
+         +ct": -0.3, "vol_ratio": 1.0}},                                 
+      13 +   "want": {"score": 200, "reason": "dividend · −0.3% vs Nifty"
+         +, "boosted": false, "collapsed": false}},                      
+      14 +  {"name": "bar not yet available", "item": {"tier": "P1", "cat
+         +egory": "management_change", "reaction_day": "2026-11-12", "las
+         +t_bar": "2026-11-11", "reaction": null},                       
+      15 +   "want": {"score": 300, "reason": "management change · Reacti
+         +on pending", "boosted": false, "collapsed": false}},           
+      16 +  {"name": "no price data at all", "item": {"tier": "P3", "cate
+         +gory": "agm_egm", "reaction_day": "2026-11-09", "last_bar": nul
+         +l, "reaction": null},                                          
+      17 +   "want": {"score": 100, "reason": "AGM/EGM · No price data", 
+         +"boosted": false, "collapsed": true}},                         
+      18 +  {"name": "nifty bar missing: raw move used", "item": {"tier":
+         + "P3", "category": "investor_meetings", "reaction_day": "2026-1
+         +1-09", "last_bar": "2026-11-11",                               
+      19 +    "reaction": {"move_pct": 5.0, "nifty_pct": null, "excess_pc
+         +t": null, "vol_ratio": null}},                                 
+      20 +   "want": {"score": 250, "reason": "Ranked high: investor meet
+         +ings · +5.0%", "boosted": true, "collapsed": false}}           
+      21 +]                                                              
+  ⎿  Created backend\tests\test_rank.py (+20 -0)
+       1 +import json, pathlib, pytest                                   
+       2 +from finn.push.rank import rank, reaction_day, price_alerts    
+       3 +                                                               
+       4 +CASES = json.loads((pathlib.Path(__file__).parent / "rank_cases
+         +.json").read_text(encoding="utf-8"))                           
+       5 +                                                               
+       6 +                                                               
+       7 +@pytest.mark.parametrize("case", CASES, ids=[c["name"] for c in
+         + CASES])                                                       
+       8 +def test_rank_cases(case):  # same table the TS port runs      
+       9 +    assert rank(case["item"], vol_n=2.0, move_x=3.0) == case["w
+         +ant"]                                                          
+      10 +                                                               
+      11 +                                                               
+      12 +def test_reaction_day_uses_1530_ist_close():                   
+      13 +    assert str(reaction_day("2026-11-11T15:29:59")) == "2026-11
+         +-11"                                                           
+      14 +    assert str(reaction_day("2026-11-11T18:54:00.123")) == "202
+         +6-11-12"  # TATAPOWER CEO filing: pending on 12 Nov morning    
+      15 +                                                               
+      16 +                                                               
+      17 +def test_price_alerts_only_for_crossing_days():                
+      18 +    days = [{"date": "2026-11-09", "move_pct": 0.5, "excess_pct
+         +": 0.1, "vol_ratio": 1.0},                                     
+      19 +            {"date": "2026-11-11", "move_pct": 2.0, "excess_pct
+         +": 1.5, "vol_ratio": 3.2}]                                     
+      20 +    assert price_alerts("X", days, 2.0, 3.0) == [{"symbol": "X"
+         +, "date": "2026-11-11", "kind": "price", "text": "3.2× volume"}
+         +]                                                              
+  ⎿  (timeout 5m)
+
+● All 38 tests pass; next I'll write ingest.py as a single entry point that
+  walks the 20 tickers, exports web/public/data/feed.json and prints the digest.
+  I'm skipping db.py and SQLite because the caches already hold this data and
+  the app only reads the JSON export, and I'll note that in DECISIONS.md.
+  · summary
+
+● Write(backend\finn\ingest.py)
+  ⎿  Wrote 142 lines to backend\finn\ingest.py
+      1 """Daily ingest: portfolio filings -> classify -> cards -> rank -
+        > alerts -> web/public/data/feed.json.
+      2 Run from backend/:  ../.venv/Scripts/python -m finn.ingest [--day
+        s 7] [SYMBOL ...]
+      3 Every step is per-filing try/except: a failure leaves the item wi
+        th its raw link and an error note, never a crash."""
+      4 import sys, json, argparse, datetime as dt
+      5 from finn.config import ROOT, PORTFOLIO, VOLUME_MULTIPLE, EXCESS_
+        MOVE_PCT
+      6 from finn.sources import fetch, bse, nse, screener, prices, pdf
+     … +136 lines (ctrl+o to expand)
+
+● I left a redundant double sort in there; replacing it with a single (score,
+  filed) sort, then running ingest on all 20.
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\ingest.py (+141 -142)
+        1 -"""Daily ingest: portfolio filings -> classify -> cards -> ran
+          -k -> alerts -> web/public/data/feed.json.                     
+        2 -Run from backend/:  ../.venv/Scripts/python -m finn.ingest [--
+          -days 7] [SYMBOL ...]                                          
+        3 -Every step is per-filing try/except: a failure leaves the item
+          - with its raw link and an error note, never a crash."""       
+        4 -import sys, json, argparse, datetime as dt                    
+        5 -from finn.config import ROOT, PORTFOLIO, VOLUME_MULTIPLE, EXCE
+          -SS_MOVE_PCT                                                   
+        6 -from finn.sources import fetch, bse, nse, screener, prices, pd
+          -f                                                             
+        7 -from finn.push import classify, cards, rank                   
+        8 -                                                              
+        9 -OUT = ROOT / "web" / "public" / "data" / "feed.json"          
+       10 -                                                              
+       11 -                                                              
+       12 -def _err(e: Exception) -> str:                                
+       13 -    return f"{type(e).__name__}: {e}"[:200]                   
+       14 -                                                              
+       15 -                                                              
+       16 -def _pdf(row: dict) -> bytes:                                 
+       17 -    if row.get("ATTACHMENTNAME"):                             
+       18 -        return bse.attachment(row["ATTACHMENTNAME"])          
+       19 -    if not row.get("url"):                                    
+       20 -        raise FileNotFoundError("filing has no attachment")   
+       21 -    b = fetch(row["url"])                                     
+       22 -    if b[:4] != b"%PDF":                                      
+       23 -        raise ValueError("attachment is not a PDF")           
+       24 -    return b                                                  
+       25 -                                                              
+       26 -                                                              
+       27 -def _card(item: dict, get_pdf) -> None:                       
+       28 -    """Adds item['card'] for P1 results / management changes. 
+          -Results: only if a P&L page is found                          
+       29 -    (decks and letters don't get a full-PDF LLM call)."""     
+       30 -    try:                                                      
+       31 -        if item["category"] == "results":                     
+       32 -            b = get_pdf()                                     
+       33 -            idx, _ = pdf.find_results_pages(pdf.pages(pdf.open
+          -_pdf(b)))                                                     
+       34 -            if idx:                                           
+       35 -                item["card"] = {"type": "results", **cards.res
+          -ults_card(cards.extract_results(b))}                          
+       36 -        elif item["category"] == "management_change":         
+       37 -            item["card"] = {"type": "management_change", **car
+          -ds.mgmt_card(get_pdf())}                                      
+       38 -    except Exception as e:                                    
+       39 -        item["card_error"] = _err(e)                          
+       40 -                                                              
+     … 243 more lines (ctrl+o to expand)
+  ⎿  … 1 more file changed
+  ⎿  (timeout 10m)
+
+● 19/20 worked. IRCTC failed because BSE returned something that isn't JSON.
+  That's worse than it sounds: fetch caches the bad response for an hour.
+  Investigating:
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● BSE returns an HTML "page moved" error only for IRCTC's 7-day window, so I'm
+  adding an expect prefix check to stop error pages from being cached and a
+  fallback to NSE when BSE fails. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && grep -n "fetch("
+      finn/sources/*.py finn/*.py | grep -v "def fetch" &&
+      ../.venv/Scripts/python - <<'EOF'…)
+  ⎿  Updated backend\finn\ingest.py (+10 -6)
+      18          return bse.attachment(row["ATTACHMENTNAME"])
+      19      if not row.get("url"):
+      20          raise FileNotFoundError("filing has no attachment")
+      21 -    b = fetch(row["url"])                                      
+      22 -    if b[:4] != b"%PDF":                                       
+      23 -        raise ValueError("attachment is not a PDF")            
+      24 -    return b                                                   
+      21 +    return fetch(row["url"], expect=b"%PDF")                   
+      22  
+      23  
+      24  def _card(item: dict, get_pdf) -> None:
+     ...
+      43          co = screener.company(sym)
+      44      except Exception as e:  # slug mismatch / screener down: NS
+          E still works by symbol
+      45          co, errors = {"name": sym, "bse_code": None}, [_err(e)]
+      49 -    rows = bse.announcements(co["bse_code"], start, end) if co[
+         -"bse_code"] else nse.announcements(sym, start, end)            
+      46 +    source = "bse" if co["bse_code"] else "nse"                
+      47 +    try:                                                       
+      48 +        rows = bse.announcements(co["bse_code"], start, end) if
+         + co["bse_code"] else nse.announcements(sym, start, end)        
+      49 +    except Exception as e:  # BSE sometimes serves an HTML erro
+         +r page for one scrip/window: NSE by symbol instead             
+      50 +        if source == "nse":                                    
+      51 +            raise                                              
+      52 +        errors.append(f"BSE failed, used NSE: {_err(e)}")      
+      53 +        source, rows = "nse", nse.announcements(sym, start, end
+         +)                                                              
+      54      h = prices.history(sym)
+      55      last_bar = h.index[-1].isoformat() if len(h) else None
+      56  
+     ...
+      62          item = {
+      63              "id": row["NEWSID"], "symbol": sym, "name": co["nam
+          e"], "filed": row["NEWS_DT"][:16],
+      64              "subject": row.get("NEWSSUB"), "headline": c.get("h
+          eadline"), "category": c["category"], "tier": c["tier"],
+      61 -            "classified_by": c["by"], "url": row.get("url"), "s
+         -ource": "bse" if co["bse_code"] else "nse",                    
+      65 +            "classified_by": c["by"], "url": row.get("url"), "s
+         +ource": source,                                                
+      66              "reaction_day": rday.isoformat(), "last_bar": last_
+          bar,
+      67              "reaction": prices.day_stats(h, nifty, rday) if len
+          (h) else None,
+      68          }
+  ⎿  Updated backend\finn\sources\__init__.py (+31 -28)
+       1 -"""Shared HTTP fetch with an on-disk cache and a polite per-hos
+         -t delay."""                                                    
+       2 -import time, hashlib, urllib.parse, httpx                      
+       3 -from finn.config import CACHE                                  
+       4 -                                                               
+       5 -UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537
+         -.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"        
+       6 -_client = httpx.Client(follow_redirects=True, timeout=60, heade
+         -rs={"User-Agent": UA})                                         
+       7 -_last_hit: dict[str, float] = {}                               
+       8 -                                                               
+       9 -                                                               
+      10 -def fetch(url: str, *, headers: dict | None = None, params: dic
+         -t | None = None,                                               
+      11 -          max_age: float | None = None, gap: float = 1.0) -> by
+         -tes:                                                           
+      12 -    """GET with cache. max_age=None caches forever (filings nev
+         -er change); 0 disables the cache.                              
+      13 -    Raises httpx.HTTPStatusError on 4xx/5xx so callers can fall
+         - back to the raw link."""                                      
+      14 -    key = hashlib.sha256((url + repr(sorted((params or {}).item
+         -s()))).encode()).hexdigest()[:24]                              
+      15 -    f = CACHE / "http" / key                                   
+      16 -    if f.exists() and max_age != 0 and (max_age is None or time
+         -.time() - f.stat().st_mtime < max_age):                        
+      17 -        return f.read_bytes()                                  
+      18 -    host = urllib.parse.urlparse(url).netloc                   
+      19 -    wait = _last_hit.get(host, 0) + gap - time.monotonic()     
+      20 -    if wait > 0:                                               
+      21 -        time.sleep(wait)                                       
+      22 -    r = _client.get(url, headers=headers, params=params)       
+      23 -    _last_hit[host] = time.monotonic()                         
+      24 -    r.raise_for_status()                                       
+      25 -    if max_age != 0:                                           
+      26 -        f.parent.mkdir(parents=True, exist_ok=True)            
+      27 -        f.write_bytes(r.content)                               
+      28 -    return r.content                                           
+       1 +"""Shared HTTP fetch with an on-disk cache and a polite per-hos
+         +t delay."""                                                    
+       2 +import time, hashlib, urllib.parse, httpx                      
+       3 +from finn.config import CACHE                                  
+       4 +                                                               
+       5 +UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537
+         +.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"        
+       6 +_client = httpx.Client(follow_redirects=True, timeout=60, heade
+         +rs={"User-Agent": UA})                                         
+       7 +_last_hit: dict[str, float] = {}                               
+       8 +                                                               
+       9 +                                                               
+      10 +def fetch(url: str, *, headers: dict | None = None, params: dic
+         +t | None = None,                                               
+      11 +          max_age: float | None = None, gap: float = 1.0, expec
+         +t: bytes | None = None) -> bytes:                              
+      12 +    """GET with cache. max_age=None caches forever (filings nev
+         +er change); 0 disables the cache.                              
+     … 19 more lines (ctrl+o to expand)
+  ⎿  Updated backend\finn\sources\bse.py (+44 -44)
+       1 -"""BSE corporate announcements + attachments. Needs full browse
+         -r headers (Origin + sec-fetch-*) or BSE returns 403."""        
+       2 -import json, datetime as dt                                    
+       3 -from finn.sources import fetch                                 
+       4 -                                                               
+       5 -HEADERS = {                                                    
+       6 -    "Referer": "https://www.bseindia.com/", "Origin": "https://
+         -www.bseindia.com",                                             
+       7 -    "Accept": "application/json, text/plain, */*", "Accept-Lang
+         -uage": "en-US,en;q=0.9",                                       
+       8 -    "sec-fetch-site": "same-site", "sec-fetch-mode": "cors", "s
+         -ec-fetch-dest": "empty",                                       
+       9 -}                                                              
+      10 -API = "https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryG
+         -etData/w"                                                      
+      11 -ATTACH = "https://www.bseindia.com/xml-data/corpfiling/{}/{}"  
+      12 -KEEP = ["NEWSID", "SCRIP_CD", "SLONGNAME", "NEWS_DT", "CATEGORY
+         -NAME", "SUBCATNAME", "NEWSSUB", "HEADLINE", "ATTACHMENTNAME", "
+         -Fld_Attachsize"]                                               
+      13 -                                                               
+      14 -                                                               
+      15 -def announcements(scrip: str, start: dt.date, end: dt.date, max
+         -_age: float = 3600) -> list[dict]:                             
+      16 -    """All announcements for one BSE scrip code in [start, end]
+         -, newest first. BSE pages at 50 rows."""                       
+      17 -    rows, page = [], 1                                         
+      18 -    while True:                                                
+      19 -        body = fetch(API, headers=HEADERS, max_age=max_age, par
+         -ams={                                                          
+      20 -            "pageno": page, "strCat": -1, "subcategory": -1, "s
+         -trSearch": "P", "strType": "C",                                
+      21 -            "strPrevDate": start.strftime("%Y%m%d"), "strToDate
+         -": end.strftime("%Y%m%d"), "strScrip": scrip})                 
+      22 -        j = json.loads(body)                                   
+      23 -        batch = j.get("Table") or []                           
+      24 -        rows += [{k: x.get(k) for k in KEEP} | {"url": attachme
+         -nt_url(x.get("ATTACHMENTNAME"))} for x in batch]               
+      25 -        total = (j.get("Table1") or [{}])[0].get("ROWCNT", 0)  
+      26 -        if not batch or len(rows) >= total:                    
+      27 -            return rows                                        
+      28 -        page += 1                                              
+      29 -                                                               
+      30 -                                                               
+      31 -def attachment_url(name: str | None) -> str | None:            
+      32 -    return ATTACH.format("AttachLive", name) if name else None 
+      33 -                                                               
+      34 -                                                               
+      35 -def attachment(name: str) -> bytes:                            
+      36 -    """Attachment bytes (cached forever). Older filings sometim
+         -es only exist under AttachHis."""                              
+      37 -    for folder in ("AttachLive", "AttachHis"):                 
+      38 -        try:                                                   
+      39 -            b = fetch(ATTACH.format(folder, name), headers=HEAD
+         -ERS)                                                           
+      40 -        except Exception:                                      
+     … 48 more lines (ctrl+o to expand)
+  ⎿  Updated backend\finn\sources\nse.py (+19 -19)
+       1 -"""NSE announcements: fallback only, for NSE-only listings with
+         - no BSE scrip code (e.g. CDSL).                                
+       2 -Rows come back in bse.announcements() shape so the rest of the 
+         -pipeline doesn't care.                                         
+       3 -No cookies needed for this endpoint as of 12 Nov 2026 (tested l
+         -ocally)."""                                                    
+       4 -import json, datetime as dt                                    
+       5 -from finn.sources import fetch                                 
+       6 -                                                               
+       7 -API = "https://www.nseindia.com/api/corporate-announcements"   
+       8 -HEADERS = {"Accept": "*/*", "Accept-Language": "en-US,en;q=0.9"
+         -, "Referer": "https://www.nseindia.com/"}                      
+       9 -                                                               
+      10 -                                                               
+      11 -def announcements(symbol: str, start: dt.date, end: dt.date, ma
+         -x_age: float = 3600) -> list[dict]:                            
+      12 -    body = fetch(API, headers=HEADERS, max_age=max_age, params=
+         -{                                                              
+      13 -        "index": "equities", "symbol": symbol, "from_date": sta
+         -rt.strftime("%d-%m-%Y"), "to_date": end.strftime("%d-%m-%Y")}) 
+      14 -    return [{                                                  
+      15 -        "NEWSID": x.get("seq_id"), "SCRIP_CD": None, "SLONGNAME
+         -": x.get("sm_name"),                                           
+      16 -        "NEWS_DT": dt.datetime.strptime(x["an_dt"], "%d-%b-%Y %
+         -H:%M:%S").isoformat(),                                         
+      17 -        "CATEGORYNAME": None, "SUBCATNAME": x.get("desc"), "NEW
+         -SSUB": x.get("attchmntText"), "HEADLINE": None,                
+      18 -        "ATTACHMENTNAME": None, "Fld_Attachsize": x.get("fileSi
+         -ze"), "url": x.get("attchmntFile") or None,                    
+      19 -    } for x in json.loads(body)]                               
+       1 +"""NSE announcements: fallback only, for NSE-only listings with
+         + no BSE scrip code (e.g. CDSL).                                
+       2 +Rows come back in bse.announcements() shape so the rest of the 
+         +pipeline doesn't care.                                         
+       3 +No cookies needed for this endpoint as of 12 Nov 2026 (tested l
+         +ocally)."""                                                    
+       4 +import json, datetime as dt                                    
+       5 +from finn.sources import fetch                                 
+       6 +                                                               
+       7 +API = "https://www.nseindia.com/api/corporate-announcements"   
+       8 +HEADERS = {"Accept": "*/*", "Accept-Language": "en-US,en;q=0.9"
+         +, "Referer": "https://www.nseindia.com/"}                      
+       9 +                                                               
+      10 +                                                               
+      11 +def announcements(symbol: str, start: dt.date, end: dt.date, ma
+         +x_age: float = 3600) -> list[dict]:                            
+      12 +    body = fetch(API, headers=HEADERS, max_age=max_age, expect=
+         +b"[", params={                                                 
+      13 +        "index": "equities", "symbol": symbol, "from_date": sta
+         +rt.strftime("%d-%m-%Y"), "to_date": end.strftime("%d-%m-%Y")}) 
+      14 +    return [{                                                  
+      15 +        "NEWSID": x.get("seq_id"), "SCRIP_CD": None, "SLONGNAME
+         +": x.get("sm_name"),                                           
+      16 +        "NEWS_DT": dt.datetime.strptime(x["an_dt"], "%d-%b-%Y %
+         +H:%M:%S").isoformat(),                                         
+      17 +        "CATEGORYNAME": None, "SUBCATNAME": x.get("desc"), "NEW
+         +SSUB": x.get("attchmntText"), "HEADLINE": None,                
+      18 +        "ATTACHMENTNAME": None, "Fld_Attachsize": x.get("fileSi
+         +ze"), "url": x.get("attchmntFile") or None,                    
+      19 +    } for x in json.loads(body)]                               
+  ⎿  (timeout 5m)
+
+● Before re-running, here's the first run's digest output to review the content:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The pipeline runs end to end, but six issues remain: filings from 10 Nov show
+  a NaN price reaction, CDSL's routine P3 schedules are over-ranked, the
+  BHARTIARTL card fails on the "Rs Mn" unit, generic subjects hide the QIP
+  headline, BHARTIARTL results are duplicated, and few LLM classifications ran.
+  I'll start fixing these, beginning with the unit map. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The Close values for 11 Nov are NaN in yfinance, so bars are still incomplete
+  12 hours after the close. I'll apply dropna on Close and revisit the 16:30
+  cron time, then check the BHARTIARTL classify error. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The retry succeeded, so the earlier failure was transient, and the fallback
+  kept the item visible as unclassified with its link. I'm applying the fixes
+  next. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'EOF'
+      import pathlib, json…)
+  ⎿  Updated backend\finn\ingest.py (+9 -4)
+      61          rday = rank.reaction_day(row["NEWS_DT"])
+      62          item = {
+      63              "id": row["NEWSID"], "symbol": sym, "name": co["nam
+          e"], "filed": row["NEWS_DT"][:16],
+      64 -            "subject": row.get("NEWSSUB"), "headline": c.get("h
+         -eadline"), "category": c["category"], "tier": c["tier"],       
+      65 -            "classified_by": c["by"], "url": row.get("url"), "s
+         -ource": source,                                                
+      64 +            "subject": row.get("NEWSSUB"), "headline": c.get("h
+         +eadline") or row.get("HEADLINE"), "category": c["category"], "t
+         +ier": c["tier"],                                               
+      65 +            "classified_by": c["by"], "classify_error": c.get("
+         +error"), "url": row.get("url"), "source": source,              
+      66              "reaction_day": rday.isoformat(), "last_bar": last_
+          bar,
+      67              "reaction": prices.day_stats(h, nifty, rday) if len
+          (h) else None,
+      68          }
+     ...
+      76  
+      77      window = [s for d in h.index if d >= start and (s := prices
+          .day_stats(h, nifty, d))]
+      78      alerts = rank.price_alerts(sym, window)
+      79 -    alerts += [{"symbol": sym, "date": i["filed"][:10], "kind":
+         - "filing", "text": f"{rank.label(i['category'])}: {i['headline'
+         -] or i['subject']}",                                           
+      80 -                "id": i["id"]} for i in items if i["tier"] == "
+         -P1" and i["category"] in rank.ALERT_CATEGORIES]                
+      79 +    seen = set()  # one alert per (day, category): results are 
+         +often filed twice                                              
+      80 +    for i in items:                                            
+      81 +        k = (i["filed"][:10], i["category"])                   
+      82 +        if i["tier"] == "P1" and i["category"] in rank.ALERT_CA
+         +TEGORIES and k not in seen:                                    
+      83 +            seen.add(k)                                        
+      84 +            alerts.append({"symbol": sym, "date": k[0], "kind":
+         + "filing", "id": i["id"],                                      
+      85 +                           "text": f"{rank.label(i['category'])
+         +}: {i['headline'] or i['subject']}"})                          
+      86      for e in errors:
+      87          alerts.append({"symbol": sym, "date": end.isoformat(), 
+          "kind": "error", "text": e})
+      88      return items, alerts, [{"symbol": sym, **s} for s in window
+          ]
+  ⎿  Updated backend\finn\push\cards.py (+1 -1)
+      19      },
+      20      "required": ["basis", "unit", "is_bank_or_nbfc", "columns"]
+          ,
+      21  }
+      22 -TO_CRORE = {"crore": 1, "lakh": 0.01, "lac": 0.01, "million": 0
+         -.1, "billion": 100, "thousand": 1e-4}                          
+      22 +TO_CRORE = {"crore": 1, "lakh": 0.01, "lac": 0.01, "million": 0
+         +.1, "mn": 0.1, "billion": 100, "bn": 100, "thousand": 1e-4}    
+      23  EBITDA_NOTE = "EBITDA = PBT + finance costs + D&A; other income
+           not excluded"
+      24  
+      25  
+  ⎿  Updated backend\finn\push\rank.py (+66 -65)
+       1 -"""Materiality rank: tier + market-reaction boost, with a reaso
+         -n string the card shows.                                       
+       2 -Kept tiny and pure on purpose: the web app re-implements it in 
+         -TS so thresholds re-rank client-side;                          
+       3 -both run the same cases in tests/rank_cases.json."""           
+       4 -import datetime as dt                                          
+       5 -from finn.config import VOLUME_MULTIPLE, EXCESS_MOVE_PCT, TIERS
+       6 -                                                               
+       7 -IST = dt.timezone(dt.timedelta(hours=5, minutes=30))           
+       8 -CLOSE = dt.time(15, 30)                                        
+       9 -BASE = {"P1": 300, "P2": 200, "P3": 100}                       
+      10 -BOOST = 150  # a P2 the market reacted to outranks a quiet P1; 
+         -a boosted P3 is no longer collapsed                            
+      11 -LABEL = {"m_and_a": "M&A", "agm_egm": "AGM/EGM", "credit_rating
+         -_downgrade": "rating downgrade"}                               
+      12 -                                                               
+      13 -                                                               
+      14 -def label(cat: str) -> str:                                    
+      15 -    return LABEL.get(cat, cat.replace("_", " "))               
+      16 -                                                               
+      17 -                                                               
+      18 -def reaction_day(news_dt: str) -> dt.date:                     
+      19 -    """Filed before the 15:30 IST close -> that day's bar; afte
+         -r -> the next trading day's (day_stats skips holidays)."""     
+      20 -    t = dt.datetime.fromisoformat(news_dt)  # BSE/NSE timestamp
+         -s are IST, naive                                               
+      21 -    return t.date() if t.time() < CLOSE else t.date() + dt.time
+         -delta(days=1)                                                  
+      22 -                                                               
+      23 -                                                               
+      24 -def _pct(x: float) -> str:                                     
+      25 -    return f"{x:+.1f}%".replace("-", "−")                      
+      26 -                                                               
+      27 -                                                               
+      28 -def hits(r: dict | None, vol_n: float = VOLUME_MULTIPLE, move_x
+         -: float = EXCESS_MOVE_PCT) -> list[str]:                       
+      29 -    """Which thresholds a reaction-day bar crossed, as display 
+         -text. Move is vs Nifty when Nifty has a bar."""                
+      30 -    if not r:                                                  
+      31 -        return []                                              
+      32 -    out = []                                                   
+      33 -    ex = r.get("excess_pct")                                   
+      34 -    if abs(ex if ex is not None else r["move_pct"]) >= move_x: 
+      35 -        out.append(f"{_pct(r['move_pct'])} ({_pct(ex)} vs Nifty
+         -)" if ex is not None else _pct(r["move_pct"]))                 
+      36 -    if (r.get("vol_ratio") or 0) >= vol_n:                     
+      37 -        out.append(f"{r['vol_ratio']:.1f}× volume")            
+      38 -    return out                                                 
+      39 -                                                               
+      40 -                                                               
+     … 91 more lines (ctrl+o to expand)
+  ⎿  Updated backend\finn\sources\prices.py (+1 -0)
+      12      h = yf.Ticker(symbol if symbol.startswith("^") else f"{symb
+          ol}.NS").history(period=period, auto_adjust=False)
+      13      if h.empty:
+      14          return pd.DataFrame(columns=["Close", "Volume"])
+      15 +    h = h.dropna(subset=["Close"])  # yfinance posts a stub bar
+         + (volume, NaN close) for hours after the close: not a bar yet  
+      16      h.index = h.index.date
+      17      now = dt.datetime.now(dt.timezone(dt.timedelta(hours=5, min
+          utes=30)))
+      18      if now.time() < dt.time(16, 0):  # before the close yfinanc
+          e serves today's partial bar: not an EOD reaction
+  ⎿  Updated backend\tests\rank_cases.json (+160 -21)
+        1 -[                                                             
+        2 -  {"name": "quiet results day", "item": {"tier": "P1", "catego
+          -ry": "results", "reaction_day": "2026-11-09", "last_bar": "202
+          -6-11-11",                                                     
+        3 -    "reaction": {"move_pct": 0.6, "nifty_pct": 0.2, "excess_pc
+          -t": 0.4, "vol_ratio": 1.1}},                                  
+        4 -   "want": {"score": 300, "reason": "results · +0.4% vs Nifty"
+          -, "boosted": false, "collapsed": false}},                     
+        5 -  {"name": "excess-move boost", "item": {"tier": "P1", "catego
+          -ry": "results", "reaction_day": "2026-11-09", "last_bar": "202
+          -6-11-11",                                                     
+        6 -    "reaction": {"move_pct": -4.1, "nifty_pct": -0.5, "excess_
+          -pct": -3.6, "vol_ratio": 1.4}},                               
+        7 -   "want": {"score": 450, "reason": "Ranked high: results · −4
+          -.1% (−3.6% vs Nifty)", "boosted": true, "collapsed": false}}, 
+        8 -  {"name": "volume boost lifts a P2 above a quiet P1", "item":
+          - {"tier": "P2", "category": "press_release", "reaction_day": "
+          -2026-11-09", "last_bar": "2026-11-11",                        
+        9 -    "reaction": {"move_pct": 1.0, "nifty_pct": 0.8, "excess_pc
+          -t": 0.2, "vol_ratio": 2.3}},                                  
+       10 -   "want": {"score": 350, "reason": "Ranked high: press releas
+          -e · 2.3× volume", "boosted": true, "collapsed": false}},      
+       11 -  {"name": "big raw move but flat vs Nifty: no boost", "item":
+          - {"tier": "P2", "category": "dividend", "reaction_day": "2026-
+          -11-09", "last_bar": "2026-11-11",                             
+       12 -    "reaction": {"move_pct": -3.5, "nifty_pct": -3.2, "excess_
+          -pct": -0.3, "vol_ratio": 1.0}},                               
+       13 -   "want": {"score": 200, "reason": "dividend · −0.3% vs Nifty
+          -", "boosted": false, "collapsed": false}},                    
+       14 -  {"name": "bar not yet available", "item": {"tier": "P1", "ca
+          -tegory": "management_change", "reaction_day": "2026-11-12", "l
+          -ast_bar": "2026-11-11", "reaction": null},                    
+       15 -   "want": {"score": 300, "reason": "management change · React
+          -ion pending", "boosted": false, "collapsed": false}},         
+       16 -  {"name": "no price data at all", "item": {"tier": "P3", "cat
+          -egory": "agm_egm", "reaction_day": "2026-11-09", "last_bar": n
+          -ull, "reaction": null},                                       
+       17 -   "want": {"score": 100, "reason": "AGM/EGM · No price data",
+          - "boosted": false, "collapsed": true}},                       
+       18 -  {"name": "nifty bar missing: raw move used", "item": {"tier"
+          -: "P3", "category": "investor_meetings", "reaction_day": "2026
+          --11-09", "last_bar": "2026-11-11",                            
+       19 -    "reaction": {"move_pct": 5.0, "nifty_pct": null, "excess_p
+          -ct": null, "vol_ratio": null}},                               
+       20 -   "want": {"score": 250, "reason": "Ranked high: investor mee
+          -tings · +5.0%", "boosted": true, "collapsed": false}}         
+       21 -]                                                             
+        1 +[                                                             
+        2 + {                                                            
+        3 +  "name": "quiet results day",                                
+        4 +  "item": {                                                   
+        5 +   "tier": "P1",                                              
+        6 +   "category": "results",                                     
+        7 +   "reaction_day": "2026-11-09",                              
+        8 +   "last_bar": "2026-11-11",                                  
+        9 +   "reaction": {                                              
+       10 +    "move_pct": 0.6,                                          
+       11 +    "nifty_pct": 0.2,                                         
+       12 +    "excess_pct": 0.4,                                        
+       13 +    "vol_ratio": 1.1                                          
+       14 +   }                                                          
+       15 +  },                                                          
+       16 +  "want": {                                                   
+       17 +   "score": 300,                                              
+       18 +   "reason": "results · +0.4% vs Nifty",                      
+       19 +   "boosted": false,                                          
+     … 141 more lines (ctrl+o to expand)
+  ⎿  … 1 more file changed
+  ⎿  (timeout 5m)
+
+● 40 pass. Re-running the full 20-ticker ingest:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      S="C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/3c7c7bdd-1
+      018-4d08-aa03-794b4d936a2c/scr…)
+  ⎿  1 file changed (binary, mode only or too large to show)
+  ⎿  (timeout 10m)
+
+● The digest reads well now and IRCTC succeeded after clearing the poisoned
+  cache, but the BHARTIARTL results card is still wrong: its periods read
+  "Sep-26 / Sep-25 / Same Quarter Last Year" and revenue is null, so the
+  extraction misread the columns. I'm inspecting the filing next. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The page finder picked the right company but a table with only two columns, so
+  the model's invented third column mislabelled a YoY change as QoQ; I'm adding
+  a sanity gate in results_card and letting the dedupe try the other results
+  PDF. Next I'm checking whether the Board Meeting outcome PDF has the proper
+  table. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Same 84-page report. Its own text says the detailed statements are on report
+  pages 29–33, so I'll score every page to see why the finder missed them:
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Page 2 is the genuine SEBI consolidated statement but its OCR is poor, so it
+  scores lower than the clean summary page. I'll add a bonus for the
+  "Consolidated Financial Results" title phrase and keep the validation gate as
+  a backstop. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\push\cards.py (+3 -2)
+      60      if k is None or not any(r in unit for r in ("₹", "rs", "inr
+          ", "rupee", "crore", "lakh", "lac")):
+      61          raise ValueError(f"unknown unit: {d['unit']}")
+      62      cols = [{f: (v * k if isinstance(v, (int, float)) else v) f
+          or f, v in c.items()} for c in d["columns"][:3]]
+      63 -    if len(cols) < 3:                                          
+      64 -        raise ValueError("need current, previous and year-ago c
+         -olumns")                                                       
+      63 +    # a page without all 3 quarters makes the model pad columns
+         +, and a YoY number gets shown as QoQ                           
+      64 +    if len(cols) < 3 or any(c.get("profit_before_tax") is None 
+         +or c.get("profit_after_tax") is None for c in cols)            
+         + or len({c["period_label"] for c in cols}) < 3:                
+      65 +        raise ValueError("need current, previous and year-ago c
+         +olumns with PBT and PAT")                                      
+      66  
+      67      if d["is_bank_or_nbfc"]:
+      68          lines = {"NII": [_sub(c.get("interest_earned"), c.get("
+          interest_expended")) for c in cols],
+  ⎿  Updated backend\finn\sources\pdf.py (+4 -0)
+      1  """PDF helpers: per-page text, results-page finder, page subset.
+         """
+      2 +import re                                                       
+      3  import pymupdf
+      4  
+      5  # Lines of a P&L statement; any 3 on one page means "this is the
+          results table".
+     ...
+      23      for i, t in enumerate(texts):
+      24          low = t.lower()
+      25          score = sum(k in low for k in PNL) - 3 * sum(k in low f
+          or k in NOT_PNL)
+      26 +        # the SEBI statement's title; survives bad OCR better t
+         +han line items, and investor-report                            
+      27 +        # summary pages (2 columns, no preceding quarter; e.g. 
+         +BHARTIARTL) don't carry it                                     
+      28 +        score += 3 * bool(re.search(r"results for the (quarter|
+         +three months|period)", low))                                   
+      29          if score < 3:
+      30              continue
+      31          basis = "consolidated" if low.count("consolidated") > l
+          ow.count("standalone") else "standalone"
+  ⎿  Updated backend\tests\test_results.py (+8 -0)
+      78          if field == "exceptional_items":  # sign varies (charge
+           printed as +/-); the card uses abs()
+      79              got, want = [abs(x) for x in got], [abs(x) for x in
+           want]
+      80          assert got == pytest.approx(want), field
+      81 +                                                               
+      82 +                                                               
+      83 +def test_card_rejects_padded_columns():                        
+      84 +    # BHARTIARTL 12 Nov: a 2-column summary page; model padded 
+         +a 3rd column and YoY showed as QoQ                             
+      85 +    ex = _fake("TCS_results.pdf")                              
+      86 +    ex["data"]["columns"][2]["profit_before_tax"] = None       
+      87 +    with pytest.raises(ValueError):                            
+      88 +        results_card(ex)                                       
+  ⎿  (timeout 5m)
+
+● The finder now selects Airtel pages 2 and 3, and the three original fixtures
+  still pass. Next I'll save a two-page Airtel fixture to keep this regression
+  covered, then re-run ingest. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python -c "
+      from finn.sources import fetch, pdf…)
+  ⎿  Updated backend\tests\test_results.py (+6 -0)
+      86      ex["data"]["columns"][2]["profit_before_tax"] = None
+      87      with pytest.raises(ValueError):
+      88          results_card(ex)
+      89 +                                                               
+      90 +                                                               
+      91 +def test_prefers_sebi_statement_over_clean_summary_page():     
+      92 +    # BHARTIARTL: p.1 = OCR-garbled SEBI statement (3 quarters)
+         +, p.2 = clean 2-column investor-report summary                 
+      93 +    idx, basis = pdf.find_results_pages(pdf.pages(pdf.open_pdf(
+         +(FIX / "BHARTIARTL_statement_p2_summary_p33.pdf").read_bytes())
+         +))                                                             
+      94 +    assert idx[0] == 0 and basis == "consolidated"             
+  ⎿  Updated web\public\data\feed.json (+20 -18)
+      1  {
+      2 - "generated_at": "2026-11-12T03:50+05:30",                      
+      2 + "generated_at": "2026-11-12T03:52+05:30",                      
+      3   "window": [
+      4    "2026-11-05",
+      5    "2026-11-12"
+     ...
+      354      "unit": "₹ crore",
+      355      "note": "EBITDA = PBT + finance costs + D&A; other income 
+           not excluded",
+      356      "periods": [
+      357 -     "Sep-26",                                                
+      358 -     "Sep-25",                                                
+      359 -     "Same Quarter Last Year"                                 
+      357 +     "September 30, 2026",                                    
+      358 +     "June 30, 2026",                                         
+      359 +     "September 30, 2025"                                     
+      360      ],
+      361      "lines": [
+      362       {
+      363        "name": "Revenue",
+      364 -      "value": null,                                          
+      365 -      "qoq_pct": null,                                        
+      366 -      "yoy_pct": null                                         
+      364 +      "value": 60877.5,                                       
+      365 +      "qoq_pct": 4.0,                                         
+      366 +      "yoy_pct": 16.7                                         
+      367       },
+      368       {
+      369        "name": "EBITDA",
+      370 -      "value": null,                                          
+      371 -      "qoq_pct": null,                                        
+      372 -      "yoy_pct": null                                         
+      370 +      "value": 35752.4,                                       
+      371 +      "qoq_pct": 5.3,                                         
+      372 +      "yoy_pct": 17.7                                         
+      373       },
+      374       {
+      375        "name": "PBT",
+      376 -      "value": 15608.2,                                       
+      377 -      "qoq_pct": 26.7,                                        
+      378 -      "yoy_pct": null                                         
+     … 26 more lines (ctrl+o to expand)
+  ⎿  … 1 more file changed
+  ⎿  (timeout 10m)
+
+● BHARTIARTL now checks out against Airtel's own summary page, with a real QoQ
+  column added. Next I'll fix the CLI's None% display, check spend, and commit.
+  · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\ingest.py (+2 -1)
+      129          if card and card["type"] == "results":
+      130              print(f"     {card['basis']}, ₹ crore · {' / '.joi
+           n(card['periods'])}")
+      131              for l in card["lines"]:
+      132 -                print(f"       {l['name']:<16} {l['value'] if 
+          -l['value'] is not None else '–':>12}   QoQ {l['qoq_pct']}%   Y
+          -oY {l['yoy_pct']}%")                                          
+      132 +                f = lambda x: "–" if x is None else f"{x:+.1f}
+          +%"                                                            
+      133 +                print(f"       {l['name']:<16} {'–' if l['valu
+          +e'] is None else f'{l[\"value\"]:,.0f}':>10}   QoQ {f(l['qoq_p
+          +ct']):>7}   YoY {f(l['yoy_pct']):>7}")                        
+      134              for o in card["one_offs"]:
+      135                  print(f"       ! {o}")
+      136          elif card:
+● I'll fix that syntax error with a plain edit:
+
+  Read 1 file (ctrl+o to expand)
+
+● Update(backend\finn\ingest.py)
+  ⎿  Added 3 lines, removed 2 lines
+      128          card = i.get("card")
+      129          if card and card["type"] == "results":
+      130              print(f"     {card['basis']}, ₹ crore · {' / '.joi
+           n(card['periods'])}")
+      131 +            pct = lambda x: "–" if x is None else f"{x:+.1f}%"
+      132              for l in card["lines"]:
+      132 -                f = lambda x: "–" if x is None else f"{x:+.1f}
+          -%"                                                            
+      133 -                print(f"       {l['name']:<16} {'–' if l['valu
+          -e'] is None else f'{l[\"value\"]:,.0f}':>10}   QoQ {f(l['qoq_p
+          -ct']):>7}   YoY {f(l['yoy_pct']):>7}")                        
+      133 +                v = "–" if l["value"] is None else f"{l['value
+          +']:,.0f}"                                                     
+      134 +                print(f"       {l['name']:<16} {v:>10}   QoQ {
+          +pct(l['qoq_pct']):>7}   YoY {pct(l['yoy_pct']):>7}")          
+      135              for o in card["one_offs"]:
+      136                  print(f"       ! {o}")
+      137          elif card:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● All 42 tests pass. Total LLM spend so far is $0.065 across 39 calls; the full
+  20-ticker ingest added about $0.03. Next I'll log the decisions, commit, and
+  write the re-plan.
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && ./.venv/Scripts/python -
+      <<'EOF'
+      import pathlib…)
+  ⎿  Updated DECISIONS.md (+14 -0)
+      29  - **Dependencies pinned** to the versions tested locally, so a 
+          Render rebuild can't pull an untested release.
+      30  - **One-off flag is pure Python.** If "Exceptional items" ≠ 0, 
+          the card says e.g. "Includes ₹668 cr one-off". No LLM judgment 
+          about what counts as one-off.
+      31  
+      32 +## Push pipeline (12 Nov)                                      
+      33 +- **No SQLite / `db.py`.** HTTP responses and LLM outputs are a
+         +lready cached on disk, and the app reads one exported `feed.jso
+         +n`. A database would only duplicate them. Gave up: ad-hoc SQL o
+         +ver history (not needed for a 7–30 day feed).                  
+      34 +- **Classifier = BSE subcategory first, then subject + headline
+         +, then the cheap LLM.** BSE's free-text headline often says "fi
+         +nancial results" on unrelated filings (investor-meet notices af
+         +ter results), so a subcategory that maps to exactly one categor
+         +y wins. Ambiguous subcategories (NSE's "Investor Meet/Con. Call
+         + Updates") fall through to the subject. Only generic subjects (
+         +"Disclosure under Regulation 30", "Outcome of Board Meeting hel
+         +d on…") go to the LLM, with pages 1–2 of the PDF. That was 1 of
+         + 52 filings in the 7-day run. The LLM also returns a ≤12-word h
+         +eadline, since those subjects are unreadable. Gave up: LLM judg
+         +ement on every filing (cost, and rules are explainable).       
+      35 +- **Results filed under "Board Meeting" are caught by the "fina
+         +ncial results" keyword** (HDFCBANK pattern). Tested.           
+      36 +- **Tier overrides by rule:** board-meeting intimations, newspa
+         +per copies and call recordings → P3 whatever their category. Re
+         +sults decks, press releases and shareholder letters → P2 (the r
+         +esults filing itself stays P1). ESOP allotments filed as "Allot
+         +ment of Equity Shares" → unclassified. Gave up: a per-category 
+         +tier editor.                                                   
+      37 +- **Known misfires we accept:** litigation isn't sized (a ₹1.6 
+         +lakh DoT penalty on BHARTIARTL is P1), and MARUTI's note on its
+         + Japanese parent's results is P1 results (the card is correctly
+         + refused: non-rupee unit). Sizing needs reading amounts against
+         + market cap; next step.                                        
+      38 +- **One results card per company per window.** Companies file t
+         +he same results 2–4 times (Result, Board Meeting outcome, quart
+         +erly report). The first filing that yields a valid card keeps P
+         +1; the rest drop to P2.                                        
+      39 +- **Results card sanity gate (Python):** all three columns must
+         + have PBT and PAT and distinct period labels, otherwise there's
+         + no card and the raw link is shown. Found on BHARTIARTL: the pa
+         +ge finder picked a clean 2-column summary page from an 84-page 
+         +investor report, the model padded a third column, and a YoY cha
+         +nge was shown as QoQ. The page finder now also scores the SEBI 
+         +statement title ("results for the quarter"), which survives bad
+         + OCR. Fixture added.                                           
+      40 +- **Mgmt-change card: profile from the filing only, cited to it
+         +s page.** If the filing points to an earlier letter (HDFCBANK's
+         + new MD & CEO, ASIANPAINT's new chairman), the card says "Profi
+         +le not in this filing; see intimation dated …" rather than fill
+         +ing it from memory. Bios sometimes exceed the 35-word target; t
+         +he UI clamps them to 3 lines.                                  
+      41 +- **Market-reaction boost applies to P1/P2 only.** On the first
+         + run, CDSL's 3.3× volume day boosted four routine investor-meet
+         + notices to the top. Routine paperwork doesn't explain a move, 
+         +and the move still raises its own price alert. Boost = +150, so
+         + a P2 the market reacted to outranks a quiet P1.               
+      42 +- **yfinance bars lag.** On 12 Nov at 03:30 IST the 11 Nov bar 
+         +existed for Nifty and all 20 stocks with volume but a NaN close
+         +. We drop NaN-close rows, so filings whose reaction day has no 
+         +complete bar show **"Reaction pending"** (no boost, no fake one
+         +). The missing 10 Nov bar was a real holiday (Diwali Balipratip
+         +ada). Partial intraday bars are also dropped before 16:00 IST. 
+         +Consequence: a single 16:30 cron can't be trusted for reactions
+         +, so ingest re-ranks the whole window on every run and pending 
+         +items resolve on a later run.                                  
+      43 +- **NSE fallback for announcements.** CDSL is listed only on NS
+         +E (no BSE code). NSE's announcements API answered without cooki
+         +es on 12 Nov. It's also used when BSE fails for a ticker: BSE s
+         +erved a 200 HTML error page for IRCTC's 7-day window. `fetch` n
+         +ow refuses to cache responses that don't start with the expecte
+         +d bytes (`{`, `[`, `%PDF`), so one bad answer can't poison the 
+         +cache.                                                         
+      44 +- **Screener slug fallback not built.** All 20 portfolio symbol
+         +s resolved on screener (incl. ETERNAL). If screener 404s, annou
+         +ncements still come from NSE by symbol; only the pull side woul
+         +d need the search fallback.                                    
+      45 +                                                               
+      46  ## Spike findings (11 Nov)
+      47  - **BSE API needs full browser headers** (`Origin` + `sec-fetch
+          -*`), not just User-Agent + Referer. Without them it returns 40
+          3. No cookies needed. **Works from a cloud IP:** `/health/bse` 
+          on Render (Singapore, free tier) returned live rows on 11 Nov, 
+          so live pull and cloud ingest can call BSE directly. Gave up: n
+          othing; the local-ingest fallback wasn't needed.
+      48  - **BSE's category alone misses results.** HDFCBANK filed Q2 re
+          sults under "Board Meeting / Outcome of Board Meeting". The cla
+          ssifier needs a keyword rule on the subject ("financial results
+          ").
+
+● I'm re-planning PLAN.md with a 12 Nov status section, corrected architecture
+  notes (no db.py, a new nse.py, alerts in rank.py), and Thu–Sat rewritten while
+  keeping the never-cut list. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && ./.venv/Scripts/python -
+      <<'EOF'
+      import pathlib…)
+  ⎿  Updated PLAN.md (+41 -21)
+      1  # FINN — build plan (11–15 Nov 2026)
+      2  
+      3  Single source of truth for the build. Scope and hard rules live 
+         in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.
+      4 -Current status: see §3b "Status at end of Day 1".               
+      4 +Current status: see §3c "Status at 12 Nov, early morning". Day p
+        +lan: §4 (re-planned 12 Nov).                                    
+      5  
+      6  ---
+      7  
+     ...
+      30  
+      31  ## 2. Architecture
+      32  
+      33 -Static-first: ingest writes SQLite and exports JSON into `web/p
+         -ublic/data/` (committed). The feed and demo research pages load
+         - instantly with no backend. Render serves only live pull for un
+         -seen tickers. No Supabase.                                     
+      33 +Static-first: ingest exports JSON into `web/public/data/` (comm
+         +itted); no SQLite (12 Nov: the disk caches already hold everyth
+         +ing). The feed and demo research pages load instantly with no b
+         +ackend. Render serves only live pull for unseen tickers. No Sup
+         +abase.                                                         
+      34  
+      35  ```
+      36  finn/
+      37    backend/finn/
+      38      config.py        # portfolio, tier map, default thresholds
+      39      llm.py           # provider-agnostic router, retry/fallback
+          , cache, cost log
+      40 -    db.py                                                      
+      40      sources/
+      41        prices.py      # yfinance EOD (period="2mo" for 20d avg) 
+          + ^NSEI
+      42        bse.py         # announcements + attachments (full browse
+          r headers)
+      43 +      nse.py         # fallback: NSE-only listings (CDSL) and B
+         +SE errors                                                      
+      44        screener.py    # symbol -> BSE code, doc links, quarterly
+           table
+      45        pdf.py         # page text with [p.N]; consolidated-page 
+          finder; page subset
+      46      push/
+      47        classify.py    # BSE category/subcategory + keyword rules
+          ; LLM only if ambiguous
+      48        cards.py       # results card (+ one-off flag), mgmt-chan
+          ge card
+      49 -      rank.py        # tier + category + reaction boost (vs Nif
+         -ty) -> score + reason                                          
+      50 -      alerts.py                                                
+      49 +      rank.py        # tier + reaction boost (vs Nifty) -> scor
+         +e + reason; price alerts                                       
+      50      pull/
+      51        pvd.py         # cheap: guidance extract per transcript -
+          > strong: verdicts
+      52        research.py    # financial snapshot (no LLM), business sn
+          apshot, bull/bear
+     ...
+      78  4. Schema adds `exceptional_items` per column. Python computes 
+          QoQ/YoY, EBITDA (= PBT + finance costs + D&A, other income not 
+          excluded, stated on card), NII (= interest earned − interest ex
+          pended), and the one-off flag.
+      79  
+      80  ### Market-reaction ranking (decided)
+      82 -- Reaction day = the filing date if filed before 15:30 IST, oth
+         -erwise the next trading day. If no bar exists yet, there's no b
+         -oost (and no fake one).                                        
+      81 +- Reaction day = the filing date if filed before 15:30 IST, oth
+         +erwise the next trading day. If no complete bar exists yet: "Re
+         +action pending", no boost (yfinance posts NaN-close stub bars f
+         +or 12+ hours).                                                 
+     … 64 more lines (ctrl+o to expand)
+
+● All four steps are done, in five local commits (not pushed). The CLI now
+  prints a ranked 7-day digest plus alerts for all 20 tickers. Last run: 22
+  items shown, 30 routine hidden, 20 alerts, no tickers failed. 42 tests pass,
+  and LLM spend to date is $0.065 over 39 calls. I've stopped before any UI
+  work, as you asked.
+
+  1. PAT rule. The card now shows "PAT (to owners)" when the filing prints that
+  line, and "PAT" (total) otherwise. It uses the owners figure only when all
+  three quarters have it, so QoQ/YoY compare like with like. I read the expected
+  figures off the three fixture PDFs by hand, and DECISIONS.md marks the old
+  rule as superseded. Two bugs turned up on the way:
+  - Cache never hit. PyMuPDF produces slightly different bytes each time it cuts
+    pages out of a PDF, so every extraction was a fresh paid call. The cache
+    key is now the original PDF's hash plus the page numbers, and a test checks
+    that a second call hits the cache.
+  - BAJFINANCE had stopped passing. The model left its interest income blank on
+    one run. A prompt fix brought it back.
+
+  2. Day 1 leftovers.
+  - Classifier: BSE's subcategory decides first, then keywords on the subject.
+    Results filed under "Board Meeting" are caught and tested. Only filings with
+    generic subjects ("Disclosure under Regulation 30") go to the cheap model,
+    with pages 1–2 of the PDF; that was 1 of 52 filings this week.
+  - Management-change card: the bio comes from the filing, with its page number.
+    HDFCBANK's new MD & CEO filing contains no profile, so the card says
+    "Profile not in this filing; see intimation dated October 1, 2026" instead
+    of making one up.
+  - rank.py: adds the boost relative to Nifty, the reason strings, "Reaction
+    pending" and price alerts. The test cases sit in a JSON table so the
+    TypeScript version can run the same ones.
+  - Ingest: all 20 tickers resolved on screener; there were no slug mismatches.
+  - CDSL is listed only on NSE, so it has no BSE code. I added a small NSE
+    fallback, which also kicks in when BSE fails. BSE did fail once: for IRCTC
+    it returned an HTML error page that got cached, so the fetcher now refuses
+    to cache anything that isn't the expected format.
+  - No SQLite / db.py: the disk caches already hold everything and the app reads
+    one JSON file.
+
+  Three judgement calls you may want to defend or overrule:
+  - No boost for routine (P3) filings. CDSL's 3.3× volume day pushed four
+    investor-meet notices to the top. The volume spike still shows as its own
+    price alert.
+  - BHARTIARTL card was showing a YoY change labelled as QoQ. The page finder
+    had picked a two-column summary page and the model invented a third column.
+    Python now rejects any card without three complete quarters, the page finder
+    prefers the official results statement, and a fixture covers it. The
+    corrected numbers match Airtel's own summary.
+  - One results card per company per window. Companies file the same results two
+    to four times; the extra copies drop to P2.
+
+  3. yfinance and 10 Nov. 10 Nov was a market holiday (Diwali Balipratipada, per
+  Upstox (https://upstox.com/stocks-market/nse-holidays/) and Bajaj AMC
+  (https://www.bajajamc.com/knowledge-centre/nse-holidays)). But bars do lag: at
+  03:30 IST on 12 Nov, the 11 Nov bar for Nifty and every stock had volume but
+  no closing price. Those half-filled bars are now ignored, so affected filings
+  show "Reaction pending". TATAPOWER's new-CEO filing (11 Nov, 18:54) is a live
+  example.
+
+  4. Re-plan (PLAN.md §3c and §4). The never-cut list is unchanged.
+  - Thu (today): feed UI at 390px using the impeccable skill, a TypeScript
+    version of the ranking, then the Vercel deploy (I'll stop for click-by-click
+    instructions first). This evening, re-run ingest to confirm "Reaction
+    pending" clears once the bar fills.
+  - Fri: Promised vs Delivered (the hero feature) end to end, then the
+    credibility chip, financial snapshot and bull/bear.
+  - Sat: live pull with staged progress text, the research page,
+    failure-handling pass, and the GitHub Actions cron. The cron changes to two
+    runs a day (about 18:30 and 08:30 IST) because of the yfinance lag.
+
+  One alternative to consider: do Promised vs Delivered's backend today and the
+  UI on Friday, since it's the riskiest part and untouched so far. I'd still do
+  the feed UI first so a working demo exists a day earlier.
+
+  Not done or checked:
+  - I didn't hand-check the TATAPOWER results numbers against its PDF; only the
+    fixtures are hand-verified.
+  - Litigation and fund-raise filings aren't sized, so a ₹1.6 lakh penalty and
+    every NCD allotment still count as P1.
+  - Bios run to about 60 words against a 35-word target; the UI will clamp them.
+
+  Please /export this session into build-history/.
+
+> Great work. Decisions:
+  1. I agree with all three judgement calls (no boost for P3, reject cards
+  without 3 complete quarters, one results card per company). Keep them in
+  DECISIONS.md.
+  2. Sizing rules, since filtering is the core of the brief:
+  litigation/penalties below a small threshold (propose one, e.g. ₹1 cr) → P3
+  with a one-line note; routine debt allotments (NCDs, commercial paper,
+  especially NBFCs) → P3; fund_raise stays P1 only for equity raises (QIP,
+  rights, preferential) or large debt above a threshold you propose. Rules
+  only, no LLM. Add test cases.
+  3. Accuracy spot-check: hand-verify 3 non-fixture results cards from this
+  week (including TATAPOWER) against their PDFs. Fix anything wrong and record
+  the check in DECISIONS.md.
+  4. Re-plan: feed UI stays today. PvD backend will run in a separate session
+  later this morning while I sleep.
+  5. Update PLAN.md, commit, push everything, then stop.
+
+● I'll start with the sizing rules. To exempt lenders' routine debt without
+  hard-coding tickers, I need to detect lenders programmatically. Screener's
+  quarterly table should label a "Financing Profit" row for banks/NBFCs, so I'll
+  check that before writing anything.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Only HDFCBANK and BAJFINANCE show "Financing Profit," so I'm writing a
+  regex-based rupee-amount parser and running it over the 30-day litigation and
+  fund-raise filings. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Probe results show the parser must handle bare "rs" matching "Sirs," and mixed
+  amount formats, and debt max amounts often reflect authorised limits, so I'm
+  keeping thresholds conservative: litigation under ₹1 cr drops to P3, debt is
+  P1 only at ₹1,000 cr+ for non-lenders, and equity raises stay P1. Writing the
+  parser now. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\config.py (+26 -22)
+       1 -"""Portfolio, priority tiers and default alert thresholds. Path
+         -s are relative to the repo root."""                            
+       2 -import pathlib                                                 
+       3 -from dotenv import load_dotenv                                 
+       4 -                                                               
+       5 -ROOT = pathlib.Path(__file__).resolve().parents[2]             
+       6 -CACHE = ROOT / "cache"                                         
+       7 -load_dotenv(ROOT / ".env")                                     
+       8 -                                                               
+       9 -PORTFOLIO = [                                                  
+      10 -    "RELIANCE", "HDFCBANK", "TCS", "BHARTIARTL", "ITC", "LT", "
+         -SUNPHARMA", "MARUTI", "BAJFINANCE", "ASIANPAINT",              
+      11 -    "TRENT", "ETERNAL", "DIXON", "PERSISTENT", "POLYCAB", "TATA
+         -POWER", "IRCTC", "CDSL", "KPITTECH", "DEEPAKNTR",              
+      12 -]                                                              
+      13 -                                                               
+      14 -TIERS = {                                                      
+      15 -    "P1": ["results", "m_and_a", "management_change", "fund_rai
+         -se", "litigation", "credit_rating_downgrade", "pledging"],     
+      16 -    "P2": ["earnings_call", "dividend", "bonus_split", "capex",
+         - "press_release", "credit_rating"],                            
+      17 -    "P3": ["investor_meetings", "postal_ballot", "agm_egm", "in
+         -sider_trading", "unclassified"],                               
+      18 -}                                                              
+      19 -                                                               
+      20 -# Defaults only; the user changes them in the app (localStorage
+         -).                                                             
+      21 -VOLUME_MULTIPLE = 2.0   # alert when EOD volume >= N x 20-day a
+         -verage                                                         
+      22 -EXCESS_MOVE_PCT = 3.0   # alert when |stock % - Nifty %| >= X  
+       1 +"""Portfolio, priority tiers and default alert thresholds. Path
+         +s are relative to the repo root."""                            
+       2 +import pathlib                                                 
+       3 +from dotenv import load_dotenv                                 
+       4 +                                                               
+       5 +ROOT = pathlib.Path(__file__).resolve().parents[2]             
+       6 +CACHE = ROOT / "cache"                                         
+       7 +load_dotenv(ROOT / ".env")                                     
+       8 +                                                               
+       9 +PORTFOLIO = [                                                  
+      10 +    "RELIANCE", "HDFCBANK", "TCS", "BHARTIARTL", "ITC", "LT", "
+         +SUNPHARMA", "MARUTI", "BAJFINANCE", "ASIANPAINT",              
+      11 +    "TRENT", "ETERNAL", "DIXON", "PERSISTENT", "POLYCAB", "TATA
+         +POWER", "IRCTC", "CDSL", "KPITTECH", "DEEPAKNTR",              
+      12 +]                                                              
+      13 +                                                               
+      14 +TIERS = {                                                      
+      15 +    "P1": ["results", "m_and_a", "management_change", "fund_rai
+         +se", "litigation", "credit_rating_downgrade", "pledging"],     
+      16 +    "P2": ["earnings_call", "dividend", "bonus_split", "capex",
+         + "press_release", "credit_rating"],                            
+      17 +    "P3": ["investor_meetings", "postal_ballot", "agm_egm", "in
+         +sider_trading", "unclassified"],                               
+      18 +}                                                              
+     … 8 more lines (ctrl+o to expand)
+  ⎿  Updated backend\finn\ingest.py (+4 -3)
+      51              raise
+      52          errors.append(f"BSE failed, used NSE: {_err(e)}")
+      53          source, rows = "nse", nse.announcements(sym, start, end
+          )
+      54 +    lender = "Financing Profit" in co.get("quarters", {}).get("
+         +rows", {})  # screener's bank/NBFC table layout                
+      55      h = prices.history(sym)
+      56      last_bar = h.index[-1].isoformat() if len(h) else None
+      57  
+      58      items, has_results_card = [], False
+      59      for row in rows:
+      60          get_pdf = lambda row=row: _pdf(row)
+      60 -        c = classify.classify(row, get_pdf)                    
+      61 +        c = classify.classify(row, get_pdf, lender)            
+      62          rday = rank.reaction_day(row["NEWS_DT"])
+      63          item = {
+      64              "id": row["NEWSID"], "symbol": sym, "name": co["nam
+          e"], "filed": row["NEWS_DT"][:16],
+      64 -            "subject": row.get("NEWSSUB"), "headline": c.get("h
+         -eadline") or row.get("HEADLINE"), "category": c["category"], "t
+         -ier": c["tier"],                                               
+      65 +            "subject": row.get("NEWSSUB"), "headline": c.get("h
+         +eadline") or row.get("HEADLINE"), "note": c.get("note"), "categ
+         +ory": c["category"], "tier": c["tier"],                        
+      66              "classified_by": c["by"], "classify_error": c.get("
+          error"), "url": row.get("url"), "source": source,
+      67              "reaction_day": rday.isoformat(), "last_bar": last_
+          bar,
+      68              "reaction": prices.day_stats(h, nifty, rday) if len
+          (h) else None,
+     ...
+      125      print(f"\nFINN digest {feed['window'][0]} → {feed['window'
+           ][1]} · {len(shown)} shown · {hidden} routine hidden")
+      126      for i in shown:
+      127          print(f"\n[{i['tier']}] {i['symbol']} · {i['filed']} ·
+            {i['reason']}")
+      127 -        print(f"     {i['headline'] or i['subject']}")        
+      128 +        print(f"     {i['headline'] or i['subject']}" + (f"  [
+          +{i['note']}]" if i.get("note") else ""))                      
+      129          card = i.get("card")
+      130          if card and card["type"] == "results":
+      131              print(f"     {card['basis']}, ₹ crore · {' / '.joi
+           n(card['periods'])}")
+  ⎿  Updated backend\finn\push\classify.py (+61 -4)
+      2  sees page 1-2 of the PDF only when no rule matches (generic subj
+         ects like "Disclosure under Regulation 30")."""
+      3  import re, hashlib
+      4  from finn import llm
+      5 -from finn.config import TIERS                                   
+      5 +from finn.config import TIERS, LITIGATION_MIN_CR, DEBT_MIN_CR   
+      6  from finn.sources import pdf
+      7  
+      8  TIER_OF = {c: t for t, cs in TIERS.items() for c in cs}
+     ...
+       48      "headline": {"type": "string"}}, "required": ["category", 
+           "headline"]}
+       49  
+       50  
+       51 +EQUITY = r"qip|qualified institution|rights issue|rights entit
+          +lement|preferential|warrant|buy-?back|initial public offer|ipo
+          +|red herring|call on partly paid"                             
+       52 +DEBT = r"ncds?|non-convertible|debenture|commercial paper|cps?
+          +|bonds?"                                                      
+       53 +ESOP = r"esop|esos|esps|employee stock|stock option"          
+       54 +AMT = re.compile(r"(?:rs\.?|inr|₹)\s*(\d[\d,]*(?:\.\d+)?)\s*(?
+          +:/-)?\s*(crores?|cr|lakhs?|lacs?|millions?|mn|billions?|bn)?",
+          + re.I)                                                        
+       55 +UNIT_CR = {"cr": 1, "lak": 0.01, "lac": 0.01, "mil": 0.1, "mn"
+          +: 0.1, "bil": 100, "bn": 100}                                 
+       56 +                                                              
+       57 +                                                              
+       58 +def amounts_cr(text: str) -> list[float]:                     
+       59 +    """Every rupee amount in the text, in ₹ crore ("Rs 1,60,00
+          +0" -> 0.016, "INR 6 billion" -> 600)."""                      
+       60 +    out = []                                                  
+       61 +    for m in AMT.finditer(text):                              
+       62 +        v, unit = float(m.group(1).replace(",", "")), (m.group
+          +(2) or "").lower()                                            
+       63 +        out.append(v * next((k for u, k in UNIT_CR.items() if 
+          +unit.startswith(u)), 1e-7))                                   
+       64 +    return out                                                
+       65 +                                                              
+       66 +                                                              
+       67 +def inr(cr: float) -> str:                                    
+       68 +    return f"₹{cr:,.0f} cr" if cr >= 1 else f"₹{cr * 100:,.1f}
+          + lakh"                                                        
+       69 +                                                              
+       70 +                                                              
+       71 +def _fund(t: str, amounts: list[float], lender: bool) -> tuple
+          +[str, str | None] | None:                                     
+       72 +    """(tier, note) from one text, or None if this text doesn'
+          +t say what kind of raise it is."""                            
+       73 +    if re.search(ESOP, t):                                    
+       74 +        return "P3", "Employee stock allotment"               
+       75 +    if re.search(EQUITY, t):                                  
+       76 +        return "P1", None                                     
+       77 +    if re.search(DEBT, t):                                    
+       78 +        if lender:                                            
+       79 +            return "P3", "Routine borrowing by a lender"      
+     … 47 more lines (ctrl+o to expand)
+  ⎿  (timeout 10m)
+
+● That filter only caught rows already at P1 before PDF sizing, so I'm printing
+  every litigation and fund-raise row next and checking that the regex landed
+  correctly, since the SyntaxWarning came from my patch script. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The \b word boundaries seem to have vanished from the file. Checking the raw
+  bytes:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The output above contains literal backspace characters because my patch
+  script's escaping turned \\b into \b, so it can't be trusted; cps? without
+  word boundaries would match any "cp". I'm fixing the bytes and re-running.
+  · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python -c "
+      import pathlib…)
+  ⎿  Updated backend\finn\push\classify.py (+3 -3)
+      48      "headline": {"type": "string"}}, "required": ["category", "
+          headline"]}
+      49  
+      50  
+      51 -EQUITY = r"qip|qualified institution|rights issue|rights entitl
+         -ement|preferential|warrant|buy-?back|initial public offer|ipo|r
+         -ed herring|call on partly paid"                                
+      52 -DEBT = r"ncds?|non-convertible|debenture|commercial paper|cps?|
+         -bonds?"                                                        
+      51 +EQUITY = r"\bqip\b|qualified institution|rights issue|rights en
+         +titlement|preferential|warrant|buy-?back|initial public offer|\
+         +bipo\b|red herring|call on partly paid"                        
+      52 +DEBT = r"\bncds?\b|non-convertible|debenture|commercial paper|\
+         +bcps?\b|\bbonds?\b"                                            
+      53  ESOP = r"esop|esos|esps|employee stock|stock option"
+      54 -AMT = re.compile(r"(?:rs\.?|inr|₹)\s*(\d[\d,]*(?:\.\d+)?)\s*(?:
+         -/-)?\s*(crores?|cr|lakhs?|lacs?|millions?|mn|billions?|bn)?", r
+         -e.I)                                                           
+      54 +AMT = re.compile(r"(?:\brs\b\.?|\binr\b|₹)\s*(\d[\d,]*(?:\.\d+)
+         +?)\s*(?:/-)?\s*(crores?|cr\b|lakhs?|lacs?|millions?|mn\b|billio
+         +ns?|bn\b)?", re.I)                                             
+      55  UNIT_CR = {"cr": 1, "lak": 0.01, "lac": 0.01, "mil": 0.1, "mn":
+           0.1, "bil": 100, "bn": 100}
+      56  
+      57  
+  ⎿  (timeout 10m)
+
+● Word boundaries are fixed and the outcomes look right, but BAJFINANCE's
+  preferential issue got labeled as an employee stock allotment, so I'm checking
+  why. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● As expected: the preferential-issue letter mentions ESOPs only in a
+  shareholding table, so equity keywords should be checked before ESOP.
+  Reordering to equity, then ESOP, then debt:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PYEOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\push\classify.py (+2 -2)
+      70  
+      71  def _fund(t: str, amounts: list[float], lender: bool) -> tuple[
+          str, str | None] | None:
+      72      """(tier, note) from one text, or None if this text doesn't
+           say what kind of raise it is."""
+      73 +    if re.search(EQUITY, t):  # before ESOP: a preferential-iss
+         +ue letter mentions ESOPs in its shareholding table             
+      74 +        return "P1", None                                      
+      75      if re.search(ESOP, t):
+      76          return "P3", "Employee stock allotment"
+      75 -    if re.search(EQUITY, t):                                   
+      76 -        return "P1", None                                      
+      77      if re.search(DEBT, t):
+      78          if lender:
+      79              return "P3", "Routine borrowing by a lender"
+  ⎿  (timeout 5m)
+
+● Fixed. Only LT's genuine ESOP allotment and BAJFINANCE's ESOP-trust allotment
+  stay P3. Adding tests built from these real snippets:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && cat >>
+      tests/test_classify.py <<'EOF'…)
+  ⎿  Updated backend\tests\test_classify.py (+44 -0)
+      33      assert classify(r) == {"by": "default", "category": "unclas
+          sified", "tier": "P3"}
+      34      def boom(): raise FileNotFoundError("attachment gone")
+      35      assert classify(r, boom)["by"] == "default"
+      36 +                                                               
+      37 +                                                               
+      38 +# --- sizing (rules only), snippets from real filings in the 12
+         + Nov 30-day pull ---                                           
+      39 +from finn.push.classify import amounts_cr, size                
+      40 +                                                               
+      41 +                                                               
+      42 +def test_amount_parser_units():                                
+      43 +    assert amounts_cr("imposing penalty of rs 1,60,000") == [py
+         +test.approx(0.016)]                                            
+      44 +    assert amounts_cr("fines of ₹10,23,060/- levied") == [pytes
+         +t.approx(0.1023060)]                                           
+      45 +    assert amounts_cr("aggregating inr 6 billion") == [600]    
+      46 +    assert amounts_cr("issue size rs. 2,069.501 crore") == [pyt
+         +est.approx(2069.501)]                                          
+      47 +    assert amounts_cr("inr 15,000 million") == [1500]          
+      48 +    assert amounts_cr("dear sirs, madam") == []  # 'sirs,' is n
+         +ot 'rs'                                                        
+      49 +                                                               
+      50 +                                                               
+      51 +SIZE_CASES = [  # (category, head, body, lender) -> (tier, note
+         +) override, or None = stays P1                                 
+      52 +    ("litigation", "received notice from department of telecomm
+         +unications imposing penalty of rs 1,60,000", "", False,        
+      53 +     ("P3", "₹1.6 lakh at stake, below ₹1 cr")),  # BHARTIARTL 
+      54 +    ("litigation", "board comments on fines levied by the excha
+         +nges", "fine of ₹10,23,060/- and ₹29,500/-", False,            
+      55 +     ("P3", "₹10.2 lakh at stake, below ₹1 cr")),  # IRCTC     
+      56 +    ("litigation", "order passed by nclat setting aside the ord
+         +er of nclt", "", False, None),  # unsized: not hidden          
+      57 +    ("litigation", "receipt of tax demand order", "demand of rs
+         +. 312.4 crore", False, None),                                  
+      58 +    ("fund_raise", "outcome of qip 2026 - special committee mee
+         +ting", "", True, None),  # equity, even for a lender           
+      59 +    ("fund_raise", "allotment of secured redeemable non-convert
+         +ible debentures", "rs. 2,120 crore", True,                     
+      60 +     ("P3", "Routine borrowing by a lender")),  # BAJFINANCE   
+      61 +    ("fund_raise", "intimation of the allotment of commercial p
+         +aper (cps)", "inr 6 billion", False,                           
+      62 +     ("P3", "Debt raise ₹600 cr, below ₹1,000 cr")),  # PERSIST
+         +ENT                                                            
+      63 +    ("fund_raise", "allotment of non-convertible debentures", "
+         +inr 15,000 million", False, None),  # PERSISTENT ₹1,500 cr     
+      64 +    ("fund_raise", "allotment of shares", "pursuant to the empl
+         +oyee stock option scheme", False, ("P3", "Employee stock allotm
+         +ent")),  # LT                                                  
+      65 +    ("fund_raise", "outcome of pi 2026 - allotment committee", 
+      66 +     "preferential issue of warrants ... after allotment of war
+         +rants and their full conversion into equity shares and esops", 
+         +True, None),  # BAJFINANCE                                     
+      67 +    ("fund_raise", "allotment", "", False, ("P3", "Allotment, n
+         +o equity raise or large debt found")),                         
+      68 +]                                                              
+      69 +                                                               
+      70 +                                                               
+      71 +@pytest.mark.parametrize("cat,head,body,lender,want", SIZE_CASE
+         +S)                                                             
+      72 +def test_sizing(cat, head, body, lender, want):                
+     … 7 more lines (ctrl+o to expand)
+  ⎿  (timeout 5m)
+
+● 55 pass. I'll drop a stray | {} from that last test and commit the sizing
+  rules.
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && sed -i 's/assert
+      classify(r) | {} == /assert classify(r) == /' tests/test_classify.py &&
+      ../.venv/Script…)
+  ⎿  Updated backend\tests\test_classify.py (+1 -1)
+      76  def test_sizing_applies_inside_classify():
+      77      r = {"SUBCATNAME": "General", "NEWSSUB": "Disclosure Under 
+          Regulation 30 Of SEBI (LODR)",
+      78           "HEADLINE": "Received notice from Department of Teleco
+          mmunications imposing penalty of Rs 1,60,000"}
+      79 -    assert classify(r) | {} == {"by": "rule", "category": "liti
+         -gation", "tier": "P3", "note": "₹1.6 lakh at stake, below ₹1 cr
+         -"}                                                             
+      79 +    assert classify(r) == {"by": "rule", "category": "litigatio
+         +n", "tier": "P3", "note": "₹1.6 lakh at stake, below ₹1 cr"}   
+  ⎿  (timeout 5m)
+
+● Committed; the hand check comes next. Only TATAPOWER filed this week, so I'm
+  adding ASIANPAINT and ETERNAL cards and rendering the source pages to read by
+  hand. · summary
+  Ran 1 shell command (ctrl+o to expand)
+
+● Now I'll read each source page myself, starting with TATAPOWER p.8:
+
+  Read 1 file (ctrl+o to expand)
+
+● TATAPOWER's 24 numbers all match the page, but EBITDA was inflated by a ₹119
+  cr one-off exceptional gain, so I'm rebuilding it from the printed "before
+  exceptional items" line. Checking the other two pages next. · summary
+
+  Read 2 files (ctrl+o to expand)
+
+● Extraction is fully correct for ASIANPAINT and ETERNAL (72/72 across the three
+  cards), with one harmless null-versus-0 difference. The real defect is the
+  EBITDA definition, so I'm pulling ground truth for the new line from the three
+  fixtures before I change the prompt. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● TCS's pre-exceptional profit gives one-off charges of ₹668 cr and ₹1,135 cr
+  against PBT; HDFCBANK has no such line, so it falls back to PBT. Implementing
+  that next. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PYEOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\prompts\extract_results.md (+1 -0)
+       7  - `unit` is the unit printed on the table (e.g. "₹ crore", "₹ l
+          akh", "₹ million").
+       8  - Use null when a line is not in the table. Do not use outside 
+          knowledge.
+       9  - `exceptional_items`: the total of exceptional items for that 
+          column (0 if the line shows "-"; null if there is no such line)
+          .
+      10 +- `profit_before_exceptional_and_tax`: the "profit before excep
+         +tional items and tax" line as printed; null if the table has no
+         + such line.                                                    
+      11  - `profit_before_tax`: profit before tax after exceptional item
+          s.
+      12  - `profit_after_tax`: profit for the period / net profit, befor
+          e other comprehensive income. For consolidated tables use the t
+          otal before minority / non-controlling interest.
+      13  - `profit_attributable_to_owners`: the "profit for the period a
+          ttributable to owners / shareholders / equity holders of the co
+          mpany" line, or "net profit after minority interest". null if t
+          he table does not print it. Do not use the other-comprehensive-
+          income or total-comprehensive-income split.
+  ⎿  Updated backend\finn\push\cards.py (+17 -8)
+      13          "columns": {"type": "array", "items": {"type": "object"
+          , "properties": {
+      14              "period_label": {"type": "string"},
+      15              **{k: _num for k in ["revenue_from_operations", "to
+          tal_income", "interest_earned", "interest_expended",
+      16 -                                 "finance_costs", "depreciation
+         -_amortisation", "exceptional_items",                           
+      16 +                                 "finance_costs", "depreciation
+         +_amortisation", "exceptional_items", "profit_before_exceptional
+         +_and_tax",                                                     
+      17                                   "profit_before_tax", "profit_a
+          fter_tax", "profit_attributable_to_owners"]},
+      18          }, "required": ["period_label", "profit_before_tax", "p
+          rofit_after_tax"]}},
+      19      },
+      20      "required": ["basis", "unit", "is_bank_or_nbfc", "columns"]
+          ,
+      21  }
+      22  TO_CRORE = {"crore": 1, "lakh": 0.01, "lac": 0.01, "million": 0
+          .1, "mn": 0.1, "billion": 100, "bn": 100, "thousand": 1e-4}
+      23 -EBITDA_NOTE = "EBITDA = PBT + finance costs + D&A; other income
+         - not excluded"                                                 
+      23 +EBITDA_NOTE = "EBITDA = profit before exceptional items & tax +
+         + finance costs + D&A; other income not excluded"               
+      24  
+      25  
+      26  def extract_results(pdf_bytes: bytes, path: str = "pdf_pages") 
+          -> dict:
+     ...
+      64      if len(cols) < 3 or any(c.get("profit_before_tax") is None 
+          or c.get("profit_after_tax") is None for c in cols)            
+           or len({c["period_label"] for c in cols}) < 3:
+      65          raise ValueError("need current, previous and year-ago c
+          olumns with PBT and PAT")
+      66  
+      67 +    # One-offs out of EBITDA: start from the printed pre-except
+         +ional line (TATAPOWER Q2 had a ₹119 cr exceptional             
+      68 +    # gain inside PBT). One-off = PBT - that line, so Python ge
+         +ts the sign; the LLM's sign for exceptional_items varies.      
+      69 +    pbe = [c.get("profit_before_exceptional_and_tax") for c in 
+         +cols]                                                          
+      70 +    has_pbe = None not in pbe                                  
+      71      if d["is_bank_or_nbfc"]:
+      72          lines = {"NII": [_sub(c.get("interest_earned"), c.get("
+          interest_expended")) for c in cols],
+      73                   "Total income": [c.get("total_income") for c i
+          n cols]}
+      74          note = "NII = interest earned − interest expended"
+      75      else:
+      76          lines = {"Revenue": [c.get("revenue_from_operations") f
+          or c in cols],
+      73 -                 "EBITDA": [_add(c["profit_before_tax"], c.get(
+         -"finance_costs"), c.get("depreciation_amortisation")) for c in 
+         -cols]}                                                         
+      74 -        note = EBITDA_NOTE                                     
+      77 +                 "EBITDA": [_add(p if has_pbe else c["profit_be
+         +fore_tax"], c.get("finance_costs"), c.get("depreciation_amortis
+         +ation"))                                                       
+      78 +                            for p, c in zip(pbe, cols)]}       
+      79 +        note = EBITDA_NOTE if has_pbe else EBITDA_NOTE.replace(
+         +"profit before exceptional items & tax", "PBT (no pre-exception
+         +al line)")                                                     
+      80      # Owners' share matches the headline net profit and EPS; on
+          ly if all 3 columns have it, so QoQ/YoY compare like with like.
+      81      owners = [c.get("profit_attributable_to_owners") for c in c
+          ols]
+      82      pat = ("PAT (to owners)", owners) if None not in owners els
+          e ("PAT", [c["profit_after_tax"] for c in cols])
+      83      lines |= {"PBT": [c["profit_before_tax"] for c in cols], pa
+          t[0]: pat[1]}
+      84  
+      85      one_offs = []
+     … 15 more lines (ctrl+o to expand)
+  ⎿  Updated backend\tests\test_results.py (+40 -15)
+       9      "TCS_results.pdf": dict(page=8, bank=False,
+      10          revenue_from_operations=[73188, 72275, 65799], finance_
+          costs=[252, 273, 229],
+      11          depreciation_amortisation=[1262, 1239, 1413], exception
+          al_items=[0, 668, 1135],
+      12 +        profit_before_exceptional_and_tax=[18638, 18612, 17203]
+         +,                                                              
+      13          profit_before_tax=[18638, 17944, 16068], profit_after_t
+          ax=[13934, 13420, 12131],
+      14          profit_attributable_to_owners=[13884, 13349, 12075]),
+      15      "HDFCBANK_results.pdf": dict(page=9, bank=True,
+     ...
+      19          profit_attributable_to_owners=[20700.03, 19244.71, 1961
+          0.67]),
+      20      "BAJFINANCE_results_p4_p14.pdf": dict(page=2, bank=True,
+      21          interest_earned=[21936.39, 20512.73, 17795.97], interes
+          t_expended=[8601.73, 7942.09, 7010.60],
+      21 -        total_income=[24575.82, 23166.42, 19992.38],           
+      22 +        total_income=[24575.82, 23166.42, 19992.38], profit_bef
+         +ore_exceptional_and_tax=[8537.20, 8149.00, 6608.13],           
+      23          profit_before_tax=[8537.20, 8149.00, 6608.13], profit_a
+          fter_tax=[6366.57, 6080.60, 4947.76],
+      24          profit_attributable_to_owners=[6266.20, 5985.75, 4875.3
+          6]),
+      25  }
+     ...
+      44      assert lines["EBITDA"]["value"] == 18638 + 252 + 1262
+      45      assert lines["PBT"]["qoq_pct"] == round((18638 - 17944) / 1
+          7944 * 100, 1)
+      46      assert lines["Revenue"]["yoy_pct"] == 11.2
+      47 +    assert c["one_offs"] == ["Previous quarter includes ₹668 cr
+         + one-off charge", "Year-ago quarter includes ₹1,135 cr one-off 
+         +charge"]                                                       
+      48 +    assert lines["EBITDA"]["qoq_pct"] == round((20152 - (18612 
+         ++ 273 + 1239)) / (18612 + 273 + 1239) * 100, 1)  # Q1 legal cha
+         +rge excluded                                                   
+      49 +                                                               
+      50 +                                                               
+      51 +def test_ebitda_excludes_exceptional_gain():                   
+      52 +    # TATAPOWER Q2 FY27 (spot-checked 12 Nov): ₹119.18 cr net e
+         +xceptional gain inside PBT                                     
+      53 +    cols = [dict(period_label=p, revenue_from_operations=r, fin
+         +ance_costs=f, depreciation_amortisation=da, exceptional_items=e
+         +,                                                              
+      54 +                 profit_before_exceptional_and_tax=pbe, profit_
+         +before_tax=pbt, profit_after_tax=pat, profit_attributable_to_ow
+         +ners=o)                                                        
+      55 +            for p, r, f, da, e, pbe, pbt, pat, o in [          
+      56 +                ("30-Sep-26", 19635.94, 1384.93, 1286.55, 119.1
+         +8, 2060.67, 2179.85, 1652.04, 1366.11),                        
+      57 +                ("30-Jun-26", 19051.26, 1406.78, 1259.86, 0, 18
+         +23.34, 1823.34, 1400.86, 1175.93),                             
+      58 +                ("30-Sep-25", 15544.91, 1318.65, 1162.05, 0, 16
+         +79.90, 1679.90, 1245.39, 919.44)]]                             
+      59 +    c = results_card({"data": {"basis": "consolidated", "unit":
+         + "₹ crore", "is_bank_or_nbfc": False, "columns": cols}, "pages"
+         +: [8]})                                                        
+      60 +    lines = {l["name"]: l for l in c["lines"]}                 
+      61 +    assert lines["EBITDA"]["value"] == round(2060.67 + 1384.93 
+         ++ 1286.55, 2)  # 4732.15, not 4851.33                          
+      62 +    assert c["one_offs"] == ["This quarter includes ₹119 cr one
+         +-off gain"]                                                    
+      63 +                                                               
+      64 +                                                               
+      65 +def test_no_pre_exceptional_line_falls_back_to_pbt_and_says_so(
+         +):                                                             
+      66 +    ex = _fake("TCS_results.pdf")                              
+      67 +    for col in ex["data"]["columns"]:                          
+      68 +        col["profit_before_exceptional_and_tax"] = None        
+     … 36 more lines (ctrl+o to expand)
+  ⎿  (timeout 5m)
+
+● 57 tests pass, including the live re-extraction of all three fixtures with the
+  new field. I'm re-running the three spot-check cards with the new prompt to
+  confirm the pre-exceptional line reads correctly. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● All three now read the pre-exceptional line correctly, so TATAPOWER's EBITDA
+  growth drops to +5.4% QoQ and +13.7% YoY, with the one-off shown as a gain.
+  I'm recording that in DECISIONS.md and refreshing the feed next. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && ./.venv/Scripts/python -
+      <<'PYEOF'
+      import pathlib…)
+  ⎿  Updated DECISIONS.md (+13 -4)
+      34  - **Classifier = BSE subcategory first, then subject + headline
+          , then the cheap LLM.** BSE's free-text headline often says "fi
+          nancial results" on unrelated filings (investor-meet notices af
+          ter results), so a subcategory that maps to exactly one categor
+          y wins. Ambiguous subcategories (NSE's "Investor Meet/Con. Call
+           Updates") fall through to the subject. Only generic subjects (
+          "Disclosure under Regulation 30", "Outcome of Board Meeting hel
+          d on…") go to the LLM, with pages 1–2 of the PDF. That was 1 of
+           52 filings in the 7-day run. The LLM also returns a ≤12-word h
+          eadline, since those subjects are unreadable. Gave up: LLM judg
+          ement on every filing (cost, and rules are explainable).
+      35  - **Results filed under "Board Meeting" are caught by the "fina
+          ncial results" keyword** (HDFCBANK pattern). Tested.
+      36  - **Tier overrides by rule:** board-meeting intimations, newspa
+          per copies and call recordings → P3 whatever their category. Re
+          sults decks, press releases and shareholder letters → P2 (the r
+          esults filing itself stays P1). ESOP allotments filed as "Allot
+          ment of Equity Shares" → unclassified. Gave up: a per-category 
+          tier editor.
+      37 -- **Known misfires we accept:** litigation isn't sized (a ₹1.6 
+         -lakh DoT penalty on BHARTIARTL is P1), and MARUTI's note on its
+         - Japanese parent's results is P1 results (the card is correctly
+         - refused: non-rupee unit). Sizing needs reading amounts against
+         - market cap; next step.                                        
+      38 -- **One results card per company per window.** Companies file t
+         -he same results 2–4 times (Result, Board Meeting outcome, quart
+         -erly report). The first filing that yields a valid card keeps P
+         -1; the rest drop to P2.                                        
+      39 -- **Results card sanity gate (Python):** all three columns must
+         - have PBT and PAT and distinct period labels, otherwise there's
+         - no card and the raw link is shown. Found on BHARTIARTL: the pa
+         -ge finder picked a clean 2-column summary page from an 84-page 
+         -investor report, the model padded a third column, and a YoY cha
+         -nge was shown as QoQ. The page finder now also scores the SEBI 
+         -statement title ("results for the quarter"), which survives bad
+         - OCR. Fixture added.                                           
+      37 +- **Known misfire we accept:** MARUTI's note on its Japanese pa
+         +rent's results is P1 results (the card is correctly refused: no
+         +n-rupee unit). Litigation / fund-raise sizing: see below.      
+      38 +- **One results card per company per window** (confirmed by the
+         + user 12 Nov). Companies file the same results 2–4 times (Resul
+         +t, Board Meeting outcome, quarterly report). The first filing t
+         +hat yields a valid card keeps P1; the rest drop to P2.         
+      39 +- **Results card sanity gate (Python)** (confirmed 12 Nov): all
+         + three columns must have PBT and PAT and distinct period labels
+         +, otherwise there's no card and the raw link is shown. Found on
+         + BHARTIARTL: the page finder picked a clean 2-column summary pa
+         +ge from an 84-page investor report, the model padded a third co
+         +lumn, and a YoY change was shown as QoQ. The page finder now al
+         +so scores the SEBI statement title ("results for the quarter"),
+         + which survives bad OCR. Fixture added.                        
+      40  - **Mgmt-change card: profile from the filing only, cited to it
+          s page.** If the filing points to an earlier letter (HDFCBANK's
+           new MD & CEO, ASIANPAINT's new chairman), the card says "Profi
+          le not in this filing; see intimation dated …" rather than fill
+          ing it from memory. Bios sometimes exceed the 35-word target; t
+          he UI clamps them to 3 lines.
+      41 -- **Market-reaction boost applies to P1/P2 only.** On the first
+         - run, CDSL's 3.3× volume day boosted four routine investor-meet
+         - notices to the top. Routine paperwork doesn't explain a move, 
+         -and the move still raises its own price alert. Boost = +150, so
+         - a P2 the market reacted to outranks a quiet P1.               
+      41 +- **Market-reaction boost applies to P1/P2 only** (confirmed 12
+         + Nov). On the first run, CDSL's 3.3× volume day boosted four ro
+         +utine investor-meet notices to the top. Routine paperwork doesn
+         +'t explain a move, and the move still raises its own price aler
+         +t. Boost = +150, so a P2 the market reacted to outranks a quiet
+         + P1.                                                           
+      42  - **yfinance bars lag.** On 12 Nov at 03:30 IST the 11 Nov bar 
+          existed for Nifty and all 20 stocks with volume but a NaN close
+          . We drop NaN-close rows, so filings whose reaction day has no 
+          complete bar show **"Reaction pending"** (no boost, no fake one
+          ). The missing 10 Nov bar was a real holiday (Diwali Balipratip
+          ada). Partial intraday bars are also dropped before 16:00 IST. 
+          Consequence: a single 16:30 cron can't be trusted for reactions
+          , so ingest re-ranks the whole window on every run and pending 
+          items resolve on a later run.
+      43  - **NSE fallback for announcements.** CDSL is listed only on NS
+          E (no BSE code). NSE's announcements API answered without cooki
+          es on 12 Nov. It's also used when BSE fails for a ticker: BSE s
+          erved a 200 HTML error page for IRCTC's 7-day window. `fetch` n
+          ow refuses to cache responses that don't start with the expecte
+          d bytes (`{`, `[`, `%PDF`), so one bad answer can't poison the 
+          cache.
+      44  - **Screener slug fallback not built.** All 20 portfolio symbol
+          s resolved on screener (incl. ETERNAL). If screener 404s, annou
+          ncements still come from NSE by symbol; only the pull side woul
+          d need the search fallback.
+      45  
+      46 +- **Sizing rules for litigation and fund-raise (12 Nov, rules o
+         +nly, no LLM).** Filtering is the core of the brief, and "P1 lit
+         +igation" for a ₹1.6 lakh penalty is noise. Python pulls every r
+         +upee amount from the subject, headline and PDF pages 1–2 (₹/Rs/
+         +INR × crore/lakh/million/billion/raw rupees) and applies:      
+      47 +  - Litigation / penalties **below ₹1 cr → P3** with a note ("₹
+         +1.6 lakh at stake, below ₹1 cr"). No amount found → stays P1: u
+         +nsized litigation is never hidden.                             
+      48 +  - Fund-raise stays **P1 only for equity raises** (QIP, rights
+         +, preferential, warrants, IPO, buyback, call on partly-paid) **
+         +or a non-lender's debt ≥ ₹1,000 cr**. Lenders' NCD/CP allotment
+         +s are always P3 ("Routine borrowing by a lender"); lender = scr
+         +eener's bank/NBFC table layout ("Financing Profit" row), not a 
+         +ticker list. ESOP allotments → P3. Anything else ("Allotment" w
+         +ith no equity or large-debt evidence) → P3 with a note.        
+      49 +  - The subject decides first; the PDF only when the subject is
+         + generic. Equity keywords are checked before ESOP because a pre
+         +ferential-issue letter mentions ESOPs in its shareholding table
+         + (BAJFINANCE).                                                 
+      50 +  - Thresholds are flat because every portfolio name is a large
+         + cap. The largest amount in the text is used, which is sometime
+         +s the authorised limit rather than this tranche, and that errs 
+         +towards P1. Gave up: thresholds relative to market cap (better 
+         +for small caps on live pull; next step).                       
+      51 +  - On the 30-day pull: BHARTIARTL's DoT penalty and IRCTC's ₹1
+         +0.2 lakh exchange fines → P3. 4 BAJFINANCE NCD/ESOP allotments 
+         +→ P3. PERSISTENT ₹600 cr CP → P3, its ₹1,500 cr NCDs stay P1. S
+         +UNPHARMA ₹7,816 cr NCDs, BAJFINANCE QIP + preferential warrants
+         +, RELIANCE's Jio IPO and POLYCAB's NCLAT appeal (unsized) stay 
+         +P1. 13 sizing tests.                                           
+      52 +- **Results accuracy spot-check (12 Nov), 3 non-fixture cards h
+         +and-read against the PDF page images:** TATAPOWER Q2 (filed 11 
+         +Nov), ASIANPAINT Q2, ETERNAL Q2. Revenue, total income, finance
+         + costs, D&A, exceptional, PBT, PAT and PAT-to-owners × 3 quarte
+         +rs: **72/72 numbers exact**. Only one deviation: a "-" exceptio
+         +nal line came back null instead of 0, which is harmless.       
+      53 +- **EBITDA now excludes exceptional items (fix from the spot-ch
+         +eck).** TATAPOWER's PBT included a ₹119 cr net exceptional *gai
+         +n* (gain on derecognising an associate less impairments), so EB
+         +ITDA built from PBT was inflated: QoQ showed +8.0% instead of +
+         +5.4%, YoY +16.6% instead of +13.7%. EBITDA = printed "profit be
+         +fore exceptional items and tax" + finance costs + D&A; if a fil
+         +ing has no such line, PBT is used and the card says so. The one
+         +-off is now PBT minus that line, computed in Python, so its sig
+         +n is right: "₹119 cr one-off gain" / "₹668 cr one-off charge". 
+         +This closes the old abs() issue (the LLM's sign for exceptional
+         + items varied). Other income and associates' share are still no
+         +t excluded, as stated on the card.                             
+      54 +                                                               
+      55  ## Spike findings (11 Nov)
+      56  - **BSE API needs full browser headers** (`Origin` + `sec-fetch
+          -*`), not just User-Agent + Referer. Without them it returns 40
+          3. No cookies needed. **Works from a cloud IP:** `/health/bse` 
+          on Render (Singapore, free tier) returned live rows on 11 Nov, 
+          so live pull and cloud ingest can call BSE directly. Gave up: n
+          othing; the local-ingest fallback wasn't needed.
+      57  - **BSE's category alone misses results.** HDFCBANK filed Q2 re
+          sults under "Board Meeting / Outcome of Board Meeting". The cla
+          ssifier needs a keyword rule on the subject ("financial results
+          ").
+  ⎿  … 1 more file changed
+  ⎿  (timeout 10m)
+
+● P1 now holds nine items: the BHARTIARTL penalty and PERSISTENT's CP dropped
+  out, and the equity raises and unsized arbitration stay. Committing, then
+  updating the plan.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Next I'll update PLAN.md with the status, the Thursday re-plan for the
+  separate PvD backend session, and a short handoff block so that session
+  doesn't collide with the UI work. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && ./.venv/Scripts/python -
+      <<'PYEOF'
+      import pathlib…)
+  ⎿  Updated PLAN.md (+24 -14)
+      1  # FINN — build plan (11–15 Nov 2026)
+      2  
+      3  Single source of truth for the build. Scope and hard rules live 
+         in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.
+      4 -Current status: see §3c "Status at 12 Nov, early morning". Day p
+        -lan: §4 (re-planned 12 Nov).                                    
+      4 +Current status: see §3c "Status at 12 Nov, early morning". Day p
+        +lan: §4 (re-planned 12 Nov). PvD session: start at §4a.         
+      5  
+      6  ---
+      7  
+     ...
+      126  - `push/rank.py`: +150 Nifty-relative boost for P1/P2, reason 
+           strings, "Reaction pending", price alerts. Shared case table `
+           tests/rank_cases.json` (8 cases) for the TS port.
+      127  - `ingest.py`: all 20 tickers, 7-day window, ~3.5 min cold / s
+           econds cached → `web/public/data/feed.json` + CLI digest. Last
+            run: 22 shown, 30 routine hidden, 20 alerts, 0 failed tickers
+           .
+      128  - Results-card gate + SEBI-title page scoring after a real BHA
+           RTIARTL miss (YoY shown as QoQ); fixture added. 42 tests pass.
+      129 -- LLM spend to date: **$0.065 / 39 calls**.                   
+      129 +- Sizing rules (rules only): litigation < ₹1 cr → P3; fund-rai
+          +se P1 only for equity raises or non-lender debt ≥ ₹1,000 cr; l
+          +enders' NCD/CP and ESOP allotments → P3. 13 tests.            
+      130 +- Accuracy spot-check: TATAPOWER, ASIANPAINT, ETERNAL cards ha
+          +nd-read against the PDFs, 72/72 numbers exact. Found and fixed
+          +: EBITDA included TATAPOWER's ₹119 cr exceptional gain; it now
+          + starts from the pre-exceptional line, and one-offs are signed
+          + (gain/charge).                                               
+      131 +- 57 tests pass. Feed P1 count this week: 9.                  
+      132 +- LLM spend to date: **$0.079 / 47 calls**.                   
+      133  
+      134  **Findings that change the plan**
+      135  - yfinance lags: 11 Nov bars were NaN-close stubs at 03:30 on 
+           12 Nov. → Cron runs **twice** (≈18:30 IST for filings, ≈08:30 
+           IST next day to fill reactions); every run re-ranks the whole 
+           window.
+      136  - CDSL is NSE-only, so the NSE fallback is now part of the des
+           ign, not an afterthought.
+      137  
+      138  **Open issues**
+      136 -- Litigation and fund-raise aren't sized (₹1.6 lakh penalty = 
+          -P1; every NCD/CP allotment = P1). Fund-raise allotments are th
+          -e noisiest P1; candidate rule: CP/NCD allotments → P2.        
+      139 +- Sizing thresholds are flat (fine for this all-large-cap port
+          +folio); market-cap-relative is the next step for small caps.  
+      140  - Bios run past 35 words; UI clamps.
+      138 -- Exceptional-items sign still abs() (unchanged).             
+      141  
+      142  ## 4. Day-by-day
+      143  
+      144  **Wed 11 (done):** repo init, spikes, decisions. Session expor
+           t.
+      145  
+      144 -**Thu 12 (re-planned 12 Nov, early morning)**                 
+      145 -- ~~Classifier, mgmt card, rank, ingest for 20 tickers~~ done 
+          -(see §3c).                                                    
+      146 -- **Feed UI** (impeccable skill, 390px first): Next.js static 
+          -export reading `feed.json`. Ranked digest with reaction reason
+          -s + "Reaction pending", results card (+ one-off flag; chip slo
+          -t left empty until PvD), mgmt card, quiet-day state, P3 collap
+          -se, alert inbox + badge, settings (alert categories, N×, ±X% i
+          -n localStorage). TS port of `rank()` passing `rank_cases.json`
+          -.                                                             
+      146 +**Thu 12 (re-planned 12 Nov, early morning; confirmed by the u
+          +ser)**                                                        
+      147 +- ~~Classifier, mgmt card, rank, ingest for 20 tickers, sizing
+          + rules, results spot-check~~ done (see §3c).                  
+      148 +- **Morning, separate session, user asleep: PvD backend** (see
+          + §4a). Runs headless; ends with a commit + push and a summary 
+          +in §3c.                                                       
+      149 +- **Feed UI** (this track; impeccable skill, 390px first): Nex
+          +t.js static export reading `feed.json`. Ranked digest with rea
+          +ction reasons + "Reaction pending", sizing notes, results card
+          + (+ signed one-off flag; chip slot empty until PvD), mgmt card
+          +, quiet-day state, P3 collapse, alert inbox + badge, settings 
+          +(alert categories, N×, ±X% in localStorage). TS port of `rank(
+          +)` passing `rank_cases.json`.                                 
+      150  - **Deploy step 3 (Vercel):** stop and give click-by-click ins
+           tructions first.
+      148 -- Evening: re-run ingest; confirm 11 Nov "Reaction pending" it
+          -ems resolve once yfinance fills the bar (evidence for the writ
+          -eup).                                                         
+     … 28 more lines (ctrl+o to expand)
+  ⎿  (timeout 2m)
+
+● Pushed. One contradiction in my handoff: it says "nothing under web/" but also
+  asks for an export into web/public/data/research/. Fixing the wording so the
+  unattended session doesn't stall on it:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && sed -i 's|Scope:
+      \*\*backend only\*\*, nothing under `web/`.|Scope: **backend only**. No UI
+      code under `web/`; w…)
+  ⎿  Updated PLAN.md (+187 -187)
+        1 -# FINN — build plan (11–15 Nov 2026)                          
+        2 -                                                              
+        3 -Single source of truth for the build. Scope and hard rules liv
+          -e in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.    
+        4 -Current status: see §3c "Status at 12 Nov, early morning". Day
+          - plan: §4 (re-planned 12 Nov). PvD session: start at §4a.     
+        5 -                                                              
+        6 ----                                                           
+        7 -                                                              
+        8 -## 1. Product (what ships)                                    
+        9 -                                                              
+       10 -**Push**                                                      
+       11 -- Windowed digest (24h default / 7d / 30d), ranked by material
+          -ity; P3 collapsed.                                            
+       12 -- **Market-reaction ranking:** a filing is boosted when its re
+          -action day crosses the user's alert thresholds. Reason shown o
+          -n the card: `Ranked high: results · −4.1% (−3.6% vs Nifty)` / 
+          -`Ranked high: results · 2.3× volume`.                         
+       13 -- **Confident quiet-day state:** `Nothing material today.` / `
+          -14 routine filings hidden` (tap to expand) · `Last checked 16:
+          -42 IST` · small "See last 7 days" link.                       
+       14 -- Triggered alerts (in-app inbox + badge, no web push): materi
+          -al category toggles; EOD volume ≥ N× 20-day avg; move vs Nifty
+          - beyond ±X%. Thresholds in localStorage.                      
+       15 -- Results card: Revenue, EBITDA, PBT, PAT: this Q vs QoQ vs Yo
+          -Y, consolidated preferred and labelled. Banks/NBFCs show NII /
+          - Total Income, PBT, PAT. **One-off flag** when exceptional ite
+          -ms ≠ 0 (`Includes ₹668 cr one-off`).                          
+       16 -- **Credibility chip** on results cards: `Mgmt delivered 3/5 p
+          -romises · last 4Q`, computed by Python from cached PvD and lin
+          -king to the PvD page. No chip if there is no PvD yet.         
+       17 -- Mgmt-change card: bio extracted from the filing only.       
+       18 -- Everything else: one-line "why it matters" or just the filin
+          -g at the right tier.                                          
+       19 -                                                              
+       20 -**Pull** (any NSE ticker)                                     
+       21 -- Promised vs Delivered (hero), financial snapshot, bull/bear 
+          -(3 each), business snapshot (first to cut).                   
+       22 -- **Live pull = background job + polling** with staged progres
+          -s text: "Resolving ticker… / Fetching 4 transcripts… / Extract
+          -ing guidance… / Scoring promises…".                           
+       23 -                                                              
+       24 -**Interaction model:** a morning brief, not a chatbot. One ran
+          -ked feed and one search box; tapping any ticker opens its rese
+          -arch page.                                                    
+       25 -                                                              
+       26 -**Never cut:** live pull, PvD, credibility chip, results card,
+          - quiet-day state.                                             
+       27 -**Cut order if behind:** business snapshot → GH Actions cron (
+          -run ingest manually). Nothing else.                           
+       28 -                                                              
+       29 ----                                                           
+       30 -                                                              
+       31 -## 2. Architecture                                            
+       32 -                                                              
+       33 -Static-first: ingest exports JSON into `web/public/data/` (com
+          -mitted); no SQLite (12 Nov: the disk caches already hold every
+          -thing). The feed and demo research pages load instantly with n
+          -o backend. Render serves only live pull for unseen tickers. No
+          - Supabase.                                                    
+       34 -                                                              
+       35 -```                                                           
+       36 -finn/                                                         
+       37 -  backend/finn/                                               
+       38 -    config.py        # portfolio, tier map, default thresholds
+       39 -    llm.py           # provider-agnostic router, retry/fallbac
+          -k, cache, cost log                                            
+       40 -    sources/                                                  
+     … 334 more lines (ctrl+o to expand)
+  ⎿  (timeout 2m)
+
+● All five steps are done and pushed to origin/main; I've stopped there as
+  asked. 57 tests pass, and LLM spend to date is $0.079 over 47 calls.
+
+  1. Your three judgement calls are marked "confirmed 12 Nov" in DECISIONS.md.
+
+  2. Sizing rules. These use regex on the subject, headline and PDF pages 1–2;
+  no LLM.
+  - Litigation below ₹1 cr → P3, with a note like "₹1.6 lakh at stake, below ₹1
+    cr". If no amount is found, it stays P1, so unsized litigation is never
+    hidden.
+  - Fund-raise stays P1 only for equity raises (QIP, rights, preferential,
+    warrants, IPO, buyback) or a non-lender's debt of ₹1,000 cr or more. Lenders
+    are detected from screener's bank/NBFC table layout, not from a ticker
+    list, and their debt raises always go to P3. ESOP allotments also go to P3.
+  - On the real filings this moved BHARTIARTL's ₹1.6 lakh penalty, IRCTC's ₹10.2
+    lakh fines, BAJFINANCE's NCD and ESOP allotments, and PERSISTENT's ₹600 cr
+    commercial paper to P3. SUNPHARMA's ₹7,816 cr NCDs and BAJFINANCE's QIP and
+    preferential warrants stay P1.
+  - This week's P1 count is now 9. There are 13 new tests, all built from real
+    snippets.
+  - Why flat thresholds: every portfolio name is a large cap. For small caps on
+    live pull, thresholds relative to market cap would be better; that's logged
+    as the next step.
+
+  3. Accuracy spot-check. I read the TATAPOWER, ASIANPAINT and ETERNAL source
+  pages by hand: 72 of 72 numbers matched. It still found one real bug:
+  TATAPOWER's EBITDA included a ₹119 cr one-off gain, so it showed +8.0% QoQ
+  instead of +5.4%.
+  - EBITDA now starts from the printed "profit before exceptional items and tax"
+    line.
+  - The one-off is now computed in Python as PBT minus that line, so the card
+    labels it a gain or a charge correctly. That closes the old open issue about
+    the exceptional-items sign.
+
+  4–5. Re-plan, committed and pushed.
+  - Today: the feed UI stays here.
+  - This morning, separate session: the Promised vs Delivered backend. PLAN.md
+    §4a is a self-contained handoff with the files to build, existing code to
+    reuse, the output format the UI expects, which files not to touch (so it
+    can't collide with the UI work), and a "done when" check.
+  - Fri: judge Promised vs Delivered quality, then the credibility chip,
+    snapshots, bull/bear and the research page.
+  - Sat: live pull and hardening.
+
+  Not done or checked:
+  - I only hand-checked one value in the BHARTIARTL card (its page is now part
+    of a test file).
+  - The amount parser takes the largest rupee figure in a filing, which is
+    sometimes a borrowing limit rather than this issue. That errs toward keeping
+    things P1.
+
+  Please /export this session into build-history/.
