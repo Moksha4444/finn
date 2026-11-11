@@ -1,0 +1,67 @@
+"""Results pipeline on 3 real filings: TCS (clean text), HDFCBANK (scanned bank), BAJFINANCE (scanned NBFC).
+Ground truth below was read by hand off the PDFs (current Q, previous Q, year-ago Q; ₹ crore, consolidated)."""
+import os, pathlib, pytest
+from finn.sources import pdf
+from finn.push.cards import extract_results, results_card
+
+FIX = pathlib.Path(__file__).parent / "fixtures"
+TRUTH = {
+    "TCS_results.pdf": dict(page=8, bank=False,
+        revenue_from_operations=[73188, 72275, 65799], finance_costs=[252, 273, 229],
+        depreciation_amortisation=[1262, 1239, 1413], exceptional_items=[0, 668, 1135],
+        profit_before_tax=[18638, 17944, 16068], profit_after_tax=[13934, 13420, 12131]),
+    "HDFCBANK_results.pdf": dict(page=9, bank=True,
+        interest_earned=[95131.63, 90575.33, 86993.84], interest_expended=[50667.43, 47625.63, 46740.86],
+        total_income=[129358.69, 133110.36, 118560.63],
+        profit_before_tax=[28662.54, 27193.16, 26658.89], profit_after_tax=[21537.09, 20382.69, 20363.77]),
+    "BAJFINANCE_results_p4_p14.pdf": dict(page=2, bank=True,
+        interest_earned=[21936.39, 20512.73, 17795.97], interest_expended=[8601.73, 7942.09, 7010.60],
+        total_income=[24575.82, 23166.42, 19992.38],
+        profit_before_tax=[8537.20, 8149.00, 6608.13], profit_after_tax=[6366.57, 6080.60, 4947.76]),
+}
+FIELDS = lambda t: {k: v for k, v in t.items() if isinstance(v, list)}
+
+
+@pytest.mark.parametrize("name", TRUTH)
+def test_finds_consolidated_pnl_page(name):
+    idx, basis = pdf.find_results_pages(pdf.pages(pdf.open_pdf((FIX / name).read_bytes())))
+    assert (idx[0] + 1, basis) == (TRUTH[name]["page"], "consolidated")
+
+
+def _fake(name, unit="₹ crore"):
+    t = TRUTH[name]
+    cols = [{"period_label": f"col{i}", **{k: v[i] for k, v in FIELDS(t).items()}} for i in range(3)]
+    return {"data": {"basis": "consolidated", "unit": unit, "is_bank_or_nbfc": t["bank"], "columns": cols}, "pages": [t["page"]]}
+
+
+def test_card_math_nonbank_ebitda_and_one_offs():
+    c = results_card(_fake("TCS_results.pdf"))
+    lines = {l["name"]: l for l in c["lines"]}
+    assert lines["EBITDA"]["value"] == 18638 + 252 + 1262
+    assert lines["PBT"]["qoq_pct"] == round((18638 - 17944) / 17944 * 100, 1)
+    assert lines["Revenue"]["yoy_pct"] == 11.2
+    assert c["one_offs"] == ["Previous quarter includes ₹668 cr one-off", "Year-ago quarter includes ₹1,135 cr one-off"]
+
+
+def test_card_math_bank_nii():
+    lines = {l["name"]: l for l in results_card(_fake("HDFCBANK_results.pdf"))["lines"]}
+    assert list(lines) == ["NII", "Total income", "PBT", "PAT"]
+    assert lines["NII"]["value"] == round(95131.63 - 50667.43, 2)
+
+
+def test_card_converts_lakh_to_crore():
+    lines = {l["name"]: l for l in results_card(_fake("TCS_results.pdf", unit="₹ in lakhs"))["lines"]}
+    assert lines["PAT"]["value"] == 139.34
+
+
+@pytest.mark.skipif(not os.getenv("GEMINI_API_KEY"), reason="live LLM test needs GEMINI_API_KEY (cached after first run)")
+@pytest.mark.parametrize("name", TRUTH)
+def test_live_extraction_matches_filing(name):
+    ex = extract_results((FIX / name).read_bytes())
+    assert ex["path"] == "pdf_pages"
+    assert ex["data"]["basis"] == "consolidated"
+    for field, want in FIELDS(TRUTH[name]).items():
+        got = [c.get(field) for c in ex["data"]["columns"][:3]]
+        if field == "exceptional_items":  # sign varies (charge printed as +/-); the card uses abs()
+            got, want = [abs(x) for x in got], [abs(x) for x in want]
+        assert got == pytest.approx(want), field

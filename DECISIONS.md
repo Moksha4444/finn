@@ -10,6 +10,20 @@ Format: **Decision** · Why · What we gave up.
 - **`llm.py` is provider-agnostic** (`provider:model` per task via env). Only the Gemini adapter is built. If PvD quality is shallow on Day 3, PvD/bull-bear can move to Claude with one env line plus a small adapter. Gave up: nothing yet; we avoided building an adapter we may not need.
 - **Retry then fall back.** Exponential backoff on 503/429, max 3 tries, then the fallback model, with the visible label "Verdicts by fast model (quota)". The spike hit a real 503, so this is needed, not hypothetical.
 - **Results PDFs: send only the consolidated results page(s).** Use the text layer when clean, and send just those PDF pages when the text is garbled (scanned). The path used is logged per call. A full PDF was ~12k input tokens. Gave up: nothing; if page detection fails, the full PDF is the fallback.
+- **Update (12 Nov, measured): results go to the LLM as PDF pages only; the text path is dropped.** `scripts/compare_paths.py` sent each of 3 real filings three ways (flash-lite, numbers checked against the PDFs by hand):
+
+  | filing | text | PDF pages | full PDF |
+  |---|---|---|---|
+  | TCS (clean) | 2,434 tok · 18/18 | **827 tok · 18/18*** | 11,747 tok · 18/18 |
+  | HDFCBANK (scan) | 2,750 tok · **1/15** | **839 tok · 15/15** | 13,063 tok · 15/15 |
+  | BAJFINANCE (scan, NBFC) | 3,543 tok · 15/15 | **839 tok · 15/15** | 1,371 tok (2-pg file) · 9/15 |
+
+  \*Exceptional items came back as −668 instead of 668; the card uses the absolute value. Gemini bills a PDF page at a roughly flat rate, while extracted text is padded with whitespace, so page images are ~3× cheaper than text and ~15× cheaper than the whole PDF, at ~$0.0015 per filing. They are also the only path that survives scans (text got 1/15 on HDFCBANK). The planned "garble check" was deleted: there's nothing left to route. Gave up: nothing measurable. If page-finding fails, the whole PDF is still sent.
+- **Results pages are found by keyword score, not layout.** A page that has ≥3 P&L line names ("before tax", "tax expense", "interest earned"…) and is not a segment, balance-sheet or cash-flow page is a candidate; consolidated beats standalone. It worked on all 3 fixtures, including OCR text.
+- **PAT = total profit before minority interest**, for every company. HDFCBANK prints both (₹21,537 cr vs ₹20,700 cr attributable to owners). We chose one consistent rule and wrote it in the prompt. Gave up: the "attributable to owners" figure some news headlines quote.
+- **Prompt version = hash of the prompt file.** Editing a prompt invalidates its cache automatically. No version numbers to forget to bump.
+- **Cost log uses paid-tier list prices** (flash-lite $0.30/$2.50 per 1M in/out; 3.8-flash $0.75/$3.75 introductory; 3.5-flash $1.50/$9.00), even though we run on the free tier. The writeup reports what this would cost a paying user.
+- **Dependencies pinned** to the versions tested locally, so a Render rebuild can't pull an untested release.
 - **One-off flag is pure Python.** If "Exceptional items" ≠ 0, the card says e.g. "Includes ₹668 cr one-off". No LLM judgment about what counts as one-off.
 
 ## Spike findings (11 Nov)

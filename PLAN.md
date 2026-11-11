@@ -42,7 +42,7 @@ finn/
       prices.py      # yfinance EOD (period="2mo" for 20d avg) + ^NSEI
       bse.py         # announcements + attachments (full browser headers)
       screener.py    # symbol -> BSE code, doc links, quarterly table
-      pdf.py         # page text with [p.N]; consolidated-page finder; garble check
+      pdf.py         # page text with [p.N]; consolidated-page finder; page subset
     push/
       classify.py    # BSE category/subcategory + keyword rules; LLM only if ambiguous
       cards.py       # results card (+ one-off flag), mgmt-change card
@@ -72,10 +72,10 @@ finn/
 - **Retry:** exponential backoff on 503 overloaded / 429, max 3 tries. Then fall back to `FINN_FALLBACK`, and the output carries `model_note: "Verdicts by fast model (quota)"`, which is shown in the UI.
 - Cache keyed by (document hash, prompt version, task). Every call logs tokens, estimated cost, model and input path.
 
-### Results extraction (decided)
+### Results extraction (decided; updated 12 Nov after measurement)
 1. `pdf.py` finds the **consolidated results page(s)** from the text layer. Keywords like "consolidated" plus "profit before tax"/"interest earned" survive even garbled OCR. Falls back to standalone, labelled.
-2. **Garble check:** if the page's numbers don't parse cleanly (e.g. digits mixed with the letter O, as in HDFCBANK's scan), use the **PDF-page path**: send only those pages as a mini-PDF. Otherwise use the **text path**: send the page text.
-3. Log `path=text|pdf_pages` per call.
+2. ~~Garble check → text path or PDF-page path.~~ **Always the PDF-page path:** send only those pages as a mini-PDF. Measured as both cheaper (~830 tokens vs 2.4–3.5k for text) and the only path accurate on scans. See the table in DECISIONS.md.
+3. Log `path` per call (`pdf_pages`, or `full_pdf` if no page was found).
 4. Schema adds `exceptional_items` per column. Python computes QoQ/YoY, EBITDA (= PBT + finance costs + D&A, other income not excluded, stated on card), NII (= interest earned − interest expended), and the one-off flag.
 
 ### Market-reaction ranking (decided)
