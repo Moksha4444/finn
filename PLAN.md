@@ -1,7 +1,7 @@
 # FINN — build plan (11–15 Nov 2026)
 
 Single source of truth for the build. Scope and hard rules live in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.
-Current status: see §3c "Status at 12 Nov, early morning". Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
+Current status: see §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
 
 ---
 
@@ -138,6 +138,13 @@ Cheap model reads each transcript once → `{metric, target, period, quote, page
 **Open issues**
 - Sizing thresholds are flat (fine for this all-large-cap portfolio); market-cap-relative is the next step for small caps.
 - Bios run past 35 words; UI clamps.
+
+## 3d. Status at 12 Nov, ~06:00 (feed UI)
+- `web/`: Next.js 16 static export. Brief (verdict line, 24h/7d/30d, ranked 2-line rows, routine collapse, badge), expandable results / bank / mgmt / other / failed rows, alerts inbox, settings (localStorage). Loading, load-failure, quiet-day and reaction-pending states built and checked at 390px.
+- `rank()` in TS passes the shared case table (9 cases incl. a new half-even rounding case); period-label parser tested on 8 real formats. `npm test` in `web/`.
+- Ingest re-run for 30 days: 297 filings, 16 results + 16 mgmt cards, 7 card failures (shown with raw link), 0 failed tickers. LLM spend to date: **$0.131 / 107 calls**.
+- Dev on phone: `npx next dev -H <laptop Wi-Fi IP> -p 3000` from `web/`.
+- Next: motion pass (separate skill), credibility chip after PvD, Vercel deploy (instructions first).
 
 ## 4. Day-by-day
 

@@ -27,3 +27,6 @@ graphify-out/
 # ponytail: ledger lives in ~/.config/ponytail; these are the only in-repo files it can write
 PONYTAIL-DEBT.md
 .ponytail-active
+
+# design review captures (regenerable)
+.impeccable/review/
