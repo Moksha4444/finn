@@ -1,7 +1,7 @@
 # FINN — build plan (11–15 Nov 2026)
 
 Single source of truth for the build. Scope and hard rules live in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.
-Current status: see §3b "Status at end of Day 1".
+Current status: see §3c "Status at 12 Nov, early morning". Day plan: §4 (re-planned 12 Nov).
 
 ---
 
@@ -30,24 +30,23 @@ Current status: see §3b "Status at end of Day 1".
 
 ## 2. Architecture
 
-Static-first: ingest writes SQLite and exports JSON into `web/public/data/` (committed). The feed and demo research pages load instantly with no backend. Render serves only live pull for unseen tickers. No Supabase.
+Static-first: ingest exports JSON into `web/public/data/` (committed); no SQLite (12 Nov: the disk caches already hold everything). The feed and demo research pages load instantly with no backend. Render serves only live pull for unseen tickers. No Supabase.
 
 ```
 finn/
   backend/finn/
     config.py        # portfolio, tier map, default thresholds
     llm.py           # provider-agnostic router, retry/fallback, cache, cost log
-    db.py
     sources/
       prices.py      # yfinance EOD (period="2mo" for 20d avg) + ^NSEI
       bse.py         # announcements + attachments (full browser headers)
+      nse.py         # fallback: NSE-only listings (CDSL) and BSE errors
       screener.py    # symbol -> BSE code, doc links, quarterly table
       pdf.py         # page text with [p.N]; consolidated-page finder; page subset
     push/
       classify.py    # BSE category/subcategory + keyword rules; LLM only if ambiguous
       cards.py       # results card (+ one-off flag), mgmt-change card
-      rank.py        # tier + category + reaction boost (vs Nifty) -> score + reason
-      alerts.py
+      rank.py        # tier + reaction boost (vs Nifty) -> score + reason; price alerts
     pull/
       pvd.py         # cheap: guidance extract per transcript -> strong: verdicts
       research.py    # financial snapshot (no LLM), business snapshot, bull/bear
@@ -79,7 +78,8 @@ finn/
 4. Schema adds `exceptional_items` per column. Python computes QoQ/YoY, EBITDA (= PBT + finance costs + D&A, other income not excluded, stated on card), NII (= interest earned − interest expended), and the one-off flag.
 
 ### Market-reaction ranking (decided)
-- Reaction day = the filing date if filed before 15:30 IST, otherwise the next trading day. If no bar exists yet, there's no boost (and no fake one).
+- Reaction day = the filing date if filed before 15:30 IST, otherwise the next trading day. If no complete bar exists yet: "Reaction pending", no boost (yfinance posts NaN-close stub bars for 12+ hours).
+- Boost applies to P1/P2 only; routine P3 never explains a move.
 - Excess move = stock % − Nifty %. The boost triggers on |excess| ≥ X% or volume ≥ N× 20-day avg, using the same thresholds as alerts.
 - Ingest ships the raw move %, Nifty % and volume ratio per filing. The rank function is ported to TS (~15 lines) so changing thresholds re-ranks client-side. One shared test-case table for both.
 
@@ -117,25 +117,45 @@ Cheap model reads each transcript once → `{metric, target, period, quote, page
 - Exceptional-items sign varies by model output; the card uses abs(). Revisit if a positive one-off (a gain) needs a different label.
 - Render free tier cold starts (~30–60 s): mitigated by static JSON; live-pull UI must show staged loading text.
 
+## 3c. Status at 12 Nov, early morning (Day 2 leftovers done)
+
+**Done**
+- PAT = owners' share when printed ("PAT (to owners)"), else total. LLM cache now keyed on source-PDF hash (it was missing on every run). NBFC prompt fix.
+- `push/classify.py`: subcategory → subject/headline rules → cheap LLM on pages 1–2 only for generic subjects (1 of 52 filings in the 7-day run). 14 rule tests on real rows incl. results-under-Board-Meeting.
+- `push/cards.py` mgmt card: profile from the filing, cited to its page, "Profile not in this filing; see …" otherwise. 3 real fixtures (HDFCBANK, TRENT, TATAPOWER).
+- `push/rank.py`: +150 Nifty-relative boost for P1/P2, reason strings, "Reaction pending", price alerts. Shared case table `tests/rank_cases.json` (8 cases) for the TS port.
+- `ingest.py`: all 20 tickers, 7-day window, ~3.5 min cold / seconds cached → `web/public/data/feed.json` + CLI digest. Last run: 22 shown, 30 routine hidden, 20 alerts, 0 failed tickers.
+- Results-card gate + SEBI-title page scoring after a real BHARTIARTL miss (YoY shown as QoQ); fixture added. 42 tests pass.
+- LLM spend to date: **$0.065 / 39 calls**.
+
+**Findings that change the plan**
+- yfinance lags: 11 Nov bars were NaN-close stubs at 03:30 on 12 Nov. → Cron runs **twice** (≈18:30 IST for filings, ≈08:30 IST next day to fill reactions); every run re-ranks the whole window.
+- CDSL is NSE-only, so the NSE fallback is now part of the design, not an afterthought.
+
+**Open issues**
+- Litigation and fund-raise aren't sized (₹1.6 lakh penalty = P1; every NCD/CP allotment = P1). Fund-raise allotments are the noisiest P1; candidate rule: CP/NCD allotments → P2.
+- Bios run past 35 words; UI clamps.
+- Exceptional-items sign still abs() (unchanged).
+
 ## 4. Day-by-day
 
 **Wed 11 (done):** repo init, spikes, decisions. Session export.
 
-**Thu 12**
-- `llm.py` (router, retry/fallback, cache, cost log); `sources/` (prices + Nifty, bse, screener, pdf).
-- Classifier (rules first + keyword rule for results-under-board-meeting); results card (text/PDF-page paths, bank branch, one-off flag); mgmt-change card; `rank.py`; fixture tests on 3 real filings (TCS, HDFCBANK, + 1).
-- **Deploy step 1 (GitHub) + step 2 (Render hello-world)**: stop and give step-by-step instructions first. Then re-run spike 1 from Render to test the cloud IP.
-- `ingest.py` → push JSON for all 20 tickers.
-- Re-plan the rest of the day from actual progress.
+**Thu 12 (re-planned 12 Nov, early morning)**
+- ~~Classifier, mgmt card, rank, ingest for 20 tickers~~ done (see §3c).
+- **Feed UI** (impeccable skill, 390px first): Next.js static export reading `feed.json`. Ranked digest with reaction reasons + "Reaction pending", results card (+ one-off flag; chip slot left empty until PvD), mgmt card, quiet-day state, P3 collapse, alert inbox + badge, settings (alert categories, N×, ±X% in localStorage). TS port of `rank()` passing `rank_cases.json`.
+- **Deploy step 3 (Vercel):** stop and give click-by-click instructions first.
+- Evening: re-run ingest; confirm 11 Nov "Reaction pending" items resolve once yfinance fills the bar (evidence for the writeup).
 
-**Fri 13**
-- Morning: **impeccable** skill → feed UI at 390px (digest, reaction reasons, quiet-day state, alert inbox, settings). Deploy step 3 (Vercel), with instructions.
-- PvD end to end → **credibility chip** → financial snapshot → bull/bear. Judge PvD quality; switch PvD/bull-bear to Claude only if shallow.
+**Fri 13: PvD day (hero)**
+- Transcript selection: the 4 latest *results* calls from screener (skip non-results calls). Cheap model: guidance per transcript → `{metric, target, period, quote, page}`.
+- Actuals from screener's quarterly table (Python). Strong model: verdict hit / miss / partial / not-yet-measurable + citations. Judge quality on TCS + HDFCBANK; switch to Claude only if shallow.
+- Credibility chip on results cards (Python, from cached PvD). Financial snapshot (no LLM). Bull/bear (3 each, cited).
 
-**Sat 14**
-- Live pull (job + polling + stages); research page UI (impeccable); precompute 4 research tickers (TCS, HDFCBANK + 2 outside portfolio).
-- Graceful-failure pass; business snapshot if time; GH Actions cron + secret (deploy step 4, with instructions).
-- Real-phone test, unseen-ticker test, cost total into DECISIONS.md.
+**Sat 14: live pull + research page**
+- `api.py`: POST /research/{symbol} → job id; GET /jobs/{id} with stage text. Research page UI (impeccable). Precompute 4 research tickers (TCS, HDFCBANK + 2 outside the portfolio).
+- Graceful-failure pass across feed + research. GH Actions cron (2 runs/day) + secret: deploy step 4, with instructions first.
+- Business snapshot only if time (first cut). Real-phone test, unseen-ticker test, cost total into DECISIONS.md.
 
 **Sun 15:** writeup, build-history export, submit.
 
