@@ -1,0 +1,671 @@
+
+> Read CLAUDE.md, both PDFs in docs/, and our earlier plan at C:\Users\mokshagn
+  a\.claude\plans\pasted-content-id-b541-read-claude-md-recursive-storm.md.
+  That plan is our baseline. Apply these changes:
+  1. API keys: Gemini free tier for both models (Flash = cheap, Pro = strong),
+  swappable via env var. Tell me exactly where to paste my key; I will paste it
+  into .env myself, never in chat.
+  2. Credibility chip is NOT optional: prioritise it on Day 3 once PvD works.
+  3. ADD: market-reaction ranking. Boost a filing's priority when the stock's
+  EOD move/volume that day crosses the alert thresholds, and show the reason on
+  the card (e.g. "Ranked high: results + 2.3x volume").
+  4. ADD: a confident quiet-day state, e.g. "Nothing material today. 14 routine
+  filings hidden."
+  5. UI work (Day 2-3) uses the impeccable skill. Not before.
+  6. I'm new to deployment: before any GitHub/Render/Vercel step, stop and give
+  me step-by-step instructions for the parts I do myself.
+  7. Run the 3 de-risk spikes first, then STOP and report in plain language.
+  8. Explain each package install or network command in 1-2 lines the first
+  time.
+  9. Log every cut and trade-off into DECISIONS.md.
+  10. First action once approved: create .gitignore (.env, docs/*.pdf,
+  node_modules, __pycache__, .venv, graphify-out/, ponytail ledger files), then
+  make the first git commit.
+      Today is 11 Nov; deadline 15 Nov. Show me the revised plan.
+
+● I'll start by reading the baseline plan and the two PDFs.
+
+  Searched for 1 pattern, read 3 files, listed 1 directory (ctrl+o to expand)
+
+● Updated plan
+  ⎿  /plan to preview
+  ⎿  Error: The user doesn't want to proceed with this tool use. The tool use
+     was rejected (eg. if it was a file edit, the new_string was NOT written to
+     the file). The user provided the following reason for the rejection:
+     Approved with these fixes:
+     1. Cut order: business snapshot → GH Actions cron → nothing else. Live pull
+     is NEVER cut. The brief says they may test a company we didn't pick.
+     2. Render hello-world deploy happens on Day 1 (not "or Day 4"), and spike 1
+     is repeated from Render that day to check if BSE blocks cloud IPs.
+     3. Live pull = background job + polling with staged progress text, not one
+     long request. On Gemini Pro quota/rate-limit errors, automatically fall
+     back to Flash and label the output "Verdicts by fast model (quota)".
+     4. Reaction boost uses the move relative to Nifty (^NSEI), not the raw
+     move. Show both in the reason string, e.g. "−4.1% (−3.6% vs Nifty)".
+     5. At the end of each session, remind me to /export into build-history/.
+     6. At the end of Day 1, re-plan Day 2 based on actual progress.
+     Then proceed with the first commit and the 3 spikes, and STOP after the
+     spikes.
+
+● I'll fold those six fixes into the plan, then exit plan mode to start.
+
+● Updated plan
+  ⎿  /plan to preview
+  ⎿  Error: The user doesn't want to proceed with this tool use. The tool use
+     was rejected (eg. if it was a file edit, the new_string was NOT written to
+     the file). The user provided the following reason for the rejection:  Ask
+     before edits
+
+● I haven't started any work yet. I'm still in plan mode, so there's no commit,
+  no files and no spikes.
+
+  All six of your fixes are now in the plan file, and they override the older
+  day-by-day where the two conflict:
+  1. Cut order: business snapshot goes first, then the GitHub Actions cron. Live
+     pull is never cut.
+  2. Render on Day 1: hello-world deploy (I'll give you step-by-step
+     instructions first), then spike 1 again from Render to check whether BSE
+     blocks cloud IPs.
+  3. Live pull: background job plus polling, with stage text. If Pro hits its
+     quota, it falls back to Flash automatically and the output is labelled
+     "Verdicts by fast model (quota)".
+  4. Reaction boost: measured against Nifty, e.g. "−4.1% (−3.6% vs Nifty)".
+  5. End of each session: I remind you to /export into build-history/.
+  6. End of Day 1: I re-plan Day 2 based on actual progress.
+
+  You turned down the exit-plan prompt with "Ask before edits". I read that as:
+  you want to approve each file change yourself. To start, approve the plan and
+  choose the option that asks you before each edit. Or just reply "go" and I'll
+  ask before every file I create.
+
+  Once approved, I'll create .gitignore, .env.example and DECISIONS.md, rename
+  the branch to main and make the first commit. Then I'll run the 3 spikes and
+  stop to report.
+
+  I haven't yet checked which ponytail ledger files the plugin writes. I'll look
+  before writing .gitignore.
+
+> start
+
+● Starting. First I'll find out which files ponytail writes, so the .gitignore
+  names them exactly.
+
+  Searched for 1 pattern, read 1 file, ran 1 shell command (ctrl+o to expand)
+
+● Ponytail keeps its ledger outside the repo, in
+  ~/.config/ponytail/band/<project>.csv, so the only in-repo files are the
+  optional PONYTAIL-DEBT.md report and the .ponytail-active flags, which I'll
+  ignore. · summary
+
+● Write(.gitignore)
+  ⎿  Wrote 29 lines to .gitignore
+       1 # secrets
+       2 .env
+       3 .env.*
+       4 !.env.example
+       5
+       6 # brief PDFs (not ours to redistribute)
+       7 docs/*.pdf
+       8
+       9 # python
+      10 __pycache__/
+     … +19 lines (ctrl+o to expand)
+
+● Write(.env.example)
+  ⎿  Wrote 7 lines to .env.example
+      1 # Copy this file to .env and fill in. .env is gitignored.
+      2 # Get a key at https://aistudio.google.com -> "Get API key"
+      3 GEMINI_API_KEY=
+      4
+      5 # Optional overrides (defaults set in backend/finn/llm.py after s
+        pike 3)
+      6 FINN_CHEAP_MODEL=
+      7 FINN_STRONG_MODEL=
+
+● Write(DECISIONS.md)
+  ⎿  Wrote 25 lines to DECISIONS.md
+      1 # Decisions & trade-offs
+      2
+      3 Format: **Decision** · Why · What we gave up.
+      4
+      5 ## Architecture
+      6 - **No Supabase; SQLite + JSON committed to the repo.** One fewer
+         service to deploy and keep secret. Gave up: a live shared DB (no
+        t needed for a single-user prototype).
+      7 - **Static-first frontend.** The push feed and demo research page
+        s are precomputed JSON, so they load instantly even when Render i
+     … +19 lines (~2 KB) (ctrl+o to expand)
+
+● Now the first commit. git branch -m main renames the local branch to match
+  GitHub's default. Then I stage the files and commit (all local; nothing leaves
+  your machine).
+
+  Ran 1 shell command (ctrl+o to expand)
+  ⎿  Not run · permission denied
+     │ Reason: The user doesn't want to proceed with this tool use. The tool use was rejected (eg. if it was a file edit, the new_string was NOT written to the file). The user provided the following reason for the …
+
+● Update(CLAUDE.md)
+  ⎿  Added 1 line
+      64  - After each module: a 5-line summary of what was built and why
+          .
+      65  - Parser tests against 2–3 real filings saved in `tests/fixture
+          s/`.
+      66  - Maintain `DECISIONS.md`: every key trade-off and what was del
+          iberately left out (this feeds my writeup).
+      67 +- Never add Co-Authored-By, 'Generated with Claude Code', or an
+         +y AI attribution lines to commit messages or PR descriptions.  
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The first commit is in (a91682f, no attribution line). The CRLF warnings are
+  harmless: that's just Windows line endings.
+
+  Now the spikes. First I'll check what Python I have to work with.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Spike 3 (Gemini) is waiting on a .env file with your GEMINI_API_KEY, which you
+  can create next to CLAUDE.md (key from aistudio.google.com). Meanwhile I'm
+  setting up the project's .venv and installing the packages for fetching,
+  parsing and Gemini. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Packages are installed, so I'm starting spike 1 on the BSE announcements API
+  and one attachment download, plus a quick yfinance check. These calls go to
+  public BSE and Yahoo Finance endpoints and need no login. · summary
+
+● Write(spikes\spike1_bse.py)
+  ⎿  Wrote 46 lines to spikes\spike1_bse.py
+       1 """Spike 1: does BSE's announcements API answer us, and can we d
+         ownload an attachment?
+       2 Also checks yfinance EOD in passing. Run: .venv/Scripts/python s
+         pikes/spike1_bse.py [scrip_code]"""
+       3 import sys, datetime as dt, pathlib, httpx
+       4
+       5 SCRIP = sys.argv[1] if len(sys.argv) > 1 else "500325"  # RELIAN
+         CE
+       6 HEADERS = {
+       7     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) App
+     … +40 lines (~2 KB) (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+● BSE returned 403 Forbidden, while yfinance works and its last bar is 9 Nov, so
+  the 10th may not be published yet. I'm checking whether BSE needs
+  browser-like headers or a homepage cookie. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● With full browser headers (Origin + sec-fetch-*) the API returns 200 OK, and
+  no cookies are needed. I'll update the spike's headers and run the whole thing
+  again.
+
+● Update(spikes\spike1_bse.py)
+  ⎿  Added 4 lines
+       7      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
+          pleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36
+          ",
+       8      "Referer": "https://www.bseindia.com/",
+       9      "Accept": "application/json, text/plain, */*",
+      10 +    # without Origin + sec-fetch-* BSE returns 403             
+      11 +    "Origin": "https://www.bseindia.com",                      
+      12 +    "Accept-Language": "en-US,en;q=0.9",                       
+      13 +    "sec-fetch-site": "same-site", "sec-fetch-mode": "cors", "s
+         +ec-fetch-dest": "empty",                                       
+      14  }
+      15  OUT = pathlib.Path("cache/spikes"); OUT.mkdir(parents=True, exi
+          st_ok=True)
+      16  
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Spike 1 passed: BSE announcements carry usable categories and the attachment
+  PDFs have text, though yfinance's 1mo gives too few rows for a 20-day average,
+  so I'll use 2mo and check whether 10 Nov was a holiday. Spike 2 is next:
+  resolving screener.in symbols and transcripts for ETERNAL, DEEPAKNTR and
+  HDFCBANK, with a 2-second pause between requests. · summary
+
+● Write(spikes\spike2_screener.py)
+  ⎿  Wrote 49 lines to spikes\spike2_screener.py
+       1 """Spike 2: does screener resolve NSE symbols -> BSE code + conc
+         all/AR links, and are transcripts text-extractable?
+       2 Run: .venv/Scripts/python spikes/spike2_screener.py [SYMBOL ...]
+         """
+       3 import sys, re, time, pathlib, httpx, pymupdf
+       4 from bs4 import BeautifulSoup
+       5
+       6 SYMBOLS = sys.argv[1:] or ["ETERNAL", "DEEPAKNTR", "HDFCBANK"]
+       7 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) A
+         ppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/53
+     … +43 lines (~2 KB) (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Spike 2 passed, with transcripts giving a full text layer and screener's table
+  covering the last 5 quarters. Next I'll pick the 4 latest results calls for
+  HDFCBANK, since its list has a non-results "Mar 2026" item, and compute NII as
+  Revenue minus Interest in Python. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● No key yet. While you add it, I'll write spike 3 and test the part that
+  doesn't need the key: finding the latest results filing for TCS and HDFCBANK
+  on BSE.
+
+● Write(spikes\spike3_gemini.py)
+  ⎿  Wrote 96 lines to spikes\spike3_gemini.py
+       1 """Spike 3: can Gemini Flash pull the 3-column results table int
+         o strict JSON? Is Pro reachable on the free tier?
+       2 Run: .venv/Scripts/python spikes/spike3_gemini.py   (needs GEMIN
+         I_API_KEY in .env for the LLM part)"""
+       3 import os, json, pathlib, datetime as dt, httpx
+       4 from dotenv import load_dotenv
+       5
+       6 load_dotenv()
+       7 HEADERS = {
+       8     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) App
+     … +89 lines (~5 KB) (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+  ⎿  Not run · permission denied
+     │ Reason: The user doesn't want to proceed with this tool use. The tool use was rejected (eg. if it was a file edit, the new_string was NOT written to the file). The user provided the following reason for the …
+
+● I'll wait for you to finish adding the key.
+
+  Status so far
+  - First commit a91682f on main, with no attribution line, as you asked. I
+    added that rule to CLAUDE.md in the same commit.
+  - Spike 1 (BSE) passes from your machine. BSE refused the request (403) until
+    I added more browser-like headers (Origin and the sec-fetch ones). It
+    doesn't need a login cookie. Announcements come back with BSE's own
+    categories, and the attached PDFs download with readable text.
+  - Spike 2 (screener) passes. It found the BSE code and the transcript and
+    annual-report links for ETERNAL, DEEPAKNTR and HDFCBANK. Transcripts are
+    proper text, not scanned images. Screener's quarterly table has the last 5
+    quarters, which gives PvD its actual reported numbers.
+  - Spike 3 (Gemini) is written in spikes/spike3_gemini.py but hasn't run yet.
+    It finds the latest results PDF for TCS and HDFCBANK on BSE and asks Flash
+    to pull the numbers into a fixed format. Then it lists the models your key
+    can use and sends Pro a one-word test.
+
+  Once .env is saved, say "run spike 3". I'll run it and then stop with the
+  plain-language report on all three.
+
+  Not yet checked: whether BSE also accepts requests from Render's cloud servers
+  rather than your machine; that test is planned for Day 1 after the Render
+  deploy. The last price bar from Yahoo is 9 Nov; I'll check whether the 10th
+  was a market holiday.
+
+> <ide_opened_file>The user opened the file c:\Users\mokshagna\Claude
+  Projects\finn\.env in the IDE. This may or may not be related to the current
+  task.</ide_opened_file>
+
+> done, key is in .env, run spike 3
+
+● This calls BSE to fetch the two results PDFs, then sends them to Google's
+  Gemini API using your key.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Two issues: gemini-2.5-flash is retired for new keys (Google points to
+  gemini-3.8-flash), and the model list has no current Pro text model. Also, BSE
+  returned no "Result" filings for HDFCBANK in 60 days, so the category filter
+  misses it; I'll check how that filing is categorized and which models respond.
+  · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The .env loader can't locate the file when the code is piped in, so I'll point
+  it at .env directly.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● HDFCBANK's filing sits under "Board Meeting → Outcome of Board Meeting" rather
+  than "Result", so the classifier needs a keyword rule, and no Pro model is
+  available on the free key. I'll fix the filing search, then compare a cheap
+  lite model against gemini-3.8-flash on the extraction. · summary
+
+● Update(spikes\spike3_gemini.py)
+  ⎿  Added 2 lines, removed 1 line
+      20          return f
+      21      t = dt.date.today()
+      22      r = httpx.get("https://api.bseindia.com/BseIndiaAPI/api/Ann
+          SubCategoryGetData/w", headers=HEADERS, timeout=30, params={
+      23 -        "pageno": 1, "strCat": "Result", "subcategory": -1, "st
+         -rSearch": "P", "strType": "C",                                 
+      23 +        # strCat=-1 (all): HDFCBANK files results under "Board 
+         +Meeting", not "Result"                                         
+      24 +        "pageno": 1, "strCat": -1, "subcategory": -1, "strSearc
+         +h": "P", "strType": "C",                                       
+      25          "strPrevDate": (t - dt.timedelta(days=60)).strftime("%Y
+          %m%d"), "strToDate": t.strftime("%Y%m%d"), "strScrip": scrip})
+      26      rows = r.json().get("Table", [])
+      27      for row in rows:
+
+● Update(spikes\spike3_gemini.py)
+  ⎿  Added 4 lines, removed 4 lines
+      24          "pageno": 1, "strCat": -1, "subcategory": -1, "strSearc
+          h": "P", "strType": "C",
+      25          "strPrevDate": (t - dt.timedelta(days=60)).strftime("%Y
+          %m%d"), "strToDate": t.strftime("%Y%m%d"), "strScrip": scrip})
+      26      rows = r.json().get("Table", [])
+      27 -    for row in rows:                                           
+      28 -        print(f"  {sym} {row['NEWS_DT'][:10]} | {row['SUBCATNAM
+         -E']} | {row['NEWSSUB'][:90]} | {row.get('Fld_Attachsize')}")   
+      29 -    # biggest "Financial Results" attachment is usually the ful
+         -l results PDF (not the board-meeting intimation)               
+      30 -    cands = [x for x in rows if x.get("ATTACHMENTNAME") and "Fi
+         -nancial Result" in (x.get("SUBCATNAME") or "") + (x.get("NEWSSU
+         -B") or "")]                                                    
+      27 +    # biggest "financial result" attachment is usually the full
+         + results PDF (not the board-meeting intimation)                
+      28 +    cands = [x for x in rows if x.get("ATTACHMENTNAME") and "fi
+         +nancial result" in ((x.get("SUBCATNAME") or "") + (x.get("NEWSS
+         +UB") or "")).lower()]                                          
+      29 +    for row in cands:                                          
+      30 +        print(f"  {sym} {row['NEWS_DT'][:10]} | {row['CATEGORYN
+         +AME']} / {row['SUBCATNAME']} | {row['NEWSSUB'][:80]} | {row.get
+         +('Fld_Attachsize')}")                                          
+      31      if not cands:
+      32          return None
+      33      best = max(cands, key=lambda x: x.get("Fld_Attachsize") or 
+          0)
+
+● Update(spikes\spike3_gemini.py)
+  ⎿  Added 3 lines, removed 2 lines
+      77  names = [m.name for m in client.models.list()]
+      78  print("models (flash/pro):", [n for n in names if ("flash" in n
+           or "pro" in n) and "gemini" in n])
+      79  
+      80 -flash = os.getenv("FINN_CHEAP_MODEL") or next(n for n in names 
+         -if "flash" in n and "lite" not in n and "gemini" in n)         
+      81 -for sym, f in pdfs.items():                                    
+      80 +import sys                                                     
+      81 +models = sys.argv[1:] or [os.getenv("FINN_CHEAP_MODEL") or "gem
+         +ini-3.8-flash"]                                                
+      82 +for flash, (sym, f) in [(m, kv) for m in models for kv in pdfs.
+         +items()]:                                                      
+      83      if not f:
+      84          continue
+      85      resp = client.models.generate_content(
+
+● Update(spikes\spike3_gemini.py)
+  ⎿  Removed 6 lines
+      90      print(f"\n== {sym} via {flash} | tokens in={resp.usage_meta
+          data.prompt_token_count} out={resp.usage_metadata.candidates_to
+          ken_count}")
+      91      print(json.dumps(json.loads(resp.text), indent=1, ensure_as
+          cii=False))
+      92  
+      93 -pro = os.getenv("FINN_STRONG_MODEL") or next((n for n in names 
+         -if "pro" in n and "gemini" in n), None)                        
+      94 -try:                                                           
+      95 -    r = client.models.generate_content(model=pro, contents="Rep
+         -ly with the single word: ok")                                  
+      96 -    print(f"\nPro check ({pro}):", r.text.strip())             
+      97 -except Exception as e:                                         
+      98 -    print(f"\nPro check ({pro}) FAILED:", str(e)[:300])        
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The Windows console can't print the ₹ sign. Setting PYTHONIOENCODING=utf-8
+  fixes that for this run (the PDFs are cached, so they won't download again).
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The lite model fetched TCS's figures in one call, but HDFCBANK hit a temporary
+  503 "high demand" overload on Google's side, not a problem with our request.
+  I'm checking the TCS numbers against the PDF text next. · summary
+
+  Ran 2 shell commands (ctrl+o to expand)
+● All 7 TCS figures match the PDF across the three columns, using the
+  consolidated statement in ₹ crore as instructed. TCS's June-quarter PBT
+  includes a ₹668 cr one-off legal settlement that skews the quarter-on-quarter
+  comparison, which I'll flag on the results card; now retrying HDFCBANK.
+  · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Now I'll check the HDFCBANK numbers against page 9 of the PDF.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● HDFCBANK's PDF is a scanned document whose OCR misread zeros as the letter
+  "O", but Gemini read the page image correctly. I'll check PAT and the rest the
+  same way, applying the O→0 fix. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● All 18 HDFCBANK figures match the PDF; the crash was only the console failing
+  to print ₹, after the checks had passed. I'm recording the spike findings in
+  DECISIONS.md and committing the spike scripts next. · summary
+
+● Update(DECISIONS.md)
+  ⎿  Added 9 lines
+       8  - **Live pull = background job + polling, with staged progress 
+          text.** A single long HTTP request would time out on a cold fre
+          e-tier host. Gave up: simplicity of one request.
+       9  - **Gemini for both tiers (Flash = cheap, Pro = strong), set by
+           env var.** Free tier, one key. If Pro hits its quota, `llm.py`
+           falls back to Flash and labels the output "Verdicts by fast mo
+          del (quota)". Gave up: possibly stronger reasoning from a paid 
+          model.
+      10  
+      11 +## Spike findings (11 Nov)                                     
+      12 +- **BSE API needs full browser headers** (`Origin` + `sec-fetch
+         +-*`), not just User-Agent + Referer. Without them it returns 40
+         +3. No cookies needed. Not yet tested from a cloud IP.          
+      13 +- **BSE's category alone misses results.** HDFCBANK filed Q2 re
+         +sults under "Board Meeting / Outcome of Board Meeting". The cla
+         +ssifier needs a keyword rule on the subject ("financial results
+         +").                                                            
+      14 +- **Screener resolves symbols programmatically**, including ren
+         +amed ETERNAL (BSE 543320). Concall lists can contain non-result
+         +s calls (e.g. HDFCBANK "Mar 2026"), so PvD must select the resu
+         +lts calls, not just the last 4 rows.                           
+      15 +- **Banks: screener has no NII line.** NII = interest earned − 
+         +interest expended, computed in Python.                         
+      16 +- **Results extraction:** `gemini-3.5-flash-lite` with a JSON s
+         +chema got 25/25 checked TCS + HDFCBANK numbers exact (the TCS P
+         +BT, PAT, revenue and cost lines plus all 18 HDFCBANK values, ac
+         +ross 3 columns). That includes a scanned HDFCBANK PDF whose tex
+         +t layer reads zeros as "O". Sending the PDF itself (not extract
+         +ed text) is what makes scanned filings work. About 12k tokens i
+         +n and 500 out per filing.                                      
+      17 +- **Exceptional items** (e.g. TCS's ₹668 cr legal settlement in
+         + Q1) distort QoQ PBT. The results card should flag them.       
+      18 +- **No Gemini Pro on a new free key.** `gemini-2.5-pro` is reti
+         +red for new users, and no newer Pro text model is offered. Avai
+         +lable: `gemini-3.8-flash`, `gemini-3.5-flash`, `gemini-3.5-flas
+         +h-lite`, and others.                                           
+      19 +                                                               
+      20  ## Product cuts
+      21  - **No real web push.** An in-app alert inbox with a badge inst
+          ead. Web push needs a service worker and VAPID keys, and iOS on
+          ly allows it for installed PWAs. Next step after the prototype.
+      22  - **No tier editor.** Settings are alert-category toggles plus 
+          volume N× and price ±X%. Gave up: per-category tier customisati
+          on.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● All three spikes are done. The data path works, but your free Gemini key has
+  no "Pro" model, so the plan's strong model needs a different choice before I
+  build llm.py. That's the one decision I need from you.
+
+  Spike 1: BSE announcements — pass (from your laptop)
+  - BSE blocked us (403 Forbidden) until the request looked more like a real
+    browser. With the extra headers, the feed and its attached PDFs download
+    fine for RELIANCE and HDFCBANK. No login cookie is needed.
+  - Not yet tested from Render's cloud servers. That's still planned after
+    today's Render deploy.
+  - Yahoo prices and the Nifty index both work.
+
+  Spike 2: screener.in — pass
+  - It turned ETERNAL (the renamed company), DEEPAKNTR and HDFCBANK into BSE
+    codes plus transcript and annual-report links, with nothing hard-coded.
+  - Transcripts are proper text, not scanned images.
+  - Screener's quarterly table gives the actual numbers that PvD needs.
+
+  Spike 3: Gemini reading results PDFs — pass, with one problem
+  - The cheapest model (gemini-3.5-flash-lite) got 25 out of 25 numbers exactly
+    right across TCS and HDFCBANK.
+  - That includes HDFCBANK's PDF, which is a scan whose text reads every zero as
+    the letter "O". It worked because we send Gemini the PDF itself rather than
+    our extracted text.
+  - One HDFCBANK call failed with "model is overloaded, try later" and worked on
+    retry. So llm.py needs to retry automatically.
+  - The problem: there is no Pro model on your key. Google has retired
+    gemini-2.5-pro for new users and offers no newer Pro text model on it.
+
+  What changes in the plan
+  - The classifier needs a keyword rule, because HDFCBANK filed its results
+    under "Board Meeting", not "Result".
+  - PvD must pick the results calls from screener's list, because the list
+    includes other calls too.
+  - For banks, Python computes NII = interest earned − interest paid.
+  - The results card should flag one-off items. TCS had a ₹668 cr legal
+    settlement last quarter that makes the QoQ comparison misleading.
+
+  Decision needed: what replaces Pro? My recommendation:
+  - Cheap model: gemini-3.5-flash-lite, which just passed the extraction test.
+  - Strong model: gemini-3.8-flash, the newest and strongest model on your key.
+  - If the strong model is overloaded or over quota, fall back to
+    gemini-3.5-flash and label the output.
+
+  That keeps the cheap-vs-strong split the brief rewards, and costs nothing. The
+  other option is to pay for a stronger model (e.g. Claude) just for PvD and
+  bull/bear. That's about 10–15 calls, likely under $1, and means a second API
+  key. Both are one setting in .env either way.
+
+  Commits so far: a91682f (setup) and 9ff55cd (spikes and findings). The
+  findings are also logged in DECISIONS.md.
+
+  I didn't measure your key's exact free-tier daily request limits. I'll log
+  real usage once llm.py exists. Before you close this session, remember to
+  /export into build-history/.
+
+> Decisions:
+  1. Approved: cheap = gemini-3.5-flash-lite, strong = gemini-3.8-flash,
+  fallback gemini-3.5-flash with a visible label.
+  2. Keep llm.py provider-agnostic (provider + model per task via env vars) so
+  PvD/bull-bear can switch to Claude on Day 3 if quality is shallow. Don't
+  implement the Anthropic adapter yet. Only the interface.
+  3. Retry with exponential backoff on overloaded/429 (max 3 tries), then fall
+  back.
+  4. Cost: for results PDFs, send only the consolidated results page(s), not
+  the whole PDF. Use the text layer when clean; send PDF pages to Gemini only
+  when text is garbled/scanned. Log which path was used.
+  5. One-off flag: if the "Exceptional items" line is non-zero, Python flags it
+  on the card (e.g. "Includes ₹668 cr one-off"). No LLM judgment.
+  6. Add the 4 spike findings + these decisions to the plan, save the full
+  current plan as PLAN.md in the repo, log decisions in DECISIONS.md, and
+  commit.
+     Then STOP. I'll export this session and start a fresh one for the build.
+
+● I'll write PLAN.md as one complete plan that a fresh session can follow
+  without this conversation. Then I'll update DECISIONS.md and .env.example, and
+  commit.
+
+● Write(PLAN.md)
+  ⎿  Wrote 136 lines to PLAN.md
+       1 # FINN — build plan (11–15 Nov 2026)
+       2
+       3 Single source of truth for the build. Scope and hard rules live
+         in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.
+       4 Status at time of writing (11 Nov): repo initialised, 3 de-risk
+         spikes passed (`spikes/`). No module code yet.
+       5
+       6 ---
+       7
+       8 ## 1. Product (what ships)
+     … +128 lines (ctrl+o to expand)
+
+● Write(.env.example)
+  ⎿  Added 7 lines, removed 3 lines
+       2  # Get a key at https://aistudio.google.com -> "Get API key"
+       3  GEMINI_API_KEY=
+       4  
+       5 -# Optional overrides (defaults set in backend/finn/llm.py after
+         - spike 3)                                                      
+       6 -FINN_CHEAP_MODEL=                                              
+       7 -FINN_STRONG_MODEL=                                             
+       5 +# Models as provider:model. Defaults below are what llm.py uses
+         + if unset.                                                     
+       6 +FINN_CHEAP=gemini:gemini-3.5-flash-lite                        
+       7 +FINN_STRONG=gemini:gemini-3.8-flash                            
+       8 +FINN_FALLBACK=gemini:gemini-3.5-flash                          
+       9 +# Per-task override, e.g. switch PvD to another provider later:
+      10 +# FINN_TASK_PVD_VERDICT=anthropic:<model>                      
+      11 +# ANTHROPIC_API_KEY=                                           
+
+● Update(DECISIONS.md)
+  ⎿  Added 5 lines, removed 1 line
+       6  - **No Supabase; SQLite + JSON committed to the repo.** One few
+          er service to deploy and keep secret. Gave up: a live shared DB
+           (not needed for a single-user prototype).
+       7  - **Static-first frontend.** The push feed and demo research pa
+          ges are precomputed JSON, so they load instantly even when Rend
+          er is cold. Gave up: real-time freshness (data is EOD anyway).
+       8  - **Live pull = background job + polling, with staged progress 
+          text.** A single long HTTP request would time out on a cold fre
+          e-tier host. Gave up: simplicity of one request.
+       9 -- **Gemini for both tiers (Flash = cheap, Pro = strong), set by
+         - env var.** Free tier, one key. If Pro hits its quota, `llm.py`
+         - falls back to Flash and labels the output "Verdicts by fast mo
+         -del (quota)". Gave up: possibly stronger reasoning from a paid 
+         -model.                                                         
+       9 +- **Models: cheap = `gemini-3.5-flash-lite`, strong = `gemini-3
+         +.8-flash`, fallback = `gemini-3.5-flash`.** The original plan w
+         +as Flash + Pro, but a new free key has no Pro model. Lite passe
+         +d extraction 25/25, so the bulk work stays on the cheapest tier
+         +. Gave up: Pro-level reasoning on PvD/bull-bear for now.       
+      10 +- **`llm.py` is provider-agnostic** (`provider:model` per task 
+         +via env). Only the Gemini adapter is built. If PvD quality is s
+         +hallow on Day 3, PvD/bull-bear can move to Claude with one env 
+         +line plus a small adapter. Gave up: nothing yet; we avoided bui
+         +lding an adapter we may not need.                              
+      11 +- **Retry then fall back.** Exponential backoff on 503/429, max
+         + 3 tries, then the fallback model, with the visible label "Verd
+         +icts by fast model (quota)". The spike hit a real 503, so this 
+         +is needed, not hypothetical.                                   
+      12 +- **Results PDFs: send only the consolidated results page(s).**
+         + Use the text layer when clean, and send just those PDF pages w
+         +hen the text is garbled (scanned). The path used is logged per 
+         +call. A full PDF was ~12k input tokens. Gave up: nothing; if pa
+         +ge detection fails, the full PDF is the fallback.              
+      13 +- **One-off flag is pure Python.** If "Exceptional items" ≠ 0, 
+         +the card says e.g. "Includes ₹668 cr one-off". No LLM judgment 
+         +about what counts as one-off.                                  
+      14  
+      15  ## Spike findings (11 Nov)
+      16  - **BSE API needs full browser headers** (`Origin` + `sec-fetch
+          -*`), not just User-Agent + Referer. Without them it returns 40
+          3. No cookies needed. Not yet tested from a cloud IP.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● I've saved the full plan as PLAN.md and committed it as 3ee7525, with no
+  attribution line. A fresh session can work from it alone: it has the product
+  scope, architecture, your six decisions, the spike findings, the day-by-day
+  schedule and your working rules.
+
+  Also in that commit:
+  - DECISIONS.md: the model choice (and why there's no Pro), the swappable model
+    setup, retry-then-fallback, sending only the results pages, and the one-off
+    flag done in plain Python.
+  - .env.example: now lists the model settings in the new provider:model format.
+    Your own .env only needs GEMINI_API_KEY, because the models default to the
+    approved ones.
+
+  Stopping here. Please run /export into build-history/ before starting the new
+  session.
+
+  Two things still untested:
+  - Sending the results page as text instead of the PDF hasn't been tried yet;
+    the spike sent whole PDFs. I've added a token comparison to PLAN.md's
+    verification step, because one PDF page cost Gemini about 520 tokens while
+    one text page is likely about 2,000. The text path may turn out more
+    expensive, not cheaper.
+  - BSE from a cloud server is still untested. That check happens right after
+    the Render deploy.
