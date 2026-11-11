@@ -6,7 +6,11 @@ Format: **Decision** · Why · What we gave up.
 - **No Supabase; SQLite + JSON committed to the repo.** One fewer service to deploy and keep secret. Gave up: a live shared DB (not needed for a single-user prototype).
 - **Static-first frontend.** The push feed and demo research pages are precomputed JSON, so they load instantly even when Render is cold. Gave up: real-time freshness (data is EOD anyway).
 - **Live pull = background job + polling, with staged progress text.** A single long HTTP request would time out on a cold free-tier host. Gave up: simplicity of one request.
-- **Gemini for both tiers (Flash = cheap, Pro = strong), set by env var.** Free tier, one key. If Pro hits its quota, `llm.py` falls back to Flash and labels the output "Verdicts by fast model (quota)". Gave up: possibly stronger reasoning from a paid model.
+- **Models: cheap = `gemini-3.5-flash-lite`, strong = `gemini-3.8-flash`, fallback = `gemini-3.5-flash`.** The original plan was Flash + Pro, but a new free key has no Pro model. Lite passed extraction 25/25, so the bulk work stays on the cheapest tier. Gave up: Pro-level reasoning on PvD/bull-bear for now.
+- **`llm.py` is provider-agnostic** (`provider:model` per task via env). Only the Gemini adapter is built. If PvD quality is shallow on Day 3, PvD/bull-bear can move to Claude with one env line plus a small adapter. Gave up: nothing yet; we avoided building an adapter we may not need.
+- **Retry then fall back.** Exponential backoff on 503/429, max 3 tries, then the fallback model, with the visible label "Verdicts by fast model (quota)". The spike hit a real 503, so this is needed, not hypothetical.
+- **Results PDFs: send only the consolidated results page(s).** Use the text layer when clean, and send just those PDF pages when the text is garbled (scanned). The path used is logged per call. A full PDF was ~12k input tokens. Gave up: nothing; if page detection fails, the full PDF is the fallback.
+- **One-off flag is pure Python.** If "Exceptional items" ≠ 0, the card says e.g. "Includes ₹668 cr one-off". No LLM judgment about what counts as one-off.
 
 ## Spike findings (11 Nov)
 - **BSE API needs full browser headers** (`Origin` + `sec-fetch-*`), not just User-Agent + Referer. Without them it returns 403. No cookies needed. Not yet tested from a cloud IP.
