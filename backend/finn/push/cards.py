@@ -56,7 +56,8 @@ def results_card(ex: dict) -> dict:
     d = ex["data"]
     unit = d["unit"].lower()
     k = next((v for u, v in TO_CRORE.items() if u in unit), None)
-    if k is None:
+    # e.g. MARUTI filing its Japanese parent's results: "million yen" must not become ₹ crore
+    if k is None or not any(r in unit for r in ("₹", "rs", "inr", "rupee", "crore", "lakh", "lac")):
         raise ValueError(f"unknown unit: {d['unit']}")
     cols = [{f: (v * k if isinstance(v, (int, float)) else v) for f, v in c.items()} for c in d["columns"][:3]]
     if len(cols) < 3:
@@ -86,3 +87,31 @@ def results_card(ex: dict) -> dict:
                   for n, v in lines.items()],
         "one_offs": one_offs, "pages": ex["pages"], "model_note": ex.get("model_note"),
     }
+
+
+_str = {"type": "string", "nullable": True}
+BIO_SCHEMA = {"type": "object", "properties": {"people": {"type": "array", "items": {"type": "object", "properties": {
+    "name": {"type": "string"},
+    "change": {"type": "string", "enum": ["appointed", "re-appointed", "redesignated", "resigned", "retired", "ceased"]},
+    "role": {"type": "string"}, "effective": _str, "bio": _str,
+    "bio_page": {"type": "integer", "nullable": True}, "profile_ref": _str,
+}, "required": ["name", "change", "role"]}}}, "required": ["people"]}
+INCOMING = ("appointed", "re-appointed", "redesignated")
+
+
+def mgmt_card(pdf_bytes: bytes) -> dict:
+    """Who changed, and the incoming person's profile as the filing states it (SEBI LODR requires one).
+    Long filings: page 1 + pages that look like a profile, at most 6, to keep the call cheap."""
+    doc = pdf.open_pdf(pdf_bytes)
+    texts = pdf.pages(doc)
+    idx = [0] + [i for i, t in enumerate(texts) if i and any(k in t.lower() for k in ("profile", "experience", "qualification"))]
+    idx = idx[:6] if len(texts) > 6 else list(range(len(texts)))
+    key = f"{hashlib.sha256(pdf_bytes).hexdigest()}:{idx}"
+    ex = llm.run("extract_bio", "extract_bio", [pdf.subset(doc, idx)], BIO_SCHEMA, key=key, pages=[i + 1 for i in idx])
+    people = sorted(ex["data"]["people"], key=lambda p: p["change"] not in INCOMING)  # incoming first
+    for p in people:
+        if p.get("bio_page"):
+            p["bio_page"] = idx[p["bio_page"] - 1] + 1 if p["bio_page"] <= len(idx) else None  # subset page -> filing page
+        if not p.get("bio") and p["change"] in INCOMING:
+            p["bio"] = "Profile not in this filing" + (f"; see {p['profile_ref']}" if p.get("profile_ref") else "")
+    return {"people": people, "model_note": ex.get("model_note")}
