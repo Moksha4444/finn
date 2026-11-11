@@ -160,7 +160,7 @@ Cheap model reads each transcript once → `{metric, target, period, quote, page
 - Business snapshot only if time (first cut). Real-phone test, unseen-ticker test, cost total into DECISIONS.md.
 
 ### 4a. Handoff for the PvD backend session (12 Nov morning)
-Read CLAUDE.md, this file's §1/§2 "PvD" and DECISIONS.md first. Scope: **backend only**, nothing under `web/`.
+Read CLAUDE.md, this file's §1/§2 "PvD" and DECISIONS.md first. Scope: **backend only**. No UI code under `web/`; writing data files to `web/public/data/research/` is expected.
 - **Build:** `backend/finn/pull/pvd.py` + prompts `extract_guidance.md`, `pvd_verdict.md`; CLI `python -m finn.pull.pvd SYMBOL` printing the promise table; tests in `backend/tests/test_pvd.py` with 2 saved transcript fixtures.
 - **Reuse, don't rebuild:** `llm.run(task, prompt, inputs, schema, key=...)` (tasks `extract_guidance` = cheap, `pvd_verdict` = strong are already routed; pass `key=` = source hash when inputs are derived bytes). `screener.company(sym)` → `concalls` (period, transcript URL) and `quarters` (₹ cr, oldest first). `fetch(url, expect=b"%PDF")` for transcripts. `pdf.pages()` for text with page numbers.
 - **Rules:** select the 4 latest *results* calls (skip non-results calls such as HDFCBANK "Mar 2026"). Every promise carries transcript + page. Actuals come from screener's quarterly table, cited as such; Python computes growth, the LLM never does arithmetic. Verdicts: hit / miss / partial / not-yet-measurable. Missing facts → "not disclosed".
