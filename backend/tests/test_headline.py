@@ -19,3 +19,13 @@ def test_over_12_words_fails():
 
 def test_number_not_in_filing_fails():
     assert problems("Raised ₹7000 crore via QIP", SRC) == ["these numbers are not in the filing: 7000"]
+
+
+DIXON = "Prithvi Vachani Appointment as an Additional Director in the capacity of Executive Director Revenue from Operations 21,863"
+
+
+def test_non_results_copy_of_a_board_outcome_must_not_lead_with_results():
+    h = "Reported quarterly revenue of ₹21,863 crore and appointed Prithvi Vachani Executive Director"
+    assert any("filed as a management change" in x for x in problems(h, DIXON, "management_change"))
+    assert problems("Appointed Prithvi Vachani Executive Director", DIXON, "management_change") == []
+    assert problems("Q2 revenue at ₹21,863 crore", DIXON, "press_release") == []  # results press releases may

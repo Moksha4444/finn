@@ -15,9 +15,17 @@ def _nums(s: str) -> set[str]:
     return {re.sub(r"[,\s]", "", m).rstrip(".") for m in re.findall(r"\d[\d,]*(?:\.\d+)?", s)}
 
 
-def problems(headline: str, source_text: str) -> list[str]:
-    """Why a headline breaks the rules (empty = fine). source_text: the pages the model was given."""
+# A board-outcome PDF lists every decision (results first) and is filed once per decision. The copy filed as a
+# management change must not be headlined with the results (13 Nov: Dixon "Reported quarterly revenue ... and appointed").
+RESULTS_WORDS = r"\bresults?\b|revenue|profit|ebitda|\bpat\b|earnings"
+
+
+def problems(headline: str, source_text: str, category: str | None = None) -> list[str]:
+    """Why a headline breaks the rules (empty = fine). source_text: the pages the model was given.
+    category: what this copy is filed as; for a non-results event, results talk is a problem."""
     out = []
+    if category and category not in ("results", "press_release", "earnings_call") and re.search(RESULTS_WORDS, headline, re.I):
+        out.append(f"this copy is filed as a {category.replace('_', ' ')}: write only about that decision, leave out the financial results")
     n = len(headline.split())
     if not 0 < n <= MAX_WORDS:
         out.append(f"it has {n} words; use at most {MAX_WORDS}")
@@ -28,7 +36,7 @@ def problems(headline: str, source_text: str) -> list[str]:
     return out
 
 
-def title(row: dict, get_pdf, draft: str | None = None) -> str | None:
+def title(row: dict, get_pdf, draft: str | None = None, category: str | None = None) -> str | None:
     """draft: a headline already written (the classifier's); it is checked like any other."""
     subject = row.get("NEWSSUB") or ""
     try:
@@ -39,10 +47,10 @@ def title(row: dict, get_pdf, draft: str | None = None) -> str | None:
         key = hashlib.sha256(b).hexdigest() + subject
         inputs = [subject, pdf.subset(doc, idx)]
         h = " ".join((draft or llm.run("headline", "headline", inputs, SCHEMA, key=key, filing=row.get("NEWSID"))["data"]["headline"]).split())
-        if p := problems(h, source):
+        if p := problems(h, source, category):
             fix = f"Your headline was: \"{h}\". Rewrite it: {'; '.join(p)}."
             h = " ".join(llm.run("headline", "headline", [*inputs, fix], SCHEMA, key=key + fix, filing=row.get("NEWSID"), retry=1)["data"]["headline"].split())
-            if problems(h, source):
+            if problems(h, source, category):
                 return None
         return h
     except Exception:

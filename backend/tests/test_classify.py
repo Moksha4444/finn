@@ -20,6 +20,20 @@ CASES = [  # (CATEGORYNAME, SUBCATNAME, NEWSSUB, HEADLINE) -> (category, tier)
     ((None, "Analysts/Institutional Investor Meet/Con. Call Updates", "CDSL has informed the Exchange about Schedule of Analyst Call with J.P. Morgan", None), ("investor_meetings", "P3")),
     # MARUTI: its Japanese parent's results are not Maruti's results
     (("Company Update", "General", "Reference To The Financial Results Issued By Suzuki Motor Corporation", "Reference to the Financial Results issued by Suzuki Motor Corporation"), ("press_release", "P2")),
+    # 13 Nov: KPIT filed one board-outcome PDF under 5 subcategories; only the results copy is news
+    (("Company Update", "Acquisition", "Announcement under Regulation 30 (LODR)-Acquisition", "KPIT Technologies Limited has informed the Exchange that the Board of Directors of the Company approved the proposal to incorporate a wholly owned subsidiary in Vietnam ."), ("unclassified", "P3")),
+    (("Company Update", "Scheme of Arrangement", "Announcement under Regulation 30 (LODR)-Scheme of Arrangement", "KPIT Technologies Limited has informed the Exchange that the Board of Directors of the Company approved the Strike-off of Somit Solutions Limited, wholly owned step-down subsidiary of the Company."), ("unclassified", "P3")),
+    (("Company Update", "General", "Issue Of Letter Of Comfort In Favor Of KPIT Technologies (UK) Limited", "KPIT Technologies Limited has informed the Exchange about Issue of Letter of Comfort in favor of KPIT Technologies (UK) Limited , a wholly-owned subsidiary of the Company."), ("unclassified", "P3")),
+    (("Company Update", "Change in Management", "Announcement under Regulation 30 (LODR)-Change in Management", "KPIT Technologies Limited has informed the Exchange regarding Appointment of Independent Director, Mr. Anant Talaulicar - Chairman of the Board, on the Board of KPIT Technologies Inc., ...."), ("management_change", "P3")),
+    (("Company Update", "Acquisition", "Announcement under Regulation 30 (LODR)-Acquisition", "Incorporation of Wholly Owned Subsidiary"), ("unclassified", "P3")),  # MARUTI's foundation
+    # guard (synthetic): a real deal done through a new subsidiary stays M&A
+    (("Company Update", "Acquisition", "Announcement under Regulation 30 (LODR)-Acquisition", "Acquisition of 100% stake in Alpha GmbH through a newly incorporated wholly owned subsidiary"), ("m_and_a", "P1")),
+    # DIXON's copy of the same kind of PDF is a real appointment (Executive Director): stays P1; its title is fixed in headline.py
+    (("Company Update", "Change in Management", "Announcement under Regulation 30 (LODR)-Change in Management", "Announcement under Regulation 30 of SEBI LODR- Change in Management"), ("management_change", "P1")),
+    (("Company Update", "General", "Second Reminder Notice For Payment Of First And Final Call On Partly Paid-Up Equity Shares Of Bharti Airtel Limited ('Company')", "Second Reminder Notice for payment of First and Final Call on partly paid-up equity shares of Bharti Airtel Limited, on which First and Final Call remains unpaid."), ("fund_raise", "P3")),
+    # POLYCAB: an insolvency order filed as a press release is litigation
+    (("Company Update", "Press Release / Media Release", "Announcement under Regulation 30 (LODR)-Press Release / Media Release", "Press Release on receipt of Order dated October 09, 2026 passed by the Hon''ble NCLAT"), ("litigation", "P1")),
+    (("Company Update", "Press Release / Media Release", "Announcement under Regulation 30 (LODR)-Press Release / Media Release", "Partnered with Quality Council of India for digital food safety audits"), ("press_release", "P2")),
 ]
 
 

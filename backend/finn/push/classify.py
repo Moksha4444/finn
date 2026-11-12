@@ -22,7 +22,7 @@ RULES = [
     ("investor_meetings", r"analyst|investor(s|\(s\))? meet|investor conference|institutional investor|road ?show"),
     ("pledging", r"pledge|encumbrance|reg\. 31"),
     ("insider_trading", r"insider trading|\bsast\b|substantial acquisition|reg\. 29|regulation 7 ?\(2\)"),
-    ("litigation", r"litigation|penalt|fines? levied|show cause|insolvency|\bcirp\b|nclt|tribunal|arbitration|court|tax demand|demand order"),
+    ("litigation", r"litigation|penalt|fines? levied|show cause|insolvency|\bcirp\b|nclt|nclat|tribunal|arbitration|court|tax demand|demand order"),
     ("fund_raise", r"\bqip\b|qualified institution|rights issue|preferential|warrant|buy-?back|commercial paper|\bncds?\b"
                    r"|non-convertible|debenture|issue of securities|allotment of (equity )?shares|initial public offer|\bipo\b"
                    r"|red herring|call on partly paid"),
@@ -39,12 +39,22 @@ RULES = [
                       r"|clarification|rumour|production volume|sales volume|launch"),
 ]
 # Notices and copies of something filed elsewhere: shown, but never ranked as the news itself.
-ROUTINE = r"board meeting intimation|prior intimation|newspaper|clipping|audio recording|video recording|schedule of"
+ROUTINE = r"board meeting intimation|prior intimation|newspaper|clipping|audio recording|video recording|schedule of|reminder"
 # Results decks / media releases accompany the results filing; the filing itself stays P1.
 SUPPORTING = r"presentation|press release|media|shareholders'? letter|quarterly report|analyst|investor meet"
 # A company's own results are "approved by the board", never "issued by" someone: this is another company's
 # (MARUTI: "Reference To The Financial Results Issued By Suzuki Motor Corporation", its parent's results).
 OTHERS_RESULTS = r"results?\b.{0,40}\b(issued|released|declared|announced|published) by\b"
+# One board-outcome PDF is often filed once per decision, each copy under its own BSE subcategory ("Acquisition",
+# "Scheme of Arrangement"). Setting up, striking off or backing a subsidiary is housekeeping, not a deal (13 Nov:
+# KPIT's Vietnam subsidiary as "Acquisition", a dormant step-down's strike-off as "Scheme of Arrangement").
+SUBSIDIARY_ROUTINE = r"incorporat\w*\b.{0,60}\bsubsidiar|\bstrike[- ]?off|struck off|voluntary liquidation|letter of comfort"
+DEAL = r"acqui|merger|amalgamat|demerg|joint venture|stake|share purchase|business transfer"
+# The listed company's director taking a seat on a subsidiary's board (Reg 24) is not a change in its management.
+SUBSIDIARY_BOARD = r"on the board of [^,;]*?(subsidiar|\b(inc|llc|gmbh|pte|plc|b\.?v|ag)\b)"
+# "Press Release" is a carrier, not an event: a P1 event in its headline wins (POLYCAB: "NCLAT stayed NCLT order
+# initiating CIRP" was filed as a press release). Results releases stay with the results filing.
+CARRIED = {"litigation", "m_and_a", "management_change", "fund_raise", "credit_rating_downgrade", "pledging"}
 CATEGORIES = sorted({c for c, _ in RULES} | set(TIER_OF))
 SCHEMA = {"type": "object", "properties": {
     "category": {"type": "string", "enum": CATEGORIES},
@@ -116,9 +126,20 @@ def by_rules(row: dict) -> str | None:
         cat = sub[0]
     else:  # no or ambiguous subcategory (NSE's "Investor Meet/Con. Call Updates"): decide on subject + headline
         cat = _match(" | ".join(str(row.get(k) or "") for k in ("NEWSSUB", "HEADLINE")).lower()) or (sub or [None])[0]
+    if cat == "press_release" and (h := _match(_head(row))) in CARRIED:
+        cat = h
     if cat == "fund_raise" and re.search(r"esop|esos|stock option|employee", t):
         cat = "unclassified"  # ESOP allotments are filed as "Allotment of Equity Shares"
     return cat
+
+
+def _head(row: dict) -> str:
+    return " | ".join(str(row.get(k) or "") for k in ("NEWSSUB", "HEADLINE")).lower()
+
+
+def _detail(row: dict) -> str:
+    """What the filing says happened: BSE's HEADLINE (its NEWSSUB just repeats the subcategory), else the subject."""
+    return str(row.get("HEADLINE") or row.get("NEWSSUB") or "").lower()
 
 
 def classify(row: dict, get_pdf=None, lender: bool = False) -> dict:
@@ -128,6 +149,8 @@ def classify(row: dict, get_pdf=None, lender: bool = False) -> dict:
     out = {"by": "rule" if cat else "default"}
     if cat == "results" and re.search(OTHERS_RESULTS, text_of(row)):
         cat, out["note"] = "press_release", "Another company's results (e.g. the parent's), not this company's own"
+    elif cat != "results" and re.search(SUBSIDIARY_ROUTINE, _head(row)) and not re.search(DEAL, _detail(row)):
+        cat, out = "unclassified", {"by": "rule", "note": "Subsidiary housekeeping (set-up, strike-off or letter of comfort), not a deal"}
     if cat is None and get_pdf:
         try:
             b = get_pdf()
@@ -144,8 +167,10 @@ def classify(row: dict, get_pdf=None, lender: bool = False) -> dict:
         tier = "P3"
     elif cat == "results" and re.search(SUPPORTING, text_of(row)):
         tier = "P2"
+    elif cat == "management_change" and re.search(SUBSIDIARY_BOARD, _detail(row)):
+        tier, out["note"] = "P3", "Board seat at a subsidiary, not a change in this company's management"
     if tier == "P1" and cat in ("litigation", "fund_raise"):
-        head = " | ".join(str(row.get(k) or "") for k in ("NEWSSUB", "HEADLINE")).lower()
+        head = _head(row)
         try:
             body = " ".join(pdf.pages(pdf.open_pdf(get_pdf()))[:2]).lower() if get_pdf else ""
         except Exception:
