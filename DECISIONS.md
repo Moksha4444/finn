@@ -69,6 +69,13 @@ Format: **Decision** · Why · What we gave up.
 - **Boxed cards for "What matters" (deliberate departure from the original brief's "no boxes").** The phone review asked for an app feel; cards give the 2–6 material companies a clear tier above compact rows. Capped at 6 so a results-season month stays scannable.
 - **Forced light (`color-scheme: only light`).** No dark theme yet; letting Android auto-darken broke the paper identity and hid the P1 marker.
 
+## Promised vs Delivered (12 Nov)
+- **Results calls are picked by date arithmetic, not by trusting screener's list.** A call 1–2 months after a quarter end reports that quarter; anything else is an analyst day or investor call. When screener lists two transcripts for a quarter, the BSE copy wins (its TCS "Jul 2026" company-site link was the 2025 file). Tested on the real list.
+- **Transcripts go to the cheap model as text with [p.N] markers** (they are clean text, unlike scanned results), ~14k tokens each. Every promise keeps a verbatim quote and its page; a page outside the PDF is dropped as a citation.
+- **Actuals and all growth maths are Python**, from screener's quarterly table (13 quarters, mirrors the exchange results filings): YoY / QoQ %, margins in percentage points. The strong model only compares the given numbers with the target and must answer not-yet-measurable when a number it needs isn't given. The "actual" text shown is built by Python from the quarters the model says it used, so no model-written number reaches the UI.
+- **Verdicts are mostly not-yet-measurable for now, and that is the honest answer.** TCS gives no numeric revenue guidance; HDFCBANK's targets are FY27 and about CASA/LDR, which screener doesn't carry. Gave up (for now): bank KPI actuals. Next step: use our own results-card extraction and later transcripts' "we delivered" statements as actuals.
+- **Network drops mid-request are retried like 429/503** (a 15k-token transcript call died on a connection reset on 12 Nov).
+
 ## Spike findings (11 Nov)
 - **BSE API needs full browser headers** (`Origin` + `sec-fetch-*`), not just User-Agent + Referer. Without them it returns 403. No cookies needed. **Works from a cloud IP:** `/health/bse` on Render (Singapore, free tier) returned live rows on 11 Nov, so live pull and cloud ingest can call BSE directly. Gave up: nothing; the local-ingest fallback wasn't needed.
 - **BSE's category alone misses results.** HDFCBANK filed Q2 results under "Board Meeting / Outcome of Board Meeting". The classifier needs a keyword rule on the subject ("financial results").

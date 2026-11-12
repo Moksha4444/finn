@@ -1,7 +1,7 @@
 # FINN — build plan (11–15 Nov 2026)
 
 Single source of truth for the build. Scope and hard rules live in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.
-Current status: see §3e (redesign), §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
+Current status: see §3f (PvD backend), §3e (redesign), §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
 
 ---
 
@@ -153,6 +153,13 @@ Cheap model reads each transcript once → `{metric, target, period, quote, page
 - Re-critique after the redesign: 28/40; its P1s (folded CEO change, whole-card button) fixed, plus deep links, tie-breaks by move, 44px targets, wrap at 200% zoom.
 - LLM spend to date: **$0.175 / 205 calls** (before PvD).
 - **Not done:** motion pass; "6 moved" as a filter; Maruti's parent-company results still classified as P1 results (classifier).
+
+## 3f. Status at 12 Nov, ~08:00 (PvD backend, §4a)
+- `backend/finn/pull/pvd.py` + prompts `extract_guidance.md` (cheap) / `pvd_verdict.md` (strong); CLI `python -m finn.pull.pvd TCS HDFCBANK`; JSON in `web/public/data/research/{SYM}.json` (shape per §4a, plus `calls`, `score`, `transcript` per promise).
+- Call selection: a call 1–2 months after a quarter end reports that quarter; others (TCS "Dec 2025" analyst day, HDFCBANK "Mar 2026") are dropped; duplicates per quarter keep the BSE copy (screener's TCS "Jul 2026" company-site link is the 2025 file). Actuals: screener's 13-quarter table, YoY/QoQ (pp for margins) computed in Python. Repeats of a target within one call are deduped.
+- Results: **TCS** 5 promises, 1 hit (25%+ exit margin → 26% in Sep 2026), 4 not-yet-measurable (long-term 26–28% band, HyperVault capacity, operating-model staffing). **HDFCBANK** 3 promises (CASA, loan growth vs system, LDR 85–90% for FY27), all not-yet-measurable: FY27 hasn't ended and screener has no CASA/LDR rows.
+- **Quality finding for Fri:** verdicts are honest but thin, because management guidance is mostly non-financial or annual, and screener's table can't measure bank KPIs. Options: actuals from our own extracted results cards + the next transcript's own "we delivered X" statements; or broaden to 6–8 calls. Strong model is often overloaded → fallback ran (labelled in the JSON).
+- Tests: 6 PvD tests (selection, actuals math, dedupe, 2 transcript fixtures), 64 backend tests pass. PvD cost: $0.107 / 15 calls (~$0.05 per company). **LLM spend to date: $0.29 / ~222 calls.**
 
 ## 4. Day-by-day
 

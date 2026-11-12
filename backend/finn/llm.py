@@ -44,6 +44,10 @@ def _gemini(model: str, parts: list, schema: dict) -> tuple[dict, int, int]:
         if e.code in (429, 500, 503):
             raise Retryable(str(e)) from e
         raise
+    except Exception as e:  # dropped connection / timeout mid-request (seen 12 Nov on a long transcript): retry too
+        if any(k in type(e).__name__ for k in ("ReadError", "ConnectError", "Timeout", "RemoteProtocolError")):
+            raise Retryable(f"{type(e).__name__}: {e}") from e
+        raise
     u = r.usage_metadata
     # thinking tokens are billed as output
     return json.loads(r.text), u.prompt_token_count or 0, (u.candidates_token_count or 0) + (u.thoughts_token_count or 0)
