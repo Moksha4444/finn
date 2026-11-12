@@ -59,3 +59,68 @@ def test_dedupe_keeps_first_mention_of_a_repeated_target():
           {"said_in": "Sep 2026", "metric_key": "operating_margin", "target": "26%-28%", "page": 26},
           {"said_in": "Jun 2026", "metric_key": "operating_margin", "target": "26%-28%", "page": 9}]
     assert [p["page"] for p in pvd.dedupe(ps)] == [14, 9]  # same call repeats dropped; another call's mention kept
+
+
+def test_evidence_only_from_later_calls_and_built_by_python():
+    reported = [{"id": "R1", "said_in": "Jun 2026", "page": 4, "quote": "CASA ratio at 37%"},
+                {"id": "R2", "said_in": "Sep 2026", "page": 6, "quote": "CASA ratio improved to 38.4%"}]
+    p = {"said_in": "Jun 2026", "eligible_reported": ["R2"]}
+    # the model cites R1 (same call as the promise) and R2: only R2 survives
+    assert pvd.evidence(p, reported, ["R1", "R2"]) == ["Q2 FY27 call, p.6: “CASA ratio improved to 38.4%”"]
+
+
+def test_fiscal_quarters():
+    assert pvd.fy_name("Sep 2026") == "Q2 FY27" and pvd.fy_name("Mar 2026") == "Q4 FY26"
+    assert pvd.qlabel(27, 1) == "Jun 2026" and pvd.qlabel(27, 4) == "Mar 2027"
+    assert pvd.shift("Dec 2026", 1) == "Mar 2027" and pvd.shift("Sep 2026", -4) == "Sep 2025"
+
+
+Q = {"periods": ["Jun 2025", "Sep 2025", "Dec 2025", "Mar 2026", "Jun 2026", "Sep 2026"],
+     "rows": {"Sales": [100, 100, 100, 100, 108, 112], "Operating Profit": [24, 25, 25, 25, 27, 29.12]}}
+P = lambda **k: {"metric": "m", "target": "t", "basis": "reported_inr", "fy": None, "quarter_no": None, "half_no": None, "target_high": None} | k
+
+
+def test_full_year_growth_in_progress_is_paced_not_judged():
+    # "double-digit growth in FY27" said on the Q4 FY26 call; H1 FY27 is in: (108+112)/(100+100) -> +10.0%
+    r = pvd.progress(P(metric_key="revenue", target_type="growth_pct", target_low=10, horizon="fiscal_year", fy=27), "Mar 2026", Q)
+    assert r["verdict"] == "on track" and "FY27 so far (2 of 4 quarters" in r["actual"] and "+10.0% YoY" in r["actual"]
+    r = pvd.progress(P(metric_key="revenue", target_type="growth_pct", target_low=12, horizon="fiscal_year", fy=27), "Mar 2026", Q)
+    assert r["verdict"] == "behind pace"
+
+
+def test_finished_period_is_hit_or_miss_and_margins_are_revenue_weighted():
+    # H1 FY27 margin = (27 + 29.12) / (108 + 112) = 25.5%
+    r = pvd.progress(P(metric_key="operating_margin", target_type="margin_pct", target_low=25, target_high=27, horizon="half_year", fy=27, half_no=1), "Mar 2026", Q)
+    assert r["verdict"] == "hit" and "EBITDA margin 25.5%" in r["actual"] and "25–27%" in r["actual"]
+    # "27% next quarter" said on the Q1 FY27 call; Q2 FY27 came in at 29.12 / 112 = 26.0%
+    r = pvd.progress(P(metric_key="operating_margin", target_type="margin_pct", target_low=27, horizon="next_quarter"), "Jun 2026", Q)
+    assert r["verdict"] == "miss" and "Q2 FY27 (Sep 2026)" in r["actual"]
+
+
+def test_cannot_compute_returns_none():
+    assert pvd.progress(P(metric_key="revenue", target_type="growth_pct", target_low=10, horizon="fiscal_year", fy=27, basis="constant_currency_or_usd"), "Mar 2026", Q) is None
+    assert pvd.progress(P(metric_key="other", target_type="count", target_low=200, horizon="fiscal_year", fy=27), "Mar 2026", Q) is None
+    assert pvd.progress(P(metric_key="revenue", target_type="growth_pct", target_low=10, horizon="fiscal_year", fy=28), "Mar 2026", Q) is None  # nothing reported yet
+
+
+def test_ebit_basis_subtracts_depreciation():
+    q = {"periods": ["Sep 2025", "Sep 2026"], "rows": {"Sales": [100, 100], "Operating Profit": [28, 28], "Depreciation": [2, 2.5]}}
+    r = pvd.progress(P(metric_key="operating_margin", target_type="margin_pct", target_low=25, horizon="long_term", margin_basis="ebit", direction="at_least"), "Jun 2026", q)
+    assert "EBIT margin (operating profit less depreciation) 25.5%" in r["actual"] and r["verdict"] == "on track"
+
+
+def test_ceiling_targets_and_bands():
+    p = P(target_low=85, target_high=90, direction="at_most")
+    assert pvd.judge(96, p, complete=False) == ("behind pace", "≤90%")
+    assert pvd.judge(88, p, complete=True) == ("hit", "≤90%")
+    assert pvd.judge(29, P(target_low=26, target_high=28, direction="at_least"), complete=False)[0] == "ahead"
+
+
+def test_reported_level_is_paced_in_python():
+    # "LDR 85-90% for FY27" (Q3 FY26 call); Q2 FY27 call reports "around 96%": FY27 still running -> behind pace
+    p = P(metric_key="other", target="85% to 90% for FY '27", target_type="other", target_low=85, target_high=90,
+          horizon="fiscal_year", fy=27, direction="at_most", said_in="Dec 2025")
+    used = [{"said_in": "Sep 2026", "value": "around 96%"}, {"said_in": "Jun 2026", "value": "about 98%"}]
+    r = pvd.pace_reported(p, used, "Sep 2026")
+    assert r["verdict"] == "behind pace" and "around 96% (Q2 FY27 call)" in r["why"]
+    assert pvd.pace_reported(p, [{"said_in": "Sep 2026", "value": "96% and 98%"}], "Sep 2026") is None  # ambiguous
