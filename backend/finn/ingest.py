@@ -99,17 +99,19 @@ def ticker(sym: str, start: dt.date, end: dt.date, nifty) -> tuple[list[dict], l
 
 # Credibility chip (user's definition, 13 Nov): only measured promises count. Partial, moved closer and
 # no change are measured but neither kept nor missed, so the chip leaves them to the Research page.
+# At least 2 counted promises (user, 13 Nov): "Kept 1 · Missed 0" is one data point, not a record.
 KEPT, MISSED, OPEN = {"hit", "ahead"}, {"miss", "behind pace", "moved away"}, {"on track"}
+MIN_PROMISES = 2
 
 
 def credibility(sym: str) -> dict | None:
-    """{kept, missed, open} from the cached PvD JSON; None when there is no PvD or nothing was measurable."""
+    """{kept, missed, open} from the cached PvD JSON; None when there is no PvD or fewer than MIN_PROMISES count."""
     f = OUT.parent / "research" / f"{sym}.json"
     if not f.exists():
         return None
     v = [p["verdict"] for p in json.loads(f.read_text(encoding="utf-8"))["promises"]]
     c = {"kept": sum(x in KEPT for x in v), "missed": sum(x in MISSED for x in v), "open": sum(x in OPEN for x in v)}
-    return c if any(c.values()) else None
+    return c if sum(c.values()) >= MIN_PROMISES else None
 
 
 MAX_FAILED = 2  # more failed tickers than this = the network is down, not one bad source: keep the old feed

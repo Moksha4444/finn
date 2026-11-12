@@ -239,21 +239,25 @@ function Body({ g }: { g: Group }) {
   );
 }
 
-// Every material filing that isn't the lead gets its own line, so a CEO change can't hide under results.
-// The same filing sent twice (BSE meeting outcome + Reg 30 letter) shows once.
-function material(g: Group) {
-  const seen = new Set<string>();
-  return g.more.filter((i) => i.tier === "P1" && !seen.has(title(i)) && seen.add(title(i)));
+// Every material filing that isn't the lead, grouped by event type (newest first inside each), so a CEO change
+// can't hide under results and a 9-filing QIP doesn't stack 9 lines (user, 13 Nov).
+function alsoGroups(g: Group): RankedItem[][] {
+  const by = new Map<string, RankedItem[]>(); // g.more is already in lead order, so groups come out ranked
+  for (const i of g.more) if (i.tier === "P1") by.set(i.category, [...(by.get(i.category) ?? []), i]);
+  return [...by.values()].map((l) => [...l].sort((a, b) => b.filed.localeCompare(a.filed)));
 }
+const material = (g: Group) => alsoGroups(g).flat();
 
+// One line per event type: "Also · Fund raise · 4 filings · <latest>". The count leads so it survives truncation.
 function AlsoMaterial({ g }: { g: Group }) {
-  const also = material(g);
-  if (!also.length) return null;
+  const groups = alsoGroups(g);
+  if (!groups.length) return null;
   return (
     <ul className="mt-2 space-y-0.5 text-[0.8125rem] leading-[1.35] text-ink-2">
-      {also.map((i) => (
-        <li key={i.id} className="truncate">
-          <span className="font-medium">Also</span> · {eventLabel(i)} · <Signed text={title(i)} />
+      {groups.map((l) => (
+        <li key={l[0].category} className="truncate">
+          <span className="font-medium">Also</span> · {eventLabel(l[0])}
+          {l.length > 1 && <> · {l.length} filings</>} · <Signed text={title(l[0])} />
         </li>
       ))}
     </ul>

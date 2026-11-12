@@ -31,3 +31,5 @@ def test_credibility_counts_measured_promises_only(tmp_path, monkeypatch):
     (tmp_path / "research" / "Y.json").write_text(json.dumps({"promises": [{"verdict": "not-yet-measurable"}]}))
     assert ingest.credibility("X") == {"kept": 2, "missed": 3, "open": 1}
     assert ingest.credibility("Y") is None and ingest.credibility("Z") is None
+    (tmp_path / "research" / "W.json").write_text(json.dumps({"promises": [{"verdict": x} for x in ("hit", "partial", "no change")]}))
+    assert ingest.credibility("W") is None  # 1 counted promise: no chip (the research page still lists all 3)
