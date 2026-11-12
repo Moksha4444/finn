@@ -1,7 +1,7 @@
 # FINN — build plan (11–15 Nov 2026)
 
 Single source of truth for the build. Scope and hard rules live in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.
-Current status: see §3g (PvD rework), §3f (PvD backend), §3e (redesign), §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
+Current status: see §3h (PvD review), §3g (PvD rework), §3f (PvD backend), §3e (redesign), §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
 
 ---
 
@@ -166,6 +166,13 @@ Cheap model reads each transcript once → `{metric, target, period, quote, page
 - PvD verdicts computed in Python where a number exists (hit/miss for finished periods, on track/ahead/behind pace for running ones); the model judges only non-numeric promises. TCS: 2 of 3 measured (both behind pace). HDFCBANK: 3 of 3 not-yet-measurable because the CD ratio is never restated on calls; fix candidate = CD ratio from the results filing's balance sheet.
 - Maruti parent-results misclassification fixed (rule + test). 82 backend tests pass.
 - LLM spend to date: **$0.46 / 270 calls** (PvD all-time $0.27 / 40 calls, most of it re-extraction while prompts changed).
+
+## 3h. Status at 12 Nov, evening (PvD review, user decisions 1-5)
+- Bank CD ratio from the bank's own results filings (`pull/bank.py`, standalone balance sheet, Python ratio). HDFCBANK: FY26 90-96% **hit** (94.6%), FY27 85-90% **behind pace** (96.0%), each quarter cited to its filing page.
+- No-deadline promises → direction of travel with the quarterly path (hit / moved closer / no change / moved away). One margin definition per company: management's reported margin if every call states it, else computed and labelled. Selection: financial first, dedupe across calls, max 6.
+- Python guards after the first 22-ticker run showed wrong verdicts: segment / order / AUM targets never measured on company totals, cost targets are ceilings, model reasons may only cite numbers in the evidence, no model "miss" before the period ends, dead transcript links fall back to BSE (MARUTI 0 → 4 calls).
+- 22 tickers (20 + ASTRAL, TITAN): 72 promises, 27 measured, 45 not-yet-measurable (mostly segment targets), 0 crashes; table in DECISIONS.md. 92 backend tests pass.
+- **Open:** 62% not-yet-measurable. Next lever = segment actuals from the results filings' segment page. LLM spend to date **$2.40 / 496 calls** (list prices; free tiers).
 
 ## 4. Day-by-day
 

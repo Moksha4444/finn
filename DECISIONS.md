@@ -90,7 +90,51 @@ Format: **Decision** · Why · What we gave up.
   - percentage-level targets the table can't hold (CD ratio, CASA) are checked against the newest % management reported on a later call: the model only points at the statement, Python parses the number and decides.
   - The model judges only what's left (non-numeric promises). A verdict whose evidence can't be shown becomes not-yet-measurable.
   - Questions are dropped as promises (one TCS "promise" was an analyst asking about the target).
-  - Result: TCS 3 promises, 2 measured (both behind pace: EBIT margin 24.4% since the Q3 FY26 call vs 26-28%; management's own "24%" vs "exit at 25% plus"). HDFCBANK 3 promises, all still not-yet-measurable, honestly: after setting "CD ratio 85-90% by FY27" management never states the ratio again on a call (Q4 FY26: "LDR is not in focus"), and transcripts + annual reports are the only pull-side sources. Next option (not built): read advances and deposits from the bank's results filing and compute the CD ratio in Python.
+  - Result: TCS 3 promises, 2 measured (both behind pace: EBIT margin 24.4% since the Q3 FY26 call vs 26-28%; management's own "24%" vs "exit at 25% plus"). HDFCBANK 3 promises, all still not-yet-measurable, honestly: after setting "CD ratio 85-90% by FY27" management never states the ratio again on a call (Q4 FY26: "LDR is not in focus"), and transcripts + annual reports are the only pull-side sources. ~~Next option (not built): read advances and deposits from the bank's results filing and compute the CD ratio in Python.~~ Built; see "PvD review" below.
+### PvD review (12 Nov, user's decisions 1-5)
+- **Results filings are primary sources on the research side too.** They are the company's own exchange filings. Bank CD ratio = advances / deposits, computed in Python from the **standalone Statement of Assets and Liabilities** in each quarter's results filing on BSE. The cheap model only copies the two lines, from that one page (or the whole PDF when the filing is a scan with no text layer, as HDFCBANK's Q4 FY26 was). Python checks the column date is the quarter end and the ratio is between 30% and 200%. HDFCBANK: 98.7% (Dec 2025) → 94.6% (Mar 2026) → 95.8% → 96.0% (Sep 2026). "90-96% in FY26" = **hit**; "85-90% for FY27" = **behind pace**. Each quarter is cited to its filing and page; links use BSE's viewer URL, because older files 404 on the direct AttachLive path. Gave up: nothing; this is 4 cheap calls per bank, cached.
+- **No deadline → direction of travel, never an average.** "Inch closer to 26-28%" / "next few quarters" / long-term bands are judged on where the number went since the call that made the promise, with the quarterly path shown: `Moved away: 25.3% → 24.0% → 24.0% (Q4 FY26 → Q2 FY27) vs target ≥26%`. Verdicts: hit (in the band now) / moved closer / no change / moved away. A fiscal-year target with no year named ("exit at 25% plus") counts as no deadline. Deadline targets keep hit/miss (ended) and on track/behind pace (running), and also show the path.
+- **One margin definition per company.** Each call's extraction also returns the headline margin management states for that quarter (with quote and page; Python rejects it unless the number is in its own quote). If every call states one on the same basis, that series is the company's margin, e.g. TCS "Operating margin (as reported)", ASIANPAINT "PBDIT margin". Otherwise it is computed from the results table and labelled ("EBITDA margin (computed: operating profit over sales)", or EBIT when the company guides on EBIT). Definitions are never mixed within a company. Lenders' margin is NIM: reported or nothing, because the table can't compute it.
+- **Promise selection: financial and checkable first, 4-6 per company.** The prompt asks for numeric financial guidance (growth, margins, profit, capex, ratios) and at most 1 dated operational target per call, and skips strategy talk. Python dedupes across calls on the extracted numbers (metric, bounds, fiscal year), keeping the oldest mention, which has the longest track record ("$5 billion by FY31" = "$5 billion by March 2031"). It then drops soft or operational promises nothing measured and keeps 6: measured first, financial first, oldest first.
+- **Rules guard the extractor (found in the first 22-ticker run, where verdicts were wrong):**
+  - *Segment and non-revenue targets are never measured with company totals.* POLYCAB's FMEG "8-10% EBITDA by FY30" had been scored "moved away" against the company's 14%; L&T order inflow and Bajaj AUM growth had been scored as revenue growth. Fixed with an extractor flag `company_total` plus a Python keyword override (order, inflow, AUM, volume, loan, deposit, NOV/GMV, customers, exports, segment…). These now go to evidence from later calls, or stay not-yet-measurable.
+  - *Direction:* cost-like targets (cost of funds, opex, NPA, working capital, net debt) are ceilings ("7.41% vs 7.55-7.60%" is a hit, not a miss). A "ceiling" on the company's own growth or margin is an extraction slip and becomes a floor. "15-15%" shows as "15%".
+  - *Margin changes aren't margin levels:* "wage-hike impact of 150-200 bps" is never compared with a 24% margin.
+  - *Model verdicts are checked in Python:* every number in the model's reason must appear in the evidence or the promise (DIXON's reason cited a "21,794 crore" that is in no quote); a "miss" before the period has ended becomes not-yet-measurable (one quarter's telecom revenue against a full-year target). Evidence must be about the same metric: a 19% *net* margin can't judge an operating-margin promise.
+  - The verdict model now gets each target's bounds and direction ("lower is better").
+- **Broken transcript links don't break a company.** MARUTI's screener links are company-site viewer pages, not PDFs (5 of 6). A dead link now falls back to the BSE filing in the "Earnings Call Transcript" subcategory, and failing that the call is skipped and listed in `skipped_calls`, never a crash. MARUTI went from 0 calls to 4.
+- **Honest gaps:** ITC and TRENT publish no call transcripts (screener lists only presentations), so PvD is empty for them. BHARTIARTL and CDSL gave no numeric guidance in 4 calls (checked by searching the transcripts). Cheap-model recall isn't perfect: DEEPAKNTR's "14-15% EBIT next year" was missed on one extraction and found on the next. Long-dated targets (FY29-FY31) and segment targets are most of the remaining not-yet-measurable verdicts; that is the honest answer, not a bug.
+- **Research outside the portfolio:** ASTRAL and TITAN (the day-1 plan's suggestions) were run with the same code; nothing is ticker-specific.
+- **Result of the 22-ticker run (12 Nov, after the guards above), last 4 results calls each:**
+
+  | Company | Promises | Verdicts | Margin used | Errors |
+  |---|---|---|---|---|
+  | RELIANCE | 2 | 2 nym | EBITDA (computed) | - |
+  | HDFCBANK | 3 | 1 hit, 1 behind pace, 1 nym | - (bank) | - |
+  | TCS | 2 | 1 behind pace, 1 moved away | Operating (reported) | - |
+  | BHARTIARTL | 0 | no numeric guidance | EBITDAaL (reported) | - |
+  | ITC | 0 | no transcripts published | - | - |
+  | LT | 6 | 3 hit, 1 on track, 2 miss | EBITDA (reported) | - |
+  | SUNPHARMA | 4 | 1 hit, 1 on track, 2 nym | EBITDA (reported) | - |
+  | MARUTI | 1 | 1 nym | EBIT (computed) | 4 transcripts via BSE fallback |
+  | BAJFINANCE | 6 | 2 hit, 1 on track, 3 nym | - (NBFC) | - |
+  | ASIANPAINT | 6 | 1 hit, 1 on track, 1 moved away, 3 nym | PBDIT (reported) | - |
+  | TRENT | 0 | no transcripts published | - | - |
+  | ETERNAL | 4 | 4 nym | EBITDA (computed) | - |
+  | DIXON | 6 | 6 nym | EBITDA (computed) | 503 on the first run; re-run fine |
+  | PERSISTENT | 3 | 3 nym (USD targets) | EBIT (computed) | - |
+  | POLYCAB | 6 | 6 nym (segment / FY30) | EBITDA (reported) | - |
+  | TATAPOWER | 4 | 2 partial, 2 nym | EBITDA (computed) | - |
+  | IRCTC | 1 | 1 miss | EBITDA (reported) | - |
+  | CDSL | 0 | no numeric guidance | - | - |
+  | KPITTECH | 5 | 1 partial, 1 behind pace, 1 moved away, 2 nym | EBITDA (computed) | - |
+  | DEEPAKNTR | 1 | 1 nym | EBITDA (reported) | - |
+  | ASTRAL | 6 | 2 hit, 4 nym | EBITDA (computed) | - |
+  | TITAN | 6 | 1 on track, 5 nym | EBIT (computed) | - |
+
+  Total: 72 promises; 27 measured (10 hit, 5 on track, 3 partial, 3 behind pace, 3 moved away, 3 miss), **45 not-yet-measurable (62%)**. Of those 45: 36 are segment / volume / other measures that no later call states a number for, 5 are FY28+ targets, and 4 had a model verdict withheld by the Python checks. 0 crashes. The run before the guards had only 34 not-yet-measurable, but about 10 of its "measured" verdicts were wrong (segment targets scored on company totals, cost targets backwards). Fewer, correct verdicts beat more, wrong ones. **The next lever (not built):** segment actuals from the segment-results page of the same exchange filings (a primary source), which would measure POLYCAB, ETERNAL, DIXON, ASTRAL and TITAN's segment targets.
+  - Cost: the three full runs plus fixes cost $1.94 / 226 calls at paid list prices (free tiers in practice; most of it was re-extracting ~90 transcripts after each prompt change). A cached re-run of all 22 costs $0.008. **LLM spend to date: $2.40 / 496 calls.**
+
 - **Maruti's parent-company results no longer count as Maruti's results.** A company's own results are "approved by the board", never "issued by" someone, so "results ... issued/released/declared by" turns a results match into a press release (P2) with a note. Tested on the real row.
 
 ## Spike findings (11 Nov)
