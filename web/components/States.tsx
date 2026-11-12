@@ -10,17 +10,30 @@ export function FeedSkeleton({ rows = 7, header = true }: { rows?: number; heade
           <Bar w="w-56" />
           <span className="mt-2.5 block"><Bar w="w-64" h="h-7" /></span>
           <span className="mt-2 block"><Bar w="w-48" h="h-4" /></span>
-          <span className="mt-4 block"><Bar w="w-40" h="h-9" /></span>
+          <span className="mt-4 block"><Bar w="w-full" h="h-11" /></span>
         </div>
       )}
-      <ol className="border-t border-ink/80">
-        {Array.from({ length: rows }, (_, k) => (
-          <li key={k} className="border-b border-rule py-3">
-            <span className="flex justify-between"><Bar w={k % 2 ? "w-36" : "w-44"} h="h-3.5" /><Bar w="w-20" /></span>
-            <span className="mt-2 flex justify-between gap-3"><Bar w={k % 3 ? "w-[62%]" : "w-[50%]"} /><Bar w="w-24" /></span>
-          </li>
-        ))}
-      </ol>
+      {header ? (
+        <ol className="mt-6 space-y-3">
+          {[0, 1].map((k) => (
+            <li key={k} className="rounded-xl border border-rule bg-card px-4 py-3.5">
+              <span className="flex items-center gap-3"><Bar w="size-10" h="" /><span className="flex-1"><Bar w="w-32" h="h-4" /><span className="mt-1.5 block"><Bar w="w-48" /></span></span></span>
+              <span className="mt-4 block"><Bar w="w-[80%]" h="h-5" /></span>
+              <span className="mt-4 grid grid-cols-2 gap-4"><Bar w="w-24" h="h-9" /><Bar w="w-24" h="h-9" /></span>
+              <span className="mt-4 block"><Bar w="w-full" h="h-8" /></span>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <ol className="border-t border-rule">
+          {Array.from({ length: rows }, (_, k) => (
+            <li key={k} className="flex items-center gap-3 border-b border-rule py-3">
+              <Bar w="size-8" h="" />
+              <span className="flex-1"><Bar w={k % 2 ? "w-36" : "w-44"} h="h-3.5" /><span className="mt-2 block"><Bar w="w-[75%]" /></span></span>
+            </li>
+          ))}
+        </ol>
+      )}
     </div>
   );
 }

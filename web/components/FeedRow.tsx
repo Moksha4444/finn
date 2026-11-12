@@ -15,6 +15,7 @@ export function keyFact(i: Item): string {
     const s = [bit(c.lines[0]), bit(c.lines[c.lines.length - 1])].filter(Boolean).join(" · ");
     if (s) return `${s} YoY`;
   }
+  if (i.title) return i.title;
   if (c?.type === "management_change" && c.people[0]) {
     const p = c.people[0];
     return `${p.name} ${p.change}${p.role ? `, ${p.role}` : ""}`;

@@ -9,6 +9,7 @@ import { group, type Group } from "@/lib/group";
 
 const WINS: Win[] = ["24h", "7d", "30d"];
 const NEXT: Partial<Record<Win, Win>> = { "24h": "7d", "7d": "30d" };
+const CARDS = 6; // a 30-day results season makes every holding material; the rest wait behind one tap
 
 // The day's verdict. In results season it is about results; otherwise it names who needs a look.
 function verdict(feed: Feed, all: RankedItem[], groups: Group[], win: Win, moveX: number): { head: string; sub: string[] } {
@@ -37,11 +38,12 @@ export default function Brief() {
   const [s] = useSettings();
   const [win, setWinState] = useState<Win>("24h");
   const [showRoutine, setShowRoutine] = useState(false);
+  const [allCards, setAllCards] = useState(false);
   useEffect(() => {
     const w = sessionStorage.getItem("finn.win") as Win | null; // keep the window across tabs
     if (w && WINS.includes(w)) setWinState(w);
   }, []);
-  const setWin = (w: Win) => { setWinState(w); setShowRoutine(false); sessionStorage.setItem("finn.win", w); };
+  const setWin = (w: Win) => { setWinState(w); setShowRoutine(false); setAllCards(false); sessionStorage.setItem("finn.win", w); };
 
   const all = useMemo(() => (feed ? ranked(inWindow(feed, win), s) : []), [feed, win, s]);
   const groups = useMemo(() => group(all), [all]);
@@ -90,8 +92,13 @@ export default function Brief() {
         <section aria-labelledby="h-matters" className="mt-6">
           <h2 id="h-matters" className="font-serif text-[1.1875rem] font-semibold">What matters</h2>
           <ol className="mt-2.5 space-y-3">
-            {matters.map((g) => <CompanyCard key={g.symbol} g={g} co={feed.companies?.[g.symbol]} end={end} />)}
+            {(allCards ? matters : matters.slice(0, CARDS)).map((g) => <CompanyCard key={g.symbol} g={g} co={feed.companies?.[g.symbol]} end={end} />)}
           </ol>
+          {matters.length > CARDS && (
+            <button type="button" aria-expanded={allCards} onClick={() => setAllCards(!allCards)} className="mt-2 min-h-11 w-full rounded-xl border border-rule text-[0.875rem] font-medium text-accent">
+              {allCards ? "Show fewer" : `Show ${matters.length - CARDS} more ${matters.length - CARDS === 1 ? "company" : "companies"}`}
+            </button>
+          )}
         </section>
       )}
 

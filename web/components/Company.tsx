@@ -38,10 +38,10 @@ export function Avatar({ name, sector, size = "md" }: { name: string; sector?: s
 }
 
 // ---- 30-day sparkline with the filing's reaction day marked ----
-function Spark({ closes, mark, end }: { closes: [string, number][]; mark?: string; end: string }) {
+function Spark({ closes, mark, end, chip }: { closes: [string, number][]; mark?: string; end: string; chip: React.ReactNode }) {
   const since = new Date(Date.parse(end) - 30 * 864e5).toISOString().slice(0, 10);
   const pts = closes.filter(([d]) => d >= since && d <= end);
-  if (pts.length < 5) return null;
+  if (pts.length < 5) return chip ? <div className="mt-3">{chip}</div> : null;
   const vs = pts.map((p) => p[1]);
   const lo = Math.min(...vs), hi = Math.max(...vs), span = hi - lo || 1;
   const x = (k: number) => (k / (pts.length - 1)) * 100;
@@ -50,7 +50,14 @@ function Spark({ closes, mark, end }: { closes: [string, number][]; mark?: strin
   const mk = mark ? pts.findIndex(([d]) => d >= mark) : -1;
   const chg = ((vs[vs.length - 1] - vs[0]) / vs[0]) * 100;
   return (
-    <div className="mt-3 flex items-center gap-3">
+    <div className="mt-3">
+    <div className="flex items-center justify-between gap-3">
+      {chip ?? <span />}
+      <span className="shrink-0 text-[0.75rem] text-ink-2">
+        30 days <Signed text={pct(chg)} />
+      </span>
+    </div>
+    <div className="mt-1.5 flex items-center">
       <div className="relative h-8 flex-1">
         <svg viewBox="0 0 100 32" preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
           <polyline points={line} fill="none" stroke="currentColor" strokeWidth="1.25" vectorEffect="non-scaling-stroke" className="text-ink-2" />
@@ -65,12 +72,10 @@ function Spark({ closes, mark, end }: { closes: [string, number][]; mark?: strin
           </>
         )}
       </div>
-      <span className="shrink-0 text-[0.75rem] text-ink-2">
-        30d <Signed text={pct(chg)} />
-      </span>
       <span className="sr-only">
         Price over 30 days {pct(chg)}{mk >= 0 ? `, filing reaction day ${shortDate(pts[mk][0])} marked` : ""}.
       </span>
+    </div>
     </div>
   );
 }
@@ -183,13 +188,14 @@ export function CompanyCard({ g, co, end }: { g: Group; co?: Co; end: string }) 
             <span className="block truncate text-[0.9375rem] font-semibold">{shortName(co?.name ?? i.name)}</span>
             <span className="block truncate text-[0.8125rem] text-ink-2">{g.symbol} · {eventLabel(i)} · {filedAt(i.filed)}</span>
           </span>
-          {chip && <Chip c={chip} />}
         </span>
         <span className="mt-3 block text-[1.0625rem] leading-[1.35] font-semibold text-balance">
           <Signed text={headlineOf(i)} />
         </span>
         <Numbers i={i} />
-        {co?.closes && <Spark closes={co.closes} mark={i.reaction ? i.reaction_day : undefined} end={end} />}
+        {co?.closes ? (
+          <Spark closes={co.closes} mark={i.reaction ? i.reaction_day : undefined} end={end} chip={chip && <Chip c={chip} />} />
+        ) : chip && <span className="mt-3 block"><Chip c={chip} /></span>}
         <span className="mt-2 flex items-center justify-end gap-1 text-[0.75rem] text-ink-2">
           {open ? "Less" : "Details"} <Chevron open={open} />
         </span>
