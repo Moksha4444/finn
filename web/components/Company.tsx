@@ -151,21 +151,21 @@ function Numbers({ i }: { i: RankedItem }) {
 }
 
 // The market's verdict for the company: the filing that moved it, else the lead's reaction. Nothing while pending.
-function chipOf(g: Group): { text: string; strong: boolean } | null {
+function chipOf(g: Group): { text: string; strong: boolean; day?: string } | null {
   const it = [g.lead, ...g.docs, ...g.more].find((i) => i.boosted) ?? g.lead;
   const r = reasonText(it);
   if (!r || r === "Reaction pending" || r === "No price data") return null;
   const x = it.reaction;
   // a volume-only crossing still says which way the stock went
   const text = it.boosted && !r.includes("%") && x ? `${pct(x.excess_pct ?? x.move_pct)}${x.excess_pct != null ? " vs Nifty" : ""} · ${r}` : r;
-  return { text: x ? `${shortDate(it.reaction_day)} · ${text}` : text, strong: it.boosted };
+  return { text, strong: it.boosted, day: x ? shortDate(it.reaction_day) : undefined }; // rows already show a date
 }
 
-function Chip({ c }: { c: { text: string; strong: boolean } }) {
+function Chip({ c }: { c: { text: string; strong: boolean; day?: string } }) {
   return (
     <span className={`rounded-full border px-2 py-0.5 text-[0.75rem] leading-[1.1rem] ${c.strong ? "border-ink/50 font-semibold" : "border-rule text-ink-2"}`}>
       {c.strong && <span className="sr-only">Ranked high: </span>}
-      <Signed text={c.text} />
+      <Signed text={c.day ? `${c.day} · ${c.text}` : c.text} />
     </span>
   );
 }
@@ -337,8 +337,8 @@ export function CompanyRow({ g, co, initialOpen = false }: { g: Group; co?: Co; 
         className="flex w-full items-start gap-3 py-3 text-left transition-colors duration-150 ease-out active:bg-paper-2">
         <Avatar name={co?.name ?? i.name} sector={co?.sector} />
         <span className="min-w-0 flex-1">
-          <span className="flex items-baseline gap-x-2">
-            <span className="min-w-0 truncate text-[0.875rem] font-medium">{shortName(co?.name ?? i.name)}</span>
+          <span className="flex flex-wrap items-baseline gap-x-2">
+            <span className="text-[0.875rem] font-medium">{shortName(co?.name ?? i.name)}</span>
             <span className="shrink-0 text-[0.75rem] text-ink-2">{eventLabel(i)}{folded(g).length > 0 && ` +${folded(g).length}`}</span>
             {chip && <span className={`ml-auto shrink-0 text-[0.75rem] ${chip.strong ? "font-semibold" : "text-ink-2"}`}><Signed text={chip.text} /></span>}
           </span>
