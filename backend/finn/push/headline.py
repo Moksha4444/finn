@@ -17,7 +17,7 @@ def _nums(s: str) -> set[str]:
 
 # A board-outcome PDF lists every decision (results first) and is filed once per decision. The copy filed as a
 # management change must not be headlined with the results (13 Nov: Dixon "Reported quarterly revenue ... and appointed").
-RESULTS_WORDS = r"\bresults?\b|revenue|profit|ebitda|\bpat\b|earnings"
+RESULTS_WORDS = r"\bresults?\b|revenue|\bprofits?\b|ebitda|\bpat\b|earnings"  # not "profiteered" (IRCTC)
 
 
 def problems(headline: str, source_text: str, category: str | None = None) -> list[str]:

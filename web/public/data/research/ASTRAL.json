@@ -1,7 +1,7 @@
 {
  "symbol": "ASTRAL",
  "name": "Astral Ltd",
- "generated_at": "2026-11-12T18:02",
+ "generated_at": "2026-11-13T03:03",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -93,7 +93,7 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "No reported evidence on Bathware growth."
+   "why": "Not measured: no segment figures could be read from the results filings since this call (a single-segment company, or the table didn't parse)."
   },
   {
    "metric": "paints revenue target",
@@ -110,7 +110,7 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "Revenue 1,578 ₹ crore (Jun 2026) exceeds 1,000 ₹ crore target."
+   "why": "Not measured: no segment figures could be read from the results filings since this call (a single-segment company, or the table didn't parse)."
   },
   {
    "metric": "UK business EBITDA margin",
@@ -127,7 +127,7 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "UK EBITDA margin 15% (Jun 2026) and 13% (Sep 2026) beat 10% target."
+   "why": "Not measured: no segment figures could be read from the results filings since this call (a single-segment company, or the table didn't parse)."
   },
   {
    "metric": "faucet growth rate",
@@ -144,7 +144,7 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "No reported faucet growth data."
+   "why": "Not measured: no segment figures could be read from the results filings since this call (a single-segment company, or the table didn't parse)."
   }
  ]
 }

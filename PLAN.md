@@ -1,7 +1,7 @@
 # FINN — build plan (11–15 Nov 2026)
 
 Single source of truth for the build. Scope and hard rules live in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.
-Current status: see §3i (feed UI round 3), §3h (PvD review), §3g (PvD rework), §3f (PvD backend), §3e (redesign), §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
+Current status: see §3j (overnight 13 Nov: ingest safety, classifier, Also lines, segment PvD), §3i (feed UI round 3), §3h (PvD review), §3g (PvD rework), §3f (PvD backend), §3e (redesign), §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
 
 ---
 
@@ -181,6 +181,41 @@ Cheap model reads each transcript once → `{metric, target, period, quote, page
 - **Motion** (emil-design-eng not installed; done to its rules): one ease-out curve, ≤250ms, expand/collapse, press, tab crossfade (`<ViewTransition>`), sparkline draw once, badge pop; reduced motion verified off.
 - **Critique 26/40** (24 before); P0/P1s fixed, two kept by the user's rule (see DECISIONS.md). 96 backend + 11 web tests pass. LLM spend to date **$2.54 / 658 calls** (this round $0.14).
 - **Open:** ingest overwrites a good feed when the network drops (seen tonight, 8 tickers lost; re-run fixed it); Also stacks on busy companies; chip at 1 measured promise; classifier still files some results/revenue updates as mgmt change or M&A (Dixon, KPIT).
+
+## 3j. Status at 13 Nov, ~04:00 (overnight round, unattended)
+- **Ingest safety:** a failed ticker keeps its last good data, marked "as of" (brief: "Couldn't refresh TCS. Showing its filings as of 12 Nov 22:24 IST"). It refuses to write if >2 tickers fail or Nifty has no prices (exit 1, `--force` overrides), and an empty yfinance history counts as a failure. `ingest TCS` refreshes TCS only and keeps the rest; writes are atomic. Tested with a dead-proxy outage: refused, file byte-identical.
+- **Classifier:** one board-outcome PDF filed under several subcategories caused both mislabels. Subsidiary housekeeping (set-up, strike-off, letter of comfort) is now P3, subsidiary board seats P3, "Press Release" yields to a P1 event in its headline (NCLAT), reminders are routine, and non-results copies can't be titled with results. 8 filings changed in the 30-day feed (KPIT 4, MARUTI, BHARTIARTL, POLYCAB, plus the Dixon title). Judgement calls reported in DECISIONS, not changed.
+- **UI:** one Also line per event type with a count ("Also · Fund raise · 4 filings · …"), all filings with sources in the opened card; credibility chip only with ≥2 counted promises (TITAN's 1 → no chip).
+- **PvD segments** (`pull/segments.py`), new table below. Four verdicts come from segment tables; 30 measured / 42 not measurable (was 27 / 45). **Open:** re-run the 7 tickers marked * after the Gemini quota resets (~13:30 IST): `python -m finn.pull.pvd ASIANPAINT ETERNAL PERSISTENT TATAPOWER IRCTC KPITTECH DEEPAKNTR ASTRAL`. Fix ASTRAL's split-date segment header (prompt), then re-ingest so the chips update.
+- 117 backend + 11 web tests pass. LLM spend this round **$0.08 / 52 calls**; to date **$2.64 / 736 calls**.
+
+| Ticker | Promises | Measured (before) | Not measurable | From segments | Verdicts |
+|---|---|---|---|---|---|
+| ASIANPAINT* | 6 | 3 (3) | 3 | 0 | hit 1, on track 1, moved away 1 |
+| ASTRAL | 6 | 2 (2) | 4 | 0 | hit 2 (segment table didn't parse) |
+| BAJFINANCE | 6 | 2 (3) | 4 | 0 | hit 1, on track 1 (AUM hit lost to model variance) |
+| BHARTIARTL | 0 | 0 (0) | 0 | 0 | – |
+| CDSL | 0 | 0 (0) | 0 | 0 | – |
+| DEEPAKNTR* | 1 | 0 (0) | 1 | 0 | – |
+| DIXON | 6 | 1 (0) | 5 | 0 | partial 1 (single segment) |
+| ETERNAL* | 4 | 0 (0) | 4 | 0 | – |
+| HDFCBANK | 3 | 2 (2) | 1 | 0 | hit 1, behind pace 1 |
+| IRCTC* | 1 | 1 (1) | 0 | 0 | miss 1 |
+| ITC | 0 | 0 (0) | 0 | 0 | – |
+| KPITTECH* | 5 | 3 (3) | 2 | 0 | behind pace 1, partial 1, moved away 1 |
+| LT | 6 | 6 (6) | 0 | 0 | hit 3, miss 2, on track 1 |
+| MARUTI | 1 | 0 (0) | 1 | 0 | – |
+| PERSISTENT* | 3 | 0 (0) | 3 | 0 | – |
+| POLYCAB | 6 | 3 (0) | 3 | 3 | hit 3 (FMEG, EPC, Wires & Cables) |
+| RELIANCE | 2 | 0 (0) | 2 | 0 | – |
+| SUNPHARMA | 4 | 2 (2) | 2 | 0 | hit 1, on track 1 |
+| TATAPOWER* | 4 | 2 (2) | 2 | 0 | partial 2 |
+| TCS | 2 | 2 (2) | 0 | 0 | behind pace 1, moved away 1 |
+| TITAN | 6 | 1 (1) | 5 | 1 | on track 1 (Jewellery 13.0% vs ~11%) |
+| TRENT | 0 | 0 (0) | 0 | 0 | – |
+| **Total** | **72** | **30 (27)** | **42** | **4** | hit 12, on track 5, partial 4, moved away 3, behind pace 3, miss 3 |
+
+\* not re-run this round (Gemini free-tier daily quota; DEEPAKNTR: DNS error); previous file kept. Not-measurable reasons: no segment figures readable 8 (DIXON single segment, ASTRAL parse), no later evidence 7, figure not in results filings (volume/AUM/mix/payout) 5, promised on the latest call 2, plus model-written reasons in the 7 starred files.
 
 ## 4. Day-by-day
 

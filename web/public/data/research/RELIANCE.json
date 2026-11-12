@@ -1,7 +1,7 @@
 {
  "symbol": "RELIANCE",
  "name": "Reliance Industries Ltd",
- "generated_at": "2026-11-12T17:53",
+ "generated_at": "2026-11-13T03:04",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -76,7 +76,7 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "No reported statements eligible to assess O2C annualized EBITDA."
+   "why": "Not measurable yet: promised on the latest call (Q2 FY27), and no results have come out since."
   }
  ]
 }

@@ -117,9 +117,10 @@ def credibility(sym: str) -> dict | None:
 MAX_FAILED = 2  # more failed tickers than this = the network is down, not one bad source: keep the old feed
 
 
-def carry_over(old: dict, sym: str, start: dt.date) -> dict | None:
+def carry_over(old: dict, sym: str, start: dt.date, stale: bool = True) -> dict | None:
     """Last good data for one ticker from the previous feed, trimmed to the new window; None if it has none.
-    as_of = when that data was fetched (kept across repeated failures)."""
+    stale: mark it with as_of = when that data was fetched (kept across repeated failures). False for tickers
+    this run didn't ask for: nothing failed, so the brief mustn't say "couldn't refresh"."""
     co = (old.get("companies") or {}).get(sym)
     if co is None:
         return None
@@ -127,7 +128,7 @@ def carry_over(old: dict, sym: str, start: dt.date) -> dict | None:
     return {"items": [i for i in old["items"] if i["symbol"] == sym and i["filed"][:10] >= s],
             "alerts": [x for x in old["alerts"] if x["symbol"] == sym and x["date"] >= s and x["kind"] != "error"],
             "days": [d for d in old["days"] if d["symbol"] == sym and d["date"] >= s],
-            "company": co | {"stale_as_of": co.get("stale_as_of") or old["generated_at"]}}
+            "company": co | {"stale_as_of": co.get("stale_as_of") or old["generated_at"]} if stale else co}
 
 
 def main(argv=None) -> int:
@@ -164,10 +165,11 @@ def main(argv=None) -> int:
     for f in failed:
         if c := carry_over(old, f["symbol"], start):
             f["as_of"] = c["company"]["stale_as_of"]
+    failed_syms = {f["symbol"] for f in failed}
     for sym in symbols:
-        if sym not in companies and (c := carry_over(old, sym, start)):
+        if sym not in companies and (c := carry_over(old, sym, start, stale=sym in failed_syms)):
             items += c["items"]; alerts += c["alerts"]; days += c["days"]; companies[sym] = c["company"]
-            print(f"  {sym:<11} kept data as of {c['company']['stale_as_of']}", file=sys.stderr)
+            print(f"  {sym:<11} kept previous data" + (f" as of {c['company']['stale_as_of']}" if sym in failed_syms else ""), file=sys.stderr)
 
     items.sort(key=lambda x: (x["score"], x["filed"]), reverse=True)  # rank, then newest first
     alerts.sort(key=lambda x: x["date"], reverse=True)

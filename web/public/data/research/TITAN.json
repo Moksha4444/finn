@@ -1,7 +1,7 @@
 {
  "symbol": "TITAN",
  "name": "Titan Company Ltd",
- "generated_at": "2026-11-12T18:03",
+ "generated_at": "2026-11-13T03:05",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -45,21 +45,26 @@
  },
  "promises": [
   {
-   "metric": "jewellery business margin center of gravity",
-   "target": "11%",
-   "period": "full year basis",
-   "said_in": "Jun 2026",
-   "call": "Q1 FY27",
-   "quote": "In the Investor Day and prior, we have said that more of 11% being the center of gravity for jewellery business margin, we would be around that plus/minus something can happen.",
-   "page": 5,
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f70a0a33-43cf-40b6-a753-67b06123e8de.pdf",
+   "metric": "Titan Jewellery business margin",
+   "target": "around 11%",
+   "period": "FY27",
+   "said_in": "Sep 2026",
+   "call": "Q2 FY27",
+   "quote": "I think we still, Mihir, would like to anchor our margin target at around 11%... As far as FY27 is concerned, change our stance on margins.",
+   "page": 7,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=daa6c172-771a-4af5-b4b3-9813fdf7536a.pdf",
    "path": null,
-   "cites": [],
+   "cites": [
+    {
+     "label": "Q2 FY27 results filing, p.14 (consolidated segment table, in crores): Jewellery revenue 17,721.00 (year earlier 16,522.00), result 2,300.00",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=86009cba-ca03-4d35-bad8-b1988cfcff13.pdf"
+    }
+   ],
+   "actual_source": "the company's results filings on BSE: segment information; growth and margins computed in Python",
+   "model": "python (computed)",
    "verdict": "on track",
-   "actual": "Q2 FY27 call, p.3: “And if you normalize for that, then TMZ, which is Titan Jewellery business margin, would be 11.7%.”; Q2 FY27 call, p.3: “Normalized margin, once you do adjustment for this, on Titan Jewellery business would be 11.1%.”",
-   "actual_source": "management's statements on later calls (transcripts)",
-   "model": "openai/gpt-oss-120b picked the evidence; python (computed)",
-   "why": "Reported 11.7% (Q2 FY27 call) against ≥11%; compared in Python."
+   "actual": "FY27 so far (1 of 4 quarters: Sep 2026): Jewellery segment result margin (before interest and tax, after depreciation) 13.0% vs target ≥11%",
+   "why": "13.0% against ≥11% with the period still running; computed in Python."
   },
   {
    "metric": "watch business margins",
@@ -76,7 +81,7 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "No reported statements on watch business margins."
+   "why": "Not measured yet: no later filing or call statement measures this promise."
   },
   {
    "metric": "double-digit healthy growth in value in the jewellery business",
@@ -93,7 +98,24 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "No reported data on jewellery business value growth."
+   "why": "Not measured yet: no later filing or call statement measures this promise."
+  },
+  {
+   "metric": "jewellery business margin center of gravity",
+   "target": "11%",
+   "period": "full year basis",
+   "said_in": "Jun 2026",
+   "call": "Q1 FY27",
+   "quote": "In the Investor Day and prior, we have said that more of 11% being the center of gravity for jewellery business margin, we would be around that plus/minus something can happen.",
+   "page": 5,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f70a0a33-43cf-40b6-a753-67b06123e8de.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "Not measured yet: no later filing or call statement measures this promise."
   },
   {
    "metric": "CaratLane EBIT margin",
@@ -107,10 +129,10 @@
    "path": null,
    "cites": [],
    "verdict": "not-yet-measurable",
-   "actual": "not disclosed",
-   "actual_source": null,
+   "actual": "Q2 FY27 call, p.4: “Does the same competition argument apply there from the challenger daily wear brand, or has it got to do with the festive shift? That would be my first question. ... From 10.2% in the base period to 6.5%.”",
+   "actual_source": "management's statements on later calls (transcripts)",
    "model": "openai/gpt-oss-120b",
-   "why": "Actual CaratLane EBIT margin 14.0% (Sep 2026) exceeds 10% target."
+   "why": "The model's reason used a number that is not in the evidence."
   },
   {
    "metric": "Titan Jewellery business margin",
@@ -127,24 +149,7 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "No reported evidence after promise."
-  },
-  {
-   "metric": "Titan Jewellery business margin",
-   "target": "around 11%",
-   "period": "FY27",
-   "said_in": "Sep 2026",
-   "call": "Q2 FY27",
-   "quote": "I think we still, Mihir, would like to anchor our margin target at around 11%... As far as FY27 is concerned, change our stance on margins.",
-   "page": 7,
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=daa6c172-771a-4af5-b4b3-9813fdf7536a.pdf",
-   "path": null,
-   "cites": [],
-   "verdict": "not-yet-measurable",
-   "actual": "not disclosed",
-   "actual_source": null,
-   "model": "openai/gpt-oss-120b",
-   "why": "No reported evidence after promise."
+   "why": "Not measurable yet: promised on the latest call (Q2 FY27), and no results have come out since."
   }
  ]
 }

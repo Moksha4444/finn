@@ -1,7 +1,7 @@
 {
  "symbol": "POLYCAB",
  "name": "Polycab India Ltd",
- "generated_at": "2026-11-12T18:02",
+ "generated_at": "2026-11-13T03:05",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -32,7 +32,7 @@
  },
  "model_note": null,
  "score": {
-  "hit": 0,
+  "hit": 3,
   "ahead": 0,
   "on track": 0,
   "moved closer": 0,
@@ -41,9 +41,95 @@
   "behind pace": 0,
   "moved away": 0,
   "miss": 0,
-  "not-yet-measurable": 6
+  "not-yet-measurable": 3
  },
  "promises": [
+  {
+   "metric": "FMEG EBITDA margins",
+   "target": "EBITDA margins in the range of 8% to 10% by FY30",
+   "period": "by FY30",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "remain on track to achieve our Project Spring targets of 1.5x - 2x industry growth and EBITDA margins in the range of 8% to 10% by FY30",
+   "page": 7,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf",
+   "path": "4.4% → 8.0% → 10.1% (Q4 FY26 → Q2 FY27)",
+   "cites": [
+    {
+     "label": "Q4 FY26 results filing, p.9 (consolidated segment table, ₹ Million): FMEG revenue 6,631.36 (year earlier 4,759.98), result 292.30",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1538e3eb-56c6-4ad2-a1ea-a25b2291b09e.pdf"
+    },
+    {
+     "label": "Q1 FY27 results filing, p.5 (consolidated segment table, ₹ million): FMEG revenue 7,611.53 (year earlier 4,542.31), result 606.33",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=faa11982-c753-4036-96ed-0e11eb17832b.pdf"
+    },
+    {
+     "label": "Q2 FY27 results filing, p.5 (consolidated segment table, ₹ million): FMEG revenue 9,931.13 (year earlier 4,521.84), result 1,006.04",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=4ac93ea0-d4d1-4b85-8849-14a19e0dcceb.pdf"
+    }
+   ],
+   "actual_source": "the company's results filings on BSE: segment information; growth and margins computed in Python",
+   "model": "python (computed)",
+   "verdict": "hit",
+   "actual": "At target: 4.4% → 8.0% → 10.1% (Q4 FY26 → Q2 FY27) vs target 8–10% · FMEG segment result margin (before interest and tax, after depreciation)",
+   "why": "No deadline, so judged by direction since the Q3 FY26 call; computed in Python."
+  },
+  {
+   "metric": "EPC annual sustainable operating margin",
+   "target": "high single digits",
+   "period": "over mid- to long term",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "Looking ahead, the annual sustainable operating margin is expected to remain in the high single digits over mid- to long term.",
+   "page": 7,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf",
+   "path": "7.6% → 11.0% → 7.2% (Q4 FY26 → Q2 FY27)",
+   "cites": [
+    {
+     "label": "Q4 FY26 results filing, p.9 (consolidated segment table, ₹ Million): EPC revenue 5,097.96 (year earlier 6,028.34), result 386.37",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1538e3eb-56c6-4ad2-a1ea-a25b2291b09e.pdf"
+    },
+    {
+     "label": "Q1 FY27 results filing, p.5 (consolidated segment table, ₹ million): EPC revenue 3,077.38 (year earlier 3,474.13), result 338.26",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=faa11982-c753-4036-96ed-0e11eb17832b.pdf"
+    },
+    {
+     "label": "Q2 FY27 results filing, p.5 (consolidated segment table, ₹ million): EPC revenue 6,170.81 (year earlier 4,023.90), result 443.94",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=4ac93ea0-d4d1-4b85-8849-14a19e0dcceb.pdf"
+    }
+   ],
+   "actual_source": "the company's results filings on BSE: segment information; growth and margins computed in Python",
+   "model": "python (computed)",
+   "verdict": "hit",
+   "actual": "At target: 7.6% → 11.0% → 7.2% (Q4 FY26 → Q2 FY27) vs target 6–9% · EPC segment result margin (before interest and tax, after depreciation)",
+   "why": "No deadline, so judged by direction since the Q3 FY26 call; computed in Python."
+  },
+  {
+   "metric": "Wires & Cables medium- to long-term margin",
+   "target": "11% to 13%",
+   "period": "medium- to long-term",
+   "said_in": "Jun 2026",
+   "call": "Q1 FY27",
+   "quote": "we continue to maintain our medium- to long-term margin guidance of 11% to 13% for this business.",
+   "page": 5,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=e47a217c-cefa-4ff6-8e34-6bbd07d42b13.pdf",
+   "path": "13.3% → 14.2% (Q1 FY27 → Q2 FY27)",
+   "cites": [
+    {
+     "label": "Q1 FY27 results filing, p.5 (consolidated segment table, ₹ million): Wires and Cables revenue 72,017.85 (year earlier 52,286.49), result 9,593.85",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=faa11982-c753-4036-96ed-0e11eb17832b.pdf"
+    },
+    {
+     "label": "Q2 FY27 results filing, p.5 (consolidated segment table, ₹ million): Wires and Cables revenue 83,768.41 (year earlier 56,911.30), result 11,887.42",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=4ac93ea0-d4d1-4b85-8849-14a19e0dcceb.pdf"
+    }
+   ],
+   "actual_source": "the company's results filings on BSE: segment information; growth and margins computed in Python",
+   "model": "python (computed)",
+   "verdict": "hit",
+   "actual": "At target: 13.3% → 14.2% (Q1 FY27 → Q2 FY27) vs target 11–13% · Wires and Cables segment result margin (before interest and tax, after depreciation)",
+   "why": "No deadline, so judged by direction since the Q1 FY27 call; computed in Python."
+  },
   {
    "metric": "Project Spring annual capex",
    "target": "investing ₹ 12 billion to ₹ 16 billion annually through FY30",
@@ -59,41 +145,7 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "No annual capex figure reported; only half-year INR 6.1 bn disclosed."
-  },
-  {
-   "metric": "FMEG EBITDA margins",
-   "target": "EBITDA margins in the range of 8% to 10% by FY30",
-   "period": "by FY30",
-   "said_in": "Dec 2025",
-   "call": "Q3 FY26",
-   "quote": "remain on track to achieve our Project Spring targets of 1.5x - 2x industry growth and EBITDA margins in the range of 8% to 10% by FY30",
-   "page": 7,
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf",
-   "path": null,
-   "cites": [],
-   "verdict": "not-yet-measurable",
-   "actual": "not disclosed",
-   "actual_source": null,
-   "model": "openai/gpt-oss-120b",
-   "why": "EBITDA margins 13‑14% exceed the 8‑10% target range, so target not met."
-  },
-  {
-   "metric": "EPC annual sustainable operating margin",
-   "target": "high single digits",
-   "period": "over mid- to long term",
-   "said_in": "Dec 2025",
-   "call": "Q3 FY26",
-   "quote": "Looking ahead, the annual sustainable operating margin is expected to remain in the high single digits over mid- to long term.",
-   "page": 7,
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf",
-   "path": null,
-   "cites": [],
-   "verdict": "not-yet-measurable",
-   "actual": "not disclosed",
-   "actual_source": null,
-   "model": "openai/gpt-oss-120b",
-   "why": "Margins 13‑14% are above the 6‑9% high‑single‑digit target, meeting the at_least criterion."
+   "why": "Not measured yet: no later filing or call statement measures this promise."
   },
   {
    "metric": "Export contribution to overall top line",
@@ -110,7 +162,7 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "Export contribution not reported; cannot assess against >10% target."
+   "why": "Not measurable: results filings don't report this figure (volumes, NOV/GMV, orders, AUM, mix or payout)."
   },
   {
    "metric": "Dividend payout ratio",
@@ -127,24 +179,7 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "No reported dividend payout ratio data to assess target."
-  },
-  {
-   "metric": "Capital expenditure program",
-   "target": "INR 60 billion to INR 80 billion over the next 5 years",
-   "period": "next 5 years",
-   "said_in": "Mar 2026",
-   "call": "Q4 FY26",
-   "quote": "We remain on track to execute our planned capex program of INR 60 billion to INR 80 billion over the next 5 years",
-   "page": 6,
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f66f17ac-c40f-4309-afca-3e66af0956a0.pdf",
-   "path": null,
-   "cites": [],
-   "verdict": "not-yet-measurable",
-   "actual": "not disclosed",
-   "actual_source": null,
-   "model": "openai/gpt-oss-120b",
-   "why": "No cumulative capex data; only half-year INR 6.1bn reported."
+   "why": "Not measurable: results filings don't report this figure (volumes, NOV/GMV, orders, AUM, mix or payout)."
   }
  ]
 }

@@ -61,7 +61,8 @@ def test_force_writes_anyway(run):
 def test_single_ticker_run_keeps_the_rest_of_the_portfolio(run):
     code, feed = run(set(), "A")
     assert code == 0 and feed["portfolio"] == ["A", "B", "C", "D"]
-    assert "stale_as_of" not in feed["companies"]["A"] and feed["companies"]["C"]["stale_as_of"]
+    assert "stale_as_of" not in feed["companies"]["A"] and "stale_as_of" not in feed["companies"]["C"]  # not asked for != failed
+    assert [i["id"] for i in feed["items"] if i["symbol"] == "C"] == ["C-1"]
 
 
 def test_empty_price_history_counts_as_a_fetch_failure(monkeypatch):

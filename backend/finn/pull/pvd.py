@@ -465,14 +465,14 @@ def unmeasurable(p: dict, seg, latest: str | None = None) -> str | None:
     if p.get("basis") == "constant_currency_or_usd" or USD.search(text):
         return "Not measurable: a US-dollar or constant-currency target, and results filings report rupees."
     if NOT_MONEY.search(text):
-        return "Not measurable: a volume or business metric (units, NOV/GMV, orders, AUM, mix); results filings report money, not this."
+        return "Not measurable: results filings don't report this figure (volumes, NOV/GMV, orders, AUM, mix or payout)."
     if latest and _q(p["said_in"]) >= _q(latest):
         return f"Not measurable yet: promised on the latest call ({fy_name(p['said_in'])}), and no results have come out since."
     if p.get("company_total") and not NOT_TOTAL.search(text):
         return None
     data = seg(p["said_in"])
     if not data:
-        return "Not measurable: no segment table found in the results filings since this call."
+        return "Not measured: no segment figures could be read from the results filings since this call (a single-segment company, or the table didn't parse)."
     names = list(data[max(data, key=_q)]["segments"])
     name = segments.match(text, names, p.get("company_words", ()))
     if not name:

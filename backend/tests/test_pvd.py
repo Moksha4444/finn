@@ -303,7 +303,7 @@ def test_unmeasurable_reasons_are_labelled():
     seg = lambda since: {"Sep 2026": {"segments": {"Watches": {}, "Jewellery": {}}}}
     usd = P(metric="annual revenue aspiration", target="$2 billion", basis="constant_currency_or_usd", said_in="Dec 2025")
     assert "US-dollar" in pvd.unmeasurable(usd, seg, "Sep 2026")
-    assert "volume" in pvd.unmeasurable(P(metric="sales volume growth", target="over 10%", said_in="Dec 2025"), seg, "Sep 2026")
+    assert "volumes" in pvd.unmeasurable(P(metric="sales volume growth", target="over 10%", said_in="Dec 2025"), seg, "Sep 2026")
     assert "latest call" in pvd.unmeasurable(P(metric="watch margins", target="15%", said_in="Sep 2026"), seg, "Sep 2026")
     cl = P(metric="CaratLane EBIT margin", target="double-digit", company_total=False, said_in="Dec 2025")
     assert pvd.unmeasurable(cl, seg, "Sep 2026") == "Not measurable: not a reported segment (the results filings report Watches, Jewellery)."

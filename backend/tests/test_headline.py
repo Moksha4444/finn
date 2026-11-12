@@ -29,3 +29,6 @@ def test_non_results_copy_of_a_board_outcome_must_not_lead_with_results():
     assert any("filed as a management change" in x for x in problems(h, DIXON, "management_change"))
     assert problems("Appointed Prithvi Vachani Executive Director", DIXON, "management_change") == []
     assert problems("Q2 revenue at ₹21,863 crore", DIXON, "press_release") == []  # results press releases may
+
+    # IRCTC litigation: "profiteered" is not results talk
+    assert problems("GSTAT directed deposit of profiteered amount plus interest", "profiteered amount", "litigation") == []

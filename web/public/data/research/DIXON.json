@@ -1,7 +1,7 @@
 {
  "symbol": "DIXON",
  "name": "Dixon Technologies (India) Ltd",
- "generated_at": "2026-11-12T18:02",
+ "generated_at": "2026-11-13T03:05",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -36,14 +36,31 @@
   "ahead": 0,
   "on track": 0,
   "moved closer": 0,
-  "partial": 0,
+  "partial": 1,
   "no change": 0,
   "behind pace": 0,
   "moved away": 0,
   "miss": 0,
-  "not-yet-measurable": 6
+  "not-yet-measurable": 5
  },
  "promises": [
+  {
+   "metric": "IT hardware revenue",
+   "target": "INR3,500 crores to INR4,000 crores",
+   "period": "next year",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "We feel that for next year, the numbers are going to be somewhere around INR3,500 crores to INR4,000 crores.",
+   "page": 17,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ad6e72f1-b5f8-4a75-8e45-f2e88c7525e0.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "partial",
+   "actual": "Q2 FY27 call, p.6: “Revenues for the quarter was Rs. 2,160 crores.”; Q1 FY27 call, p.11: “IT hardware is somewhere around INR1,350-odd crores.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b",
+   "why": "IT hardware revenue Rs.2,160 crore (Q2 FY27) below INR3,500 crore target."
+  },
   {
    "metric": "mobile phone business margins",
    "target": "2.8% to 3.1%, 3.2%",
@@ -59,24 +76,7 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "Jun 2026 margin 3.0% within range; Sep 2026 2.7% below 2.8%."
-  },
-  {
-   "metric": "IT hardware revenue",
-   "target": "INR3,500 crores to INR4,000 crores",
-   "period": "next year",
-   "said_in": "Dec 2025",
-   "call": "Q3 FY26",
-   "quote": "We feel that for next year, the numbers are going to be somewhere around INR3,500 crores to INR4,000 crores.",
-   "page": 17,
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ad6e72f1-b5f8-4a75-8e45-f2e88c7525e0.pdf",
-   "path": null,
-   "cites": [],
-   "verdict": "not-yet-measurable",
-   "actual": "Q2 FY27 call, p.6: “Revenues for the quarter was Rs. 2,160 crores.”; Q1 FY27 call, p.11: “IT hardware is somewhere around INR1,350-odd crores.”",
-   "actual_source": "management's statements on later calls (transcripts)",
-   "model": "openai/gpt-oss-120b",
-   "why": "The model's reason used a number that is not in the evidence."
+   "why": "Not measured: no segment figures could be read from the results filings since this call (a single-segment company, or the table didn't parse)."
   },
   {
    "metric": "smartphone volumes and selling prices",
@@ -93,7 +93,7 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "No reported data on smartphone volumes or selling prices."
+   "why": "Not measurable: results filings don't report this figure (volumes, NOV/GMV, orders, AUM, mix or payout)."
   },
   {
    "metric": "telecom and networking products revenue growth",
@@ -110,7 +110,7 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "No reported growth figures for telecom and networking revenue; cannot assess target."
+   "why": "Not measured: no segment figures could be read from the results filings since this call (a single-segment company, or the table didn't parse)."
   },
   {
    "metric": "IT hardware products revenue",
@@ -127,7 +127,7 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "IT hardware revenue reported but no prior-year comparison; growth cannot be measured."
+   "why": "Not measured: no segment figures could be read from the results filings since this call (a single-segment company, or the table didn't parse)."
   },
   {
    "metric": "lighting revenues growth",
@@ -144,7 +144,7 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "Lighting revenue not reported; target cannot be evaluated."
+   "why": "Not measured: no segment figures could be read from the results filings since this call (a single-segment company, or the table didn't parse)."
   }
  ]
 }

@@ -1,7 +1,7 @@
 {
  "symbol": "SUNPHARMA",
  "name": "Sun Pharmaceutical Industries Ltd",
- "generated_at": "2026-11-12T17:55",
+ "generated_at": "2026-11-13T03:06",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -93,7 +93,7 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "No measurable evidence for high single-digit growth target."
+   "why": "Not measured yet: no later filing or call statement measures this promise."
   },
   {
    "metric": "R&D spend",
