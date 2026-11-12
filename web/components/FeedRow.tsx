@@ -1,9 +1,10 @@
 "use client";
 import { useState } from "react";
-import { filedAt, sentence, shortDate, type Item, type MgmtCard, type RankedItem, type ResultsCard, type ResultsLine } from "@/lib/feed";
+import { filedAt, sentence, shortDate, type FundCard, type Item, type MgmtCard, type RankedItem, type ResultsCard, type ResultsLine } from "@/lib/feed";
 import { label, pct } from "@/lib/rank";
 import { Signed } from "./Signed";
 import { period } from "@/lib/period";
+import { Collapse } from "./Collapse";
 
 // What the row says before you tap: numbers-first for results, the person for mgmt changes, else the filing's own line.
 // Results use one basis (YoY) so two figures are never compared across different periods; the table has QoQ.
@@ -72,9 +73,9 @@ export function FeedRow({ item: i }: { item: RankedItem }) {
         aria-expanded={open}
         aria-controls={id}
         onClick={() => setOpen(!open)}
-        className="block w-full py-3 text-left active:bg-paper-2"
+        className="block w-full py-3 text-left transition-colors duration-150 ease-out active:bg-paper-2"
       >
-        {/* line 1: who, what, and the market's verdict; line 2: the fact and when. Both single-line. */}
+        {/* line 1: who, what, and the market's verdict (single line); line 2: the fact (wraps to 2 lines) and when. */}
         <span className="flex items-baseline gap-2 whitespace-nowrap">
           <span className="shrink-0 text-[0.9375rem] font-semibold tracking-[0.01em]">{i.symbol}</span>
           <span className="shrink-0 text-[0.875rem] text-ink-2">{eventLabel(i)}</span>
@@ -89,12 +90,12 @@ export function FeedRow({ item: i }: { item: RankedItem }) {
             ))}
           </span>
         </span>
-        <span className="mt-0.5 flex items-baseline gap-3 text-[0.875rem] leading-[1.4] whitespace-nowrap">
-          <span className="min-w-0 truncate"><Signed text={keyFact(i)} /></span>
-          <span className="ml-auto shrink-0 text-[0.8125rem] text-ink-2">{filedAt(i.filed)}</span>
+        <span className="mt-0.5 flex items-start gap-3 text-[0.875rem] leading-[1.4]">
+          <span className="line-clamp-2 min-w-0"><Signed text={keyFact(i)} /></span>
+          <span className="ml-auto shrink-0 pt-px text-[0.8125rem] whitespace-nowrap text-ink-2">{filedAt(i.filed)}</span>
         </span>
       </button>
-      {open && <div id={id} className="pb-4"><Detail i={i} /></div>}
+      <Collapse open={open} id={id}><div className="pb-4"><Detail i={i} /></div></Collapse>
     </li>
   );
 }
@@ -102,9 +103,10 @@ export function FeedRow({ item: i }: { item: RankedItem }) {
 export function Detail({ i }: { i: RankedItem }) {
   return (
     <div className="pt-1 text-[0.875rem] leading-[1.45]">
-      {i.card?.type === "results" ? <Results c={i.card} /> : i.card?.type === "management_change" ? <Mgmt c={i.card} /> : <Other i={i} />}
+      {i.card?.type === "results" ? <Results c={i.card} /> : i.card?.type === "management_change" ? <Mgmt c={i.card} />
+        : i.card?.type === "fund_raise" ? <Fund c={i.card} i={i} /> : <Other i={i} />}
       <Why i={i} />
-      <Source i={i} page={i.card?.type === "results" ? i.card.pages[0] : undefined} />
+      <Source i={i} page={i.card?.type === "results" ? i.card.pages[0] : i.card?.type === "fund_raise" ? i.card.size_page ?? undefined : undefined} />
     </div>
   );
 }
@@ -192,11 +194,29 @@ function Bio({ text, cited, page }: { text: string; cited: boolean; page: number
         {!full && (
           <>
             {" · "}
-            <button type="button" onClick={() => setFull(true)} className="text-accent underline">Full profile</button>
+            <button type="button" onClick={() => setFull(true)} className="-my-3 inline-block py-3 text-accent underline">Full profile</button>
           </>
         )}
       </p>
     </div>
+  );
+}
+
+const INSTRUMENT = { equity: "Equity", warrants: "Warrants (convert to equity)", debt: "Debt", other: "Other" };
+
+// Only what the filing states: size as printed (converted to ₹ crore), dilution = shares issued / shares after.
+function Fund({ c, i }: { c: FundCard; i: RankedItem }) {
+  return (
+    <>
+      <p className="text-ink-2">{INSTRUMENT[c.instrument]}{i.subject && ` · As filed: ${i.subject}`}</p>
+      <p className="mt-1">
+        {c.size_cr != null ? <>Size ₹{crore(c.size_cr)} cr{c.size_page && <span className="text-ink-2"> (p. {c.size_page})</span>}</> : <span className="text-ink-2">Size not stated in this filing</span>}
+        {c.instrument === "debt" ? <span className="text-ink-2"> · debt, no dilution</span>
+          : c.dilution_pct != null ? <> · Dilution {c.dilution_pct.toFixed(2)}% <span className="text-ink-2">(shares issued ÷ shares after the issue)</span></>
+          : <span className="text-ink-2"> · dilution not stated</span>}
+      </p>
+      {c.model_note && <p className="mt-1 text-[0.8125rem] text-ink-2">{c.model_note}</p>}
+    </>
   );
 }
 
@@ -220,7 +240,7 @@ function Source({ i, page }: { i: RankedItem; page?: number }) {
       {failed && <p className="mt-2 text-ink-2">Couldn&rsquo;t read this filing automatically. The original is linked below.</p>}
       <p className="mt-2 text-[0.8125rem] text-ink-2">
         {i.url ? (
-          <a href={page ? `${i.url}#page=${page}` : i.url} target="_blank" rel="noopener" className="font-medium text-accent underline">
+          <a href={page ? `${i.url}#page=${page}` : i.url} target="_blank" rel="noopener" className="-my-3 inline-block py-3 font-medium text-accent underline">
             {page ? `Open filing at p. ${page}` : "Open filing"}
           </a>
         ) : (

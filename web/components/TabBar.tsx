@@ -54,7 +54,7 @@ export function TabBar() {
                     {ICONS[t.href]}
                   </svg>
                   {count > 0 && (
-                    <span className="absolute -top-1 left-4 min-w-[1.125rem] rounded-full bg-accent px-1 text-center text-[0.625rem] leading-[1.125rem] font-semibold text-paper ring-2 ring-paper">
+                    <span key={count} className="absolute -top-1 left-4 min-w-[1.125rem] animate-pop rounded-full bg-accent px-1 text-center text-[0.6875rem] leading-[1.125rem] font-semibold text-paper ring-2 ring-paper">
                       {count}
                       <span className="sr-only"> new</span>
                     </span>

@@ -10,16 +10,24 @@ export type ResultsCard = {
 };
 export type Person = { name: string; change: string; role: string | null; effective: string | null; bio: string | null; bio_page: number | null; profile_ref: string | null };
 export type MgmtCard = { type: "management_change"; people: Person[]; model_note: string | null };
+// size and dilution as the filing states them (Python converts units and divides; null when not stated)
+export type FundCard = {
+  type: "fund_raise"; instrument: "equity" | "warrants" | "debt" | "other";
+  size_cr: number | null; size_page: number | null; dilution_pct: number | null; model_note: string | null;
+};
 export type Item = {
   id: string; symbol: string; name: string; filed: string; subject: string | null; headline: string | null; note: string | null;
   category: string; tier: Tier; classify_error: string | null; card_error?: string; url: string | null; source: string;
-  reaction_day: string; last_bar: string | null; reaction: Reaction | null; card?: ResultsCard | MgmtCard; title?: string | null;
+  reaction_day: string; last_bar: string | null; reaction: Reaction | null; card?: ResultsCard | MgmtCard | FundCard; title?: string | null;
 };
-export type Company = { name: string; sector: string | null; closes: [string, number][] };
+// credibility: measured PvD promises from the last 4 calls (kept = hit/ahead, missed = miss/behind/moved away,
+// open = on track); null when nothing was measurable. See DECISIONS.md.
+export type Credibility = { kept: number; missed: number; open: number };
+export type Company = { name: string; sector: string | null; closes: [string, number][]; credibility?: Credibility | null };
 export type Day = Reaction & { symbol: string; date: string };
 export type Feed = {
   generated_at: string; window: [string, string]; thresholds: { volume_multiple: number; excess_move_pct: number };
-  portfolio?: string[]; companies?: Record<string, Company>;
+  portfolio?: string[]; companies?: Record<string, Company>; nifty?: [string, number][];
   items: Item[]; alerts: { symbol: string; date: string; kind: string; text: string }[]; days: Day[];
   failed: { symbol: string; error: string }[];
 };

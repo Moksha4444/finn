@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { ViewTransition } from "react";
 import { Libre_Franklin, Source_Serif_4 } from "next/font/google";
 import { TabBar, TopBar } from "@/components/TabBar";
 import "./globals.css";
@@ -24,7 +25,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en-IN" className={`${franklin.variable} ${serif.variable} antialiased`}>
       <body className="min-h-dvh">
         <TopBar />
-        <main className="mx-auto max-w-[36rem] px-5 pb-[calc(6rem+env(safe-area-inset-bottom))]">{children}</main>
+        {/* route changes are transitions, so this crossfades tabs (180ms, see globals.css) */}
+        <ViewTransition>
+          <main className="mx-auto max-w-[36rem] px-5 pb-[calc(6rem+env(safe-area-inset-bottom))]">{children}</main>
+        </ViewTransition>
         <TabBar />
       </body>
     </html>

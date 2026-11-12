@@ -15,6 +15,41 @@
 
   --font-sans: var(--font-franklin), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-source-serif), ui-serif, Georgia, serif;
+
+  /* Motion: one strong ease-out for everything (fast start, soft landing), all under 250ms.
+     Overriding --ease-out makes Tailwind's `ease-out` utility use it. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --animate-pop: pop 220ms var(--ease-out);
+  --animate-draw: draw 250ms var(--ease-out);
+  --animate-appear: appear 200ms var(--ease-out);
+
+  @keyframes pop {
+    from { transform: scale(0.6); opacity: 0; }
+  }
+  /* sparkline draws left to right once: a clip reveal, so both lines and the marker arrive together */
+  @keyframes draw {
+    from { clip-path: inset(0 100% 0 0); }
+  }
+  @keyframes appear {
+    from { opacity: 0; transform: translateY(-4px); }
+  }
+}
+
+/* Tab changes: React's <ViewTransition> crossfades old and new page; keep it short and quiet. */
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 180ms;
+  animation-timing-function: var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) {
+    animation: none !important;
+  }
 }
 
 html {

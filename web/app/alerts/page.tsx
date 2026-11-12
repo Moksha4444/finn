@@ -55,14 +55,14 @@ export default function Alerts() {
                 const co = feed?.companies?.[a.symbol];
                 const body = (
                   <>
-                    <Avatar name={co?.name ?? a.item?.name ?? a.symbol} sector={co?.sector} size="sm" />
+                    <Avatar name={co?.name ?? a.item?.name ?? a.symbol} sector={co?.sector} />
                     <span className="min-w-0 flex-1">
                       <span className="flex items-baseline gap-2">
                         <span className="text-[0.875rem] font-semibold">{co ? shortName(co.name) : a.symbol}</span>
                         <span className="text-[0.8125rem] text-ink-2">{kind}</span>
                         {fresh?.has(a.key) && <span className="ml-auto text-[0.75rem] font-semibold text-accent">New</span>}
                       </span>
-                      <span className={`mt-0.5 block text-[0.875rem] leading-[1.4] ${a.kind === "error" ? "text-ink-2" : ""}`}>
+                      <span className={`mt-0.5 block text-[0.875rem] leading-[1.4] [overflow-wrap:anywhere] ${a.kind === "error" ? "text-ink-2" : ""}`}>
                         <Signed text={a.item ? keyFact(a.item) : a.text} />
                       </span>
                     </span>

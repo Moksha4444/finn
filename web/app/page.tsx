@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { CompanyCard, CompanyRow, shortName } from "@/components/Company";
+import { Collapse } from "@/components/Collapse";
 import { FeedRow } from "@/components/FeedRow";
 import { FeedSkeleton, LoadFailed } from "@/components/States";
 import { WIN_HOURS, WIN_PERIOD, inWindow, istTime, longDate, ranked, shortDate, useFeed, useSettings, type Feed, type RankedItem, type Win } from "@/lib/feed";
@@ -24,7 +25,7 @@ function verdict(feed: Feed, all: RankedItem[], groups: Group[], win: Win, moveX
 
   if (win !== "24h" && reported.size >= portfolio / 2)
     return { head: `Results season: ${reported.size} of ${portfolio} reported.`, sub: [`${moved.size} moved ±${moveX}% vs Nifty on results`, ...sub] };
-  const name = (g: Group) => shortName(feed.companies?.[g.symbol]?.name ?? g.lead.name);
+  const name = (g: Group) => { const n = shortName(feed.companies?.[g.symbol]?.name ?? g.lead.name); return n.length > 24 ? g.symbol : n; };
   if (material.length === 0)
     return { head: groups.length ? `Nothing urgent ${period}.` : `Nothing material ${period}.`, sub: [groups.length > 0 && `${groups.length} worth a look`, ...sub].filter(Boolean) as string[] };
   const head = material.length <= 2
@@ -100,7 +101,7 @@ export default function Brief() {
         <section aria-labelledby="h-matters" className="mt-6">
           <h2 id="h-matters" className="font-serif text-[1.1875rem] font-semibold">What matters</h2>
           <ol className="mt-2.5 space-y-3">
-            {(allCards ? matters : matters.slice(0, CARDS)).map((g) => <CompanyCard key={g.symbol} g={g} co={feed.companies?.[g.symbol]} end={end} initialOpen={g.symbol === openSym} />)}
+            {(allCards ? matters : matters.slice(0, CARDS)).map((g) => <CompanyCard key={g.symbol} g={g} co={feed.companies?.[g.symbol]} nifty={feed.nifty} end={end} initialOpen={g.symbol === openSym} />)}
           </ol>
           {matters.length > CARDS && (
             <button type="button" aria-expanded={allCards} onClick={() => setAllCards(!allCards)} className="mt-2 min-h-11 w-full rounded-xl border border-rule text-[0.875rem] font-medium text-accent">
@@ -130,7 +131,7 @@ export default function Brief() {
             <span>{routine.length} routine {routine.length === 1 ? "filing" : "filings"} hidden</span>
             <span className="font-medium text-accent">{showRoutine ? "Hide" : "Show"}</span>
           </button>
-          {showRoutine && <ol>{routine.map((i) => <FeedRow key={i.id} item={i} />)}</ol>}
+          <Collapse open={showRoutine}><ol>{routine.map((i) => <FeedRow key={i.id} item={i} />)}</ol></Collapse>
         </section>
       )}
 
