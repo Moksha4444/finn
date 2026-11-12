@@ -253,3 +253,57 @@ def test_model_verdicts_are_checked_in_python():
     # a quarter's revenue against a full-year amount while FY27 runs: not a miss yet
     assert "runs to Mar 2027" in pvd.model_check("miss", "R7 shows 2,160 crores, below 3,500 crores.", p, said, "Sep 2026")
     assert pvd.model_check("partial", "R7 shows 2,160 crores against 3,500 crores in FY27.", p, said, "Sep 2026") is None
+
+
+# ---- segment promises, measured on the segment table of the company's own results filings (13 Nov) ----
+from finn.pull import segments
+
+
+def test_segment_match_by_words_and_acronym_and_unsure_is_none():
+    names = ["Wires and Cables", "FMEG", "EPC"]
+    assert segments.match("FMEG EBITDA margins", names) == "FMEG"
+    assert segments.match("Fast moving electrical goods margin", ["Wires and Cables", "Fast Moving Electrical Goods"]) == "Fast Moving Electrical Goods"
+    titan = ["Watches", "Jewellery", "Eyecare", "Others"]
+    assert segments.match("watch business margins", titan) == "Watches"
+    assert segments.match("Titan Jewellery business margin", titan, {"titan", "company"}) == "Jewellery"
+    assert segments.match("CaratLane EBIT margin", titan) is None  # a subsidiary, not a segment
+    assert segments.match("watches and jewellery growth", titan) is None  # two segments: unsure
+
+
+def test_copied_segment_numbers_must_be_on_the_page():
+    page = "fmeg 9,931.13 7,611.53 4,521.84 ... (1,229.00)"
+    assert segments._on_page(9931.13, page) and segments._on_page(-1229.0, page) and not segments._on_page(9931.31, page)
+
+
+TITAN_Q = {q: {"page": 14, "basis": "consolidated", "unit": "in crores", "url": "u", "segments": {
+    "Watches": {"revenue": r, "revenue_yago": y, "result": res, "result_yago": None}, "Jewellery": {"revenue": 1, "revenue_yago": 1, "result": 0, "result_yago": 0}}}
+    for q, (r, y, res) in {"Jun 2026": (1543, 1273, 295), "Sep 2026": (1881, 1477, 412)}.items()}
+
+
+def test_segment_margin_and_growth_computed_in_python_with_citations():
+    m = pvd.segment_series(P(metric="watch business margins", target="15% to 16%", target_type="margin_pct", margin_basis="ebit"), TITAN_Q)
+    assert round(m["q"]["Sep 2026"], 1) == 21.9 and round(m["agg"](["Jun 2026", "Sep 2026"]), 1) == round(707 / 3424 * 100, 1)  # revenue-weighted
+    assert "p.14" in m["cites"]["Sep 2026"]["label"] and not m["floor_only"]
+    g = pvd.segment_series(P(metric="watches revenue growth", target="20%", target_type="growth_pct"), TITAN_Q)
+    assert round(g["agg"](["Jun 2026", "Sep 2026"]), 1) == round((3424 / 2750 - 1) * 100, 1)
+    assert pvd.segment_series(P(metric="watch volumes", target="10%", target_type="growth_pct"), TITAN_Q) is None  # volumes aren't money
+
+
+def test_ebitda_segment_target_is_floor_only_and_bands_are_floors():
+    m = pvd.segment_series(P(metric="FMEG EBITDA margins", target="8% to 10%", target_type="margin_pct", margin_basis="ebitda"),
+                           {"Sep 2026": {"page": 5, "basis": "consolidated", "unit": "₹ million", "url": "u",
+                                         "segments": {"FMEG": {"revenue": 9931.13, "revenue_yago": 4521.84, "result": 1006.04, "result_yago": 21.95}}}})
+    assert m["floor_only"]
+    # above a margin band is ahead, not "moved away" (POLYCAB W&C 14.2% vs 11-13%)
+    band = P(metric_key="operating_margin", target_low=11, target_high=13, direction="within")
+    assert pvd.judge(14.2, band, complete=False)[0] == "ahead" and pvd.gap(14.2, band) == 0
+
+
+def test_unmeasurable_reasons_are_labelled():
+    seg = lambda since: {"Sep 2026": {"segments": {"Watches": {}, "Jewellery": {}}}}
+    usd = P(metric="annual revenue aspiration", target="$2 billion", basis="constant_currency_or_usd", said_in="Dec 2025")
+    assert "US-dollar" in pvd.unmeasurable(usd, seg, "Sep 2026")
+    assert "volume" in pvd.unmeasurable(P(metric="sales volume growth", target="over 10%", said_in="Dec 2025"), seg, "Sep 2026")
+    assert "latest call" in pvd.unmeasurable(P(metric="watch margins", target="15%", said_in="Sep 2026"), seg, "Sep 2026")
+    cl = P(metric="CaratLane EBIT margin", target="double-digit", company_total=False, said_in="Dec 2025")
+    assert pvd.unmeasurable(cl, seg, "Sep 2026") == "Not measurable: not a reported segment (the results filings report Watches, Jewellery)."

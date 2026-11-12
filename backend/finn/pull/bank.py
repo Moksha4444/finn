@@ -21,7 +21,8 @@ def quarter_end(q: str) -> dt.date:
 def same_date(as_at: str, qe: dt.date) -> bool:
     """The column the model copied is the quarter-end one: year plus month (number or name) in the printed header."""
     s = as_at.lower()
-    return str(qe.year) in s and (bool(re.search(rf"\b0?{qe.month}\b", re.sub(r"[./-]", " ", s))) or MON[qe.month - 1] in s)
+    year = str(qe.year) in s or re.search(rf"\b{qe.year % 100}\b", s)  # POLYCAB prints "30 Sep 26"
+    return bool(year) and (bool(re.search(rf"\b0?{qe.month}\b", re.sub(r"[./-]", " ", s))) or MON[qe.month - 1] in s)
 
 
 def _candidates(scrip: str, qe: dt.date) -> list[dict]:

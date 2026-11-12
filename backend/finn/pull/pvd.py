@@ -4,7 +4,8 @@
    and numbers management reports as achieved, each with a verbatim quote + page. Extraction only, no maths.
 3. Python decides every promise it can compute, against one series per metric per company: growth from screener's
    quarterly table, the margin management itself reports on each call (else computed from the table, labelled), bank
-   CD ratio from the bank's own results filings. Deadline passed -> hit / miss; running -> on track / ahead / behind
+   CD ratio from the bank's own results filings, segment growth / margin from the results filings' segment table.
+   Deadline passed -> hit / miss; running -> on track / ahead / behind
    pace; no deadline -> direction of travel since the promise, with the quarterly path. The LLM never does arithmetic.
 4. Strong model judges only the rest (store counts, CASA, capacity...) from management's later-reported numbers.
 5. Keep 4-6: financial and measured first; soft / operational promises only if something measured them.
@@ -14,7 +15,7 @@ import re, sys, json, hashlib, datetime as dt
 from finn import llm
 from finn.config import ROOT
 from finn.sources import fetch, bse, screener, pdf
-from finn.pull import bank
+from finn.pull import bank, segments
 from finn.push.headline import _nums
 
 OUT = ROOT / "web" / "public" / "data" / "research"
@@ -26,12 +27,16 @@ SOURCE = "screener.in quarterly results table (from the company's exchange resul
 SAID = "management's statements on later calls (transcripts)"
 SAID_MARGIN = "management's reported margin for each quarter, on that quarter's results call (transcripts)"
 BANK_SOURCE = "the bank's results filings on BSE: statement of assets and liabilities; ratio computed in Python"
+SEG_SOURCE = "the company's results filings on BSE: segment information; growth and margins computed in Python"
 RULE = "python (computed)"
 DIRECTIONAL = ("next_few_quarters", "unspecified", "long_term")  # no deadline: judged by direction of travel
 FINANCIAL = ("revenue", "operating_margin", "net_profit", "capex", "cd_ratio")
 MAX_PROMISES = 6
 # rules before the LLM: measures that are never the company's total revenue / margin / profit, whatever the extractor says
 NOT_TOTAL = re.compile(r"order|inflow|\baum\b|assets under|volume|loan|advances|deposit|\bnov\b|\bgov\b|\bgmv\b|customer|export|payout|disburse|segment", re.I)
+# business metrics no results filing reports in rupees (volumes, NOV/GMV, orders, AUM): never matched to a segment
+NOT_MONEY = re.compile(r"order|inflow|\baum\b|assets under|volume|\bunits?\b|tonn|loan|advances|deposit|\bnov\b|\bgov\b|\bgmv\b|customer|export|payout|disburse|contribution|share of", re.I)
+USD = re.compile(r"\$|\busd\b|dollar|constant currency|\bcc\b", re.I)
 COST = re.compile(r"cost|opex|expense|\bnpa\b|working capital|\bnwc\b|net debt|leverage", re.I)  # lower is better
 
 KEY = {"type": "string", "enum": ["revenue", "operating_margin", "net_profit", "capex", "cd_ratio", "other"]}
@@ -206,8 +211,11 @@ def _bounds(p: dict) -> tuple[str, float | None, float | None]:
         hi = None  # "15%" extracted as 15-15
     d = p.get("direction") or ("within" if lo is not None and hi is not None else "at_least" if lo is not None else "at_most")
     text = f"{p.get('metric', '')} {p.get('target', '')}"
-    if d == "at_most" and lo is not None and p.get("metric_key") in ("revenue", "operating_margin", "net_profit"):
-        d = "at_least"  # nobody promises a ceiling on their own growth or margin: an extraction slip (L&T "8.5% margin target")
+    up = p.get("metric_key") in ("revenue", "operating_margin", "net_profit")  # not cd_ratio / "other": LDR bands are ceilings
+    if d in ("at_most", "within") and lo is not None and up and not COST.search(text):
+        # nobody promises a ceiling on their own growth or margin: above a band is ahead, not a miss
+        # (L&T "8.5% margin target" extracted as at_most; POLYCAB W&C 14.2% vs an 11-13% band was "moved away")
+        d = "at_least"
     elif COST.search(text) and "saving" not in text.lower():
         d = "at_most"  # a cost band is a ceiling: BAJFINANCE cost of funds 7.41% beats "7.55-7.60%"
     return ("at_most" if lo is None else d), lo, hi
@@ -261,11 +269,48 @@ def company_margin(quarters: dict, reported: dict[str, dict], call_qs: list[str]
             "source": SOURCE, "cites": {}}
 
 
-def series(p: dict, quarters: dict, margin: dict | None = None, bank=None) -> dict | None:
-    """{q: {quarter: value}, agg(quarters) -> value over a period, name, source, cites, kind} for this promise, or None."""
+def segment_series(p: dict, data: dict[str, dict], metric_only: bool = False) -> dict | None:
+    """Growth or margin of the one reported segment this promise names, per quarter, from the segment tables.
+    metric_only: match on the metric alone (for promises the extractor flagged company-wide)."""
+    tt, text = p["target_type"], f"{p['metric']} {p['target']}"
+    if tt not in ("growth_pct", "margin_pct") or NOT_MONEY.search(text) or not data:
+        return None
+    name = segments.match(p["metric"] if metric_only else text, list(data[max(data, key=_q)]["segments"]), p.get("company_words", ()))
+    rows = {q: d["segments"][name] | {"d": d} for q, d in data.items() if name and name in d["segments"]}
+    if not rows:
+        return None
+
+    def cite(q, r):
+        d = r["d"]
+        return {"label": f"{fy_name(q)} results filing, p.{d['page']} ({d['basis']} segment table, {d['unit']}): {name} revenue {r['revenue']:,.2f} "
+                         f"(year earlier {r['revenue_yago']:,.2f}), result {r['result']:,.2f}", "url": d["url"]}
+    base = {"source": SEG_SOURCE, "cites": {q: cite(q, r) for q, r in rows.items()}, "segment": name}
+    if tt == "growth_pct":
+        g = {q: r for q, r in rows.items() if r["revenue"] is not None and r["revenue_yago"]}
+
+        def agg(have):  # summed quarters vs the same quarters a year earlier, both read from the same filings
+            return None if any(q not in g for q in have) else (sum(g[q]["revenue"] for q in have) / sum(g[q]["revenue_yago"] for q in have) - 1) * 100
+        return base | {"q": {q: (r["revenue"] / r["revenue_yago"] - 1) * 100 for q, r in g.items()}, "kind": "growth", "agg": agg,
+                       "name": f"{name} segment revenue growth YoY"}
+    m = {q: r for q, r in rows.items() if r["revenue"] and r["result"] is not None}
+
+    def agg(have):  # revenue-weighted
+        return None if any(q not in m for q in have) else sum(m[q]["result"] for q in have) / sum(m[q]["revenue"] for q in have) * 100
+    # Segment result is before interest and tax but after depreciation: below EBITDA. It can confirm an EBITDA
+    # target it clears, never miss one (floor_only).
+    return base | {"q": {q: r["result"] / r["revenue"] * 100 for q, r in m.items()}, "kind": "margin", "agg": agg,
+                   "w": {q: r["revenue"] for q, r in m.items()}, "floor_only": p.get("margin_basis") == "ebitda" or "ebitda" in text.lower(),
+                   "name": f"{name} segment result margin (before interest and tax, after depreciation)"}
+
+
+def series(p: dict, quarters: dict, margin: dict | None = None, bank=None, seg=None) -> dict | None:
+    """{q: {quarter: value}, agg(quarters) -> value over a period, name, source, cites, kind} for this promise, or None.
+    seg(since) -> {quarter: segment table}: segment promises are measured on their own segment, never company totals."""
     key, tt = p["metric_key"], p["target_type"]
     if key != "cd_ratio" and (not p.get("company_total") or NOT_TOTAL.search(f"{p['metric']} {p['target']}")):
-        return None  # a segment's margin or order inflow can't be measured with company totals (POLYCAB FMEG, L&T orders)
+        return segment_series(p, seg(p["said_in"])) if seg else None  # L&T orders, POLYCAB FMEG: not company totals
+    if seg and key != "cd_ratio" and (s := segment_series(p, seg(p["said_in"]), metric_only=True)):
+        return s  # flagged company-wide, but its metric names a reported segment (TITAN "watch business margins")
     if key == "cd_ratio" and bank:
         b = bank(p["said_in"])
         if not b:
@@ -414,6 +459,31 @@ def model_check(verdict: str, why: str, p: dict, said: list[str], latest: str | 
     return None
 
 
+def unmeasurable(p: dict, seg, latest: str | None = None) -> str | None:
+    """Why no filing can measure this promise, in words a reader can check (None = no fixed reason; keep the default)."""
+    text = f"{p['metric']} {p['target']}"
+    if p.get("basis") == "constant_currency_or_usd" or USD.search(text):
+        return "Not measurable: a US-dollar or constant-currency target, and results filings report rupees."
+    if NOT_MONEY.search(text):
+        return "Not measurable: a volume or business metric (units, NOV/GMV, orders, AUM, mix); results filings report money, not this."
+    if latest and _q(p["said_in"]) >= _q(latest):
+        return f"Not measurable yet: promised on the latest call ({fy_name(p['said_in'])}), and no results have come out since."
+    if p.get("company_total") and not NOT_TOTAL.search(text):
+        return None
+    data = seg(p["said_in"])
+    if not data:
+        return "Not measurable: no segment table found in the results filings since this call."
+    names = list(data[max(data, key=_q)]["segments"])
+    name = segments.match(text, names, p.get("company_words", ()))
+    if not name:
+        return f"Not measurable: not a reported segment (the results filings report {', '.join(names)})."
+    if p["target_type"] not in ("growth_pct", "margin_pct"):
+        return f"Not measured: the {name} segment is reported, but only growth and margin targets are checked, not a {p['target_type'].replace('_', ' ')} target."
+    if "ebitda" in text.lower() or p.get("margin_basis") == "ebitda":
+        return f"Not measurable yet: the filing gives the {name} segment's result after depreciation, not EBITDA; it is below the target, which doesn't settle an EBITDA target."
+    return None
+
+
 def _margin_ok(m: dict | None, n_pages: int) -> bool:
     """A reported margin counts only if its number is in its own quote and the page exists."""
     return bool(m and 1 <= m["page"] <= n_pages and any(abs(float(x) - m["value"]) < 1e-9 for x in re.findall(r"\d+(?:\.\d+)?", m["quote"])))
@@ -457,6 +527,8 @@ def run(symbol: str) -> dict:
             margins[c["quarter"]] = m | {"transcript": c["transcript"]}
 
     promises = dedupe(promises)
+    for p in promises:
+        p["company_words"] = segments._words(co["name"])  # never a segment name: "Titan Jewellery" is Jewellery
     quarters = co["quarters"]
     latest = quarters["periods"][-1] if quarters["periods"] else None
     ebit = any(m["basis"] == "ebit" for m in margins.values()) or any(p.get("margin_basis") == "ebit" for p in promises)
@@ -472,8 +544,25 @@ def run(symbol: str) -> dict:
                 sheets[q] = bank.balance_sheet(co["bse_code"], q, symbol)
         return {q: v for q, v in sheets.items() if v and _q(q) >= _q(since)}
 
-    judged: dict[int, dict] = {k: v for k, p in enumerate(promises)
-                               if (v := progress(p, p["said_in"], series(p, quarters, margin, bank_q)))}
+    tables: dict[str, dict | None] = {}
+
+    def seg_q(since: str) -> dict:
+        """Segment table per quarter from the promise's call to the latest results (cached per company)."""
+        if not co.get("bse_code"):
+            return {}
+        for q in quarters["periods"]:
+            if _q(q) >= _q(since) and q not in tables:
+                tables[q] = segments.quarter(co["bse_code"], q, symbol)
+        return {q: v for q, v in tables.items() if v and _q(q) >= _q(since)}
+
+    judged: dict[int, dict] = {}
+    for k, p in enumerate(promises):
+        s = series(p, quarters, margin, bank_q, seg_q)
+        v = progress(p, p["said_in"], s)
+        if v and s.get("floor_only") and (v["verdict"] not in ("hit", "ahead", "on track") or _bounds(p)[0] == "at_most"):
+            v = None  # an EBIT-level segment margin below an EBITDA target settles nothing
+        if v:
+            judged[k] = v
 
     # the rest go to the strong model, a few promises per call (Groq free tier: 8k tokens a minute)
     todo = [k for k in range(len(promises)) if k not in judged]
@@ -518,6 +607,8 @@ def run(symbol: str) -> dict:
         p = promises[k]
         j = {"path": None, "cites": []} | judged.get(k, {"verdict": "not-yet-measurable", "actual": "not disclosed", "actual_source": None, "model": None,
                                                          "why": "No reported number yet measures this promise."})
+        if j["verdict"] == "not-yet-measurable" and j["actual"] == "not disclosed":  # no evidence shown: no model reasoning either
+            j["why"] = unmeasurable(p, seg_q, latest) or "Not measured yet: no later filing or call statement measures this promise."
         rows.append({"metric": p["metric"], "target": p["target"], "period": p["period"], "said_in": p["said_in"],
                      "call": fy_name(p["said_in"]), "quote": p["quote"], "page": p["page"], "transcript": p["transcript"], **j})
     rows.sort(key=lambda r: (VERDICTS.index(r["verdict"]) == len(VERDICTS) - 1, _q(r["said_in"])))  # measurable first, oldest first
@@ -535,7 +626,11 @@ def run(symbol: str) -> dict:
 def main(argv=None):
     sys.stdout.reconfigure(encoding="utf-8")
     for sym in argv or sys.argv[1:]:
-        out = run(sym)
+        try:
+            out = run(sym)
+        except Exception as e:  # model quota / source down: this ticker keeps its last good JSON (run() writes last)
+            print(f"\n{sym} FAILED, kept the previous research file: {type(e).__name__}: {str(e)[:160]}")
+            continue
         s = {k: v for k, v in out["score"].items() if v}
         print(f"\n{out['name']} ({out['symbol']}) · calls: {', '.join(c['call'] for c in out['calls'])} · latest results: {out['latest_quarter']}")
         print(" · ".join(f"{k} {v}" for k, v in s.items()) + (f" · {out['model_note']}" if out["model_note"] else ""))
