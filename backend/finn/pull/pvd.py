@@ -346,6 +346,17 @@ def series(p: dict, quarters: dict, margin: dict | None = None, bank=None, seg=N
     return None
 
 
+def chart(p: dict, kind: str, points: list[list]) -> dict | None:
+    """The numbers behind a verdict, for the app's mini-chart: [quarter, value] points and the target band with the
+    same bounds judge() uses (lo/hi None = open on that side)."""
+    if not points:
+        return None
+    d, lo, hi = _bounds(p)
+    if d == "at_most":
+        lo, hi = None, hi if hi is not None else lo
+    return {"kind": kind, "points": points, "lo": lo, "hi": hi, "direction": d}
+
+
 def progress(p: dict, call_q: str, s: dict | None) -> dict | None:
     """Python verdict for a numeric target against the company's series; None if it can't be computed.
     Deadline passed -> hit / miss; deadline running -> ahead / on track / behind pace; no deadline -> direction of
@@ -357,7 +368,8 @@ def progress(p: dict, call_q: str, s: dict | None) -> dict | None:
     pts = [q for q in sorted(vals, key=_q) if _q(q) >= _q(call_q)]
     fmt = (lambda v: f"{v:+.1f}%") if s["kind"] == "growth" else (lambda v: f"{v:.1f}%")
     path = f"{' → '.join(fmt(vals[q]) for q in pts)} ({fy_name(pts[0])} → {fy_name(pts[-1])})" if len(pts) > 1 else None
-    out = {"path": path, "actual_source": s["source"], "model": RULE, "cites": [s["cites"][q] for q in pts if q in s["cites"]]}
+    out = {"path": path, "actual_source": s["source"], "model": RULE, "cites": [s["cites"][q] for q in pts if q in s["cites"]],
+           "chart": len(pts) > 1 and chart(p, s["kind"], [[fy_name(q), round(vals[q], 2)] for q in pts]) or None}
     if p["horizon"] in DIRECTIONAL or not p.get("fy") and p["horizon"] in ("quarter", "half_year", "fiscal_year"):  # no year stated = no deadline
         if len(pts) < 2:
             return None
@@ -402,7 +414,8 @@ def pace_reported(p: dict, used: list[dict], latest: str | None) -> dict | None:
             "quarter": p.get("fy") and p.get("quarter_no") and qlabel(p["fy"], p["quarter_no"]), "next_quarter": shift(p["said_in"], 1)}.get(p["horizon"])
     complete = bool(ends and latest and _q(ends) <= _q(latest) and _q(newest["said_in"]) >= _q(ends))
     verdict, goal = judge(v, p, complete)
-    return {"verdict": verdict, "why": f"Reported {newest['value']} ({fy_name(newest['said_in'])} call) against {goal}; compared in Python."}
+    return {"verdict": verdict, "chart": chart(p, "level", [[fy_name(newest["said_in"]), v]]),
+            "why": f"Reported {newest['value']} ({fy_name(newest['said_in'])} call) against {goal}; compared in Python."}
 
 
 def evidence(p: dict, reported: list[dict], used: list[str]) -> list[str]:
@@ -492,7 +505,7 @@ def _margin_ok(m: dict | None, n_pages: int) -> bool:
 def run(symbol: str) -> dict:
     co = screener.company(symbol)
     calls, skipped = [], []
-    promises, reported, margins = [], [], {}
+    promises, reported, margins, texts_by_q = [], [], {}, {}
     for c in results_calls(co["concalls"], n=6):
         if len(calls) == 4:
             break
@@ -509,7 +522,7 @@ def run(symbol: str) -> dict:
             c = c | {"transcript": alt[0]}
             b = alt[1]
         calls.append(c)
-        texts = pdf.pages(pdf.open_pdf(b))
+        texts = texts_by_q[c["quarter"]] = pdf.pages(pdf.open_pdf(b))
         context = f"This call discusses results for {fy_name(c['quarter'])}, the quarter ended {c['quarter']}."
         r = llm.run("extract_guidance", "extract_guidance", [context, pdf.marked_text(texts, list(range(len(texts))))], GUIDANCE,
                     key=hashlib.sha256(b).hexdigest(), symbol=symbol, call=c["quarter"])
@@ -605,7 +618,7 @@ def run(symbol: str) -> dict:
     rows = []
     for k in select(promises, judged):
         p = promises[k]
-        j = {"path": None, "cites": []} | judged.get(k, {"verdict": "not-yet-measurable", "actual": "not disclosed", "actual_source": None, "model": None,
+        j = {"path": None, "cites": [], "chart": None} | judged.get(k, {"verdict": "not-yet-measurable", "actual": "not disclosed", "actual_source": None, "model": None,
                                                          "why": "No reported number yet measures this promise."})
         if j["verdict"] == "not-yet-measurable" and j["actual"] == "not disclosed":  # no evidence shown: no model reasoning either
             j["why"] = unmeasurable(p, seg_q, latest) or "Not measured yet: no later filing or call statement measures this promise."
@@ -620,7 +633,8 @@ def run(symbol: str) -> dict:
            "model_note": "; ".join(sorted(notes)) or None, "score": score, "promises": rows}
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / f"{symbol.upper()}.json").write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
-    return out
+    # not written: the research builder reuses them for bull/bear (statements, transcript pages) without re-reading
+    return out | {"_reported": reported, "_texts": texts_by_q, "_calls": calls, "_company": co}
 
 
 def main(argv=None):

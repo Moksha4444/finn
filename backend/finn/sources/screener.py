@@ -19,9 +19,10 @@ def _num(s: str) -> float | None:
         return None
 
 
-def quarters(s: BeautifulSoup) -> dict:
-    """{'periods': ['Jun 2025', ...], 'rows': {'Sales': [..], 'Net Profit': [..]}} in ₹ crore, oldest first."""
-    t = s.select_one("#quarters table")
+def quarters(s: BeautifulSoup, section: str = "quarters") -> dict:
+    """{'periods': ['Jun 2025', ...], 'rows': {'Sales': [..], 'Net Profit': [..]}} in ₹ crore, oldest first.
+    section: also 'profit-loss', 'balance-sheet', 'cash-flow' (annual, Mar years; same table layout)."""
+    t = s.select_one(f"#{section} table")
     if not t:
         return {"periods": [], "rows": {}}
     periods = [th.get_text(strip=True) for th in t.select("thead th")][1:]
@@ -59,6 +60,8 @@ def company(symbol: str) -> dict:
         # screener's breadcrumb, e.g. "Utilities"; the app tints the company avatar by it
         "sector": next((a.get_text(strip=True) for a in s.select('a[href^="/market/"]') if a.get("title") == "Broad Sector"), None),
         "quarters": q,
+        "annual": {k: quarters(s, k) for k in ("profit-loss", "balance-sheet", "cash-flow")},
+        "url": f"https://www.screener.in/company/{symbol.upper()}/" + ("consolidated/" if basis == "consolidated" else ""),
         "concalls": concalls,
         "annual_reports": ars,
     }
