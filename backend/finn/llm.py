@@ -11,7 +11,7 @@ LOG = CACHE / "llm_calls.jsonl"
 
 TIER = {  # task -> tier; tier -> env var
     "classify": "CHEAP", "extract_results": "CHEAP", "extract_guidance": "CHEAP", "extract_bio": "CHEAP",
-    "business_snapshot": "CHEAP", "pvd_verdict": "STRONG", "bull_bear": "STRONG",
+    "business_snapshot": "CHEAP", "headline": "CHEAP", "pvd_verdict": "STRONG", "bull_bear": "STRONG",
 }
 DEFAULTS = {"CHEAP": "gemini:gemini-3.5-flash-lite", "STRONG": "gemini:gemini-3.8-flash",
             "FALLBACK": "gemini:gemini-3.5-flash"}

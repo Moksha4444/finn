@@ -4,7 +4,7 @@ Every step is per-filing try/except: a failure leaves the item with its raw link
 import sys, json, argparse, datetime as dt
 from finn.config import ROOT, PORTFOLIO, VOLUME_MULTIPLE, EXCESS_MOVE_PCT
 from finn.sources import fetch, bse, nse, screener, prices, pdf
-from finn.push import classify, cards, rank
+from finn.push import classify, cards, rank, headline
 
 OUT = ROOT / "web" / "public" / "data" / "feed.json"
 
@@ -36,8 +36,8 @@ def _card(item: dict, get_pdf) -> None:
         item["card_error"] = _err(e)
 
 
-def ticker(sym: str, start: dt.date, end: dt.date, nifty) -> tuple[list[dict], list[dict], list[dict]]:
-    """(items, alerts, reaction days in window) for one symbol."""
+def ticker(sym: str, start: dt.date, end: dt.date, nifty) -> tuple[list[dict], list[dict], list[dict], dict]:
+    """(items, alerts, reaction days in window, company: name/sector/closes) for one symbol."""
     errors = []
     try:
         co = screener.company(sym)
@@ -67,6 +67,8 @@ def ticker(sym: str, start: dt.date, end: dt.date, nifty) -> tuple[list[dict], l
             "reaction_day": rday.isoformat(), "last_bar": last_bar,
             "reaction": prices.day_stats(h, nifty, rday) if len(h) else None,
         }
+        if item["tier"] in ("P1", "P2") and item["category"] != "results":
+            item["title"] = c.get("headline") or headline.title(row, get_pdf)  # the classifier's LLM headline when it ran
         if item["tier"] == "P1" and item["category"] in ("results", "management_change"):
             if item["category"] == "results" and has_results_card:
                 item["tier"] = "P2"  # same results filed twice (Result + Board Meeting outcome): one card is enough
@@ -86,7 +88,8 @@ def ticker(sym: str, start: dt.date, end: dt.date, nifty) -> tuple[list[dict], l
                            "text": f"{rank.label(i['category'])}: {i['headline'] or i['subject']}"})
     for e in errors:
         alerts.append({"symbol": sym, "date": end.isoformat(), "kind": "error", "text": e})
-    return items, alerts, [{"symbol": sym, **s} for s in window]
+    closes = [[d.isoformat(), round(float(c), 2)] for d, c in h["Close"].items() if d >= start - dt.timedelta(days=31)]
+    return items, alerts, [{"symbol": sym, **s} for s in window], {"name": co["name"], "sector": co.get("sector"), "closes": closes}
 
 
 def main(argv=None):
@@ -99,10 +102,10 @@ def main(argv=None):
     start = end - dt.timedelta(days=a.days)
     nifty = prices.history(prices.NIFTY)
 
-    items, alerts, days, failed = [], [], [], []
+    items, alerts, days, failed, companies = [], [], [], [], {}
     for sym in a.symbols:
         try:
-            i, al, d = ticker(sym, start, end, nifty)
+            i, al, d, companies[sym] = ticker(sym, start, end, nifty)
             items += i; alerts += al; days += d
             print(f"  {sym:<11} {len(i):>3} filings", file=sys.stderr)
         except Exception as e:  # whole ticker failed (BSE + NSE down): say so in the feed
@@ -113,6 +116,7 @@ def main(argv=None):
     alerts.sort(key=lambda x: x["date"], reverse=True)
     feed = {"generated_at": dt.datetime.now(rank.IST).isoformat(timespec="minutes"), "window": [start.isoformat(), end.isoformat()],
             "thresholds": {"volume_multiple": VOLUME_MULTIPLE, "excess_move_pct": EXCESS_MOVE_PCT},
+            "portfolio": a.symbols, "companies": companies,
             "items": items, "alerts": alerts, "days": days, "failed": failed}
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(feed, ensure_ascii=False, indent=1), encoding="utf-8")

@@ -56,6 +56,8 @@ def company(symbol: str) -> dict:
         "name": s.h1.get_text(strip=True) if s.h1 else symbol,
         "bse_code": bse.group(1) if bse else None,
         "basis": basis,
+        # screener's breadcrumb, e.g. "Utilities"; the app tints the company avatar by it
+        "sector": next((a.get_text(strip=True) for a in s.select('a[href^="/market/"]') if a.get("title") == "Broad Sector"), None),
         "quarters": q,
         "concalls": concalls,
         "annual_reports": ars,
