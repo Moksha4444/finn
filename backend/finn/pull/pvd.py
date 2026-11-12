@@ -2,29 +2,39 @@
 1. Pick the 4 latest *results* calls from screener's concall list (it also lists analyst meets and mislabels some).
 2. Cheap model reads each transcript once -> promises (with the target as numbers: low/high, type, fiscal period)
    and numbers management reports as achieved, each with a verbatim quote + page. Extraction only, no maths.
-3. Python decides every promise it can compute: growth or margin targets vs screener's quarterly table
-   (which mirrors the exchange results filings). Finished period -> hit / miss; unfinished -> on track /
-   ahead / behind pace, with the numbers shown. The LLM never does arithmetic.
+3. Python decides every promise it can compute, against one series per metric per company: growth from screener's
+   quarterly table, the margin management itself reports on each call (else computed from the table, labelled), bank
+   CD ratio from the bank's own results filings. Deadline passed -> hit / miss; running -> on track / ahead / behind
+   pace; no deadline -> direction of travel since the promise, with the quarterly path. The LLM never does arithmetic.
 4. Strong model judges only the rest (store counts, CASA, capacity...) from management's later-reported numbers.
+5. Keep 4-6: financial and measured first; soft / operational promises only if something measured them.
 Run from backend/:  ../.venv/Scripts/python -m finn.pull.pvd TCS
 """
 import re, sys, json, hashlib, datetime as dt
 from finn import llm
 from finn.config import ROOT
 from finn.sources import fetch, bse, screener, pdf
+from finn.pull import bank
+from finn.push.headline import _nums
 
 OUT = ROOT / "web" / "public" / "data" / "research"
 QEND = (3, 6, 9, 12)
 MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 # screener rows; banks/NBFCs use Revenue / Financing Profit
 ROWS = {"revenue": ["Sales", "Revenue"], "net_profit": ["Net Profit"]}
-MARGIN = {"operating_margin": [("Operating Profit", "Sales"), ("Financing Profit", "Revenue")],
-          "net_profit": [("Net Profit", "Sales"), ("Net Profit", "Revenue")]}
 SOURCE = "screener.in quarterly results table (from the company's exchange results filings)"
 SAID = "management's statements on later calls (transcripts)"
+SAID_MARGIN = "management's reported margin for each quarter, on that quarter's results call (transcripts)"
+BANK_SOURCE = "the bank's results filings on BSE: statement of assets and liabilities; ratio computed in Python"
 RULE = "python (computed)"
+DIRECTIONAL = ("next_few_quarters", "unspecified", "long_term")  # no deadline: judged by direction of travel
+FINANCIAL = ("revenue", "operating_margin", "net_profit", "capex", "cd_ratio")
+MAX_PROMISES = 6
+# rules before the LLM: measures that are never the company's total revenue / margin / profit, whatever the extractor says
+NOT_TOTAL = re.compile(r"order|inflow|\baum\b|assets under|volume|loan|advances|deposit|\bnov\b|\bgov\b|\bgmv\b|customer|export|payout|disburse|segment", re.I)
+COST = re.compile(r"cost|opex|expense|\bnpa\b|working capital|\bnwc\b|net debt|leverage", re.I)  # lower is better
 
-KEY = {"type": "string", "enum": ["revenue", "operating_margin", "net_profit", "capex", "other"]}
+KEY = {"type": "string", "enum": ["revenue", "operating_margin", "net_profit", "capex", "cd_ratio", "other"]}
 NUM = {"type": "number", "nullable": True}
 INT = {"type": "integer", "nullable": True}
 PROMISE = {"type": "object", "properties": {
@@ -36,19 +46,23 @@ PROMISE = {"type": "object", "properties": {
     "fy": INT, "quarter_no": INT, "half_no": INT,
     "basis": {"type": "string", "enum": ["reported_inr", "constant_currency_or_usd", "not_applicable"]},
     "direction": {"type": "string", "enum": ["at_least", "at_most", "within"]},
-    "margin_basis": {"type": "string", "enum": ["ebitda", "ebit", "net", "unclear", "not_applicable"]}},
+    "margin_basis": {"type": "string", "enum": ["ebitda", "ebit", "net", "unclear", "not_applicable"]}, "company_total": {"type": "boolean"}},
     "required": ["metric", "metric_key", "target", "period", "quote", "page", "target_type", "target_low", "target_high",
-                 "horizon", "fy", "quarter_no", "half_no", "basis", "direction", "margin_basis"]}
+                 "horizon", "fy", "quarter_no", "half_no", "basis", "direction", "margin_basis", "company_total"]}
 REPORTED = {"type": "object", "properties": {
     "metric": {"type": "string"}, "metric_key": KEY, "value": {"type": "string"}, "period": {"type": "string"},
     "quote": {"type": "string"}, "page": {"type": "integer"}}, "required": ["metric", "metric_key", "value", "period", "quote", "page"]}
+QMARGIN = {"type": "object", "nullable": True, "properties": {
+    "name": {"type": "string"}, "basis": {"type": "string", "enum": ["ebit", "ebitda", "nim", "other"]}, "value": {"type": "number"},
+    "quote": {"type": "string"}, "page": {"type": "integer"}}, "required": ["name", "basis", "value", "quote", "page"]}
 GUIDANCE = {"type": "object", "properties": {"promises": {"type": "array", "items": PROMISE},
-                                              "reported": {"type": "array", "items": REPORTED}}, "required": ["promises", "reported"]}
+                                              "reported": {"type": "array", "items": REPORTED}, "quarter_margin": QMARGIN},
+            "required": ["promises", "reported", "quarter_margin"]}
 VERDICT = {"type": "object", "properties": {"verdicts": {"type": "array", "items": {"type": "object", "properties": {
     "id": {"type": "integer"}, "verdict": {"type": "string", "enum": ["hit", "miss", "partial", "not-yet-measurable"]},
     "used_reported": {"type": "array", "items": {"type": "string"}}, "why": {"type": "string"}},
     "required": ["id", "verdict", "used_reported", "why"]}}}, "required": ["verdicts"]}
-VERDICTS = ("hit", "ahead", "on track", "partial", "behind pace", "miss", "not-yet-measurable")
+VERDICTS = ("hit", "ahead", "on track", "moved closer", "partial", "no change", "behind pace", "moved away", "miss", "not-yet-measurable")
 _q = lambda q: dt.datetime.strptime(q, "%b %Y")
 
 
@@ -110,6 +124,18 @@ def transcript(url: str) -> bytes:
     return fetch(url, expect=b"%PDF")
 
 
+def bse_transcript(scrip: str, quarter: str) -> tuple[str, bytes] | None:
+    """The quarter's transcript as filed on BSE ('Earnings Call Transcript'), for when screener's link is a company-site
+    viewer page instead of a PDF (MARUTI). Earliest filing 15-100 days after the quarter end; None if there is none."""
+    qe = bank.quarter_end(quarter)
+    end = min(qe + dt.timedelta(100), dt.date.today())
+    rows = bse.announcements(scrip, qe + dt.timedelta(15), end, max_age=None if end < dt.date.today() else 3600)
+    for r in sorted(rows, key=lambda r: r["NEWS_DT"]):
+        if r.get("ATTACHMENTNAME") and (r["SUBCATNAME"] == "Earnings Call Transcript" or "transcript" in (r["NEWSSUB"] or "").lower()):
+            return bank.VIEWER + r["ATTACHMENTNAME"], bse.attachment(r["ATTACHMENTNAME"])
+    return None
+
+
 # ---- actuals (all maths here) ----
 def _row(quarters: dict, names: list[str]) -> dict[str, float] | None:
     rows = quarters.get("rows", {})
@@ -154,8 +180,8 @@ def describe(acts: list[dict], used: list[str]) -> str | None:
 
 
 def span(p: dict, call_q: str, periods: list[str]) -> tuple[list[str], list[str], str] | None:
-    """(quarters the target covers, of those the ones reported, label). None if the period can't be placed.
-    'Rolling' targets (next few quarters, unspecified) cover the quarters since the call; long-term ones use the latest."""
+    """(quarters the deadline covers, of those the ones reported, period name). None for a target with no deadline
+    (those are judged by direction of travel) or a period nothing has been reported for yet."""
     h, fy = p["horizon"], p.get("fy")
     if h == "next_quarter":
         want = [shift(call_q, 1)]
@@ -165,28 +191,33 @@ def span(p: dict, call_q: str, periods: list[str]) -> tuple[list[str], list[str]
         want = [qlabel(fy, k) for k in ((1, 2) if p["half_no"] == 1 else (3, 4))]
     elif h == "fiscal_year" and fy:
         want = [qlabel(fy, k) for k in (1, 2, 3, 4)]
-    elif h in ("next_few_quarters", "unspecified"):
-        have = [q for q in periods if _q(q) > _q(call_q)]
-        return (have, have, f"Since the {fy_name(call_q)} call ({', '.join(have)})") if have else None
-    elif h == "long_term" and periods:
-        return [periods[-1]], [periods[-1]], f"Latest quarter ({periods[-1]}), against a long-term target"
     else:
         return None
     have = [q for q in want if q in periods]
     if not have:
         return None
     name = f"FY{fy}" if h == "fiscal_year" else f"H{p['half_no']} FY{fy}" if h == "half_year" else fy_name(want[0])
-    if len(have) == len(want):
-        return want, have, f"{name} ({have[0]}{' – ' + have[-1] if len(have) > 1 else ''})"
-    return want, have, f"{name} so far ({len(have)} of {len(want)} quarters: {', '.join(have)})"
+    return want, have, name
+
+
+def _bounds(p: dict) -> tuple[str, float | None, float | None]:
+    lo, hi = p.get("target_low"), p.get("target_high")
+    if lo is not None and hi == lo:
+        hi = None  # "15%" extracted as 15-15
+    d = p.get("direction") or ("within" if lo is not None and hi is not None else "at_least" if lo is not None else "at_most")
+    text = f"{p.get('metric', '')} {p.get('target', '')}"
+    if d == "at_most" and lo is not None and p.get("metric_key") in ("revenue", "operating_margin", "net_profit"):
+        d = "at_least"  # nobody promises a ceiling on their own growth or margin: an extraction slip (L&T "8.5% margin target")
+    elif COST.search(text) and "saving" not in text.lower():
+        d = "at_most"  # a cost band is a ceiling: BAJFINANCE cost of funds 7.41% beats "7.55-7.60%"
+    return ("at_most" if lo is None else d), lo, hi
 
 
 def judge(v: float, p: dict, complete: bool) -> tuple[str, str]:
     """(verdict, goal text) for a measured value against the target's bounds and direction. Finished period -> hit/miss;
     running period -> ahead / on track / behind pace."""
-    lo, hi = p.get("target_low"), p.get("target_high")
-    d = p.get("direction") or ("within" if lo is not None and hi is not None else "at_least" if lo is not None else "at_most")
-    if d == "at_most" or lo is None:
+    d, lo, hi = _bounds(p)
+    if d == "at_most":
         lim = hi if hi is not None else lo
         good, ahead, goal = v <= lim, False, f"≤{lim:g}%"
     elif d == "within" and hi is not None:
@@ -198,44 +229,117 @@ def judge(v: float, p: dict, complete: bool) -> tuple[str, str]:
     return ("ahead" if ahead else "on track" if good else "behind pace"), goal
 
 
-def progress(p: dict, call_q: str, quarters: dict) -> dict | None:
-    """Python verdict for a growth or margin target the quarterly table can measure; None otherwise."""
-    lo, hi = p.get("target_low"), p.get("target_high")
-    if (lo is None and hi is None) or p.get("basis") == "constant_currency_or_usd" or re.search(r"qoq|sequential|quarter-on-quarter", p["target"], re.I):
-        return None  # ₹ figures can't check a constant-currency or sequential target
-    s = span(p, call_q, quarters.get("periods", []))
-    if not s:
+def gap(v: float, p: dict) -> float:
+    """How far v is outside the target, in points (0 = met). Same bounds as judge()."""
+    d, lo, hi = _bounds(p)
+    if d == "at_most":
+        return max(0.0, v - (hi if hi is not None else lo))
+    if d == "within" and hi is not None:
+        return max(0.0, lo - v, v - hi)
+    return max(0.0, lo - v)
+
+
+# ---- one series per metric per company (user's rule: one definition, the company's own where it reports one) ----
+def company_margin(quarters: dict, reported: dict[str, dict], call_qs: list[str], ebit: bool) -> dict | None:
+    """The margin every margin promise of this company is judged on. Management's own reported margin when every
+    call states it on one basis (TCS reports an EBIT 'operating margin'); otherwise computed from the results table,
+    labelled. Lenders' margin is NIM, which the table can't compute: reported or nothing."""
+    sales = _row(quarters, ["Sales"])
+    if call_qs and all(q in reported for q in call_qs) and len({reported[q]["basis"] for q in call_qs}) == 1:
+        r0 = reported[call_qs[0]]
+        return {"q": {q: reported[q]["value"] for q in call_qs}, "w": sales or {}, "name": f"{r0['name'][:1].upper()}{r0['name'][1:]} (as reported)",
+                "source": SAID_MARGIN, "cites": {q: {"label": f"{fy_name(q)} call, p.{reported[q]['page']}: “{reported[q]['quote']}”",
+                                                     "url": reported[q]["transcript"]} for q in call_qs}}
+    op = _row(quarters, ["Operating Profit"])
+    if not sales or not op:
         return None
-    want, have, label = s
-    if p["target_type"] == "growth_pct" and p["metric_key"] in ROWS:
-        row = _row(quarters, ROWS[p["metric_key"]])
-        prev = [row.get(shift(q, -4)) for q in have] if row else []
-        if not row or None in prev or not sum(prev):
+    if ebit:
+        dep = _row(quarters, ["Depreciation"]) or {}
+        op = {q: v - dep[q] for q, v in op.items() if q in dep}
+    return {"q": {q: v / sales[q] * 100 for q, v in op.items() if sales.get(q)}, "w": sales,
+            "name": "EBIT margin (computed: operating profit less depreciation, over sales)" if ebit else "EBITDA margin (computed: operating profit over sales)",
+            "source": SOURCE, "cites": {}}
+
+
+def series(p: dict, quarters: dict, margin: dict | None = None, bank=None) -> dict | None:
+    """{q: {quarter: value}, agg(quarters) -> value over a period, name, source, cites, kind} for this promise, or None."""
+    key, tt = p["metric_key"], p["target_type"]
+    if key != "cd_ratio" and (not p.get("company_total") or NOT_TOTAL.search(f"{p['metric']} {p['target']}")):
+        return None  # a segment's margin or order inflow can't be measured with company totals (POLYCAB FMEG, L&T orders)
+    if key == "cd_ratio" and bank:
+        b = bank(p["said_in"])
+        if not b:
             return None
-        v = (sum(row[q] for q in have) / sum(prev) - 1) * 100
-        what = f"{'Revenue' if p['metric_key'] == 'revenue' else 'Net profit'} {v:+.1f}% YoY"
-    elif p["target_type"] == "margin_pct" and p["metric_key"] in MARGIN:
-        # basis matters: IT services guide on EBIT margin, most others on EBITDA; screener's Operating Profit is pre-depreciation
-        net = p["metric_key"] == "net_profit" or p.get("margin_basis") == "net"
-        pair = next(((n, d) for n, d in MARGIN["net_profit" if net else "operating_margin"] if _row(quarters, [n]) and _row(quarters, [d])), None)
-        if not pair:
+        return {"q": {k: v["cd_ratio"] for k, v in b.items()}, "kind": "level", "agg": None, "name": "CD ratio (advances / deposits)",
+                "source": BANK_SOURCE, "cites": {k: {
+                    "label": f"{fy_name(k)} results filing, p.{v['page']} ({v['basis']} balance sheet): advances {v['advances']:,.2f} / deposits {v['deposits']:,.2f} ({v['unit']})",
+                    "url": v["url"]} for k, v in b.items()}}
+    if tt == "growth_pct" and key in ROWS:
+        row = _row(quarters, ROWS[key])
+        if not row:
             return None
-        num, den = _row(quarters, [pair[0]]), _row(quarters, [pair[1]])
-        name = "Net margin" if net else "Financing margin" if pair[0] == "Financing Profit" else "EBITDA margin"
-        if p.get("margin_basis") == "ebit" and not net and pair[0] == "Operating Profit":
-            dep = _row(quarters, ["Depreciation"]) or {}
-            num = {q: v - dep[q] for q, v in num.items() if q in dep}
-            name = "EBIT margin (operating profit less depreciation)"
-        if any(q not in num or q not in den for q in have):
+        def agg(have):  # growth over a period = summed quarters vs the same quarters a year earlier
+            prev = [row.get(shift(q, -4)) for q in have]
+            return None if None in prev or not sum(prev) else (sum(row[q] for q in have) / sum(prev) - 1) * 100
+        return {"q": {q: (v / row[shift(q, -4)] - 1) * 100 for q, v in row.items() if row.get(shift(q, -4))}, "kind": "growth", "agg": agg,
+                "name": f"{'Revenue' if key == 'revenue' else 'Net profit'} growth YoY", "source": SOURCE, "cites": {}}
+    if tt == "margin_pct" and key in ("operating_margin", "net_profit"):
+        if key == "net_profit" or p.get("margin_basis") == "net":
+            net, den = _row(quarters, ["Net Profit"]), _row(quarters, ["Sales"]) or _row(quarters, ["Revenue"])
+            m = net and den and {"q": {q: v / den[q] * 100 for q, v in net.items() if den.get(q)}, "w": den,
+                                 "name": "Net margin (computed: net profit over revenue)", "source": SOURCE, "cites": {}}
+        else:
+            m = margin
+        if not m:
             return None
-        v = sum(num[q] for q in have) / sum(den[q] for q in have) * 100  # revenue-weighted, not an average of %s
-        what = f"{name} {v:.1f}%"
+        def agg(have):  # revenue-weighted, not an average of percentages
+            if len(have) == 1:
+                return m["q"][have[0]]
+            w = m["w"]
+            return None if any(not w.get(q) for q in have) else sum(m["q"][q] * w[q] for q in have) / sum(w[q] for q in have)
+        return m | {"kind": "margin", "agg": agg}
+    return None
+
+
+def progress(p: dict, call_q: str, s: dict | None) -> dict | None:
+    """Python verdict for a numeric target against the company's series; None if it can't be computed.
+    Deadline passed -> hit / miss; deadline running -> ahead / on track / behind pace; no deadline -> direction of
+    travel since the promise (hit / moved closer / no change / moved away). Always shows the quarterly path."""
+    if not s or (p.get("target_low") is None and p.get("target_high") is None) or p.get("basis") == "constant_currency_or_usd" \
+            or re.search(r"qoq|sequential|quarter-on-quarter|bps|basis point", p["target"], re.I):
+        return None  # ₹ figures can't check a constant-currency or sequential target; "150-200 bps" is a change, not a level
+    vals = s["q"]
+    pts = [q for q in sorted(vals, key=_q) if _q(q) >= _q(call_q)]
+    fmt = (lambda v: f"{v:+.1f}%") if s["kind"] == "growth" else (lambda v: f"{v:.1f}%")
+    path = f"{' → '.join(fmt(vals[q]) for q in pts)} ({fy_name(pts[0])} → {fy_name(pts[-1])})" if len(pts) > 1 else None
+    out = {"path": path, "actual_source": s["source"], "model": RULE, "cites": [s["cites"][q] for q in pts if q in s["cites"]]}
+    if p["horizon"] in DIRECTIONAL or not p.get("fy") and p["horizon"] in ("quarter", "half_year", "fiscal_year"):  # no year stated = no deadline
+        if len(pts) < 2:
+            return None
+        g0, g1 = gap(vals[pts[0]], p), gap(vals[pts[-1]], p)
+        verdict = "hit" if g1 == 0 else "moved closer" if g1 < g0 - 0.05 else "moved away" if g1 > g0 + 0.05 else "no change"
+        _, goal = judge(vals[pts[-1]], p, True)
+        lead = {"hit": "At target", "moved closer": "Moved closer", "moved away": "Moved away", "no change": "No change"}[verdict]
+        return out | {"verdict": verdict, "actual": f"{lead}: {path} vs target {goal} · {s['name']}",
+                      "why": f"No deadline, so judged by direction since the {fy_name(call_q)} call; computed in Python."}
+    sp = span(p, call_q, list(vals))
+    if not sp:
+        return None
+    want, have, name = sp
+    if s["kind"] == "level":  # a ratio target is about its level at the period end, not a sum of quarters
+        complete = want[-1] in vals
+        at = want[-1] if complete else have[-1]
+        v, label = vals[at], f"{name} {'end' if complete else 'running, latest'} ({at})"
     else:
-        return None
-    complete = len(have) == len(want) and p["horizon"] not in ("next_few_quarters", "unspecified", "long_term")
+        complete = len(have) == len(want)
+        v = s["agg"](have)
+        if v is None:
+            return None
+        label = f"{name} ({have[0]}{' – ' + have[-1] if len(have) > 1 else ''})" if complete else \
+            f"{name} so far ({len(have)} of {len(want)} quarters: {', '.join(have)})"
     verdict, goal = judge(v, p, complete)
-    return {"verdict": verdict, "actual": f"{label}: {what} vs target {goal}", "actual_source": SOURCE, "model": RULE,
-            "why": f"{what} against {goal}{'' if len(have) == len(want) else ' with the period still running'}; computed in Python."}
+    return out | {"verdict": verdict, "actual": f"{label}: {s['name']} {fmt(v)} vs target {goal}",
+                  "why": f"{fmt(v)} against {goal}{'' if complete else ' with the period still running'}; computed in Python."}
 
 
 # ---- later statements as evidence for what the table can't measure ----
@@ -264,22 +368,77 @@ def evidence(p: dict, reported: list[dict], used: list[str]) -> list[str]:
 
 
 def dedupe(promises: list[dict]) -> list[dict]:
-    """Management repeats a target within one call (opening remarks, then Q&A): keep the first mention."""
+    """Management repeats a target within a call (remarks, then Q&A) and across calls: keep the oldest mention,
+    which has the longest track record. Matched on the extracted numbers, not the wording ("$5 billion by FY31" =
+    "$5 billion by March 2031"). A target with no number is only deduped within its own call."""
     seen, out = set(), []
-    for p in promises:
-        k = (p["said_in"], p["metric_key"], re.sub(r"[^0-9%]", "", p["target"]) or p["target"].lower())
+    for p in sorted(promises, key=lambda p: _q(p["said_in"])):  # stable: within a call the first mention wins
+        lo, hi = p.get("target_low"), p.get("target_high")
+        k = (p["metric_key"], lo, hi, p.get("fy")) if lo is not None or hi is not None else (p["said_in"], p["metric_key"], p["target"].lower())
         if k not in seen:
             seen.add(k)
             out.append(p)
     return out
 
 
+def select(promises: list[dict], judged: dict[int, dict], n: int = MAX_PROMISES) -> list[int]:
+    """User's rule: financial, checkable promises first; a soft or operational one stays only if something measured it.
+    Measured before unmeasured, financial before operational, oldest first; at most n."""
+    fin = lambda p: p["metric_key"] in FINANCIAL or p["target_type"] in ("growth_pct", "margin_pct", "amount")
+    nym = lambda k: judged.get(k, {}).get("verdict", "not-yet-measurable") == "not-yet-measurable"
+    keep = [k for k, p in enumerate(promises) if fin(p) or not nym(k)]
+    return sorted(keep, key=lambda k: (nym(k), not fin(promises[k]), _q(promises[k]["said_in"])))[:n]
+
+
+def period_end(p: dict) -> str | None:
+    """Last quarter of a promise's deadline, if it has one."""
+    fy, h = p.get("fy"), p["horizon"]
+    if h == "next_quarter":
+        return shift(p["said_in"], 1)
+    if not fy:
+        return None
+    return {"fiscal_year": qlabel(fy, 4), "half_year": p.get("half_no") in (1, 2) and qlabel(fy, 2 * p["half_no"]),
+            "quarter": p.get("quarter_no") in (1, 2, 3, 4) and qlabel(fy, p["quarter_no"])}.get(h) or None
+
+
+def model_check(verdict: str, why: str, p: dict, said: list[str], latest: str | None) -> str | None:
+    """Why a model verdict can't be shown (None = fine). Every number in its reason must be in the evidence or the
+    promise (no invented or computed numbers: DIXON's "21,794 crore"); a miss needs the period to have ended."""
+    body = re.sub(r"[,\s]", "", " ".join(said) + p["target"] + p["quote"] + p["period"])
+    clean = re.sub(r"\b(?:R|FY|Q|H)\s?'?\d+\b", "", why)  # evidence ids and period names aren't claims
+    if any(x not in body for x in _nums(clean)):
+        return "The model's reason used a number that is not in the evidence."
+    end = period_end(p)
+    if verdict == "miss" and end and latest and _q(end) > _q(latest):
+        return f"The period runs to {end}; a part-period number can't be a miss yet."
+    return None
+
+
+def _margin_ok(m: dict | None, n_pages: int) -> bool:
+    """A reported margin counts only if its number is in its own quote and the page exists."""
+    return bool(m and 1 <= m["page"] <= n_pages and any(abs(float(x) - m["value"]) < 1e-9 for x in re.findall(r"\d+(?:\.\d+)?", m["quote"])))
+
+
 def run(symbol: str) -> dict:
     co = screener.company(symbol)
-    calls = results_calls(co["concalls"])
-    promises, reported = [], []
-    for c in calls:
-        b = transcript(c["transcript"])
+    calls, skipped = [], []
+    promises, reported, margins = [], [], {}
+    for c in results_calls(co["concalls"], n=6):
+        if len(calls) == 4:
+            break
+        try:  # a dead link (MARUTI's company-site viewer page): try the BSE filing, else skip that call, not the company
+            b = transcript(c["transcript"])
+        except Exception as e:
+            try:
+                alt = co.get("bse_code") and bse_transcript(co["bse_code"], c["quarter"])
+            except Exception:
+                alt = None
+            if not alt:
+                skipped.append({"call": fy_name(c["quarter"]), "transcript": c["transcript"], "error": f"{type(e).__name__}: {str(e)[:80]}"})
+                continue
+            c = c | {"transcript": alt[0]}
+            b = alt[1]
+        calls.append(c)
         texts = pdf.pages(pdf.open_pdf(b))
         context = f"This call discusses results for {fy_name(c['quarter'])}, the quarter ended {c['quarter']}."
         r = llm.run("extract_guidance", "extract_guidance", [context, pdf.marked_text(texts, list(range(len(texts))))], GUIDANCE,
@@ -294,11 +453,27 @@ def run(symbol: str) -> dict:
         for x in r["data"]["reported"]:
             if x["page"]:  # uncitable statements can't be evidence
                 reported.append(x | {"id": f"R{len(reported) + 1}", "said_in": c["quarter"]})
+        if _margin_ok(m := r["data"].get("quarter_margin"), len(texts)):
+            margins[c["quarter"]] = m | {"transcript": c["transcript"]}
 
     promises = dedupe(promises)
     quarters = co["quarters"]
     latest = quarters["periods"][-1] if quarters["periods"] else None
-    judged: dict[int, dict] = {k: v for k, p in enumerate(promises) if (v := progress(p, p["said_in"], quarters))}
+    ebit = any(m["basis"] == "ebit" for m in margins.values()) or any(p.get("margin_basis") == "ebit" for p in promises)
+    margin = company_margin(quarters, margins, [c["quarter"] for c in calls], ebit)
+    sheets: dict[str, dict | None] = {}
+
+    def bank_q(since: str) -> dict:
+        """CD ratio per quarter from the call that made the promise to the latest results (cached per company)."""
+        if not co.get("bse_code"):
+            return {}
+        for q in quarters["periods"]:
+            if _q(q) >= _q(since) and q not in sheets:
+                sheets[q] = bank.balance_sheet(co["bse_code"], q, symbol)
+        return {q: v for q, v in sheets.items() if v and _q(q) >= _q(since)}
+
+    judged: dict[int, dict] = {k: v for k, p in enumerate(promises)
+                               if (v := progress(p, p["said_in"], series(p, quarters, margin, bank_q)))}
 
     # the rest go to the strong model, a few promises per call (Groq free tier: 8k tokens a minute)
     todo = [k for k in range(len(promises)) if k not in judged]
@@ -314,7 +489,8 @@ def run(symbol: str) -> dict:
         for k in batch:
             p = promises[k]
             p["eligible_reported"] = [x["id"] for x in later if _q(x["said_in"]) > _q(p["said_in"])]
-            payload["promises"].append({"id": k, **{f: p[f] for f in ("metric", "target", "period", "quote", "eligible_reported")},
+            payload["promises"].append({"id": k, **{f: p[f] for f in ("metric", "target", "period", "quote", "eligible_reported", "target_low", "target_high")},
+                                        "direction": _bounds(p)[0],
                                         "said_in": fy_name(p["said_in"]), "actuals": actuals(quarters, p["metric_key"], p["said_in"])})
         if not later and not any(q["actuals"] for q in payload["promises"]):
             continue  # nothing to judge with: not-yet-measurable without spending a call
@@ -325,24 +501,31 @@ def run(symbol: str) -> dict:
             if x["id"] not in batch:
                 continue
             p = promises[x["id"]]
-            used = [i for i in x.get("used_reported", []) if i in p["eligible_reported"]]
+            # evidence must be about the same metric: a net margin can't measure an operating-margin promise
+            same = lambda i: p["metric_key"] == by_id[i]["metric_key"] or "other" in (p["metric_key"], by_id[i]["metric_key"])
+            used = [i for i in x.get("used_reported", []) if i in p["eligible_reported"] and same(i)]
             said = evidence(p, reported, used)
             j = {"verdict": x["verdict"] if said else "not-yet-measurable",  # no shown evidence, no verdict
                  "actual": "; ".join(said) or "not disclosed", "actual_source": SAID if said else None, "model": v["model"], "why": x["why"]}
             if said and (paced := pace_reported(p, [by_id[i] for i in used], latest)):
                 j |= paced | {"model": f"{v['model']} picked the evidence; {RULE}"}
+            elif said and (bad := model_check(j["verdict"], j["why"], p, said, latest)):
+                j |= {"verdict": "not-yet-measurable", "why": bad}
             judged[x["id"]] = j
 
     rows = []
-    for k, p in enumerate(promises):
-        j = judged.get(k, {"verdict": "not-yet-measurable", "actual": "not disclosed", "actual_source": None, "model": None,
-                           "why": "No reported number yet measures this promise."})
+    for k in select(promises, judged):
+        p = promises[k]
+        j = {"path": None, "cites": []} | judged.get(k, {"verdict": "not-yet-measurable", "actual": "not disclosed", "actual_source": None, "model": None,
+                                                         "why": "No reported number yet measures this promise."})
         rows.append({"metric": p["metric"], "target": p["target"], "period": p["period"], "said_in": p["said_in"],
                      "call": fy_name(p["said_in"]), "quote": p["quote"], "page": p["page"], "transcript": p["transcript"], **j})
     rows.sort(key=lambda r: (VERDICTS.index(r["verdict"]) == len(VERDICTS) - 1, _q(r["said_in"])))  # measurable first, oldest first
     score = {s: sum(r["verdict"] == s for r in rows) for s in VERDICTS}
     out = {"symbol": symbol.upper(), "name": co["name"], "generated_at": dt.datetime.now().isoformat(timespec="minutes"),
            "latest_quarter": latest, "calls": [{"quarter": c["quarter"], "call": fy_name(c["quarter"]), "transcript": c["transcript"]} for c in calls],
+           "skipped_calls": skipped,
+           "margin_definition": margin and {"name": margin["name"], "source": margin["source"]},
            "model_note": "; ".join(sorted(notes)) or None, "score": score, "promises": rows}
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / f"{symbol.upper()}.json").write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -360,6 +543,8 @@ def main(argv=None):
             print(f"\n  PROMISE  {r['metric']} → {r['target']} ({r['period']})")
             print(f"           “{r['quote']}” — {r['call']} call, p.{r['page']}")
             print(f"  ACTUAL   {r['actual']}")
+            for c in r["cites"]:
+                print(f"           [{c['label']}]")
             print(f"  VERDICT  {r['verdict'].upper()} · {r['why']}" + (f" [{r['model']}]" if r["model"] else ""))
 
 

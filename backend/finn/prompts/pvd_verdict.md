@@ -3,7 +3,7 @@ You judge whether an Indian listed company's management delivered on promises ma
 You get JSON:
 - `latest_quarter`: the latest quarter with reported results.
 - `reported`: numbers management stated as achieved on later calls, each with an `id` like "R4", the call it was said on (`said_in`, e.g. "Q2 FY27"), the `value` exactly as stated and a verbatim `quote`.
-- `promises`: each has an `id`, what was promised (`metric`, `target`, `period`, `quote`), the call it was made on (`said_in`), `actuals` (reported quarterly figures after that call, in ₹ crore or % for margins, with `yoy_pct` / `qoq_pct` / `*_pp` already computed), and `eligible_reported`: the ids of `reported` entries said after this promise. Only those may be used for it.
+- `promises`: each has an `id`, what was promised (`metric`, `target`, `period`, `quote`), its bounds (`target_low`, `target_high`) and `direction` (at_least: higher is better; at_most: lower is better, e.g. cost of funds 7.31% beats a 7.55-7.60% target; within: inside the band), the call it was made on (`said_in`), `actuals` (reported quarterly figures after that call, in ₹ crore or % for margins, with `yoy_pct` / `qoq_pct` / `*_pp` already computed), and `eligible_reported`: the ids of `reported` entries said after this promise. Only those may be used for it.
 
 For each promise:
 1. Find the evidence first. Look through `reported` for statements about the same thing, even when worded differently: "LDR" is the loan-to-deposit ratio, "CASA" is current and savings accounts, "advances" are loans. Put the ids you rely on in `used_reported` (only ids from that promise's `eligible_reported`; newest first).

@@ -54,11 +54,16 @@ def test_transcript_fixtures_have_page_markers(name):
     assert "quarter" in marked.lower()
 
 
-def test_dedupe_keeps_first_mention_of_a_repeated_target():
-    ps = [{"said_in": "Sep 2026", "metric_key": "operating_margin", "target": "26% to 28%", "page": 14},
-          {"said_in": "Sep 2026", "metric_key": "operating_margin", "target": "26%-28%", "page": 26},
-          {"said_in": "Jun 2026", "metric_key": "operating_margin", "target": "26%-28%", "page": 9}]
-    assert [p["page"] for p in pvd.dedupe(ps)] == [14, 9]  # same call repeats dropped; another call's mention kept
+def test_dedupe_keeps_oldest_mention_across_calls():
+    band = {"metric_key": "operating_margin", "target_low": 26, "target_high": 28, "fy": None}
+    ps = [band | {"said_in": "Sep 2026", "target": "26% to 28%", "page": 14},
+          band | {"said_in": "Sep 2026", "target": "26%-28%", "page": 26},
+          band | {"said_in": "Jun 2026", "target": "26%-28%", "page": 9},
+          {"said_in": "Sep 2026", "metric_key": "other", "target": "more digital deals", "page": 3},
+          # PERSISTENT: the same target worded two ways on one call
+          {"said_in": "Sep 2026", "metric_key": "revenue", "target": "$5 billion in annual revenue by FY31", "target_low": 5, "target_high": None, "fy": 31, "page": 4},
+          {"said_in": "Sep 2026", "metric_key": "revenue", "target": "$5 billion by March 2031", "target_low": 5, "target_high": None, "fy": 31, "page": 12}]
+    assert [p["page"] for p in pvd.dedupe(ps)] == [9, 3, 4]  # the Jun 2026 call's mention has the longest track record
 
 
 def test_evidence_only_from_later_calls_and_built_by_python():
@@ -77,36 +82,127 @@ def test_fiscal_quarters():
 
 Q = {"periods": ["Jun 2025", "Sep 2025", "Dec 2025", "Mar 2026", "Jun 2026", "Sep 2026"],
      "rows": {"Sales": [100, 100, 100, 100, 108, 112], "Operating Profit": [24, 25, 25, 25, 27, 29.12]}}
-P = lambda **k: {"metric": "m", "target": "t", "basis": "reported_inr", "fy": None, "quarter_no": None, "half_no": None, "target_high": None} | k
+P = lambda **k: {"metric": "m", "target": "t", "basis": "reported_inr", "fy": None, "quarter_no": None, "half_no": None, "target_high": None,
+                 "said_in": "Mar 2026", "margin_basis": "ebitda", "company_total": True} | k
+
+
+def prog(p, call_q, q=Q, margin=None, bank=None):
+    m = margin or pvd.company_margin(q, {}, [], p.get("margin_basis") == "ebit")
+    return pvd.progress(p, call_q, pvd.series(p, q, m, bank))
 
 
 def test_full_year_growth_in_progress_is_paced_not_judged():
     # "double-digit growth in FY27" said on the Q4 FY26 call; H1 FY27 is in: (108+112)/(100+100) -> +10.0%
-    r = pvd.progress(P(metric_key="revenue", target_type="growth_pct", target_low=10, horizon="fiscal_year", fy=27), "Mar 2026", Q)
-    assert r["verdict"] == "on track" and "FY27 so far (2 of 4 quarters" in r["actual"] and "+10.0% YoY" in r["actual"]
-    r = pvd.progress(P(metric_key="revenue", target_type="growth_pct", target_low=12, horizon="fiscal_year", fy=27), "Mar 2026", Q)
+    r = prog(P(metric_key="revenue", target_type="growth_pct", target_low=10, horizon="fiscal_year", fy=27), "Mar 2026")
+    assert r["verdict"] == "on track" and "FY27 so far (2 of 4 quarters" in r["actual"] and "+10.0%" in r["actual"]
+    r = prog(P(metric_key="revenue", target_type="growth_pct", target_low=12, horizon="fiscal_year", fy=27), "Mar 2026")
     assert r["verdict"] == "behind pace"
 
 
 def test_finished_period_is_hit_or_miss_and_margins_are_revenue_weighted():
     # H1 FY27 margin = (27 + 29.12) / (108 + 112) = 25.5%
-    r = pvd.progress(P(metric_key="operating_margin", target_type="margin_pct", target_low=25, target_high=27, horizon="half_year", fy=27, half_no=1), "Mar 2026", Q)
-    assert r["verdict"] == "hit" and "EBITDA margin 25.5%" in r["actual"] and "25–27%" in r["actual"]
+    r = prog(P(metric_key="operating_margin", target_type="margin_pct", target_low=25, target_high=27, horizon="half_year", fy=27, half_no=1), "Mar 2026")
+    assert r["verdict"] == "hit" and "EBITDA margin (computed" in r["actual"] and "25.5% vs target 25–27%" in r["actual"]
     # "27% next quarter" said on the Q1 FY27 call; Q2 FY27 came in at 29.12 / 112 = 26.0%
-    r = pvd.progress(P(metric_key="operating_margin", target_type="margin_pct", target_low=27, horizon="next_quarter"), "Jun 2026", Q)
+    r = prog(P(metric_key="operating_margin", target_type="margin_pct", target_low=27, horizon="next_quarter"), "Jun 2026")
     assert r["verdict"] == "miss" and "Q2 FY27 (Sep 2026)" in r["actual"]
 
 
 def test_cannot_compute_returns_none():
-    assert pvd.progress(P(metric_key="revenue", target_type="growth_pct", target_low=10, horizon="fiscal_year", fy=27, basis="constant_currency_or_usd"), "Mar 2026", Q) is None
-    assert pvd.progress(P(metric_key="other", target_type="count", target_low=200, horizon="fiscal_year", fy=27), "Mar 2026", Q) is None
-    assert pvd.progress(P(metric_key="revenue", target_type="growth_pct", target_low=10, horizon="fiscal_year", fy=28), "Mar 2026", Q) is None  # nothing reported yet
+    assert prog(P(metric_key="revenue", target_type="growth_pct", target_low=10, horizon="fiscal_year", fy=27, basis="constant_currency_or_usd"), "Mar 2026") is None
+    assert prog(P(metric_key="other", target_type="count", target_low=200, horizon="fiscal_year", fy=27), "Mar 2026") is None
+    assert prog(P(metric_key="revenue", target_type="growth_pct", target_low=10, horizon="fiscal_year", fy=28), "Mar 2026") is None  # nothing reported yet
+    # POLYCAB "8-10% EBITDA margin by FY30" is the FMEG segment's: company totals can't measure it
+    assert prog(P(metric_key="operating_margin", target_type="margin_pct", target_low=8, target_high=10, horizon="long_term", company_total=False), "Mar 2026") is None
+    # TCS "wage hike impact of 150 to 200 basis points": a margin change, never compared with a margin level
+    assert prog(P(metric_key="operating_margin", target_type="margin_pct", target="150 to 200 basis points", target_low=1.5, target_high=2, horizon="next_quarter"), "Mar 2026") is None
 
 
-def test_ebit_basis_subtracts_depreciation():
-    q = {"periods": ["Sep 2025", "Sep 2026"], "rows": {"Sales": [100, 100], "Operating Profit": [28, 28], "Depreciation": [2, 2.5]}}
-    r = pvd.progress(P(metric_key="operating_margin", target_type="margin_pct", target_low=25, horizon="long_term", margin_basis="ebit", direction="at_least"), "Jun 2026", q)
-    assert "EBIT margin (operating profit less depreciation) 25.5%" in r["actual"] and r["verdict"] == "on track"
+def test_no_deadline_is_direction_of_travel_on_computed_ebit():
+    # "inch closer to 26-28%", no date. EBIT = operating profit - depreciation: 26.0% at the call, 25.5% now
+    q = {"periods": ["Jun 2026", "Sep 2026"], "rows": {"Sales": [100, 100], "Operating Profit": [28, 28], "Depreciation": [2, 2.5]}}
+    r = prog(P(metric_key="operating_margin", target_type="margin_pct", target_low=26, target_high=28, horizon="next_few_quarters",
+               margin_basis="ebit", direction="at_least"), "Jun 2026", q)
+    assert r["verdict"] == "moved away" and r["path"] == "26.0% → 25.5% (Q1 FY27 → Q2 FY27)"
+    assert "EBIT margin (computed: operating profit less depreciation" in r["actual"]
+
+
+REPORTED_MARGINS = {q: {"name": "operating margin", "basis": "ebit", "value": v, "page": 3, "quote": f"operating margin of {v}%", "transcript": "t.pdf"}
+                    for q, v in [("Dec 2025", 25.2), ("Mar 2026", 24.9), ("Jun 2026", 24.6), ("Sep 2026", 24.3)]}
+
+
+def test_company_reported_margin_wins_and_shows_the_quarterly_path():
+    calls = list(REPORTED_MARGINS)
+    m = pvd.company_margin(Q, REPORTED_MARGINS, calls, ebit=True)
+    assert m["name"] == "Operating margin (as reported)" and m["source"] == pvd.SAID_MARGIN
+    r = prog(P(metric_key="operating_margin", target_type="margin_pct", target_low=26, target_high=28, horizon="long_term", direction="at_least"),
+             "Mar 2026", margin=m)
+    assert r["verdict"] == "moved away" and r["actual"].startswith("Moved away: 24.9% → 24.6% → 24.3% (Q4 FY26 → Q2 FY27) vs target 26–28%")
+    assert len(r["cites"]) == 3 and r["cites"][0]["label"] == "Q4 FY26 call, p.3: “operating margin of 24.9%”"
+    # one call without a stated margin: the whole company falls back to the computed definition (never mixed)
+    gap = {q: v for q, v in REPORTED_MARGINS.items() if q != "Jun 2026"}
+    assert pvd.company_margin(Q, gap, calls, ebit=False)["name"].startswith("EBITDA margin (computed")
+
+
+def test_directional_moving_closer_and_reaching_the_target():
+    m = {"q": {"Mar 2026": 24.0, "Jun 2026": 24.8, "Sep 2026": 26.1}, "w": {}, "name": "x", "source": "s", "cites": {}}
+    p = P(metric_key="operating_margin", target_type="margin_pct", target_low=26, horizon="unspecified", direction="at_least")
+    assert prog(p, "Mar 2026", margin=m)["verdict"] == "hit"
+    m["q"]["Sep 2026"] = 25.0
+    assert prog(p, "Mar 2026", margin=m)["verdict"] == "moved closer"
+    # TCS "exit at 25% plus": a fiscal-year target with no year named has no deadline -> direction of travel
+    r = prog(p | {"horizon": "fiscal_year", "fy": None, "target_low": 25}, "Jun 2026", margin=m)
+    assert r["verdict"] == "hit" and r["path"] == "24.8% → 25.0% (Q1 FY27 → Q2 FY27)"
+
+
+CD = {q: {"cd_ratio": v, "deposits": 100.0, "advances": v, "unit": "₹ crore", "basis": "standalone", "page": 5, "url": "u"}
+      for q, v in [("Dec 2025", 98.7), ("Mar 2026", 94.6), ("Jun 2026", 95.8), ("Sep 2026", 96.0)]}
+BANK = lambda since: {q: v for q, v in CD.items() if pvd._q(q) >= pvd._q(since)}
+BQ = {"periods": list(CD), "rows": {"Revenue": [1, 1, 1, 1]}}
+
+
+def test_cd_ratio_from_results_filings_ended_period_is_hit_or_miss():
+    # HDFCBANK, Q3 FY26 call: "CD ratio 90% to 96% in FY26" -> FY26 ended Mar 2026 at 94.6%
+    p = P(metric_key="cd_ratio", target_type="margin_pct", target_low=90, target_high=96, horizon="fiscal_year", fy=26, direction="at_most", said_in="Dec 2025")
+    r = prog(p, "Dec 2025", BQ, bank=BANK)
+    assert r["verdict"] == "hit" and r["actual"].startswith("FY26 end (Mar 2026): CD ratio (advances / deposits) 94.6% vs target ≤96%")
+    assert r["path"] == "98.7% → 94.6% → 95.8% → 96.0% (Q3 FY26 → Q2 FY27)" and r["actual_source"] == pvd.BANK_SOURCE
+    # "85% to 90% for FY27": running, latest Sep 2026 at 96.0%
+    p = p | {"target_low": 85, "target_high": 90, "fy": 27}
+    r = prog(p, "Dec 2025", BQ, bank=BANK)
+    assert r["verdict"] == "behind pace" and "FY27 running, latest (Sep 2026)" in r["actual"]
+
+
+def test_select_keeps_financial_and_measured_drops_soft_unmeasured():
+    ps = [P(metric_key="other", target_type="count", said_in="Dec 2025"),        # soft, unmeasured -> dropped
+          P(metric_key="other", target_type="count", said_in="Mar 2026"),        # operational but measured -> kept
+          P(metric_key="revenue", target_type="growth_pct", said_in="Jun 2026"),  # financial, unmeasured -> kept, last
+          P(metric_key="operating_margin", target_type="margin_pct", said_in="Sep 2026")]
+    judged = {1: {"verdict": "hit"}, 3: {"verdict": "moved away"}}
+    assert pvd.select(ps, judged) == [3, 1, 2]
+    assert len(pvd.select([P(metric_key="revenue", target_type="growth_pct", said_in="Mar 2026")] * 9, {})) == pvd.MAX_PROMISES
+
+
+def test_reported_margin_must_be_in_its_own_quote():
+    m = {"value": 24.6, "page": 3, "quote": "operating margin came in at 24.6%"}
+    assert pvd._margin_ok(m, 10) and not pvd._margin_ok(m | {"value": 25.0}, 10) and not pvd._margin_ok(m, 2)
+
+
+def test_bank_column_date_check():
+    import datetime as dt
+    from finn.pull import bank
+    qe = bank.quarter_end("Dec 2025")
+    assert qe == dt.date(2025, 12, 31)
+    assert bank.same_date("31.12.2025", qe) and bank.same_date("December 31, 2025", qe)
+    assert not bank.same_date("31.03.2025", qe) and not bank.same_date("31.12.2024", qe)
+
+
+def test_bound_slips_are_normalised():
+    # L&T "EBITDA margin target of 8.5%" extracted as 8.5-8.5, at_most: a margin target is a floor, shown as one number
+    p = P(metric_key="operating_margin", target_low=8.5, target_high=8.5, direction="at_most")
+    assert pvd.judge(10.3, p, complete=True) == ("hit", "≥8.5%")
+    # a cost ceiling stays a ceiling
+    assert pvd.judge(7.31, P(metric_key="other", target_low=7.55, target_high=7.6, direction="at_most"), complete=True) == ("hit", "≤7.6%")
 
 
 def test_ceiling_targets_and_bands():
@@ -114,6 +210,7 @@ def test_ceiling_targets_and_bands():
     assert pvd.judge(96, p, complete=False) == ("behind pace", "≤90%")
     assert pvd.judge(88, p, complete=True) == ("hit", "≤90%")
     assert pvd.judge(29, P(target_low=26, target_high=28, direction="at_least"), complete=False)[0] == "ahead"
+    assert pvd.gap(96, p) == 6 and pvd.gap(88, p) == 0 and pvd.gap(25, P(target_low=26, target_high=28, direction="within")) == 1
 
 
 def test_reported_level_is_paced_in_python():
@@ -124,3 +221,35 @@ def test_reported_level_is_paced_in_python():
     r = pvd.pace_reported(p, used, "Sep 2026")
     assert r["verdict"] == "behind pace" and "around 96% (Q2 FY27 call)" in r["why"]
     assert pvd.pace_reported(p, [{"said_in": "Sep 2026", "value": "96% and 98%"}], "Sep 2026") is None  # ambiguous
+
+
+def test_bse_transcript_fallback_picks_the_transcript_filing(monkeypatch):
+    # MARUTI, Q2 FY27: screener links a company-site viewer page; BSE has the transcript under its own subcategory
+    rows = [{"NEWS_DT": "2026-10-27T10:00:00", "SUBCATNAME": "General", "NEWSSUB": "Audio Recording", "ATTACHMENTNAME": "audio.pdf"},
+            {"NEWS_DT": "2026-11-02T10:00:00", "SUBCATNAME": "Earnings Call Transcript", "NEWSSUB": "Announcement under Regulation 30", "ATTACHMENTNAME": "t.pdf"}]
+    monkeypatch.setattr(pvd.bse, "announcements", lambda *a, **k: rows)
+    monkeypatch.setattr(pvd.bse, "attachment", lambda name: b"%PDF " + name.encode())
+    url, b = pvd.bse_transcript("532500", "Sep 2026")
+    assert url.endswith("Pname=t.pdf") and b == b"%PDF t.pdf"
+    monkeypatch.setattr(pvd.bse, "announcements", lambda *a, **k: rows[:1])
+    assert pvd.bse_transcript("532500", "Sep 2026") is None
+
+
+def test_rules_override_the_extractor_on_measure_and_direction():
+    # L&T order inflow / BAJFINANCE AUM marked company_total by the model: never measured with revenue
+    for metric in ("group order inflows growth", "AUM growth"):
+        assert prog(P(metric=metric, metric_key="revenue", target_type="growth_pct", target_low=10, horizon="fiscal_year", fy=27), "Mar 2026") is None
+    # BAJFINANCE cost of funds "7.55% to 7.60%", extracted as a band: lower is better
+    p = P(metric="cost of funds", metric_key="other", target_low=7.55, target_high=7.6, direction="within")
+    assert pvd.judge(7.41, p, complete=True) == ("hit", "≤7.6%")
+
+
+def test_model_verdicts_are_checked_in_python():
+    p = P(target="INR3,500 crores to INR4,000 crores", quote="IT hardware revenue of 3,500 to 4,000 crores", period="next year",
+          horizon="fiscal_year", fy=27, said_in="Dec 2025")
+    said = ["Q2 FY27 call, p.6: “Revenues for the quarter was Rs. 2,160 crores.”"]
+    # DIXON: the reason cites 21,794 crore, which is in no quote
+    assert "not in the evidence" in pvd.model_check("hit", "Sep 2026 IT hardware revenue 21,794 crore exceeds 4,000 crore (R7).", p, said, "Sep 2026")
+    # a quarter's revenue against a full-year amount while FY27 runs: not a miss yet
+    assert "runs to Mar 2027" in pvd.model_check("miss", "R7 shows 2,160 crores, below 3,500 crores.", p, said, "Sep 2026")
+    assert pvd.model_check("partial", "R7 shows 2,160 crores against 3,500 crores in FY27.", p, said, "Sep 2026") is None
