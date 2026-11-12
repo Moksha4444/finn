@@ -30,3 +30,5 @@ def test_one_entry_per_person():
     p = mgmt_card((FIX / "TATAPOWER_mgmt.pdf").read_bytes())["people"]
     assert len(p) == 1 and p[0]["name"].endswith("Sanjay Banga") and p[0]["bio_page"] == 2
     assert "Renewable" in p[0]["bio"]
+    # CEO Designate from 11 Nov 2026, CEO & MD only from 1 May 2027: each role keeps its own date
+    assert "Designate" in p[0]["role"] and "2027" in p[0]["role"] and p[0]["effective"] == "2026-11-11"

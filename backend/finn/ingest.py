@@ -22,7 +22,7 @@ def _pdf(row: dict) -> bytes:
 
 
 def _card(item: dict, get_pdf) -> None:
-    """Adds item['card'] for P1 results / management changes. Results: only if a P&L page is found
+    """Adds item['card'] for P1 results / management changes / fund raises. Results: only if a P&L page is found
     (decks and letters don't get a full-PDF LLM call)."""
     try:
         if item["category"] == "results":
@@ -32,6 +32,8 @@ def _card(item: dict, get_pdf) -> None:
                 item["card"] = {"type": "results", **cards.results_card(cards.extract_results(b))}
         elif item["category"] == "management_change":
             item["card"] = {"type": "management_change", **cards.mgmt_card(get_pdf())}
+        elif item["category"] == "fund_raise":
+            item["card"] = {"type": "fund_raise", **cards.fund_card(get_pdf())}
     except Exception as e:
         item["card_error"] = _err(e)
 
@@ -69,7 +71,7 @@ def ticker(sym: str, start: dt.date, end: dt.date, nifty) -> tuple[list[dict], l
         }
         if item["tier"] in ("P1", "P2") and item["category"] != "results":
             item["title"] = headline.title(row, get_pdf, draft=c.get("headline"))  # reuses the classifier's headline if it passes
-        if item["tier"] == "P1" and item["category"] in ("results", "management_change"):
+        if item["tier"] == "P1" and item["category"] in ("results", "management_change", "fund_raise"):
             if item["category"] == "results" and has_results_card:
                 item["tier"] = "P2"  # same results filed twice (Result + Board Meeting outcome): one card is enough
             else:
@@ -89,7 +91,23 @@ def ticker(sym: str, start: dt.date, end: dt.date, nifty) -> tuple[list[dict], l
     for e in errors:
         alerts.append({"symbol": sym, "date": end.isoformat(), "kind": "error", "text": e})
     closes = [[d.isoformat(), round(float(c), 2)] for d, c in h["Close"].items() if d >= start - dt.timedelta(days=31)]
-    return items, alerts, [{"symbol": sym, **s} for s in window], {"name": co["name"], "sector": co.get("sector"), "closes": closes}
+    return items, alerts, [{"symbol": sym, **s} for s in window], {"name": co["name"], "sector": co.get("sector"), "closes": closes,
+                                                                   "credibility": credibility(sym)}
+
+
+# Credibility chip (user's definition, 13 Nov): only measured promises count. Partial, moved closer and
+# no change are measured but neither kept nor missed, so the chip leaves them to the Research page.
+KEPT, MISSED, OPEN = {"hit", "ahead"}, {"miss", "behind pace", "moved away"}, {"on track"}
+
+
+def credibility(sym: str) -> dict | None:
+    """{kept, missed, open} from the cached PvD JSON; None when there is no PvD or nothing was measurable."""
+    f = OUT.parent / "research" / f"{sym}.json"
+    if not f.exists():
+        return None
+    v = [p["verdict"] for p in json.loads(f.read_text(encoding="utf-8"))["promises"]]
+    c = {"kept": sum(x in KEPT for x in v), "missed": sum(x in MISSED for x in v), "open": sum(x in OPEN for x in v)}
+    return c if any(c.values()) else None
 
 
 def main(argv=None):
@@ -117,6 +135,7 @@ def main(argv=None):
     feed = {"generated_at": dt.datetime.now(rank.IST).isoformat(timespec="minutes"), "window": [start.isoformat(), end.isoformat()],
             "thresholds": {"volume_multiple": VOLUME_MULTIPLE, "excess_move_pct": EXCESS_MOVE_PCT},
             "portfolio": a.symbols, "companies": companies,
+            "nifty": [[d.isoformat(), round(float(c), 2)] for d, c in nifty["Close"].items() if d >= start - dt.timedelta(days=31)],
             "items": items, "alerts": alerts, "days": days, "failed": failed}
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(feed, ensure_ascii=False, indent=1), encoding="utf-8")

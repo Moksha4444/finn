@@ -1,5 +1,5 @@
 """Rich cards. Results: LLM copies numbers from the filing; Python does every calculation."""
-import hashlib
+import hashlib, re
 from finn import llm
 from finn.sources import pdf
 
@@ -125,3 +125,42 @@ def mgmt_card(pdf_bytes: bytes) -> dict:
         if not p.get("bio") and p["change"] in INCOMING:
             p["bio"] = "Profile not in this filing" + (f"; see {p['profile_ref']}" if p.get("profile_ref") else "")
     return {"people": people, "model_note": ex.get("model_note")}
+
+
+FUND_SCHEMA = {"type": "object", "properties": {
+    "instrument": {"type": "string", "enum": ["equity", "warrants", "debt", "other"]},
+    "size_text": _str, "size_page": {"type": "integer", "nullable": True},
+    "units_issued": _str, "shares_before": _str, "shares_after": _str,
+}, "required": ["instrument"]}
+
+
+def _count(s: str | None) -> int | None:
+    d = re.sub(r"[,\s]", "", s or "")
+    return int(d) if d.isdigit() and int(d) > 0 else None
+
+
+def fund_facts(ex: dict, source_text: str) -> dict:
+    """Size in ₹ crore and dilution %, from figures the model copied. Python does the units and the division;
+    a figure whose digits aren't in the filing is dropped (same check as headlines)."""
+    from finn.push.classify import amounts_cr
+    from finn.push.headline import problems
+    ok = lambda s: s and not problems(s, source_text) or None  # problems() also flags >12 words; figures are short
+    size = amounts_cr(ex.get("size_text") or "") if ok(ex.get("size_text")) else []
+    issued = _count(ex.get("units_issued")) if ok(ex.get("units_issued")) else None
+    before = _count(ex.get("shares_before")) if ok(ex.get("shares_before")) else None
+    after = _count(ex.get("shares_after")) if ok(ex.get("shares_after")) else None
+    if after is None and before and issued:
+        after = before + issued
+    dil = round(issued / after * 100, 2) if ex["instrument"] in ("equity", "warrants") and issued and after and issued < after else None
+    return {"instrument": ex["instrument"], "size_cr": round(size[0], 2) if size else None,
+            "size_page": ex.get("size_page") if size else None, "dilution_pct": dil}
+
+
+def fund_card(pdf_bytes: bytes) -> dict:
+    """Fund-raise size and dilution, when the filing states them. First 4 pages (allotment tables sit early)."""
+    doc = pdf.open_pdf(pdf_bytes)
+    idx = list(range(min(4, len(doc))))
+    texts = pdf.pages(doc)
+    key = f"{hashlib.sha256(pdf_bytes).hexdigest()}:{idx}"
+    ex = llm.run("extract_fund_raise", "extract_fund_raise", [pdf.subset(doc, idx)], FUND_SCHEMA, key=key, pages=[i + 1 for i in idx])
+    return {**fund_facts(ex["data"], " ".join(texts[i] for i in idx)), "model_note": ex.get("model_note")}
