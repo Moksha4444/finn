@@ -1,0 +1,116 @@
+{
+ "symbol": "ETERNAL",
+ "name": "Eternal Ltd",
+ "generated_at": "2026-11-12T18:02",
+ "latest_quarter": "Sep 2026",
+ "calls": [
+  {
+   "quarter": "Sep 2026",
+   "call": "Q2 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=64f36e3b-87e9-426e-be3e-515dca4525d2.pdf"
+  },
+  {
+   "quarter": "Jun 2026",
+   "call": "Q1 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=faa4f0f7-06e4-4066-9d68-3da95dfe02d9.pdf"
+  },
+  {
+   "quarter": "Mar 2026",
+   "call": "Q4 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=60af607c-5f1b-4d5d-8425-4929efa6aad1.pdf"
+  },
+  {
+   "quarter": "Dec 2025",
+   "call": "Q3 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=91f3f29f-c5c0-49b5-b425-a22374bf08ad.pdf"
+  }
+ ],
+ "skipped_calls": [],
+ "margin_definition": {
+  "name": "EBITDA margin (computed: operating profit over sales)",
+  "source": "screener.in quarterly results table (from the company's exchange results filings)"
+ },
+ "model_note": null,
+ "score": {
+  "hit": 0,
+  "ahead": 0,
+  "on track": 0,
+  "moved closer": 0,
+  "partial": 0,
+  "no change": 0,
+  "behind pace": 0,
+  "moved away": 0,
+  "miss": 0,
+  "not-yet-measurable": 4
+ },
+ "promises": [
+  {
+   "metric": "going-out NOV guidance",
+   "target": "$3 billion",
+   "period": "FY30",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "You've maintained your $3 billion NOV guidance for going-out in FY30",
+   "page": 5,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=91f3f29f-c5c0-49b5-b425-a22374bf08ad.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No reported USD NOV guidance evidence."
+  },
+  {
+   "metric": "Adjusted EBITDA margin",
+   "target": "5% to 6% of NOV",
+   "period": "long term",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "in the long term, in our letter we have mentioned that our confidence on margins going to 5% to 6% of NOV remains high",
+   "page": 7,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=91f3f29f-c5c0-49b5-b425-a22374bf08ad.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No reported margin evidence."
+  },
+  {
+   "metric": "EBITDA guidance of $1 billion by FY29",
+   "target": "$1 billion by FY29",
+   "period": "FY29",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "overall EBITDA guidance or indication of $1 billion by FY29.",
+   "page": 3,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=60af607c-5f1b-4d5d-8425-4929efa6aad1.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No reported EBITDA guidance evidence."
+  },
+  {
+   "metric": "quick commerce NOV growth CAGR of 60%",
+   "target": "60% CAGR",
+   "period": "three years",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "We've given overall guidance of 60% CAGR",
+   "page": 4,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=60af607c-5f1b-4d5d-8425-4929efa6aad1.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No eligible reported quick commerce CAGR evidence."
+  }
+ ]
+}

@@ -1,0 +1,150 @@
+{
+ "symbol": "TITAN",
+ "name": "Titan Company Ltd",
+ "generated_at": "2026-11-12T18:03",
+ "latest_quarter": "Sep 2026",
+ "calls": [
+  {
+   "quarter": "Sep 2026",
+   "call": "Q2 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=daa6c172-771a-4af5-b4b3-9813fdf7536a.pdf"
+  },
+  {
+   "quarter": "Jun 2026",
+   "call": "Q1 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f70a0a33-43cf-40b6-a753-67b06123e8de.pdf"
+  },
+  {
+   "quarter": "Dec 2025",
+   "call": "Q3 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=0ee5b68b-8f66-4705-9a84-9debaa9aae1d.pdf"
+  },
+  {
+   "quarter": "Sep 2025",
+   "call": "Q2 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c3a5d70a-78ac-4407-aed7-e06b93e17a8f.pdf"
+  }
+ ],
+ "skipped_calls": [],
+ "margin_definition": {
+  "name": "EBIT margin (computed: operating profit less depreciation, over sales)",
+  "source": "screener.in quarterly results table (from the company's exchange results filings)"
+ },
+ "model_note": null,
+ "score": {
+  "hit": 0,
+  "ahead": 0,
+  "on track": 1,
+  "moved closer": 0,
+  "partial": 0,
+  "no change": 0,
+  "behind pace": 0,
+  "moved away": 0,
+  "miss": 0,
+  "not-yet-measurable": 5
+ },
+ "promises": [
+  {
+   "metric": "jewellery business margin center of gravity",
+   "target": "11%",
+   "period": "full year basis",
+   "said_in": "Jun 2026",
+   "call": "Q1 FY27",
+   "quote": "In the Investor Day and prior, we have said that more of 11% being the center of gravity for jewellery business margin, we would be around that plus/minus something can happen.",
+   "page": 5,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f70a0a33-43cf-40b6-a753-67b06123e8de.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "on track",
+   "actual": "Q2 FY27 call, p.3: “And if you normalize for that, then TMZ, which is Titan Jewellery business margin, would be 11.7%.”; Q2 FY27 call, p.3: “Normalized margin, once you do adjustment for this, on Titan Jewellery business would be 11.1%.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b picked the evidence; python (computed)",
+   "why": "Reported 11.7% (Q2 FY27 call) against ≥11%; compared in Python."
+  },
+  {
+   "metric": "watch business margins",
+   "target": "15% to 16%",
+   "period": "1-year, 2-year time frame",
+   "said_in": "Sep 2025",
+   "call": "Q2 FY26",
+   "quote": "On a long term, I would say the kind of investments are required, mid-teen is a good number to aim for, 15% to 16% for the business, at least in the 1-year, 2-year time frame.",
+   "page": 8,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c3a5d70a-78ac-4407-aed7-e06b93e17a8f.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No reported statements on watch business margins."
+  },
+  {
+   "metric": "double-digit healthy growth in value in the jewellery business",
+   "target": "double-digit growth",
+   "period": "FY 30",
+   "said_in": "Jun 2026",
+   "call": "Q1 FY27",
+   "quote": "I think overall, we are committed to -- I'm just reiterating, we are committed to a double-digit healthy growth in value in the jewellery business. So that's the only way we'll get to our committed FY 30 goals that we've said.",
+   "page": 17,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f70a0a33-43cf-40b6-a753-67b06123e8de.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No reported data on jewellery business value growth."
+  },
+  {
+   "metric": "CaratLane EBIT margin",
+   "target": "double-digit EBIT margin",
+   "period": "long term",
+   "said_in": "Jun 2026",
+   "call": "Q1 FY27",
+   "quote": "we have always said that CaratLane should inch towards double-digit EBIT margin.",
+   "page": 14,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f70a0a33-43cf-40b6-a753-67b06123e8de.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "Actual CaratLane EBIT margin 14.0% (Sep 2026) exceeds 10% target."
+  },
+  {
+   "metric": "Titan Jewellery business margin",
+   "target": "8% to 9%",
+   "period": "next couple of years",
+   "said_in": "Sep 2026",
+   "call": "Q2 FY27",
+   "quote": "gradually their EBIT margin should start inching up from 8% to 9%, and then further from there in next couple of years.",
+   "page": 4,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=daa6c172-771a-4af5-b4b3-9813fdf7536a.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No reported evidence after promise."
+  },
+  {
+   "metric": "Titan Jewellery business margin",
+   "target": "around 11%",
+   "period": "FY27",
+   "said_in": "Sep 2026",
+   "call": "Q2 FY27",
+   "quote": "I think we still, Mihir, would like to anchor our margin target at around 11%... As far as FY27 is concerned, change our stance on margins.",
+   "page": 7,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=daa6c172-771a-4af5-b4b3-9813fdf7536a.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No reported evidence after promise."
+  }
+ ]
+}

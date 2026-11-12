@@ -1,0 +1,65 @@
+{
+ "symbol": "DEEPAKNTR",
+ "name": "Deepak Nitrite Ltd",
+ "generated_at": "2026-11-12T18:02",
+ "latest_quarter": "Sep 2026",
+ "calls": [
+  {
+   "quarter": "Sep 2026",
+   "call": "Q2 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=5dfbdab4-d040-4a99-b694-bbe26f015f14.pdf"
+  },
+  {
+   "quarter": "Jun 2026",
+   "call": "Q1 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=830edde9-d00b-4243-98bd-a0e7c77d716b.pdf"
+  },
+  {
+   "quarter": "Mar 2026",
+   "call": "Q4 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=589629dc-be30-42d5-8ed4-bb605071a9bc.pdf"
+  },
+  {
+   "quarter": "Dec 2025",
+   "call": "Q3 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=5fe2e422-45bb-44a8-a6e2-c9677c942a8d.pdf"
+  }
+ ],
+ "skipped_calls": [],
+ "margin_definition": {
+  "name": "EBITDA margin (as reported)",
+  "source": "management's reported margin for each quarter, on that quarter's results call (transcripts)"
+ },
+ "model_note": null,
+ "score": {
+  "hit": 0,
+  "ahead": 0,
+  "on track": 0,
+  "moved closer": 0,
+  "partial": 0,
+  "no change": 0,
+  "behind pace": 0,
+  "moved away": 0,
+  "miss": 0,
+  "not-yet-measurable": 1
+ },
+ "promises": [
+  {
+   "metric": "energy mix from hybrid renewable sources",
+   "target": "60% to 70% of our energy mix",
+   "period": "not stated",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "We are accelerating our transition towards green energy by sourcing 60% to 70% of our energy mix from hybrid renewable sources",
+   "page": 4,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=5fe2e422-45bb-44a8-a6e2-c9677c942a8d.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "Reported data does not include energy mix percentage, so target cannot be assessed."
+  }
+ ]
+}

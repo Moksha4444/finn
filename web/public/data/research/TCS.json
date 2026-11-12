@@ -1,7 +1,7 @@
 {
  "symbol": "TCS",
  "name": "Tata Consultancy Services Ltd",
- "generated_at": "2026-11-12T09:27",
+ "generated_at": "2026-11-12T17:54",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -25,61 +25,84 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d70edbab-d5b2-47ae-8820-efacc5052d13.pdf"
   }
  ],
+ "skipped_calls": [],
+ "margin_definition": {
+  "name": "Operating margin (as reported)",
+  "source": "management's reported margin for each quarter, on that quarter's results call (transcripts)"
+ },
  "model_note": null,
  "score": {
   "hit": 0,
   "ahead": 0,
   "on track": 0,
+  "moved closer": 0,
   "partial": 0,
-  "behind pace": 2,
+  "no change": 0,
+  "behind pace": 1,
+  "moved away": 1,
   "miss": 0,
-  "not-yet-measurable": 1
+  "not-yet-measurable": 0
  },
  "promises": [
   {
-   "metric": "margins",
-   "target": "26% to 28%",
-   "period": "the coming quarters",
+   "metric": "Operating margin",
+   "target": "inch closer to our 26% to 28% band",
+   "period": "next few quarters",
    "said_in": "Dec 2025",
    "call": "Q3 FY26",
    "quote": "we want to inch closer to our 26% to 28% band and we'll make all efforts to climb towards 26%.",
-   "page": 23,
+   "page": 22,
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d70edbab-d5b2-47ae-8820-efacc5052d13.pdf",
-   "verdict": "behind pace",
-   "actual": "Since the Q3 FY26 call (Mar 2026, Jun 2026, Sep 2026): EBIT margin (operating profit less depreciation) 24.4% vs target 26–28%",
-   "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
+   "path": "25.2% → 25.3% → 24.0% → 24.0% (Q3 FY26 → Q2 FY27)",
+   "cites": [
+    {
+     "label": "Q3 FY26 call, p.4: “Our Q3 operating margins stood at 25.2%, remaining stable sequentially.”",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d70edbab-d5b2-47ae-8820-efacc5052d13.pdf"
+    },
+    {
+     "label": "Q4 FY26 call, p.6: “Our Q4 operating margin stood at 25.3%, a sequential increase of 10 basis points.”",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=07ae2d32-1050-4e80-96ff-eb2d98378d4e.pdf"
+    },
+    {
+     "label": "Q1 FY27 call, p.4: “Fifth, our operating margins stood at 24%, down 130 bps sequentially, primarily due to wage hikes.”",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=27523cab-de62-4f78-939a-6d9853bbd060.pdf"
+    },
+    {
+     "label": "Q2 FY27 call, p.5: “Our operating margins remained stable sequentially at 24%.”",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7dc14216-f892-46f1-bf82-5c7b387a83b9.pdf"
+    }
+   ],
+   "actual_source": "management's reported margin for each quarter, on that quarter's results call (transcripts)",
    "model": "python (computed)",
-   "why": "EBIT margin (operating profit less depreciation) 24.4% against 26–28%; computed in Python."
+   "verdict": "moved away",
+   "actual": "Moved away: 25.2% → 25.3% → 24.0% → 24.0% (Q3 FY26 → Q2 FY27) vs target 26–28% · Operating margin (as reported)",
+   "why": "No deadline, so judged by direction since the Q3 FY26 call; computed in Python."
   },
   {
-   "metric": "exit operating margin",
-   "target": "25% plus",
-   "period": "exit at 25% plus",
+   "metric": "Operating Margin",
+   "target": "exit at 25% plus",
+   "period": "later in the year",
    "said_in": "Jun 2026",
    "call": "Q1 FY27",
    "quote": "We want to exit at 25% plus and strive to achieve it sooner rather than later.",
    "page": 23,
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=27523cab-de62-4f78-939a-6d9853bbd060.pdf",
+   "path": "24.0% → 24.0% (Q1 FY27 → Q2 FY27)",
+   "cites": [
+    {
+     "label": "Q1 FY27 call, p.4: “Fifth, our operating margins stood at 24%, down 130 bps sequentially, primarily due to wage hikes.”",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=27523cab-de62-4f78-939a-6d9853bbd060.pdf"
+    },
+    {
+     "label": "Q2 FY27 call, p.5: “Our operating margins remained stable sequentially at 24%.”",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7dc14216-f892-46f1-bf82-5c7b387a83b9.pdf"
+    }
+   ],
+   "actual_source": "management's reported margin for each quarter, on that quarter's results call (transcripts)",
+   "model": "python (computed)",
    "verdict": "behind pace",
-   "actual": "Q2 FY27 call, p.5: “Our operating margins remained stable sequentially at 24%.”",
-   "actual_source": "management's statements on later calls (transcripts)",
-   "model": "openai/gpt-oss-120b picked the evidence; python (computed)",
-   "why": "Reported 24% (Q2 FY27 call) against ≥25%; compared in Python."
-  },
-  {
-   "metric": "employee base working in the new operating model",
-   "target": "at least 1% of our employee base",
-   "period": "going forward",
-   "said_in": "Jun 2026",
-   "call": "Q1 FY27",
-   "quote": "going forward, we would deﬁnitely target to have the deﬁnition that we come up with, and target to have at least 1% of our employee base, to work in the new operating model.",
-   "page": 14,
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=27523cab-de62-4f78-939a-6d9853bbd060.pdf",
-   "verdict": "not-yet-measurable",
-   "actual": "not disclosed",
-   "actual_source": null,
-   "model": "openai/gpt-oss-120b",
-   "why": "No reported data on new operating model employee share."
+   "actual": "FY27 so far (2 of 4 quarters: Jun 2026, Sep 2026): Operating margin (as reported) 24.0% vs target ≥25%",
+   "why": "24.0% against ≥25% with the period still running; computed in Python."
   }
  ]
 }

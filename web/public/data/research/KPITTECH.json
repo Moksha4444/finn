@@ -1,0 +1,133 @@
+{
+ "symbol": "KPITTECH",
+ "name": "KPIT Technologies Ltd",
+ "generated_at": "2026-11-12T18:02",
+ "latest_quarter": "Sep 2026",
+ "calls": [
+  {
+   "quarter": "Sep 2026",
+   "call": "Q2 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a7331811-fe14-4c79-896d-f0a9df901335.pdf"
+  },
+  {
+   "quarter": "Jun 2026",
+   "call": "Q1 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d07f9c52-5c5a-443b-b239-6acd5e94b97a.pdf"
+  },
+  {
+   "quarter": "Mar 2026",
+   "call": "Q4 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=70c85b6c-58e6-423f-9b32-50b17a948674.pdf"
+  },
+  {
+   "quarter": "Dec 2025",
+   "call": "Q3 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a574a9b4-2ec3-4418-afd7-7deb13264328.pdf"
+  }
+ ],
+ "skipped_calls": [],
+ "margin_definition": {
+  "name": "EBITDA margin (computed: operating profit over sales)",
+  "source": "screener.in quarterly results table (from the company's exchange results filings)"
+ },
+ "model_note": null,
+ "score": {
+  "hit": 0,
+  "ahead": 0,
+  "on track": 0,
+  "moved closer": 0,
+  "partial": 1,
+  "no change": 0,
+  "behind pace": 1,
+  "moved away": 1,
+  "miss": 0,
+  "not-yet-measurable": 2
+ },
+ "promises": [
+  {
+   "metric": "EBITDA margin",
+   "target": "20.5 to 21.2",
+   "period": "FY27",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "EBITDA 20.5 to 21.2 post increasing investment in AI solutions and products competency development and new markets.",
+   "page": 17,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=70c85b6c-58e6-423f-9b32-50b17a948674.pdf",
+   "path": "18.5% → 15.3% → 15.8% (Q4 FY26 → Q2 FY27)",
+   "cites": [],
+   "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
+   "model": "python (computed)",
+   "verdict": "behind pace",
+   "actual": "FY27 so far (2 of 4 quarters: Jun 2026, Sep 2026): EBITDA margin (computed: operating profit over sales) 15.6% vs target 20.5–21.2%",
+   "why": "15.6% against 20.5–21.2% with the period still running; computed in Python."
+  },
+  {
+   "metric": "solution and products revenue growth",
+   "target": "30% year-on-year revenue growth",
+   "period": "FY27",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "We expect 30% year-on-year revenue growth in solution and products, and we hope it will increase over the period.",
+   "page": 17,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=70c85b6c-58e6-423f-9b32-50b17a948674.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "partial",
+   "actual": "Q2 FY27 call, p.4: “But this we have a 5% growth quarter-on-quarter during the quarter and 25% year-on-year.”; Q2 FY27 call, p.4: “But this we have a 5% growth quarter-on-quarter during the quarter and 25% year-on-year.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b",
+   "why": "R10 reports 25% YoY product revenue growth, below the 30% target."
+  },
+  {
+   "metric": "EBITDA margin",
+   "target": "22% to 24%",
+   "period": "medium term",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "So we expect the EBITDA to be between 22% to 24% from where we are today.",
+   "page": 18,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=70c85b6c-58e6-423f-9b32-50b17a948674.pdf",
+   "path": "18.5% → 15.3% → 15.8% (Q4 FY26 → Q2 FY27)",
+   "cites": [],
+   "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
+   "model": "python (computed)",
+   "verdict": "moved away",
+   "actual": "Moved away: 18.5% → 15.3% → 15.8% (Q4 FY26 → Q2 FY27) vs target 22–24% · EBITDA margin (computed: operating profit over sales)",
+   "why": "No deadline, so judged by direction since the Q4 FY26 call; computed in Python."
+  },
+  {
+   "metric": "revenue share from solutions and products",
+   "target": "50% revenue share",
+   "period": "medium term",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "50% revenue share to be achieved from solutions and product. This is very important.",
+   "page": 18,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=70c85b6c-58e6-423f-9b32-50b17a948674.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No reported data on revenue share from solutions and products."
+  },
+  {
+   "metric": "revenue",
+   "target": "H2 will be better than H1, and we will return to growth in H2 by Q4",
+   "period": "H2 FY27",
+   "said_in": "Jun 2026",
+   "call": "Q1 FY27",
+   "quote": "During the outlook, we have just mentioned that H2 will be better than H1, and we will return to growth in H2 by Q4, driven by the Q4 performance",
+   "page": 4,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d07f9c52-5c5a-443b-b239-6acd5e94b97a.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "H2 performance not reported yet, cannot assess claim."
+  }
+ ]
+}

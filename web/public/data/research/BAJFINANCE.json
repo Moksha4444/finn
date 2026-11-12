@@ -1,0 +1,147 @@
+{
+ "symbol": "BAJFINANCE",
+ "name": "Bajaj Finance Ltd",
+ "generated_at": "2026-11-12T18:02",
+ "latest_quarter": "Sep 2026",
+ "calls": [
+  {
+   "quarter": "Sep 2026",
+   "call": "Q2 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf"
+  },
+  {
+   "quarter": "Jun 2026",
+   "call": "Q1 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b101e24e-b807-4c74-9025-90009f4b47a5.pdf"
+  },
+  {
+   "quarter": "Mar 2026",
+   "call": "Q4 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a448b6b0-edb5-4b99-a122-d602950310af.pdf"
+  },
+  {
+   "quarter": "Dec 2025",
+   "call": "Q3 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6eb34dc2-bde9-4df5-8b93-aad3d461140e.pdf"
+  }
+ ],
+ "skipped_calls": [],
+ "margin_definition": null,
+ "model_note": null,
+ "score": {
+  "hit": 2,
+  "ahead": 0,
+  "on track": 1,
+  "moved closer": 0,
+  "partial": 0,
+  "no change": 0,
+  "behind pace": 0,
+  "moved away": 0,
+  "miss": 0,
+  "not-yet-measurable": 3
+ },
+ "promises": [
+  {
+   "metric": "AUM growth",
+   "target": "22% to 23%",
+   "period": "FY '26",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "we think the overall full year growth will be between 22% to 23%.",
+   "page": 4,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6eb34dc2-bde9-4df5-8b93-aad3d461140e.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "hit",
+   "actual": "Q2 FY27 call, p.3: “AUM, as you can see, grew by 26.5% to INR 5,84,624 crores, delivering net AUM addition of close to INR 38,000 crores in the quarter.”; Q4 FY26 call, p.3: “In Q4, AUM grew by 22.4% and PAT grew by 26.7%.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b",
+   "why": "R26 shows AUM grew 22.4%, within 22‑23% target."
+  },
+  {
+   "metric": "cost of funds",
+   "target": "7.55% to 7.60%",
+   "period": "FY '26",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "We're likely to be between 7.55% to 7.60% in terms of cost of funds as we exit the year.",
+   "page": 4,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6eb34dc2-bde9-4df5-8b93-aad3d461140e.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "hit",
+   "actual": "Q2 FY27 call, p.4: “Cost of funds came down sequentially by 9 basis points and came in at 7.31%.”; Q4 FY26 call, p.4: “Cost of funds improved by 4 basis points in Q4 and came in at 7.41%.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b picked the evidence; python (computed)",
+   "why": "Reported 7.31% (Q2 FY27 call) against ≤7.6%; compared in Python."
+  },
+  {
+   "metric": "Return on Assets",
+   "target": "4.4% to 4.6%",
+   "period": "FY27",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "ROA came in as of fourth quarter at 4.6%. We continue to guide for 4.4% to 4.6%.",
+   "page": 8,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a448b6b0-edb5-4b99-a122-d602950310af.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "on track",
+   "actual": "Q2 FY27 call, p.3: “ROA for the quarter came in at 4.6% and ROE came in at 20.6%.”; Q1 FY27 call, p.4: “ROA came in at 4.7% and ROE at 20.4%.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b picked the evidence; python (computed)",
+   "why": "Reported 4.6% (Q2 FY27 call) against 4.4–4.6%; compared in Python."
+  },
+  {
+   "metric": "credit cost",
+   "target": "165 to 175 basis points",
+   "period": "next year",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "We foresee that the number next year as we enter could be anywhere between 165 to 175 basis points",
+   "page": 7,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6eb34dc2-bde9-4df5-8b93-aad3d461140e.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No reported metric for credit cost provided."
+  },
+  {
+   "metric": "AUM growth",
+   "target": "20% to 24% AUM growth",
+   "period": "FY27",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "In terms of AUM, we're confident of a 20% to 24% AUM growth, aided by new businesses that we've launched in the last few years as they begin to scale.",
+   "page": 7,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a448b6b0-edb5-4b99-a122-d602950310af.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "Q2 FY27 call, p.3: “AUM, as you can see, grew by 26.5% to INR 5,84,624 crores, delivering net AUM addition of close to INR 38,000 crores in the quarter.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b",
+   "why": "The period runs to Mar 2027; a part-period number can't be a miss yet."
+  },
+  {
+   "metric": "Opex to NTI",
+   "target": "continued improvement of 25 to 40 basis points from current levels",
+   "period": "FY27",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "On opex to NTI, we expect to see continued improvement of 25 to 40 basis points from current levels.",
+   "page": 7,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a448b6b0-edb5-4b99-a122-d602950310af.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No reported basis‑point improvement data for opex to NTI."
+  }
+ ]
+}

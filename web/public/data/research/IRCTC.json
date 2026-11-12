@@ -1,0 +1,65 @@
+{
+ "symbol": "IRCTC",
+ "name": "Indian Railway Catering & Tourism Corporation Ltd",
+ "generated_at": "2026-11-12T18:02",
+ "latest_quarter": "Jun 2026",
+ "calls": [
+  {
+   "quarter": "Jun 2026",
+   "call": "Q1 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=87a3947a-975c-43aa-b153-218d6518615c.pdf"
+  },
+  {
+   "quarter": "Mar 2026",
+   "call": "Q4 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=0b914f14-22d6-44be-b3bb-8d31b83e4499.pdf"
+  },
+  {
+   "quarter": "Dec 2025",
+   "call": "Q3 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1cfad47d-e4a8-47fe-a883-38462f3036c3.pdf"
+  },
+  {
+   "quarter": "Sep 2025",
+   "call": "Q2 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=2ce0acc5-6b05-46de-9e10-a8c90fd96325.pdf"
+  }
+ ],
+ "skipped_calls": [],
+ "margin_definition": {
+  "name": "EBITDA margin (as reported)",
+  "source": "management's reported margin for each quarter, on that quarter's results call (transcripts)"
+ },
+ "model_note": null,
+ "score": {
+  "hit": 0,
+  "ahead": 0,
+  "on track": 0,
+  "moved closer": 0,
+  "partial": 0,
+  "no change": 0,
+  "behind pace": 0,
+  "moved away": 0,
+  "miss": 1,
+  "not-yet-measurable": 0
+ },
+ "promises": [
+  {
+   "metric": "sustainable growth",
+   "target": "15% sustainable growth this year",
+   "period": "this year",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "we are targeting to achieve 15% sustainable growth this year.",
+   "page": 6,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1cfad47d-e4a8-47fe-a883-38462f3036c3.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "miss",
+   "actual": "Q4 FY26 call, p.4: “IRCTC recorded its highest ever total revenue of Rs. 5,475 crores in FY 2025-26 compared to Rs. 4,904 crores in FY 2024-25 registering a year-on-year growth of 11.64%”; Q4 FY26 call, p.3: “During the financial year, revenue from operations of IRCTC stood at Rs. 5,215 crores, registering an increase of around 12% as compared to previous Financial Year 2024-25”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b",
+   "why": "Revenue grew 11.64% (R15) and ~12% (R11), both below the 15% target."
+  }
+ ]
+}

@@ -1,7 +1,7 @@
 {
  "symbol": "HDFCBANK",
  "name": "HDFC Bank Ltd",
- "generated_at": "2026-11-12T09:27",
+ "generated_at": "2026-11-12T17:54",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -25,61 +25,106 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e45f8a0-0fe6-40a3-8e5a-51c53713e6f0.pdf"
   }
  ],
+ "skipped_calls": [],
+ "margin_definition": null,
  "model_note": null,
  "score": {
-  "hit": 0,
+  "hit": 1,
   "ahead": 0,
   "on track": 0,
+  "moved closer": 0,
   "partial": 0,
-  "behind pace": 0,
+  "no change": 0,
+  "behind pace": 1,
+  "moved away": 0,
   "miss": 0,
-  "not-yet-measurable": 3
+  "not-yet-measurable": 1
  },
  "promises": [
+  {
+   "metric": "loan-to-deposit ratio",
+   "target": "90% to 96% in the year FY '26",
+   "period": "FY26",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "We said we will try and be in a range of somewhere between 90% to 96% in the year FY '26, which is what we will be is what we are very confident about.",
+   "page": 6,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e45f8a0-0fe6-40a3-8e5a-51c53713e6f0.pdf",
+   "path": "98.7% → 94.6% → 95.8% → 96.0% (Q3 FY26 → Q2 FY27)",
+   "cites": [
+    {
+     "label": "Q3 FY26 results filing, p.5 (standalone balance sheet): advances 2,821,446.50 / deposits 2,860,054.60 (in crore)",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=9bbca52b-6e66-4b9a-ae83-ef30ec660628.pdf"
+    },
+    {
+     "label": "Q4 FY26 results filing, p.6 (standalone balance sheet): advances 2,937,166.26 / deposits 3,105,250.48 (in crore)",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ea66a60f-a54e-4aac-bbcc-789303bf74cc.pdf"
+    },
+    {
+     "label": "Q1 FY27 results filing, p.4 (standalone balance sheet): advances 3,037,303.31 / deposits 3,170,830.09 (in crore)",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7abdb29f-c7a2-4f32-a37f-5273fded5000.pdf"
+    },
+    {
+     "label": "Q2 FY27 results filing, p.4 (standalone balance sheet): advances 3,195,566.06 / deposits 3,327,448.93 (in crore)",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f5d5fb37-aa66-401c-85d6-58ccd3982828.pdf"
+    }
+   ],
+   "actual_source": "the bank's results filings on BSE: statement of assets and liabilities; ratio computed in Python",
+   "model": "python (computed)",
+   "verdict": "hit",
+   "actual": "FY26 end (Mar 2026): CD ratio (advances / deposits) 94.6% vs target 90–96%",
+   "why": "94.6% against 90–96%; computed in Python."
+  },
+  {
+   "metric": "loan-to-deposit ratio",
+   "target": "85% to 90% for FY '27",
+   "period": "FY27",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "And then maybe by FY '27, by the natural growth and even with the growth in the way we are expecting in terms of faster growth rate, I think we should land somewhere around the 85% to 90% for FY '27.",
+   "page": 6,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e45f8a0-0fe6-40a3-8e5a-51c53713e6f0.pdf",
+   "path": "98.7% → 94.6% → 95.8% → 96.0% (Q3 FY26 → Q2 FY27)",
+   "cites": [
+    {
+     "label": "Q3 FY26 results filing, p.5 (standalone balance sheet): advances 2,821,446.50 / deposits 2,860,054.60 (in crore)",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=9bbca52b-6e66-4b9a-ae83-ef30ec660628.pdf"
+    },
+    {
+     "label": "Q4 FY26 results filing, p.6 (standalone balance sheet): advances 2,937,166.26 / deposits 3,105,250.48 (in crore)",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ea66a60f-a54e-4aac-bbcc-789303bf74cc.pdf"
+    },
+    {
+     "label": "Q1 FY27 results filing, p.4 (standalone balance sheet): advances 3,037,303.31 / deposits 3,170,830.09 (in crore)",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7abdb29f-c7a2-4f32-a37f-5273fded5000.pdf"
+    },
+    {
+     "label": "Q2 FY27 results filing, p.4 (standalone balance sheet): advances 3,195,566.06 / deposits 3,327,448.93 (in crore)",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f5d5fb37-aa66-401c-85d6-58ccd3982828.pdf"
+    }
+   ],
+   "actual_source": "the bank's results filings on BSE: statement of assets and liabilities; ratio computed in Python",
+   "model": "python (computed)",
+   "verdict": "behind pace",
+   "actual": "FY27 running, latest (Sep 2026): CD ratio (advances / deposits) 96.0% vs target 85–90%",
+   "why": "96.0% against 85–90% with the period still running; computed in Python."
+  },
   {
    "metric": "loan growth",
    "target": "outpacing loan growth in the coming year in FY '27",
    "period": "FY27",
    "said_in": "Dec 2025",
    "call": "Q3 FY26",
-   "quote": "we believe and we are very optimistic about outpacing loan growth in the coming year in FY '27",
+   "quote": "we believe and we are very optimistic about outpacing loan growth in the coming year in FY '27, as we had sort of mentioned to you all along for the last 18 months.",
    "page": 4,
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e45f8a0-0fe6-40a3-8e5a-51c53713e6f0.pdf",
+   "path": null,
+   "cites": [],
    "verdict": "not-yet-measurable",
-   "actual": "Q2 FY27 call, p.4: “September'26 EOP loan growth has grown 23.5% year-on-year compared to 17% to 18% year-on-year growth levels”",
+   "actual": "Q2 FY27 call, p.4: “On the MSME and mid-market business, growth momentum is also improving rapidly. September'26 EOP loan growth has grown 23.5% year-on-year compared to 17% to 18% year-on-year growth levels seen in the last few quarters.”; Q2 FY27 call, p.4: “This is also reflected in the rising growth trend in EOP loan book, especially for retail assets ex agri, September'26 annual growth is about 11.2% compared to 9.1% as of June'26 and 7.4% as of March'26.”",
    "actual_source": "management's statements on later calls (transcripts)",
    "model": "openai/gpt-oss-120b",
-   "why": "Target vague; no specific figure to compare; loan growth data (R9) shows 23.5% yoy but target not quantified"
-  },
-  {
-   "metric": "CD ratio",
-   "target": "85% to 90% for FY '27",
-   "period": "FY27",
-   "said_in": "Dec 2025",
-   "call": "Q3 FY26",
-   "quote": "I think we should land somewhere around the 85% to 90% for FY '27.",
-   "page": 4,
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e45f8a0-0fe6-40a3-8e5a-51c53713e6f0.pdf",
-   "verdict": "not-yet-measurable",
-   "actual": "not disclosed",
-   "actual_source": null,
-   "model": "openai/gpt-oss-120b",
-   "why": "No reported CD ratio figures for FY27"
-  },
-  {
-   "metric": "CD ratio",
-   "target": "90% to 96% in the year FY '26",
-   "period": "FY26",
-   "said_in": "Dec 2025",
-   "call": "Q3 FY26",
-   "quote": "we will try and be in a range of somewhere between 90% to 96% in the year FY '26",
-   "page": 6,
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e45f8a0-0fe6-40a3-8e5a-51c53713e6f0.pdf",
-   "verdict": "not-yet-measurable",
-   "actual": "not disclosed",
-   "actual_source": null,
-   "model": "openai/gpt-oss-120b",
-   "why": "No reported CD ratio figures for FY26"
+   "why": "Target qualitative; FY27 ongoing; loan growth evidence R7 23.5% YoY, R6 11.2% YoY not comparable to target."
   }
  ]
 }

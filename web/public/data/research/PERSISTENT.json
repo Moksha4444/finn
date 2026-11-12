@@ -1,0 +1,99 @@
+{
+ "symbol": "PERSISTENT",
+ "name": "Persistent Systems Ltd",
+ "generated_at": "2026-11-12T18:02",
+ "latest_quarter": "Sep 2026",
+ "calls": [
+  {
+   "quarter": "Sep 2026",
+   "call": "Q2 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=524eadda-3966-4f4f-8888-bfaf2cb0d69e.pdf"
+  },
+  {
+   "quarter": "Jun 2026",
+   "call": "Q1 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b1c49752-0908-4750-9177-398a60654630.pdf"
+  },
+  {
+   "quarter": "Mar 2026",
+   "call": "Q4 FY26",
+   "transcript": "https://www.persistent.com/wp-content/uploads/2026/04/Analyst-Call-Transcript-Q4FY26.pdf"
+  },
+  {
+   "quarter": "Dec 2025",
+   "call": "Q3 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b68ef2b0-b285-4696-8c08-e3bb58039b0e.pdf"
+  }
+ ],
+ "skipped_calls": [],
+ "margin_definition": {
+  "name": "EBIT margin (computed: operating profit less depreciation, over sales)",
+  "source": "screener.in quarterly results table (from the company's exchange results filings)"
+ },
+ "model_note": null,
+ "score": {
+  "hit": 0,
+  "ahead": 0,
+  "on track": 0,
+  "moved closer": 0,
+  "partial": 0,
+  "no change": 0,
+  "behind pace": 0,
+  "moved away": 0,
+  "miss": 0,
+  "not-yet-measurable": 3
+ },
+ "promises": [
+  {
+   "metric": "annual revenue aspiration of $2 billion",
+   "target": "$2 billion",
+   "period": "March 2027",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "I am also happy to share that we remain firmly on track, advancing confidently towards our aspiration of $2 billion by March 2027",
+   "page": 6,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b68ef2b0-b285-4696-8c08-e3bb58039b0e.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No USD annual revenue reported yet."
+  },
+  {
+   "metric": "annual revenue aspiration of $5 billion",
+   "target": "$5 billion",
+   "period": "March 2031",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "laying the foundation of $5 billion by March 2031.",
+   "page": 6,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b68ef2b0-b285-4696-8c08-e3bb58039b0e.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No USD annual revenue reported yet."
+  },
+  {
+   "metric": "Effective Tax Rate for FY26",
+   "target": "20%-24%",
+   "period": "FY26",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "ETR for FY26 will be in the range of 20%-24%.",
+   "page": 8,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b68ef2b0-b285-4696-8c08-e3bb58039b0e.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "Effective tax rate not reported."
+  }
+ ]
+}

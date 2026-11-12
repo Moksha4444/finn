@@ -1,0 +1,82 @@
+{
+ "symbol": "RELIANCE",
+ "name": "Reliance Industries Ltd",
+ "generated_at": "2026-11-12T17:53",
+ "latest_quarter": "Sep 2026",
+ "calls": [
+  {
+   "quarter": "Sep 2026",
+   "call": "Q2 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=8e997741-4d35-4188-933a-cf020fb9c816.pdf"
+  },
+  {
+   "quarter": "Jun 2026",
+   "call": "Q1 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c9d3d96a-8b04-4b41-b454-3f98d1f90702.pdf"
+  },
+  {
+   "quarter": "Mar 2026",
+   "call": "Q4 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=971d8c86-397a-4780-b843-5a84d3006d0b.pdf"
+  },
+  {
+   "quarter": "Dec 2025",
+   "call": "Q3 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=26290395-526a-441f-a347-c8ac12e4adf3.pdf"
+  }
+ ],
+ "skipped_calls": [],
+ "margin_definition": {
+  "name": "EBITDA margin (computed: operating profit over sales)",
+  "source": "screener.in quarterly results table (from the company's exchange results filings)"
+ },
+ "model_note": null,
+ "score": {
+  "hit": 0,
+  "ahead": 0,
+  "on track": 0,
+  "moved closer": 0,
+  "partial": 0,
+  "no change": 0,
+  "behind pace": 0,
+  "moved away": 0,
+  "miss": 0,
+  "not-yet-measurable": 2
+ },
+ "promises": [
+  {
+   "metric": "FMCG revenue",
+   "target": "Rs.1 lakh Crores on FY2030",
+   "period": "FY2030",
+   "said_in": "Jun 2026",
+   "call": "Q1 FY27",
+   "quote": "we have anyway announced the target is to kind of take this to Rs.1 lakh Crores on FY2030.",
+   "page": 30,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c9d3d96a-8b04-4b41-b454-3f98d1f90702.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "Q2 FY27 call, p.13: “in Q2, we delivered a revenue of Rs.8,266 Crores”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b",
+   "why": "The model's reason used a number that is not in the evidence."
+  },
+  {
+   "metric": "O2C annualized EBITDA",
+   "target": "well over Rs.80,000 Crores",
+   "period": "first half of FY 2027",
+   "said_in": "Sep 2026",
+   "call": "Q2 FY27",
+   "quote": "when you look at the first half of FY 2027 performance, it is in our minds tracking annualized EBITDA well over Rs.80,000 Crores",
+   "page": 3,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=8e997741-4d35-4188-933a-cf020fb9c816.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No reported statements eligible to assess O2C annualized EBITDA."
+  }
+ ]
+}

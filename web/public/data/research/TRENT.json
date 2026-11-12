@@ -1,0 +1,26 @@
+{
+ "symbol": "TRENT",
+ "name": "Trent Ltd",
+ "generated_at": "2026-11-12T18:02",
+ "latest_quarter": "Sep 2026",
+ "calls": [],
+ "skipped_calls": [],
+ "margin_definition": {
+  "name": "EBITDA margin (computed: operating profit over sales)",
+  "source": "screener.in quarterly results table (from the company's exchange results filings)"
+ },
+ "model_note": null,
+ "score": {
+  "hit": 0,
+  "ahead": 0,
+  "on track": 0,
+  "moved closer": 0,
+  "partial": 0,
+  "no change": 0,
+  "behind pace": 0,
+  "moved away": 0,
+  "miss": 0,
+  "not-yet-measurable": 0
+ },
+ "promises": []
+}

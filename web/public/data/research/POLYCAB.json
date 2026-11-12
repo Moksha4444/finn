@@ -1,0 +1,150 @@
+{
+ "symbol": "POLYCAB",
+ "name": "Polycab India Ltd",
+ "generated_at": "2026-11-12T18:02",
+ "latest_quarter": "Sep 2026",
+ "calls": [
+  {
+   "quarter": "Sep 2026",
+   "call": "Q2 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"
+  },
+  {
+   "quarter": "Jun 2026",
+   "call": "Q1 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=e47a217c-cefa-4ff6-8e34-6bbd07d42b13.pdf"
+  },
+  {
+   "quarter": "Mar 2026",
+   "call": "Q4 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f66f17ac-c40f-4309-afca-3e66af0956a0.pdf"
+  },
+  {
+   "quarter": "Dec 2025",
+   "call": "Q3 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf"
+  }
+ ],
+ "skipped_calls": [],
+ "margin_definition": {
+  "name": "EBITDA margins (as reported)",
+  "source": "management's reported margin for each quarter, on that quarter's results call (transcripts)"
+ },
+ "model_note": null,
+ "score": {
+  "hit": 0,
+  "ahead": 0,
+  "on track": 0,
+  "moved closer": 0,
+  "partial": 0,
+  "no change": 0,
+  "behind pace": 0,
+  "moved away": 0,
+  "miss": 0,
+  "not-yet-measurable": 6
+ },
+ "promises": [
+  {
+   "metric": "Project Spring annual capex",
+   "target": "investing ₹ 12 billion to ₹ 16 billion annually through FY30",
+   "period": "through FY30",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "in-line with our Project Spring guidance of investing ₹ 12 billion to ₹ 16 billion annually through FY30.",
+   "page": 5,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No annual capex figure reported; only half-year INR 6.1 bn disclosed."
+  },
+  {
+   "metric": "FMEG EBITDA margins",
+   "target": "EBITDA margins in the range of 8% to 10% by FY30",
+   "period": "by FY30",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "remain on track to achieve our Project Spring targets of 1.5x - 2x industry growth and EBITDA margins in the range of 8% to 10% by FY30",
+   "page": 7,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "EBITDA margins 13‑14% exceed the 8‑10% target range, so target not met."
+  },
+  {
+   "metric": "EPC annual sustainable operating margin",
+   "target": "high single digits",
+   "period": "over mid- to long term",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "Looking ahead, the annual sustainable operating margin is expected to remain in the high single digits over mid- to long term.",
+   "page": 7,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "Margins 13‑14% are above the 6‑9% high‑single‑digit target, meeting the at_least criterion."
+  },
+  {
+   "metric": "Export contribution to overall top line",
+   "target": "greater than 10% contribution from exports by financial year 2030",
+   "period": "financial year 2030",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "We remain firm on track to achieve our target of greater than 10% contribution from exports by financial year 2030.",
+   "page": 8,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f66f17ac-c40f-4309-afca-3e66af0956a0.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "Export contribution not reported; cannot assess against >10% target."
+  },
+  {
+   "metric": "Dividend payout ratio",
+   "target": "30% payout ratio by financial year 2030",
+   "period": "financial year 2030",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "This represents a step forward towards our Project Spring goal of achieving a 30% payout ratio by financial year 2030.",
+   "page": 6,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f66f17ac-c40f-4309-afca-3e66af0956a0.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No reported dividend payout ratio data to assess target."
+  },
+  {
+   "metric": "Capital expenditure program",
+   "target": "INR 60 billion to INR 80 billion over the next 5 years",
+   "period": "next 5 years",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "We remain on track to execute our planned capex program of INR 60 billion to INR 80 billion over the next 5 years",
+   "page": 6,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f66f17ac-c40f-4309-afca-3e66af0956a0.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No cumulative capex data; only half-year INR 6.1bn reported."
+  }
+ ]
+}

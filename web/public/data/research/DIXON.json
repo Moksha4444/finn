@@ -1,0 +1,150 @@
+{
+ "symbol": "DIXON",
+ "name": "Dixon Technologies (India) Ltd",
+ "generated_at": "2026-11-12T18:02",
+ "latest_quarter": "Sep 2026",
+ "calls": [
+  {
+   "quarter": "Sep 2026",
+   "call": "Q2 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=995a3a71-4a1e-4c1f-a29a-6c6747e4ca10.pdf"
+  },
+  {
+   "quarter": "Jun 2026",
+   "call": "Q1 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7ce2ca16-3043-48f4-97f9-a62a6a086c2f.pdf"
+  },
+  {
+   "quarter": "Mar 2026",
+   "call": "Q4 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=38b72f07-55a6-4503-91fd-ed3b2c209e96.pdf"
+  },
+  {
+   "quarter": "Dec 2025",
+   "call": "Q3 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ad6e72f1-b5f8-4a75-8e45-f2e88c7525e0.pdf"
+  }
+ ],
+ "skipped_calls": [],
+ "margin_definition": {
+  "name": "EBITDA margin (computed: operating profit over sales)",
+  "source": "screener.in quarterly results table (from the company's exchange results filings)"
+ },
+ "model_note": null,
+ "score": {
+  "hit": 0,
+  "ahead": 0,
+  "on track": 0,
+  "moved closer": 0,
+  "partial": 0,
+  "no change": 0,
+  "behind pace": 0,
+  "moved away": 0,
+  "miss": 0,
+  "not-yet-measurable": 6
+ },
+ "promises": [
+  {
+   "metric": "mobile phone business margins",
+   "target": "2.8% to 3.1%, 3.2%",
+   "period": "next few quarters",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "We still feel that we should be able to have a margin of somewhere between 2.8% to 3.1%, 3.2% in our mobile phone business.",
+   "page": 9,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ad6e72f1-b5f8-4a75-8e45-f2e88c7525e0.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "Jun 2026 margin 3.0% within range; Sep 2026 2.7% below 2.8%."
+  },
+  {
+   "metric": "IT hardware revenue",
+   "target": "INR3,500 crores to INR4,000 crores",
+   "period": "next year",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "We feel that for next year, the numbers are going to be somewhere around INR3,500 crores to INR4,000 crores.",
+   "page": 17,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ad6e72f1-b5f8-4a75-8e45-f2e88c7525e0.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "Q2 FY27 call, p.6: “Revenues for the quarter was Rs. 2,160 crores.”; Q1 FY27 call, p.11: “IT hardware is somewhere around INR1,350-odd crores.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b",
+   "why": "The model's reason used a number that is not in the evidence."
+  },
+  {
+   "metric": "smartphone volumes and selling prices",
+   "target": "we expect a high-double-digit growth quarter-on-quarter in the smartphones volume along with growth in selling prices by 12% to 15%",
+   "period": "next quarter",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "we expect a high-double-digit growth quarter-on-quarter in the smartphones volume along with growth in selling prices by 12% to 15%.",
+   "page": 4,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=38b72f07-55a6-4503-91fd-ed3b2c209e96.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No reported data on smartphone volumes or selling prices."
+  },
+  {
+   "metric": "telecom and networking products revenue growth",
+   "target": "We expect this vertical to deliver high double-digit revenue growth in the current fiscal.",
+   "period": "current fiscal",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "We expect this vertical to deliver high double-digit revenue growth in the current fiscal.",
+   "page": 5,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=38b72f07-55a6-4503-91fd-ed3b2c209e96.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No reported growth figures for telecom and networking revenue; cannot assess target."
+  },
+  {
+   "metric": "IT hardware products revenue",
+   "target": "we expect 3x growth in the revenues in the current fiscal against last year",
+   "period": "current fiscal",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "we expect 3x growth in the revenues in the current fiscal against last year with a huge uptake in order books from all customers.",
+   "page": 5,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=38b72f07-55a6-4503-91fd-ed3b2c209e96.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "IT hardware revenue reported but no prior-year comparison; growth cannot be measured."
+  },
+  {
+   "metric": "lighting revenues growth",
+   "target": "we expect the revenues to grow almost to 2x in the current fiscal.",
+   "period": "current fiscal",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "we expect the revenues to grow almost to 2x in the current fiscal.",
+   "page": 6,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=38b72f07-55a6-4503-91fd-ed3b2c209e96.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "Lighting revenue not reported; target cannot be evaluated."
+  }
+ ]
+}

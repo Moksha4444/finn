@@ -1,0 +1,150 @@
+{
+ "symbol": "LT",
+ "name": "Larsen & Toubro Ltd",
+ "generated_at": "2026-11-12T17:55",
+ "latest_quarter": "Sep 2026",
+ "calls": [
+  {
+   "quarter": "Jun 2026",
+   "call": "Q1 FY27",
+   "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2027AnalysttransL&T-Earnings-Jul28-2026.pdf"
+  },
+  {
+   "quarter": "Mar 2026",
+   "call": "Q4 FY26",
+   "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf"
+  },
+  {
+   "quarter": "Dec 2025",
+   "call": "Q3 FY26",
+   "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Transcript%20Q3FY26.pdf"
+  },
+  {
+   "quarter": "Sep 2025",
+   "call": "Q2 FY26",
+   "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q2FY26%20Earnings%20Call%20Transcript%20.pdf"
+  }
+ ],
+ "skipped_calls": [],
+ "margin_definition": {
+  "name": "EBITDA margin (as reported)",
+  "source": "management's reported margin for each quarter, on that quarter's results call (transcripts)"
+ },
+ "model_note": null,
+ "score": {
+  "hit": 3,
+  "ahead": 0,
+  "on track": 1,
+  "moved closer": 0,
+  "partial": 0,
+  "no change": 0,
+  "behind pace": 0,
+  "moved away": 0,
+  "miss": 2,
+  "not-yet-measurable": 0
+ },
+ "promises": [
+  {
+   "metric": "full year revenue growth",
+   "target": "revenue growth guidance at 15%",
+   "period": "FY '26",
+   "said_in": "Sep 2025",
+   "call": "Q2 FY26",
+   "quote": "Accordingly, we maintain our full year revenue growth guidance at 15%.",
+   "page": 10,
+   "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q2FY26%20Earnings%20Call%20Transcript%20.pdf",
+   "path": "+10.4% → +10.5% → +11.3% → +6.7% → +15.8% (Q2 FY26 → Q2 FY27)",
+   "cites": [],
+   "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
+   "model": "python (computed)",
+   "verdict": "miss",
+   "actual": "FY26 (Jun 2025 – Mar 2026): Revenue growth YoY +11.8% vs target ≥15%",
+   "why": "+11.8% against ≥15%; computed in Python."
+  },
+  {
+   "metric": "working capital",
+   "target": "guidance for working capital for FY '26 remains unchanged at around 12% by March 2026",
+   "period": "FY '26",
+   "said_in": "Sep 2025",
+   "call": "Q2 FY26",
+   "quote": "On Working Capital, our guidance for working capital for FY '26 remains unchanged at around 12% by March 2026.",
+   "page": 10,
+   "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q2FY26%20Earnings%20Call%20Transcript%20.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "hit",
+   "actual": "Q4 FY26 call, p.6: “As of March 2026, the Net Working Capital to Revenue ratio improved sharply to 4.1%”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b picked the evidence; python (computed)",
+   "why": "Reported 4.1% (Q4 FY26 call) against ≤12%; compared in Python."
+  },
+  {
+   "metric": "revenue growth guidance for FY 26",
+   "target": "full year revenue growth guidance of 15%",
+   "period": "FY '26",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "We expect the customary ramp-up in project execution during Q4 and are reasonably confident of achieving our full year revenue growth guidance of 15%.",
+   "page": 8,
+   "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Transcript%20Q3FY26.pdf",
+   "path": "+10.5% → +11.3% → +6.7% → +15.8% (Q3 FY26 → Q2 FY27)",
+   "cites": [],
+   "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
+   "model": "python (computed)",
+   "verdict": "miss",
+   "actual": "FY26 (Jun 2025 – Mar 2026): Revenue growth YoY +11.8% vs target ≥15%",
+   "why": "+11.8% against ≥15%; computed in Python."
+  },
+  {
+   "metric": "Projects & Manufacturing EBITDA margin for FY 26",
+   "target": "8.5% for the full year FY '26",
+   "period": "FY '26",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "Our Projects & Manufacturing EBITDA at 7.9% for 9 months of the current year is in line with the target that we have set ourselves at 8.5% for the full year FY '26.",
+   "page": 8,
+   "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Transcript%20Q3FY26.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "hit",
+   "actual": "Q4 FY26 call, p.7: “The EBITDA margin in the Projects and Manufacturing business for Q4 FY '26 is at 9.4%”; Q4 FY26 call, p.5: “The Projects and Manufacturing portfolio margin declined by 50 basis points YoY to 9.4%”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b picked the evidence; python (computed)",
+   "why": "Reported 9.4% (Q4 FY26 call) against ≥8.5%; compared in Python."
+  },
+  {
+   "metric": "Net Working Capital to Revenue",
+   "target": "close the year with a revised target of around 10%",
+   "period": "FY '26",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "with stronger collection intensity and improved contractual terms, our Net Working Capital to Revenue has improved sharply to 8.2% as of December '25, and we expect to close the year with a revised target of around 10%.",
+   "page": 9,
+   "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Transcript%20Q3FY26.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "hit",
+   "actual": "Q1 FY27 call, p.6: “The NWC to Sales ratio improved significantly to 4.9% in June 2026 from 10.1% in June 2025.”; Q4 FY26 call, p.6: “As of March 2026, the Net Working Capital to Revenue ratio improved sharply to 4.1%”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b picked the evidence; python (computed)",
+   "why": "Reported 4.9% (Q1 FY27 call) against ≤10%; compared in Python."
+  },
+  {
+   "metric": "revenue growth",
+   "target": "10% to 12%",
+   "period": "FY27",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "On Revenue, we expect growth to be in the range of 10% to 12% for FY27.",
+   "page": 13,
+   "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf",
+   "path": "+11.3% → +6.7% → +15.8% (Q4 FY26 → Q2 FY27)",
+   "cites": [],
+   "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
+   "model": "python (computed)",
+   "verdict": "on track",
+   "actual": "FY27 so far (2 of 4 quarters: Jun 2026, Sep 2026): Revenue growth YoY +11.4% vs target 10–12%",
+   "why": "+11.4% against 10–12% with the period still running; computed in Python."
+  }
+ ]
+}

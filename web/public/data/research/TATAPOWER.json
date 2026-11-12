@@ -1,0 +1,116 @@
+{
+ "symbol": "TATAPOWER",
+ "name": "Tata Power Company Ltd",
+ "generated_at": "2026-11-12T18:02",
+ "latest_quarter": "Sep 2026",
+ "calls": [
+  {
+   "quarter": "Jun 2026",
+   "call": "Q1 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f2eec946-af3f-4579-8a6b-1483aa6f7312.pdf"
+  },
+  {
+   "quarter": "Mar 2026",
+   "call": "Q4 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=3e7a67bd-6f64-475b-96e4-37f8d51b86f3.pdf"
+  },
+  {
+   "quarter": "Dec 2025",
+   "call": "Q3 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=93b975b6-96db-407e-b75e-8ba408beb787.pdf"
+  },
+  {
+   "quarter": "Jun 2025",
+   "call": "Q1 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=0ed5c7d7-8483-462f-9d08-041954bd624d.pdf"
+  }
+ ],
+ "skipped_calls": [],
+ "margin_definition": {
+  "name": "EBITDA margin (computed: operating profit over sales)",
+  "source": "screener.in quarterly results table (from the company's exchange results filings)"
+ },
+ "model_note": null,
+ "score": {
+  "hit": 0,
+  "ahead": 0,
+  "on track": 0,
+  "moved closer": 0,
+  "partial": 2,
+  "no change": 0,
+  "behind pace": 0,
+  "moved away": 0,
+  "miss": 0,
+  "not-yet-measurable": 2
+ },
+ "promises": [
+  {
+   "metric": "capital expenditure plan",
+   "target": "Rs. 25,000 crores",
+   "period": "full year",
+   "said_in": "Jun 2025",
+   "call": "Q1 FY26",
+   "quote": "We spent in this quarter Rs. 3,700 crores against our full year plan of Rs. 25,000 crores and we are on track to implement all those projects.",
+   "page": 5,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=0ed5c7d7-8483-462f-9d08-041954bd624d.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "partial",
+   "actual": "Q1 FY27 call, p.7: “On the capital expenditure, for the first time, we spent INR 5,300 crores in the first quarter.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b",
+   "why": "Capex spent INR 5,300 crores in Q1 FY27, well below the Rs 25,000 crore full‑year capex ceiling."
+  },
+  {
+   "metric": "capex",
+   "target": "INR25,000 crores",
+   "period": "this financial year",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "So that's why our target of yearly investment continues to be the same. And there may be certain deferment by a quarter or 2. But otherwise, we are very much on track.",
+   "page": 6,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=3e7a67bd-6f64-475b-96e4-37f8d51b86f3.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "partial",
+   "actual": "Q1 FY27 call, p.7: “On the capital expenditure, for the first time, we spent INR 5,300 crores in the first quarter.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b",
+   "why": "R13 reports INR5,300 crores capex in Q1, below the INR25,000 target."
+  },
+  {
+   "metric": "AT&C losses in Odisha distribution",
+   "target": "bring down to about 10% range",
+   "period": "next 3 years",
+   "said_in": "Jun 2025",
+   "call": "Q1 FY26",
+   "quote": "We are still in some places in 17%-18% range. We do expect that in the next 3 years, we will bring down to about 10% range",
+   "page": 6,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=0ed5c7d7-8483-462f-9d08-041954bd624d.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No reported data on AT&C losses."
+  },
+  {
+   "metric": "rooftop revenue growth",
+   "target": "grow by about 60% to 70%",
+   "period": "this year",
+   "said_in": "Jun 2026",
+   "call": "Q1 FY27",
+   "quote": "In fact, last year, we grew by 100%, and this year also, we have plans to grow by about 60% to 70%.",
+   "page": 5,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f2eec946-af3f-4579-8a6b-1483aa6f7312.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "Actual yoy growth 26.3% is below the 60-70% target."
+  }
+ ]
+}

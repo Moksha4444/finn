@@ -1,0 +1,150 @@
+{
+ "symbol": "ASTRAL",
+ "name": "Astral Ltd",
+ "generated_at": "2026-11-12T18:02",
+ "latest_quarter": "Sep 2026",
+ "calls": [
+  {
+   "quarter": "Jun 2026",
+   "call": "Q1 FY27",
+   "transcript": "https://www.astralltd.com/wp-content/uploads/2026/08/Equirus-Astral-Aug12-2026-1.pdf"
+  },
+  {
+   "quarter": "Mar 2026",
+   "call": "Q4 FY26",
+   "transcript": "https://www.astralltd.com/wp-content/uploads/2026/05/Analysts-Meet-2026-Transcript.pdf"
+  },
+  {
+   "quarter": "Dec 2025",
+   "call": "Q3 FY26",
+   "transcript": "https://nsearchives.nseindia.com/corporate/ASTRAL_05022026201047_Earning_Call.pdf"
+  },
+  {
+   "quarter": "Sep 2025",
+   "call": "Q2 FY26",
+   "transcript": "https://www.astralltd.com/wp-content/uploads/2025/11/Transcript.pdf"
+  }
+ ],
+ "skipped_calls": [],
+ "margin_definition": {
+  "name": "EBITDA margin (computed: operating profit over sales)",
+  "source": "screener.in quarterly results table (from the company's exchange results filings)"
+ },
+ "model_note": null,
+ "score": {
+  "hit": 2,
+  "ahead": 0,
+  "on track": 0,
+  "moved closer": 0,
+  "partial": 0,
+  "no change": 0,
+  "behind pace": 0,
+  "moved away": 0,
+  "miss": 0,
+  "not-yet-measurable": 4
+ },
+ "promises": [
+  {
+   "metric": "Paint business full year guidance",
+   "target": "20% growth for the full year",
+   "period": "full year",
+   "said_in": "Sep 2025",
+   "call": "Q2 FY26",
+   "quote": "This year we have given a guidance of 20% growth for the full year and we are going to achieve it as per the guidance given by us.",
+   "page": 3,
+   "transcript": "https://www.astralltd.com/wp-content/uploads/2025/11/Transcript.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "hit",
+   "actual": "Q4 FY26 call, p.11: “delivered 23% growth into the paint industry for the full year”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b",
+   "why": "R14 reports 23% full-year paint growth, surpassing 20% target."
+  },
+  {
+   "metric": "paint industry growth rate",
+   "target": "more than 25% growth",
+   "period": "next year",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "And next year we are expecting more than 25% growth into the paint",
+   "page": 11,
+   "transcript": "https://www.astralltd.com/wp-content/uploads/2026/05/Analysts-Meet-2026-Transcript.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "hit",
+   "actual": "Q1 FY27 call, p.5: “Now this year is INR74.5 crores, registering a growth of 48.7%.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b",
+   "why": "Paint revenue grew 48.7%, exceeding 25% target."
+  },
+  {
+   "metric": "Bathware business growth",
+   "target": "20%-25% for the next 5 years",
+   "period": "next 5 years",
+   "said_in": "Sep 2025",
+   "call": "Q2 FY26",
+   "quote": "Bathware we will aim to grow at about 20%-25% for the next 5 years.",
+   "page": 13,
+   "transcript": "https://www.astralltd.com/wp-content/uploads/2025/11/Transcript.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No reported evidence on Bathware growth."
+  },
+  {
+   "metric": "paints revenue target",
+   "target": "reaching 1,000 crores in next 3 to four years",
+   "period": "next 3 to 4 years",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "and we are targeting to reach 1,000 crores in next 3 to four years and even cross that.",
+   "page": 4,
+   "transcript": "https://www.astralltd.com/wp-content/uploads/2026/05/Analysts-Meet-2026-Transcript.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "Revenue 1,578 ₹ crore (Jun 2026) exceeds 1,000 ₹ crore target."
+  },
+  {
+   "metric": "UK business EBITDA margin",
+   "target": "8 to 10% plus EBITDA",
+   "period": "this year",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "So this year UK business will be growing giving 8 to 10% plus EBITDA",
+   "page": 3,
+   "transcript": "https://www.astralltd.com/wp-content/uploads/2026/05/Analysts-Meet-2026-Transcript.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "UK EBITDA margin 15% (Jun 2026) and 13% (Sep 2026) beat 10% target."
+  },
+  {
+   "metric": "faucet growth rate",
+   "target": "growing at 25 to 30%",
+   "period": "not stated",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "faucet is growing at 25 to 30%.",
+   "page": 3,
+   "transcript": "https://www.astralltd.com/wp-content/uploads/2026/05/Analysts-Meet-2026-Transcript.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No reported faucet growth data."
+  }
+ ]
+}

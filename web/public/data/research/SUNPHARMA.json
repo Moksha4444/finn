@@ -1,0 +1,116 @@
+{
+ "symbol": "SUNPHARMA",
+ "name": "Sun Pharmaceutical Industries Ltd",
+ "generated_at": "2026-11-12T17:55",
+ "latest_quarter": "Sep 2026",
+ "calls": [
+  {
+   "quarter": "Sep 2026",
+   "call": "Q2 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf"
+  },
+  {
+   "quarter": "Jun 2026",
+   "call": "Q1 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=34be7c92-1d9f-4010-ba30-2344c959bc5e.pdf"
+  },
+  {
+   "quarter": "Mar 2026",
+   "call": "Q4 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=287022b2-8de5-487d-8d0d-77b819ee3eb4.pdf"
+  },
+  {
+   "quarter": "Dec 2025",
+   "call": "Q3 FY26",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1082d0ab-d6fb-40f5-873e-d7301397cd05.pdf"
+  }
+ ],
+ "skipped_calls": [],
+ "margin_definition": {
+  "name": "EBITDA margin (as reported)",
+  "source": "management's reported margin for each quarter, on that quarter's results call (transcripts)"
+ },
+ "model_note": null,
+ "score": {
+  "hit": 1,
+  "ahead": 0,
+  "on track": 1,
+  "moved closer": 0,
+  "partial": 0,
+  "no change": 0,
+  "behind pace": 0,
+  "moved away": 0,
+  "miss": 0,
+  "not-yet-measurable": 2
+ },
+ "promises": [
+  {
+   "metric": "effective tax rate",
+   "target": "range of 25%",
+   "period": "next year and beyond",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "Yes. We expect the effective tax rate to be in the range of 25%.",
+   "page": 17,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=287022b2-8de5-487d-8d0d-77b819ee3eb4.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "on track",
+   "actual": "Q1 FY27 call, p.4: “Effective tax rate for the quarter was at 27.8% versus 24.3% in Q1 FY26.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b picked the evidence; python (computed)",
+   "why": "Reported 27.8% (Q1 FY27 call) against ≥25%; compared in Python."
+  },
+  {
+   "metric": "sales",
+   "target": "high single-digit growth",
+   "period": "full year",
+   "said_in": "Jun 2026",
+   "call": "Q1 FY27",
+   "quote": "Think we should stick on to the high single-digit growth for the full year.",
+   "page": 10,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=34be7c92-1d9f-4010-ba30-2344c959bc5e.pdf",
+   "path": "+10.5% → +11.9% (Q1 FY27 → Q2 FY27)",
+   "cites": [],
+   "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
+   "model": "python (computed)",
+   "verdict": "hit",
+   "actual": "At target: +10.5% → +11.9% (Q1 FY27 → Q2 FY27) vs target 7–9% · Revenue growth YoY",
+   "why": "No deadline, so judged by direction since the Q1 FY27 call; computed in Python."
+  },
+  {
+   "metric": "consolidated top line growth",
+   "target": "high single-digit consolidated top line growth for FY27",
+   "period": "FY27",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "On the guidance, we expect high single-digit consolidated top line growth for FY27 based on our current understanding of the regulatory and macro environment.",
+   "page": 6,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=287022b2-8de5-487d-8d0d-77b819ee3eb4.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "No measurable evidence for high single-digit growth target."
+  },
+  {
+   "metric": "R&D spend",
+   "target": "6% to 7% of the sales for the next year",
+   "period": "next year",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "We expect our FY27 R&D spend to be 6% to 7% of the sales for the next year.",
+   "page": 6,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=287022b2-8de5-487d-8d0d-77b819ee3eb4.pdf",
+   "path": null,
+   "cites": [],
+   "verdict": "not-yet-measurable",
+   "actual": "Q2 FY27 call, p.6: “Consolidated investments towards R&D for Q2 '27 stands at INR7,784 million or 4.8% of sales.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b",
+   "why": "The period runs to Mar 2027; a part-period number can't be a miss yet."
+  }
+ ]
+}
