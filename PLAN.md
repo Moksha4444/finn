@@ -1,7 +1,7 @@
 # FINN — build plan (11–15 Nov 2026)
 
 Single source of truth for the build. Scope and hard rules live in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.
-Current status: see §3f (PvD backend), §3e (redesign), §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
+Current status: see §3g (PvD rework), §3f (PvD backend), §3e (redesign), §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
 
 ---
 
@@ -160,6 +160,12 @@ Cheap model reads each transcript once → `{metric, target, period, quote, page
 - Results: **TCS** 5 promises, 1 hit (25%+ exit margin → 26% in Sep 2026), 4 not-yet-measurable (long-term 26–28% band, HyperVault capacity, operating-model staffing). **HDFCBANK** 3 promises (CASA, loan growth vs system, LDR 85–90% for FY27), all not-yet-measurable: FY27 hasn't ended and screener has no CASA/LDR rows.
 - **Quality finding for Fri:** verdicts are honest but thin, because management guidance is mostly non-financial or annual, and screener's table can't measure bank KPIs. Options: actuals from our own extracted results cards + the next transcript's own "we delivered X" statements; or broaden to 6–8 calls. Strong model is often overloaded → fallback ran (labelled in the JSON).
 - Tests: 6 PvD tests (selection, actuals math, dedupe, 2 transcript fixtures), 64 backend tests pass. PvD cost: $0.107 / 15 calls (~$0.05 per company). **LLM spend to date: $0.29 / ~222 calls.**
+
+## 3g. Status at 12 Nov, ~10:15 (PvD rework, user decisions 1-4)
+- Strong model is now Groq gpt-oss-120b (free; 1k req/day, 8k tokens/min) -> gemini-3.8-flash; each verdict labelled with its model.
+- PvD verdicts computed in Python where a number exists (hit/miss for finished periods, on track/ahead/behind pace for running ones); the model judges only non-numeric promises. TCS: 2 of 3 measured (both behind pace). HDFCBANK: 3 of 3 not-yet-measurable because the CD ratio is never restated on calls; fix candidate = CD ratio from the results filing's balance sheet.
+- Maruti parent-results misclassification fixed (rule + test). 82 backend tests pass.
+- LLM spend to date: **$0.46 / 270 calls** (PvD all-time $0.27 / 40 calls, most of it re-extraction while prompts changed).
 
 ## 4. Day-by-day
 
