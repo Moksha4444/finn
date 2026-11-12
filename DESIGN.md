@@ -24,9 +24,9 @@ typography:
     fontWeight: 600
   title:
     fontFamily: "Libre Franklin, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "1.0625rem"
+    fontSize: "1.125rem"
     fontWeight: 600
-    lineHeight: 1.35
+    lineHeight: 1.3
   body:
     fontFamily: "Libre Franklin, ui-sans-serif, system-ui, sans-serif"
     fontSize: "0.875rem"
@@ -47,7 +47,7 @@ rounded:
   hairline: "2px"
   md: "0.375rem"
   lg: "0.5rem"
-  avatar: "0.6rem"
+  avatar: "0.5rem"
   card: "0.75rem"
   full: "9999px"
 spacing:
@@ -60,7 +60,7 @@ components:
   company-card:
     backgroundColor: "{colors.card}"
     rounded: "{rounded.card}"
-    padding: "14px 16px 12px"
+    padding: "12px 16px 14px"
   company-row:
     backgroundColor: "{colors.paper}"
     padding: "12px 0"
@@ -97,6 +97,18 @@ components:
     backgroundColor: "{colors.accent}"
     textColor: "{colors.paper}"
     rounded: "{rounded.full}"
+  credibility-chip:
+    textColor: "{colors.accent}"
+    rounded: "{rounded.full}"
+    padding: "2px 8px"
+    typography: "{typography.label}"
+motion:
+  ease-out: "cubic-bezier(0.23, 1, 0.32, 1)"
+  expand: "200ms"
+  press: "150ms"
+  tab-crossfade: "180ms"
+  badge-pop: "220ms"
+  sparkline-draw: "250ms"
 ---
 
 # Design System: FINN
@@ -107,7 +119,7 @@ components:
 
 A sharp printed brief, not a trading terminal: warm paper, near-black ink, one deep ink-blue accent, and a serif verdict at the top that says in one sentence what the day needs ("Tata Power and Bajaj Finance need a look today." / "Results season: 18 of 20 reported."). Everything under the verdict exists to justify it. The pre-build intent (calm, dense, editorial, read over morning chai) survived the build intact.
 
-What changed after the user's phone review: the **company is the unit**, not the filing. Each company appears once per window, led by its most important filing (results > management change > fund raise > ...), with the rest folded behind "+N more filings", results documents folded into the results item, and any other material filing surfaced as an "Also:" line so it can never hide. Material companies get a rich card; the rest get a compact row. This deliberately replaced the original "2-line hairline rows, never boxed cards" rule for the top tier: a phone-sized card with numbers and a sparkline answered "does it matter?" faster than a row did. Hairline rows remain the grammar everywhere below the top tier.
+What changed after the user's phone review: the **company is the unit**, not the filing. Each company appears once per window, led by its most important filing (results > management change > fund raise > ...), with the rest folded behind "+N more filings", results documents folded into the results item, and every other material (P1) filing surfaced as its own one-line "Also" so it can never hide; the "+N more filings" fold inside the expanded card holds only P2/P3. Material companies get a rich card; the rest get a compact row. This deliberately replaced the original "2-line hairline rows, never boxed cards" rule for the top tier: a phone-sized card with numbers and a sparkline answered "does it matter?" faster than a row did. Hairline rows remain the grammar everywhere below the top tier.
 
 Density is phone-first (390px) and calm: one column, max 36rem, nothing decorative. Colour is information, not mood.
 
@@ -123,7 +135,7 @@ Density is phone-first (390px) and calm: one column, max 36rem, nothing decorati
 Warm, low-chroma neutrals carry the page; one serious ink-blue and a muted gain/loss pair are the only saturated values.
 
 ### Primary
-- **Ink-blue** (accent): links, the active tab and window segment, "+N more" and "Show" toggles, the alert badge, focus rings, checkboxes, and the material marker (the square in the FINN mark, the P1 square on filing rows, the filing-day dot on sparklines). Chosen over oxblood because a red marker would read as "down" next to the loss colour.
+- **Ink-blue** (accent): links, the active tab and window segment, "+N more" and "Show" toggles, the alert badge, the credibility chip (it links to Research), focus rings, checkboxes, and the material marker (the P1 square on filing rows, the filing-day square on sparklines). Chosen over oxblood because a red marker would read as "down" next to the loss colour.
 
 ### Neutral
 - **Paper** (paper): page ground, top bar, tab bar, inputs. Also the PWA theme colour (#f8f5ef).
@@ -138,6 +150,9 @@ Warm, low-chroma neutrals carry the page; one serious ink-blue and a muted gain/
 
 ### Derived: sector tints
 Company monograms get a tint derived from the company's sector name (hashed to one of 8 hues: 28, 62, 96, 150, 188, 226, 262, 318), background `oklch(91.5% 0.035 h)`, letters `oklch(36% 0.07 h)`. Never assigned per ticker. No sector falls back to paper-2 / ink-2.
+
+### Logo greens
+The FINN mark's rays run five tonal greens, light to dark (#b9c9a4, #93ac7e, #6d8d5b, #4a6c40, #2d4a2c). They live only inside the logo, app icon and favicon. Green means "up" in this UI, so it never becomes an accent.
 
 ### Named Rules
 **The Number-Only Rule.** Green and red touch the signed figure and nothing else. If a row is coloured, it is wrong.
@@ -156,7 +171,7 @@ Company monograms get a tint derived from the company's sector name (hashed to o
 ### Hierarchy
 - **Display** (serif 600, 1.75rem, 1.15, -0.015em): the verdict line and page titles (Alerts, Settings, the failure title). One per screen.
 - **Headline** (serif 600, 1.1875rem): section heads, "What matters" and "Also worth a look". Alert day headings use the same face at 1rem.
-- **Title** (sans 600, 1.0625rem, 1.35, balanced): the human headline on a company card ("Profit up 48.6% YoY in the Sep '26 quarter"). Key figures on cards use sans 600 at 1rem.
+- **Title** (sans 600, 1.125rem, 1.3, balanced): the human headline on a company card ("Profit up 48.6% YoY in the Sep '26 quarter"). It is the largest thing on the card; the company name is 0.875rem 500 and the "TICKER · event · time" line is 0.75rem ink-2. Key figures on cards are 0.8125rem 600.
 - **Body** (sans 400, 0.875rem, 1.4 to 1.45): row headlines, expanded detail, tables. Company names are 0.875 to 0.9375rem at 600.
 - **Meta** (sans 400, 0.8125rem, ink-2): ticker · event · time lines, hints, source lines.
 - **Label** (sans 400, 0.75rem): chip text, figure labels, table column heads. Tab labels drop to 0.6875rem.
@@ -183,24 +198,31 @@ Flat. Depth comes from tone (card stock against paper, shaded paper for the cont
 
 ## Shapes
 
-Soft but restrained corners: cards 12px, avatars ~10px, the window control and banner 8px, buttons and inputs 6px, the material marker and skeleton bars 2px, chips and the alert badge fully round. Icons are authored for this app on a 24px grid with one stroke family (1.75, round caps and joins). The FINN mark is an F built from ranked bars of falling length, with the accent square as its foot: the same square that marks a material filing in the feed.
+Soft but restrained corners: cards 12px, avatars 8px, the window control and banner 8px, buttons and inputs 6px, the material marker and skeleton bars 2px, chips and the alert badge fully round. Icons are authored for this app on a 24px grid with one stroke family (1.75, round caps and joins). The FINN mark is five curved rays in tonal greens, light to dark, converging on the right into the serif wordmark: many signals in, one out. The header lockup is rays + "FINN" (Source Serif 4, 500, tracked 0.14em) on paper. App icon and favicon use four bolder rays on a paper tile so they read at 16 to 32px; a one-colour ink version is the manifest's monochrome icon. "Investment agent" appears only in the manifest name (install and splash screens), never in the header. Source: `web/scripts/logo.mjs` writes the SVGs; `web/scripts/icons.mjs` renders the PNGs from them with local Chrome.
 
 ## Components
 
 ### Company card ("What matters")
-Character: a clipped newspaper item. Card stock, hairline border, 12px radius, no shadow.
-- **Header:** monogram avatar (40px, sector tint) + short company name (600) + "TICKER · event · filed time" in ink-2.
-- **Headline:** the toggle; a stretched overlay makes the whole card tappable without nesting lists in a button. Pressed state tints the card paper-2.
-- **Also line:** a material filing that is not the lead, as "Also: Mgmt change · ...".
-- **Key numbers:** results show two figures (Revenue and PAT, or the bank equivalents) as "₹X cr" with signed YoY beneath. Other events show the one-line note.
-- **Reaction + sparkline:** the reaction chip and "30 days ±x%" sit on one row; below, a 32px ink-2 line of 30-day closes with the filing's reaction day marked by an accent square and a faint vertical rule.
-- **Footer:** "Details" with a chevron; expanded body shows the full table, "Why it's here", "Filed with the results", and the source link with page. "+N more filings · incl. ..." sits under a hairline at the bottom.
+Character: a clipped newspaper item, about half the height of the first build. Card stock, hairline border, 12px radius, no shadow.
+- **Company line:** 32px monogram avatar (sector tint), short company name (0.875rem 500), then "TICKER · event · filed time" (0.75rem ink-2); a chevron on the right says the card opens.
+- **Headline:** the dominant line (title style) and the toggle; a stretched overlay makes the whole card tappable without nesting lists in a button. Clamped to 3 lines at normal text size; a filing with no human title leads with the person line from its card, never the raw exchange subject. The heading carries the company name for screen readers. Press: the card tints paper-2 and settles to 0.99 scale.
+- **Numbers + sparkline, side by side:** each side has a small grey head naming its basis ("YoY" over the figures, "30 days" over the sparkline). Results show Rev and PAT (or the bank equivalents) as label / ₹ cr / signed YoY; fund raises show Size (₹ cr) and Dilution % when the filing states them. The sparkline (124 x 28px) sits to the right. Cards without numbers put the chips where the numbers would be.
+- **Chips:** the reaction chip, which names its day ("12 Nov · −1.0% vs Nifty · 3.7× vol"), and on results cards the credibility chip ("Promises: Kept 3 · Missed 2 · Open 1").
+- **Also lines:** one line per other P1 filing, 0.8125rem ink-2, "Also · event · title", truncated; the same title filed twice shows once.
+- **Expanded body:** full table, "Why it's here", source link with page, "Also material" (each P1 behind an Also line as a full filing row: tap for detail and source page), "Filed with the results", then "+N more filings" (P2/P3 only).
+- **200% text:** the card is a container; below ~15rem of text width the figure rows wrap (label, value, change), the sparkline drops below, chips wrap and the company line wraps. No horizontal scroll.
+
+### Sparkline
+30 trading days of closes in ink at 1.25px, Nifty rebased to the same start day as a faint ink-2 line (35%) beneath it, and a label under it: "+4.3% · Nifty +1.1%" (only the stock's figure is coloured). The filing's reaction day is a 7px accent square on the line with a faint vertical rule; while the reaction is pending the square is hollow and sits one trading day past the last bar. It draws in left to right once per company per visit.
+
+### Credibility chip
+"Promises: Kept 3 · Missed 2 · Open 1". Management's record on its own concall promises, from the cached Promised vs Delivered JSON, measured promises only: kept = hit or ahead, missed = miss, behind pace or moved away, open = on track ("Open" hidden at 0). No chip when nothing was measurable. Ink-blue text in a hairline pill because it links to Research; its hit area extends past the pill.
 
 ### Company row ("Also worth a look")
-Hairline-separated, 32px avatar, name + event (+N) + reaction text on line one, headline + date on line two. Tap expands in place with the same body as the card.
+Hairline-separated, 32px avatar, name + event (+N folded) + reaction text on line one (it wraps rather than cut the name; the reaction day is left off because the row already shows a date); the headline wraps to two lines (never truncated) with the date on the right. Tap expands in place with the same body as the card.
 
 ### Filing row
-The original 2-line row, still used inside "+N more", the routine list and expanded groups: ticker, event, the P1 accent square, then the rank reason right-aligned (bold when it boosted the rank). Reason parts drop whole rather than truncate.
+Line 2 (the fact) wraps to two lines instead of truncating. The original 2-line row, still used inside "+N more", the routine list and expanded groups: ticker, event, the P1 accent square, then the rank reason right-aligned (bold when it boosted the rank). Reason parts drop whole rather than truncate.
 
 ### Reaction chip
 Full-round, hairline border, 0.75rem. Quiet (ink-2) by default; when the reaction boosted the rank, the border darkens to ink at 50% and the text goes 600. Never shown while the reaction is pending.
@@ -216,7 +238,7 @@ Three-segment control on a shaded paper track; selected segment is card stock, i
 Number fields: 40px, right-aligned, paper ground, ink border at 40%, loss border plus one error line when invalid; saved on blur or Enter. Category toggles are native checkboxes in ink-blue on 44px hairline rows. Settings section heads are 0.8125rem 600 over an ink rule at 80%.
 
 ### Navigation
-Fixed bottom tab bar (Brief, Alerts, Research, Settings), paper ground with a top hairline, 56px plus safe-area. Active tab: ink-blue + 600 and `aria-current`. Alerts carries an ink-blue count badge until the inbox is opened. Installable PWA with its own manifest and icons.
+Fixed bottom tab bar (Brief, Alerts, Research, Settings), paper ground with a top hairline, 56px plus safe-area. Active tab: ink-blue + 600 and `aria-current`. Alerts carries an ink-blue count badge until the inbox is opened. Installable PWA: manifest name "FINN · Investment agent", short name "FINN", paper splash, ray icons (any, maskable, monochrome).
 
 ### States
 - **Loading:** card-shaped and row-shaped skeletons in paper-2 that match the real layout.
@@ -225,7 +247,13 @@ Fixed bottom tab bar (Brief, Alerts, Research, Settings), paper ground with a to
 - **Failure:** a serif "The brief didn't load." with a plain cause and "Try again"; a filing that can't be parsed still shows with its raw link.
 
 ### Motion
-Not done yet. The build has no transitions: expand/collapse, chevrons and pressed states are instant. A later pass is planned (under 200ms, ease-out, expand in place, no entrance theatrics, respect reduced motion).
+One curve for everything, a strong ease-out (`cubic-bezier(0.23, 1, 0.32, 1)`; Tailwind's `ease-out` is overridden to it), and nothing over 250ms. Nothing enters from nothing: no page entrances, no staggered lists.
+- **Expand / collapse** (cards, rows, filing rows, the routine list, folds): height via grid rows 0fr to 1fr plus opacity, 200ms; chevrons rotate in step. Closed content is `inert`.
+- **Press:** cards tint and settle to 0.99 scale, rows tint paper-2, 150ms.
+- **Tabs:** React `<ViewTransition>` crossfades the page, 180ms.
+- **Sparkline:** a left-to-right clip reveal, 250ms, once per company per visit.
+- **Alert badge:** pops from 0.6 scale with a fade when its count changes, 220ms.
+- **Reduced motion:** every animation and transition drops to 1ms and view transitions are off.
 
 ## Do's and Don'ts
 
@@ -233,6 +261,7 @@ Not done yet. The build has no transitions: expand/collapse, chevrons and presse
 - **Do** make the company the unit: one entry per company per window, lead item by priority, the rest folded.
 - **Do** cap "What matters" at 6 cards and put the rest behind one "Show N more companies" tap.
 - **Do** colour only the signed percentage, via `Signed`.
+- **Do** keep green inside the logo; the UI accent is ink-blue.
 - **Do** keep every target at 44px or more and pad the fixed bars for safe areas.
 - **Do** cite the source on every expanded item ("Open filing at p. N").
 - **Do** derive avatar tints from sector, never from the ticker.

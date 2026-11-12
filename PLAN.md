@@ -1,7 +1,7 @@
 # FINN — build plan (11–15 Nov 2026)
 
 Single source of truth for the build. Scope and hard rules live in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.
-Current status: see §3h (PvD review), §3g (PvD rework), §3f (PvD backend), §3e (redesign), §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
+Current status: see §3i (feed UI round 3), §3h (PvD review), §3g (PvD rework), §3f (PvD backend), §3e (redesign), §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
 
 ---
 
@@ -173,6 +173,14 @@ Cheap model reads each transcript once → `{metric, target, period, quote, page
 - Python guards after the first 22-ticker run showed wrong verdicts: segment / order / AUM targets never measured on company totals, cost targets are ceilings, model reasons may only cite numbers in the evidence, no model "miss" before the period ends, dead transcript links fall back to BSE (MARUTI 0 → 4 calls).
 - 22 tickers (20 + ASTRAL, TITAN): 72 promises, 27 measured, 45 not-yet-measurable (mostly segment targets), 0 crashes; table in DECISIONS.md. 92 backend tests pass.
 - **Open:** 62% not-yet-measurable. Next lever = segment actuals from the results filings' segment page. LLM spend to date **$2.40 / 496 calls** (list prices; free tiers).
+
+## 3i. Status at 12 Nov, night (feed UI round 3: logo, hierarchy, density, motion)
+- **Logo:** converging green rays + serif FINN lockup; 4-ray app icon/favicon, maskable and monochrome icons, all generated from `web/scripts/logo.mjs` (PNGs via `icons.mjs` + local Chrome). Green only in the logo; manifest name "FINN · Investment agent".
+- **Cards ~half height:** headline > company > "TICKER · event · time"; Rev/PAT beside a 30-day sparkline with Nifty rebased (faint) and a hollow marker while the reaction is pending; one "Also" line per P1 (full rows inside the opened card); fold = P2/P3 only; compact and filing rows wrap headlines to 2 lines.
+- **New data:** fund-raise size (₹ cr) + dilution % (model copies figures, Python converts/divides; Persistent QIP ₹4,265 cr, 4.63%); credibility chip "Promises: Kept · Missed · Open" from cached PvD (8 companies); Nifty closes in the feed. TATAPOWER headline now exact (CEO Designate now; CEO & MD from 1 May 2027), fixed in the prompts.
+- **Motion** (emil-design-eng not installed; done to its rules): one ease-out curve, ≤250ms, expand/collapse, press, tab crossfade (`<ViewTransition>`), sparkline draw once, badge pop; reduced motion verified off.
+- **Critique 26/40** (24 before); P0/P1s fixed, two kept by the user's rule (see DECISIONS.md). 96 backend + 11 web tests pass. LLM spend to date **$2.54 / 658 calls** (this round $0.14).
+- **Open:** ingest overwrites a good feed when the network drops (seen tonight, 8 tickers lost; re-run fixed it); Also stacks on busy companies; chip at 1 measured promise; classifier still files some results/revenue updates as mgmt change or M&A (Dixon, KPIT).
 
 ## 4. Day-by-day
 
