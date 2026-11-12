@@ -68,7 +68,7 @@ def ticker(sym: str, start: dt.date, end: dt.date, nifty) -> tuple[list[dict], l
             "reaction": prices.day_stats(h, nifty, rday) if len(h) else None,
         }
         if item["tier"] in ("P1", "P2") and item["category"] != "results":
-            item["title"] = c.get("headline") or headline.title(row, get_pdf)  # the classifier's LLM headline when it ran
+            item["title"] = headline.title(row, get_pdf, draft=c.get("headline"))  # reuses the classifier's headline if it passes
         if item["tier"] == "P1" and item["category"] in ("results", "management_change"):
             if item["category"] == "results" and has_results_card:
                 item["tier"] = "P2"  # same results filed twice (Result + Board Meeting outcome): one card is enough

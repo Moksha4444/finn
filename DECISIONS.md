@@ -76,6 +76,12 @@ Format: **Decision** · Why · What we gave up.
 - **Verdicts are mostly not-yet-measurable for now, and that is the honest answer.** TCS gives no numeric revenue guidance; HDFCBANK's targets are FY27 and about CASA/LDR, which screener doesn't carry. Gave up (for now): bank KPI actuals. Next step: use our own results-card extraction and later transcripts' "we delivered" statements as actuals.
 - **Network drops mid-request are retried like 429/503** (a 15k-token transcript call died on a connection reset on 12 Nov).
 
+- **No paid APIs anywhere (user's decision, 12 Nov).** Strong-model work stays on Gemini's free tier.
+  - *Precomputed outputs* (PvD verdicts and bull/bear for the 20 portfolio names + demo tickers) call the router in **patient** mode: up to 10 tries with backoff capped at 2 min, and an error instead of a fallback. A cached fallback answer is not reused in patient mode. So stored verdicts are always the strong model's.
+  - *Live pull* (unseen tickers, a user waiting): strong model → **Groq free tier** as the second provider (strongest available reasoning model, picked from Groq's model list once the key is in `.env`) → `gemini-3.5-flash` last. Any non-primary answer keeps its visible label ("Verdicts by fast model (quota)").
+  - Gave up: Claude for PvD/bull-bear (rejected as paid); guaranteed latency for batch runs (patient retries can take minutes).
+- **Headline rules are enforced in Python, not just asked for in the prompt** (found by audit, 12 Nov: 24 of 107 titles ran over 12 words; one carried a number not on the pages the model read). A title must be ≤12 words and every number in it must appear in the filing pages given to the model; one retry names the problem; otherwise the app shows the cleaned subject. Applies to the classifier's reused headline too. Tested.
+
 ## Spike findings (11 Nov)
 - **BSE API needs full browser headers** (`Origin` + `sec-fetch-*`), not just User-Agent + Referer. Without them it returns 403. No cookies needed. **Works from a cloud IP:** `/health/bse` on Render (Singapore, free tier) returned live rows on 11 Nov, so live pull and cloud ingest can call BSE directly. Gave up: nothing; the local-ingest fallback wasn't needed.
 - **BSE's category alone misses results.** HDFCBANK filed Q2 results under "Board Meeting / Outcome of Board Meeting". The classifier needs a keyword rule on the subject ("financial results").

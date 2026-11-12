@@ -1,20 +1,49 @@
 """Human one-line headline (<=12 words) for P1/P2 filings, from the cheap model. Results get theirs in the app
-from the card's numbers (Python, never the LLM), so they don't come here. Any failure -> None: the app shows the raw subject."""
-import hashlib
+from the card's numbers (Python, never the LLM), so they don't come here.
+Checked in Python, not just asked for in the prompt: at most 12 words, and every number must appear in the
+filing pages the model read. One retry that names the problem; then None, and the app shows the cleaned subject."""
+import re, hashlib
 from finn import llm
 from finn.sources import pdf
 
 SCHEMA = {"type": "object", "properties": {"headline": {"type": "string"}}, "required": ["headline"]}
+MAX_WORDS = 12
 
 
-def title(row: dict, get_pdf) -> str | None:
+def _nums(s: str) -> set[str]:
+    # "5,74,25,740" and "57,425,740" are the same number: compare without separators
+    return {re.sub(r"[,\s]", "", m).rstrip(".") for m in re.findall(r"\d[\d,]*(?:\.\d+)?", s)}
+
+
+def problems(headline: str, source_text: str) -> list[str]:
+    """Why a headline breaks the rules (empty = fine). source_text: the pages the model was given."""
+    out = []
+    n = len(headline.split())
+    if not 0 < n <= MAX_WORDS:
+        out.append(f"it has {n} words; use at most {MAX_WORDS}")
+    body = re.sub(r"[,\s]", "", source_text)
+    missing = sorted(x for x in _nums(headline) if x not in body)
+    if missing:
+        out.append(f"these numbers are not in the filing: {', '.join(missing)}")
+    return out
+
+
+def title(row: dict, get_pdf, draft: str | None = None) -> str | None:
+    """draft: a headline already written (the classifier's); it is checked like any other."""
     subject = row.get("NEWSSUB") or ""
     try:
         b = get_pdf()
         doc = pdf.open_pdf(b)
-        r = llm.run("headline", "headline", [subject, pdf.subset(doc, list(range(min(2, len(doc)))))], SCHEMA,
-                    key=hashlib.sha256(b).hexdigest() + subject, filing=row.get("NEWSID"))
-        h = " ".join(r["data"]["headline"].split())
-        return h if 0 < len(h.split()) <= 16 else None  # small slack over 12; anything longer is a bad answer
+        idx = list(range(min(2, len(doc))))
+        source = subject + " " + " ".join(pdf.pages(doc)[i] for i in idx)
+        key = hashlib.sha256(b).hexdigest() + subject
+        inputs = [subject, pdf.subset(doc, idx)]
+        h = " ".join((draft or llm.run("headline", "headline", inputs, SCHEMA, key=key, filing=row.get("NEWSID"))["data"]["headline"]).split())
+        if p := problems(h, source):
+            fix = f"Your headline was: \"{h}\". Rewrite it: {'; '.join(p)}."
+            h = " ".join(llm.run("headline", "headline", [*inputs, fix], SCHEMA, key=key + fix, filing=row.get("NEWSID"), retry=1)["data"]["headline"].split())
+            if problems(h, source):
+                return None
+        return h
     except Exception:
         return None
