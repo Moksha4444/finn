@@ -19,12 +19,25 @@ export function keyFact(i: Item): string {
     const p = c.people[0];
     return `${p.name} ${p.change}${p.role ? `, ${p.role}` : ""}`;
   }
-  return i.headline || i.subject || "Filing";
+  return title(i);
+}
+
+// The human one-liner from ingest (cheap model, numbers copied from the filing), else the exchange subject
+// with its boilerplate stripped by rule.
+export function title(i: Item): string {
+  if (i.title) return i.title;
+  const raw = i.headline || i.subject || "Filing";
+  const clean = raw
+    .replace(/^Announcement under Regulation 30 \(LODR\)-?\s*/i, "")
+    .replace(/^(Regulation 30\s*|Press Release Titled\s*|Disclosure under Regulation 30[^-:]*[-:]?\s*)/i, "")
+    .replace(/^"(.*)"\.?$/, "$1")
+    .trim();
+  return clean ? clean.charAt(0).toUpperCase() + clean.slice(1) : raw;
 }
 
 // rank() reasons start with the category, which line 1 already shows. On the row, a move that crossed
 // the threshold shows only its vs-Nifty part (the part that triggered it); the expanded view has the full string.
-function reasonText(i: RankedItem): string {
+export function reasonText(i: RankedItem): string {
   const lab = label(i.category);
   if (!i.boosted) return i.reason.slice(`${lab} · `.length);
   return i.reason
@@ -44,7 +57,9 @@ export function eventLabel(i: Item): string {
 export function FeedRow({ item: i }: { item: RankedItem }) {
   const [open, setOpen] = useState(false);
   const reason = reasonText(i);
-  const quietReason = !i.boosted && (reason === "Reaction pending" || reason === "No price data");
+  // "Reaction pending" is said once, in the Brief's banner, not on every row
+  const shownReason = reason === "Reaction pending" ? "" : reason;
+  const quietReason = !i.boosted && reason === "No price data";
   const id = `row-${i.id}`;
   return (
     <li className="border-b border-rule">
@@ -53,7 +68,7 @@ export function FeedRow({ item: i }: { item: RankedItem }) {
         aria-expanded={open}
         aria-controls={id}
         onClick={() => setOpen(!open)}
-        className="block w-full py-3 text-left"
+        className="block w-full py-3 text-left active:bg-paper-2"
       >
         {/* line 1: who, what, and the market's verdict; line 2: the fact and when. Both single-line. */}
         <span className="flex items-baseline gap-2 whitespace-nowrap">
@@ -65,7 +80,7 @@ export function FeedRow({ item: i }: { item: RankedItem }) {
           {/* Each reason part is a unit; one that doesn't fit wraps onto the clipped second line, so a part is dropped whole, never cut. */}
           <span className={`ml-auto flex h-5 min-w-0 flex-wrap justify-end gap-x-1 overflow-hidden pl-2 text-[0.8125rem] leading-5 ${quietReason ? "text-ink-2 italic" : i.boosted ? "font-semibold" : "text-ink-2"}`}>
             {i.boosted && <span className="sr-only">Ranked high: </span>}
-            {reason.split(" · ").map((u, k) => (
+            {shownReason && shownReason.split(" · ").map((u, k) => (
               <span key={k}>{k > 0 && "· "}<Signed text={u} /></span>
             ))}
           </span>
@@ -75,14 +90,18 @@ export function FeedRow({ item: i }: { item: RankedItem }) {
           <span className="ml-auto shrink-0 text-[0.8125rem] text-ink-2">{filedAt(i.filed)}</span>
         </span>
       </button>
-      {open && (
-        <div id={id} className="pb-4 pt-1 text-[0.875rem] leading-[1.45]">
-          {i.card?.type === "results" ? <Results c={i.card} /> : i.card?.type === "management_change" ? <Mgmt c={i.card} /> : <Other i={i} />}
-          <Why i={i} />
-          <Source i={i} page={i.card?.type === "results" ? i.card.pages[0] : undefined} />
-        </div>
-      )}
+      {open && <div id={id} className="pb-4"><Detail i={i} /></div>}
     </li>
+  );
+}
+
+export function Detail({ i }: { i: RankedItem }) {
+  return (
+    <div className="pt-1 text-[0.875rem] leading-[1.45]">
+      {i.card?.type === "results" ? <Results c={i.card} /> : i.card?.type === "management_change" ? <Mgmt c={i.card} /> : <Other i={i} />}
+      <Why i={i} />
+      <Source i={i} page={i.card?.type === "results" ? i.card.pages[0] : undefined} />
+    </div>
   );
 }
 
@@ -97,7 +116,7 @@ function Why({ i }: { i: RankedItem }) {
   );
 }
 
-const crore = (v: number | null) =>
+export const crore = (v: number | null) =>
   v == null ? "not disclosed" : v.toLocaleString("en-IN", { maximumFractionDigits: Math.abs(v) < 100 ? 1 : 0 });
 
 function Change({ v }: { v: number | null }) {
@@ -181,7 +200,7 @@ function Other({ i }: { i: RankedItem }) {
   const missingCard = i.tier === "P1" && i.category === "results"; // P1 results without a card: the sanity gate refused it
   return (
     <>
-      {i.subject && i.subject !== i.headline && <p>{i.subject}</p>}
+      {i.subject && <p className="text-ink-2">As filed: {i.subject}</p>}
       {i.note && <p className="mt-1 text-ink-2">{i.note}</p>}
       {missingCard && !i.card_error && (
         <p className="mt-1 text-ink-2">Numbers not shown: no results table in this filing could be checked. Open the filing for the figures.</p>

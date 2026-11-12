@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { Avatar, shortName } from "@/components/Company";
 import { eventLabel, keyFact } from "@/components/FeedRow";
 import { Signed } from "@/components/Signed";
 import { FeedSkeleton, LoadFailed } from "@/components/States";
@@ -42,26 +43,39 @@ export default function Alerts() {
       ) : (
         days.map((d) => (
           <section key={d} aria-labelledby={`d-${d}`}>
-            <h2 id={`d-${d}`} className="border-b border-ink/80 pt-4 pb-1.5 text-[0.8125rem] font-semibold">{shortDate(d)}</h2>
+            <h2 id={`d-${d}`} className="border-b border-rule pt-5 pb-1.5 font-serif text-[1rem] font-semibold">{shortDate(d)}</h2>
             <ul>
-              {alerts.filter((a) => a.date === d).map((a) => (
-                <li key={a.key} className="border-b border-rule py-2.5">
-                  <p className="flex items-baseline gap-2">
-                    <span className="text-[0.9375rem] font-semibold tracking-[0.01em]">{a.symbol}</span>
-                    <span className="text-[0.875rem] text-ink-2">{a.item ? eventLabel(a.item) : KIND[a.kind]}</span>
-                    {fresh?.has(a.key) && <span className="ml-auto text-[0.75rem] font-semibold text-accent">New</span>}
-                  </p>
-                  <p className={`mt-0.5 text-[0.875rem] leading-[1.4] ${a.kind === "error" ? "text-ink-2" : ""}`}>
-                    <Signed text={a.item ? keyFact(a.item) : a.text} />
-                    {a.url && (
-                      <>
-                        {" "}
-                        <a href={a.url} target="_blank" rel="noopener" className="whitespace-nowrap text-accent underline">Open filing</a>
-                      </>
+              {alerts.filter((a) => a.date === d).map((a) => {
+                const kind = a.item ? eventLabel(a.item) : a.kind === "price" ? (a.text.includes("%") ? (a.text.includes("volume") ? "Price & volume" : "Price") : "Volume") : KIND[a.kind];
+                const co = feed?.companies?.[a.symbol];
+                const body = (
+                  <>
+                    <Avatar name={co?.name ?? a.item?.name ?? a.symbol} sector={co?.sector} size="sm" />
+                    <span className="min-w-0 flex-1">
+                      <span className="flex items-baseline gap-2">
+                        <span className="text-[0.875rem] font-semibold">{co ? shortName(co.name) : a.symbol}</span>
+                        <span className="text-[0.8125rem] text-ink-2">{kind}</span>
+                        {fresh?.has(a.key) && <span className="ml-auto text-[0.75rem] font-semibold text-accent">New</span>}
+                      </span>
+                      <span className={`mt-0.5 block text-[0.875rem] leading-[1.4] ${a.kind === "error" ? "text-ink-2" : ""}`}>
+                        <Signed text={a.item ? keyFact(a.item) : a.text} />
+                      </span>
+                    </span>
+                  </>
+                );
+                return (
+                  <li key={a.key} className="border-b border-rule">
+                    {a.url ? (
+                      <a href={a.url} target="_blank" rel="noopener" aria-label={`${a.symbol} ${kind}: open the filing`} className="flex items-center gap-3 py-3 active:bg-paper-2">
+                        {body}
+                        <svg viewBox="0 0 16 16" className="size-4 shrink-0 text-ink-2" aria-hidden="true"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                      </a>
+                    ) : (
+                      <div className="flex items-center gap-3 py-3">{body}</div>
                     )}
-                  </p>
-                </li>
-              ))}
+                  </li>
+                );
+              })}
             </ul>
           </section>
         ))

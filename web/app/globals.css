@@ -5,6 +5,7 @@
 @theme {
   --color-paper: oklch(97.6% 0.009 84);
   --color-paper-2: oklch(94.6% 0.011 82);
+  --color-card: oklch(99.3% 0.004 85);
   --color-ink: oklch(22% 0.012 60);
   --color-ink-2: oklch(46% 0.014 62);
   --color-rule: oklch(87.5% 0.012 78);
@@ -17,6 +18,7 @@
 }
 
 html {
+  color-scheme: only light; /* never let the browser force-dark the paper */
   background: var(--color-paper);
   color: var(--color-ink);
   -webkit-text-size-adjust: 100%;

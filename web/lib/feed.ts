@@ -13,11 +13,13 @@ export type MgmtCard = { type: "management_change"; people: Person[]; model_note
 export type Item = {
   id: string; symbol: string; name: string; filed: string; subject: string | null; headline: string | null; note: string | null;
   category: string; tier: Tier; classify_error: string | null; card_error?: string; url: string | null; source: string;
-  reaction_day: string; last_bar: string | null; reaction: Reaction | null; card?: ResultsCard | MgmtCard;
+  reaction_day: string; last_bar: string | null; reaction: Reaction | null; card?: ResultsCard | MgmtCard; title?: string | null;
 };
+export type Company = { name: string; sector: string | null; closes: [string, number][] };
 export type Day = Reaction & { symbol: string; date: string };
 export type Feed = {
   generated_at: string; window: [string, string]; thresholds: { volume_multiple: number; excess_move_pct: number };
+  portfolio?: string[]; companies?: Record<string, Company>;
   items: Item[]; alerts: { symbol: string; date: string; kind: string; text: string }[]; days: Day[];
   failed: { symbol: string; error: string }[];
 };
