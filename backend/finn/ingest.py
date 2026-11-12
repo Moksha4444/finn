@@ -158,6 +158,8 @@ def print_digest(feed: dict) -> None:
                 print(f"       {l['name']:<16} {v:>10}   QoQ {pct(l['qoq_pct']):>7}   YoY {pct(l['yoy_pct']):>7}")
             for o in card["one_offs"]:
                 print(f"       ! {o}")
+        elif card and card["type"] == "fund_raise":
+            print(f"       {card['instrument']} · size {card['size_cr'] or 'not stated'} cr · dilution {card['dilution_pct'] or 'n/a'}%")
         elif card:
             for p in card["people"]:
                 print(f"       {p['change']}: {p['name']} · {p['role']} · {p.get('effective') or ''}")
