@@ -26,6 +26,11 @@ export default function Alerts() {
   if (!alerts) return <FeedSkeleton header={false} rows={6} />;
 
   const days = [...new Set(alerts.map((a) => a.date))];
+  // the smallest Brief window that still contains the alert's day
+  const winFor = (filed: string) => {
+    const hours = (Date.parse(feed!.generated_at) - Date.parse(`${filed}:00+05:30`)) / 36e5;
+    return hours <= 24 ? "24h" : hours <= 24 * 7 ? "7d" : "30d";
+  };
   return (
     <>
       <section className="pt-5 pb-4">
@@ -65,11 +70,11 @@ export default function Alerts() {
                 );
                 return (
                   <li key={a.key} className="border-b border-rule">
-                    {a.url ? (
-                      <a href={a.url} target="_blank" rel="noopener" aria-label={`${a.symbol} ${kind}: open the filing`} className="flex items-center gap-3 py-3 active:bg-paper-2">
+                    {a.item ? (
+                      <Link href={`/?open=${a.symbol}&w=${winFor(a.item.filed)}`} className="flex items-center gap-3 py-3 active:bg-paper-2">
                         {body}
                         <svg viewBox="0 0 16 16" className="size-4 shrink-0 text-ink-2" aria-hidden="true"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                      </a>
+                      </Link>
                     ) : (
                       <div className="flex items-center gap-3 py-3">{body}</div>
                     )}

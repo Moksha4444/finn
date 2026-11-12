@@ -43,7 +43,10 @@ export function LoadFailed({ error, retry }: { error: string; retry: () => void 
     <section className="pt-5" role="alert">
       <h1 className="font-serif text-[1.75rem] leading-[1.15] font-semibold tracking-[-0.015em]">The brief didn&rsquo;t load.</h1>
       <p className="mt-2 text-[0.9375rem] text-ink-2">
-        The data file couldn&rsquo;t be fetched ({error}). Check your connection, then try again. The original filings are still on BSE and NSE.
+        {error.startsWith("HTTP 5")
+          ? `FINN's data server didn't respond (${error}). Try again in a minute.`
+          : `The data file couldn't be fetched (${error}). Check your connection, then try again.`}{" "}
+        The original filings are still on BSE and NSE.
       </p>
       <button type="button" onClick={retry} className="mt-4 h-10 rounded-md border border-ink/70 px-4 text-[0.9375rem] font-medium hover:bg-paper-2">
         Try again

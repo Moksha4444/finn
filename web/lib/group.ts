@@ -40,5 +40,9 @@ export function group(items: RankedItem[]): Group[] {
       score: Math.max(...list.map((i) => i.score)),
     });
   }
-  return out.sort((a, b) => Number(b.material) - Number(a.material) || b.score - a.score || b.lead.filed.localeCompare(a.lead.filed));
+  // equal scores: the bigger move vs Nifty, then the bigger volume spike, leads (the 30-day view is all ties)
+  const all = (g: Group) => [g.lead, ...g.docs, ...g.more].filter((i) => i.boosted && i.reaction);
+  const move = (g: Group) => Math.max(0, ...all(g).map((i) => Math.abs(i.reaction!.excess_pct ?? i.reaction!.move_pct)));
+  const vol = (g: Group) => Math.max(0, ...all(g).map((i) => i.reaction!.vol_ratio ?? 0));
+  return out.sort((a, b) => Number(b.material) - Number(a.material) || b.score - a.score || move(b) - move(a) || vol(b) - vol(a) || b.lead.filed.localeCompare(a.lead.filed));
 }

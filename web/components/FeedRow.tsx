@@ -26,15 +26,18 @@ export function keyFact(i: Item): string {
 // The human one-liner from ingest (cheap model, numbers copied from the filing), else the exchange subject
 // with its boilerplate stripped by rule.
 export function title(i: Item): string {
-  if (i.title) return i.title;
+  if (i.title) return rupee(i.title);
   const raw = i.headline || i.subject || "Filing";
   const clean = raw
     .replace(/^Announcement under Regulation 30 \(LODR\)-?\s*/i, "")
     .replace(/^(Regulation 30\s*|Press Release Titled\s*|Disclosure under Regulation 30[^-:]*[-:]?\s*)/i, "")
     .replace(/^"(.*)"\.?$/, "$1")
     .trim();
-  return clean ? clean.charAt(0).toUpperCase() + clean.slice(1) : raw;
+  return rupee(clean ? clean.charAt(0).toUpperCase() + clean.slice(1) : raw);
 }
+
+// Filings write Rs. / INR; the app writes ₹ (display only, the data keeps the filing's text)
+const rupee = (s: string) => s.replace(/\b(?:Rs\.?|INR)\s?(?=\d)/g, "₹");
 
 // rank() reasons start with the category, which line 1 already shows. On the row, a move that crossed
 // the threshold shows only its vs-Nifty part (the part that triggered it); the expanded view has the full string.
@@ -111,7 +114,7 @@ function Why({ i }: { i: RankedItem }) {
   return (
     <p className="mt-2 text-[0.8125rem] text-ink-2">
       <span className="font-medium text-ink">Why it&rsquo;s here: </span>
-      <Signed text={i.reason.replace(/^Ranked high: /, "ranked high: ")} />
+      <Signed text={i.reason.replace(/^Ranked high: /, "ranked high: ").replace("Reaction pending", "market reaction not in yet")} />
       {day}
     </p>
   );

@@ -39,9 +39,17 @@ export default function Brief() {
   const [win, setWinState] = useState<Win>("24h");
   const [showRoutine, setShowRoutine] = useState(false);
   const [allCards, setAllCards] = useState(false);
+  const [openSym, setOpenSym] = useState<string | null>(null);
   useEffect(() => {
-    const w = sessionStorage.getItem("finn.win") as Win | null; // keep the window across tabs
+    // an alert links here as /?open=SYMBOL&w=7d; otherwise keep the window chosen earlier in this session
+    const q = new URLSearchParams(location.search);
+    const w = (q.get("w") ?? sessionStorage.getItem("finn.win")) as Win | null;
     if (w && WINS.includes(w)) setWinState(w);
+    if (q.get("open")) {
+      setOpenSym(q.get("open"));
+      setAllCards(true);
+      history.replaceState(null, "", "/"); // a reload shouldn't re-open it
+    }
   }, []);
   const setWin = (w: Win) => { setWinState(w); setShowRoutine(false); setAllCards(false); sessionStorage.setItem("finn.win", w); };
 
@@ -75,7 +83,7 @@ export default function Brief() {
               type="button"
               aria-pressed={w === win}
               onClick={() => setWin(w)}
-              className={`h-10 rounded-md ${w === win ? "bg-card font-semibold text-accent shadow-[0_1px_2px_oklch(22%_0.012_60/0.12)]" : "text-ink-2"}`}
+              className={`h-11 rounded-md ${w === win ? "bg-card font-semibold text-accent shadow-[0_1px_2px_oklch(22%_0.012_60/0.12)]" : "text-ink-2"}`}
             >
               {w === "24h" ? "Today" : w === "7d" ? "7 days" : "30 days"}
             </button>
@@ -92,7 +100,7 @@ export default function Brief() {
         <section aria-labelledby="h-matters" className="mt-6">
           <h2 id="h-matters" className="font-serif text-[1.1875rem] font-semibold">What matters</h2>
           <ol className="mt-2.5 space-y-3">
-            {(allCards ? matters : matters.slice(0, CARDS)).map((g) => <CompanyCard key={g.symbol} g={g} co={feed.companies?.[g.symbol]} end={end} />)}
+            {(allCards ? matters : matters.slice(0, CARDS)).map((g) => <CompanyCard key={g.symbol} g={g} co={feed.companies?.[g.symbol]} end={end} initialOpen={g.symbol === openSym} />)}
           </ol>
           {matters.length > CARDS && (
             <button type="button" aria-expanded={allCards} onClick={() => setAllCards(!allCards)} className="mt-2 min-h-11 w-full rounded-xl border border-rule text-[0.875rem] font-medium text-accent">
@@ -106,7 +114,7 @@ export default function Brief() {
         <section aria-labelledby="h-worth" className="mt-7">
           <h2 id="h-worth" className="font-serif text-[1.1875rem] font-semibold">Also worth a look</h2>
           <ol className="mt-1 border-t border-rule">
-            {worth.map((g) => <CompanyRow key={g.symbol} g={g} co={feed.companies?.[g.symbol]} />)}
+            {worth.map((g) => <CompanyRow key={g.symbol} g={g} co={feed.companies?.[g.symbol]} initialOpen={g.symbol === openSym} />)}
           </ol>
         </section>
       )}

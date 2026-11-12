@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { filedAt, shortDate, type Company as Co, type RankedItem } from "@/lib/feed";
 import type { Group } from "@/lib/group";
 import { period } from "@/lib/period";
@@ -113,7 +113,10 @@ function chipOf(g: Group): { text: string; strong: boolean } | null {
   const it = [g.lead, ...g.docs, ...g.more].find((i) => i.boosted) ?? g.lead;
   const r = reasonText(it);
   if (!r || r === "Reaction pending" || r === "No price data") return null;
-  return { text: r, strong: it.boosted };
+  const x = it.reaction;
+  // a volume-only crossing still says which way the stock went
+  const text = it.boosted && !r.includes("%") && x ? `${pct(x.excess_pct ?? x.move_pct)}${x.excess_pct != null ? " vs Nifty" : ""} · ${r}` : r;
+  return { text, strong: it.boosted };
 }
 
 function Chip({ c }: { c: { text: string; strong: boolean } }) {
@@ -162,10 +165,11 @@ function Body({ g }: { g: Group }) {
 function More({ g }: { g: Group }) {
   const [open, setOpen] = useState(false);
   if (!g.more.length) return null;
+  const p1 = [...new Set(g.more.filter((i) => i.tier === "P1").map(eventLabel))];
   return (
     <>
-      <button type="button" aria-expanded={open} onClick={() => setOpen(!open)} className="flex min-h-11 w-full items-center justify-between text-left text-[0.8125rem] font-medium text-accent">
-        {open ? "Hide" : `+${g.more.length} more ${g.more.length === 1 ? "filing" : "filings"}`}
+      <button type="button" aria-expanded={open} onClick={() => setOpen(!open)} className="flex min-h-11 w-full items-center justify-between gap-3 text-left text-[0.8125rem] font-medium text-accent">
+        {open ? "Hide" : `+${g.more.length} more ${g.more.length === 1 ? "filing" : "filings"}${p1.length ? ` · incl. ${p1.join(", ")}` : ""}`}
         <Chevron open={open} />
       </button>
       {open && <ol className="border-t border-rule">{g.more.map((i) => <FeedRow key={i.id} item={i} />)}</ol>}
@@ -173,34 +177,65 @@ function More({ g }: { g: Group }) {
   );
 }
 
-// "What matters": a rich card per company.
-export function CompanyCard({ g, co, end }: { g: Group; co?: Co; end: string }) {
+// A material filing that isn't the lead must not hide behind "+N more" (a CEO change under results).
+function AlsoMaterial({ g }: { g: Group }) {
+  const also = g.more.filter((i) => i.tier === "P1");
+  if (!also.length) return null;
+  return (
+    <p className="mt-2.5 text-[0.875rem] leading-[1.4]">
+      <span className="font-semibold">Also: </span>
+      <span className="text-ink-2">{eventLabel(also[0])} · </span>
+      <Signed text={title(also[0])} />
+      {also.length > 1 && <span className="text-ink-2"> (+{also.length - 1} more)</span>}
+    </p>
+  );
+}
+
+// Opened from an alert (/?open=SYMBOL): expand and bring into view.
+function useDeepOpen(initialOpen: boolean, setOpen: (v: boolean) => void) {
+  const ref = useRef<HTMLLIElement>(null);
+  useEffect(() => {
+    if (!initialOpen) return;
+    setOpen(true);
+    ref.current?.scrollIntoView({ block: "start" });
+  }, [initialOpen, setOpen]);
+  return ref;
+}
+
+// "What matters": a rich card per company. Only the headline is the toggle (its name is the headline);
+// a stretched ::after overlay keeps the whole card tappable without nesting lists inside a button.
+export function CompanyCard({ g, co, end, initialOpen = false }: { g: Group; co?: Co; end: string; initialOpen?: boolean }) {
   const [open, setOpen] = useState(false);
+  const ref = useDeepOpen(initialOpen, setOpen);
   const i = g.lead;
   const chip = chipOf(g);
   const id = `c-${g.symbol}`;
   return (
-    <li className="rounded-xl border border-rule bg-card">
-      <button type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)} className="block w-full rounded-xl px-4 pt-3.5 pb-3 text-left active:bg-paper-2/60">
-        <span className="flex items-center gap-3">
+    <li ref={ref} className="relative scroll-mt-4 rounded-xl border border-rule bg-card has-[h3_button:active]:bg-paper-2/50">
+      <div className="px-4 pt-3.5 pb-3">
+        <div className="flex items-center gap-3">
           <Avatar name={co?.name ?? i.name} sector={co?.sector} />
-          <span className="min-w-0 flex-1">
-            <span className="block truncate text-[0.9375rem] font-semibold">{shortName(co?.name ?? i.name)}</span>
-            <span className="block truncate text-[0.8125rem] text-ink-2">{g.symbol} · {eventLabel(i)} · {filedAt(i.filed)}</span>
-          </span>
-        </span>
-        <span className="mt-3 block text-[1.0625rem] leading-[1.35] font-semibold text-balance">
-          <Signed text={headlineOf(i)} />
-        </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[0.9375rem] font-semibold">{shortName(co?.name ?? i.name)}</p>
+            <p className="truncate text-[0.8125rem] text-ink-2">{g.symbol} · {eventLabel(i)} · {filedAt(i.filed)}</p>
+          </div>
+        </div>
+        <h3 className="mt-3 text-[1.0625rem] leading-[1.35] font-semibold text-balance">
+          <button type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}
+            className="text-left after:absolute after:inset-0 after:rounded-xl after:content-['']">
+            <Signed text={headlineOf(i)} />
+          </button>
+        </h3>
+        <AlsoMaterial g={g} />
         <Numbers i={i} />
         {co?.closes ? (
           <Spark closes={co.closes} mark={i.reaction ? i.reaction_day : undefined} end={end} chip={chip && <Chip c={chip} />} />
-        ) : chip && <span className="mt-3 block"><Chip c={chip} /></span>}
-        <span className="mt-2 flex items-center justify-end gap-1 text-[0.75rem] text-ink-2">
+        ) : chip && <div className="mt-3"><Chip c={chip} /></div>}
+        <p className="mt-2 flex items-center justify-end gap-1 text-[0.75rem] text-ink-2" aria-hidden="true">
           {open ? "Less" : "Details"} <Chevron open={open} />
-        </span>
-      </button>
-      <div className="px-4">
+        </p>
+      </div>
+      <div className="relative z-10 px-4">
         {open && <div id={id} className="pb-3"><Body g={g} /></div>}
         {g.more.length > 0 && <div className="border-t border-rule"><More g={g} /></div>}
       </div>
@@ -208,25 +243,26 @@ export function CompanyCard({ g, co, end }: { g: Group; co?: Co; end: string }) 
   );
 }
 
-// "Also worth a look": a compact row per company.
-export function CompanyRow({ g, co }: { g: Group; co?: Co }) {
+// "Also worth a look": a compact row per company (the button holds only inline text).
+export function CompanyRow({ g, co, initialOpen = false }: { g: Group; co?: Co; initialOpen?: boolean }) {
   const [open, setOpen] = useState(false);
+  const ref = useDeepOpen(initialOpen, setOpen);
   const i = g.lead;
   const chip = chipOf(g);
   const id = `r-${g.symbol}`;
   return (
-    <li className="border-b border-rule">
+    <li ref={ref} className="scroll-mt-4 border-b border-rule">
       <button type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)} className="flex w-full items-center gap-3 py-3 text-left active:bg-paper-2">
         <Avatar name={co?.name ?? i.name} sector={co?.sector} size="sm" />
         <span className="min-w-0 flex-1">
-          <span className="flex items-baseline gap-2">
-            <span className="shrink-0 text-[0.875rem] font-semibold">{shortName(co?.name ?? i.name)}</span>
+          <span className="flex flex-wrap items-baseline gap-x-2">
+            <span className="text-[0.875rem] font-semibold">{shortName(co?.name ?? i.name)}</span>
             <span className="min-w-0 truncate text-[0.8125rem] text-ink-2">{eventLabel(i)}{g.more.length > 0 && ` +${g.more.length}`}</span>
-            {chip && <span className={`ml-auto shrink-0 text-[0.75rem] ${chip.strong ? "font-semibold" : "text-ink-2"}`}><Signed text={chip.text} /></span>}
+            {chip && <span className={`ml-auto text-[0.75rem] ${chip.strong ? "font-semibold" : "text-ink-2"}`}><Signed text={chip.text} /></span>}
           </span>
-          <span className="mt-0.5 flex items-baseline gap-3 text-[0.875rem]">
-            <span className="min-w-0 truncate"><Signed text={headlineOf(i)} /></span>
-            <span className="ml-auto shrink-0 text-[0.75rem] text-ink-2">{shortDate(i.filed)}</span>
+          <span className="mt-0.5 flex flex-wrap items-baseline gap-x-3 text-[0.875rem]">
+            <span className="min-w-0 flex-1 truncate"><Signed text={headlineOf(i)} /></span>
+            <span className="text-[0.75rem] text-ink-2">{shortDate(i.filed)}</span>
           </span>
         </span>
       </button>
