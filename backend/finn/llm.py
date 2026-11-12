@@ -10,7 +10,7 @@ PROMPTS = ROOT / "backend" / "finn" / "prompts"
 LOG = CACHE / "llm_calls.jsonl"
 
 TIER = {  # task -> tier; tier -> env var
-    "classify": "CHEAP", "extract_results": "CHEAP", "extract_guidance": "CHEAP", "extract_bio": "CHEAP",
+    "classify": "CHEAP", "extract_results": "CHEAP", "extract_guidance": "CHEAP", "extract_bio": "CHEAP", "extract_balance_sheet": "CHEAP",
     "business_snapshot": "CHEAP", "headline": "CHEAP", "pvd_verdict": "STRONG", "bull_bear": "STRONG",
 }
 # STRONG = Groq's free gpt-oss-120b (user's decision 12 Nov: gemini-3.8-flash was overloaded for 17+ min);
