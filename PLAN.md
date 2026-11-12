@@ -1,7 +1,7 @@
 # FINN — build plan (11–15 Nov 2026)
 
 Single source of truth for the build. Scope and hard rules live in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.
-Current status: see §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
+Current status: see §3e (redesign), §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
 
 ---
 
@@ -145,6 +145,14 @@ Cheap model reads each transcript once → `{metric, target, period, quote, page
 - Ingest re-run for 30 days: 297 filings, 16 results + 16 mgmt cards, 7 card failures (shown with raw link), 0 failed tickers. LLM spend to date: **$0.131 / 107 calls**.
 - Dev on phone: `npx next dev -H <laptop Wi-Fi IP> -p 3000` from `web/`.
 - Next: motion pass (separate skill), credibility chip after PvD, Vercel deploy (instructions first).
+
+## 3e. Status at 12 Nov, ~07:30 (redesign after the phone review)
+- **Why:** on the phone the feed read "as a notice board, not an app" (and Android force-darkened it). Impeccable critique of that build: 24/40.
+- **Built (as built in DESIGN.md):** forced light scheme; company is the unit (lead item by priority, other filings fold behind "+N more", results docs fold into the results item, a folded P1 surfaces as "Also:"); "What matters" cards (sector-tinted monogram, human headline, Rev/PAT with YoY, reaction chip, 30-day sparkline with the filing day marked; capped at 6) and "Also worth a look" rows; one "prices are in up to…" banner instead of "Reaction pending" on every row; bottom tab bar (Brief / Alerts / Research placeholder / Settings); PWA manifest + icons; original FINN mark; verdicts ("Tata Power and Bajaj Finance need a look today." / "Results season: 18 of 20 reported."); alerts open the company's card in-app.
+- **Ingest additions:** human ≤12-word titles for P1/P2 filings (cheap model on PDF pages 1–2, cached; results titles are built in the app from the card's numbers): 98 calls, $0.044. Screener sector + 30 days of closes per company.
+- Re-critique after the redesign: 28/40; its P1s (folded CEO change, whole-card button) fixed, plus deep links, tie-breaks by move, 44px targets, wrap at 200% zoom.
+- LLM spend to date: **$0.175 / 205 calls** (before PvD).
+- **Not done:** motion pass; "6 moved" as a filter; Maruti's parent-company results still classified as P1 results (classifier).
 
 ## 4. Day-by-day
 

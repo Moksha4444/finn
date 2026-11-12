@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-12T00:00:00+05:30",
+  "title": "Design System: FINN",
+  "extensions": {
+    "colorMeta": {
+      "accent": { "role": "primary", "displayName": "Ink-blue", "canonical": "oklch(37% 0.1 258)", "tonalRamp": ["oklch(15% 0.05 258)", "oklch(25% 0.08 258)", "oklch(37% 0.1 258)", "oklch(48% 0.1 258)", "oklch(60% 0.08 258)", "oklch(72% 0.06 258)", "oklch(84% 0.035 258)", "oklch(95% 0.012 258)"] },
+      "paper": { "role": "neutral", "displayName": "Paper", "canonical": "oklch(97.6% 0.009 84)", "tonalRamp": ["oklch(15% 0.008 84)", "oklch(28% 0.01 84)", "oklch(42% 0.012 84)", "oklch(56% 0.012 84)", "oklch(70% 0.012 84)", "oklch(84% 0.011 84)", "oklch(92% 0.01 84)", "oklch(97.6% 0.009 84)"] },
+      "paper-2": { "role": "neutral", "displayName": "Shaded paper", "canonical": "oklch(94.6% 0.011 82)", "tonalRamp": ["oklch(15% 0.008 82)", "oklch(28% 0.01 82)", "oklch(42% 0.012 82)", "oklch(56% 0.012 82)", "oklch(70% 0.012 82)", "oklch(84% 0.011 82)", "oklch(94.6% 0.011 82)", "oklch(97% 0.008 82)"] },
+      "card": { "role": "neutral", "displayName": "Card stock", "canonical": "oklch(99.3% 0.004 85)", "tonalRamp": ["oklch(15% 0.004 85)", "oklch(28% 0.004 85)", "oklch(42% 0.004 85)", "oklch(56% 0.004 85)", "oklch(70% 0.004 85)", "oklch(84% 0.004 85)", "oklch(94% 0.004 85)", "oklch(99.3% 0.004 85)"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "oklch(22% 0.012 60)", "tonalRamp": ["oklch(15% 0.01 60)", "oklch(22% 0.012 60)", "oklch(34% 0.013 60)", "oklch(46% 0.014 60)", "oklch(60% 0.013 60)", "oklch(74% 0.011 60)", "oklch(86% 0.008 60)", "oklch(95% 0.005 60)"] },
+      "ink-2": { "role": "neutral", "displayName": "Warm grey", "canonical": "oklch(46% 0.014 62)", "tonalRamp": ["oklch(15% 0.01 62)", "oklch(25% 0.012 62)", "oklch(35% 0.013 62)", "oklch(46% 0.014 62)", "oklch(60% 0.013 62)", "oklch(74% 0.011 62)", "oklch(86% 0.008 62)", "oklch(95% 0.005 62)"] },
+      "rule": { "role": "neutral", "displayName": "Hairline", "canonical": "oklch(87.5% 0.012 78)", "tonalRamp": ["oklch(15% 0.008 78)", "oklch(28% 0.01 78)", "oklch(42% 0.012 78)", "oklch(56% 0.012 78)", "oklch(70% 0.012 78)", "oklch(87.5% 0.012 78)", "oklch(92% 0.01 78)", "oklch(96% 0.006 78)"] },
+      "gain": { "role": "signal", "displayName": "Muted gain green", "canonical": "oklch(45% 0.1 152)", "tonalRamp": ["oklch(18% 0.05 152)", "oklch(30% 0.08 152)", "oklch(45% 0.1 152)", "oklch(56% 0.1 152)", "oklch(67% 0.08 152)", "oklch(78% 0.06 152)", "oklch(88% 0.035 152)", "oklch(96% 0.012 152)"] },
+      "loss": { "role": "signal", "displayName": "Muted loss red", "canonical": "oklch(47% 0.135 27)", "tonalRamp": ["oklch(18% 0.06 27)", "oklch(32% 0.1 27)", "oklch(47% 0.135 27)", "oklch(57% 0.12 27)", "oklch(68% 0.09 27)", "oklch(78% 0.06 27)", "oklch(88% 0.035 27)", "oklch(96% 0.012 27)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Verdict", "purpose": "The day's verdict and page titles; one per screen." },
+      "headline": { "displayName": "Section head", "purpose": "What matters / Also worth a look; alert day heads at 1rem." },
+      "title": { "displayName": "Card headline", "purpose": "The human one-line headline on a company card." },
+      "body": { "displayName": "Body", "purpose": "Row headlines, expanded detail, results tables." },
+      "meta": { "displayName": "Meta", "purpose": "Ticker, event and time lines; hints; source lines (ink-2)." },
+      "label": { "displayName": "Label", "purpose": "Chip text, figure labels, table column heads." }
+    },
+    "shadows": [
+      { "name": "segment-lift", "value": "0 1px 2px oklch(22% 0.012 60 / 0.12)", "purpose": "Selected window segment only. The system is otherwise flat." }
+    ],
+    "focus": { "value": "outline: 2px solid var(--color-accent); outline-offset: 2px; border-radius: 2px", "purpose": "Global :focus-visible ring." },
+    "motion": [
+      { "name": "none-yet", "value": "none", "purpose": "No transitions shipped. Planned pass: under 200ms, ease-out, expand in place, respects prefers-reduced-motion." }
+    ],
+    "breakpoints": [
+      { "name": "column", "value": "36rem", "purpose": "Max content width; phone layout centres on wider screens. Designed at 390px." }
+    ],
+    "sectorTint": { "hues": [28, 62, 96, 150, 188, 226, 262, 318], "background": "oklch(91.5% 0.035 H)", "text": "oklch(36% 0.07 H)", "purpose": "Monogram avatar tint hashed from the sector name, never per ticker." }
+  },
+  "components": [
+    {
+      "name": "Company card",
+      "kind": "card",
+      "refersTo": "company-card",
+      "description": "A 'What matters' card: monogram, name, human headline, two key figures, reaction chip and 30-day sparkline with the filing day marked.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-card-head\"><span class=\"ds-avatar\">TP</span><div><p class=\"ds-name\">Tata Power</p><p class=\"ds-meta\">TATAPOWER · Results · 11 Nov 17:29</p></div></div><h3 class=\"ds-headline\">Profit up <span class=\"ds-gain\">48.6%</span> YoY in the Sep '26 quarter</h3><dl class=\"ds-figs\"><div><dt>Revenue</dt><dd class=\"ds-fig\">₹19,636 cr</dd><dd><span class=\"ds-gain\">+26.3%</span> <span class=\"ds-muted\">YoY</span></dd></div><div><dt>PAT</dt><dd class=\"ds-fig\">₹1,366 cr</dd><dd><span class=\"ds-gain\">+48.6%</span> <span class=\"ds-muted\">YoY</span></dd></div></dl><svg viewBox=\"0 0 100 32\" preserveAspectRatio=\"none\" class=\"ds-spark\"><polyline points=\"0,22 15,18 30,20 45,17 60,24 70,25 80,14 90,11 100,15\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.25\" vector-effect=\"non-scaling-stroke\"/><rect x=\"78.5\" y=\"12.5\" width=\"3\" height=\"3\" rx=\"0.5\" fill=\"oklch(37% 0.1 258)\"/></svg></article>",
+      "css": ".ds-card { background: oklch(99.3% 0.004 85); border: 1px solid oklch(87.5% 0.012 78); border-radius: 0.75rem; padding: 14px 16px 12px; color: oklch(22% 0.012 60); font-family: 'Libre Franklin', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; max-width: 350px; cursor: pointer; } .ds-card:active { background: oklch(94.6% 0.011 82 / 0.5); } .ds-card:focus-visible { outline: 2px solid oklch(37% 0.1 258); outline-offset: 2px; } .ds-card-head { display: flex; align-items: center; gap: 12px; } .ds-avatar { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 0.6rem; background: oklch(91.5% 0.035 96); color: oklch(36% 0.07 96); font-weight: 600; font-size: 0.875rem; } .ds-name { margin: 0; font-size: 0.9375rem; font-weight: 600; } .ds-meta { margin: 0; font-size: 0.8125rem; color: oklch(46% 0.014 62); } .ds-headline { margin: 12px 0 0; font-size: 1.0625rem; line-height: 1.35; font-weight: 600; } .ds-figs { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; margin: 12px 0 0; } .ds-figs dt { font-size: 0.75rem; color: oklch(46% 0.014 62); } .ds-figs dd { margin: 0; font-size: 0.8125rem; } .ds-figs .ds-fig { font-size: 1rem; font-weight: 600; } .ds-gain { color: oklch(45% 0.1 152); } .ds-muted { color: oklch(46% 0.014 62); } .ds-spark { display: block; width: 100%; height: 32px; margin-top: 12px; color: oklch(46% 0.014 62); overflow: visible; }"
+    },
+    {
+      "name": "Company row",
+      "kind": "custom",
+      "refersTo": "company-row",
+      "description": "An 'Also worth a look' row: hairline-separated, small monogram, two lines, expands in place.",
+      "html": "<button class=\"ds-row\"><span class=\"ds-av-sm\">CD</span><span class=\"ds-row-text\"><span class=\"ds-row-1\"><b>CDSL</b> <span class=\"ds-muted\">Dividend +1</span><span class=\"ds-row-r ds-muted\"><span class=\"ds-loss\">−1.2%</span> vs Nifty</span></span><span class=\"ds-row-2\"><span>Interim dividend of ₹3 per share</span><span class=\"ds-muted ds-small\">10 Nov</span></span></span></button>",
+      "css": ".ds-row { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 350px; padding: 12px 0; border: 0; border-bottom: 1px solid oklch(87.5% 0.012 78); background: oklch(97.6% 0.009 84); color: oklch(22% 0.012 60); font: inherit; font-family: 'Libre Franklin', ui-sans-serif, sans-serif; text-align: left; cursor: pointer; } .ds-row:active { background: oklch(94.6% 0.011 82); } .ds-row:focus-visible { outline: 2px solid oklch(37% 0.1 258); outline-offset: 2px; } .ds-av-sm { display: grid; place-items: center; width: 32px; height: 32px; flex-shrink: 0; border-radius: 0.6rem; background: oklch(91.5% 0.035 226); color: oklch(36% 0.07 226); font-weight: 600; font-size: 0.75rem; } .ds-row-text { flex: 1; min-width: 0; } .ds-row-1 { display: flex; gap: 8px; align-items: baseline; font-size: 0.875rem; } .ds-row-1 .ds-muted { font-size: 0.8125rem; } .ds-row-r { margin-left: auto; font-size: 0.75rem; } .ds-row-2 { display: flex; gap: 12px; align-items: baseline; margin-top: 2px; font-size: 0.875rem; } .ds-row-2 > span:first-child { flex: 1; } .ds-muted { color: oklch(46% 0.014 62); } .ds-small { font-size: 0.75rem; } .ds-loss { color: oklch(47% 0.135 27); }"
+    },
+    {
+      "name": "Reaction chip",
+      "kind": "chip",
+      "refersTo": "reaction-chip",
+      "description": "The market's verdict on a filing. Quiet by default; bold with a darker border when it boosted the rank.",
+      "html": "<span class=\"ds-chip\"><span class=\"ds-gain\">+3.1%</span> vs Nifty</span> <span class=\"ds-chip ds-chip-strong\"><span class=\"ds-loss\">−6.4%</span> vs Nifty · 3.2× vol</span>",
+      "css": ".ds-chip { display: inline-block; border: 1px solid oklch(87.5% 0.012 78); border-radius: 9999px; padding: 2px 8px; font-family: 'Libre Franklin', ui-sans-serif, sans-serif; font-size: 0.75rem; line-height: 1.1rem; color: oklch(46% 0.014 62); white-space: nowrap; font-variant-numeric: tabular-nums; } .ds-chip-strong { border-color: oklch(22% 0.012 60 / 0.5); color: oklch(22% 0.012 60); font-weight: 600; } .ds-gain { color: oklch(45% 0.1 152); } .ds-loss { color: oklch(47% 0.135 27); }"
+    },
+    {
+      "name": "Window control",
+      "kind": "nav",
+      "refersTo": "window-control",
+      "description": "Today / 7 days / 30 days segmented control; carries the system's only shadow.",
+      "html": "<div class=\"ds-seg\" role=\"group\"><button class=\"ds-seg-b\" aria-pressed=\"true\">Today</button><button class=\"ds-seg-b\" aria-pressed=\"false\">7 days</button><button class=\"ds-seg-b\" aria-pressed=\"false\">30 days</button></div>",
+      "css": ".ds-seg { display: grid; grid-template-columns: repeat(3, 1fr); max-width: 350px; padding: 2px; border: 1px solid oklch(87.5% 0.012 78); border-radius: 0.5rem; background: oklch(94.6% 0.011 82 / 0.6); font-family: 'Libre Franklin', ui-sans-serif, sans-serif; } .ds-seg-b { height: 44px; border: 0; border-radius: 0.375rem; background: transparent; color: oklch(46% 0.014 62); font: inherit; font-size: 0.9375rem; cursor: pointer; } .ds-seg-b[aria-pressed=true] { background: oklch(99.3% 0.004 85); color: oklch(37% 0.1 258); font-weight: 600; box-shadow: 0 1px 2px oklch(22% 0.012 60 / 0.12); } .ds-seg-b:focus-visible { outline: 2px solid oklch(37% 0.1 258); outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "The one button style: Try again, Reset to defaults. Ink outline, no fill.",
+      "html": "<button class=\"ds-btn\">Try again</button> <button class=\"ds-btn\" disabled>Reset to defaults</button>",
+      "css": ".ds-btn { height: 40px; padding: 0 16px; border: 1px solid oklch(22% 0.012 60 / 0.7); border-radius: 0.375rem; background: transparent; color: oklch(22% 0.012 60); font-family: 'Libre Franklin', ui-sans-serif, sans-serif; font-size: 0.9375rem; font-weight: 500; cursor: pointer; } .ds-btn:hover { background: oklch(94.6% 0.011 82); } .ds-btn:focus-visible { outline: 2px solid oklch(37% 0.1 258); outline-offset: 2px; } .ds-btn:disabled { border-color: oklch(87.5% 0.012 78); color: oklch(46% 0.014 62); background: transparent; cursor: default; }"
+    },
+    {
+      "name": "Threshold input",
+      "kind": "input",
+      "refersTo": "number-field",
+      "description": "Settings number field; right-aligned, saved on blur or Enter, loss border when invalid.",
+      "html": "<label class=\"ds-field\"><span>Move vs Nifty<small>either direction</small></span><span class=\"ds-in-wrap\"><span class=\"ds-muted\">±</span><input class=\"ds-in\" type=\"number\" value=\"5\"><span class=\"ds-muted\">%</span></span></label>",
+      "css": ".ds-field { display: flex; justify-content: space-between; align-items: center; gap: 12px; max-width: 350px; padding: 12px 0; border-bottom: 1px solid oklch(87.5% 0.012 78); font-family: 'Libre Franklin', ui-sans-serif, sans-serif; font-size: 0.9375rem; color: oklch(22% 0.012 60); } .ds-field small { display: block; font-size: 0.8125rem; color: oklch(46% 0.014 62); } .ds-in-wrap { display: flex; align-items: baseline; gap: 4px; } .ds-in { width: 4.5rem; height: 40px; padding: 0 8px; border: 1px solid oklch(22% 0.012 60 / 0.4); border-radius: 0.375rem; background: oklch(97.6% 0.009 84); text-align: right; font: inherit; font-size: 1rem; } .ds-in:focus-visible { outline: 2px solid oklch(37% 0.1 258); outline-offset: 2px; } .ds-in:invalid, .ds-in[aria-invalid=true] { border-color: oklch(47% 0.135 27); } .ds-muted { color: oklch(46% 0.014 62); }"
+    },
+    {
+      "name": "Tab bar",
+      "kind": "nav",
+      "refersTo": "tab-bar",
+      "description": "Fixed bottom navigation with authored 1.75-stroke icons and an ink-blue alert badge.",
+      "html": "<nav class=\"ds-tabs\"><a class=\"ds-tab\" aria-current=\"page\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 6.5h14M5 12h10M5 17.5h5\"/></svg>Brief</a><a class=\"ds-tab\"><span class=\"ds-ic\"><svg viewBox=\"0 0 24 24\"><path d=\"M6.5 16.5v-5a5.5 5.5 0 0 1 11 0v5l1.5 1.5h-14z\"/><path d=\"M10 20.5h4\"/></svg><span class=\"ds-badge\">3</span></span>Alerts</a><a class=\"ds-tab\"><svg viewBox=\"0 0 24 24\"><circle cx=\"10.5\" cy=\"10.5\" r=\"5.5\"/><path d=\"M14.5 14.5l5 5\"/></svg>Research</a><a class=\"ds-tab\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 7.5h8M17 7.5h2M5 16.5h2M11 16.5h8\"/><circle cx=\"15\" cy=\"7.5\" r=\"2\"/><circle cx=\"9\" cy=\"16.5\" r=\"2\"/></svg>Settings</a></nav>",
+      "css": ".ds-tabs { display: grid; grid-template-columns: repeat(4, 1fr); height: 56px; max-width: 390px; border-top: 1px solid oklch(87.5% 0.012 78); background: oklch(97.6% 0.009 84); font-family: 'Libre Franklin', ui-sans-serif, sans-serif; } .ds-tab { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 0.6875rem; color: oklch(46% 0.014 62); text-decoration: none; cursor: pointer; } .ds-tab[aria-current=page] { color: oklch(37% 0.1 258); font-weight: 600; } .ds-tab:focus-visible { outline: 2px solid oklch(37% 0.1 258); outline-offset: -2px; } .ds-tab svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; } .ds-ic { position: relative; } .ds-badge { position: absolute; top: -4px; left: 16px; min-width: 18px; padding: 0 4px; border-radius: 9999px; background: oklch(37% 0.1 258); color: oklch(97.6% 0.009 84); font-size: 0.625rem; line-height: 18px; font-weight: 600; text-align: center; box-shadow: 0 0 0 2px oklch(97.6% 0.009 84); }"
+    },
+    {
+      "name": "Pending banner",
+      "kind": "custom",
+      "refersTo": "pending-banner",
+      "description": "Reaction pending, said once for the whole brief.",
+      "html": "<p class=\"ds-banner\">Prices are in up to 9 Nov. Market reaction to later filings shows after the next price update.</p>",
+      "css": ".ds-banner { max-width: 350px; margin: 0; padding: 8px 12px; border-radius: 0.5rem; background: oklch(94.6% 0.011 82); color: oklch(46% 0.014 62); font-family: 'Libre Franklin', ui-sans-serif, sans-serif; font-size: 0.8125rem; line-height: 1.4; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Morning paper",
+    "overview": "A sharp printed brief, not a trading terminal: warm paper, near-black ink, one deep ink-blue accent, and a serif verdict at the top that says in one sentence what the day needs (\"Tata Power and Bajaj Finance need a look today.\" / \"Results season: 18 of 20 reported.\"). Everything under the verdict exists to justify it. The pre-build intent (calm, dense, editorial, read over morning chai) survived the build intact.\n\nWhat changed after the user's phone review: the company is the unit, not the filing. Each company appears once per window, led by its most important filing (results > management change > fund raise > ...), with the rest folded behind \"+N more filings\", results documents folded into the results item, and any other material filing surfaced as an \"Also:\" line so it can never hide. Material companies get a rich card; the rest get a compact row. This deliberately replaced the original \"2-line hairline rows, never boxed cards\" rule for the top tier: a phone-sized card with numbers and a sparkline answered \"does it matter?\" faster than a row did. Hairline rows remain the grammar everywhere below the top tier.\n\nDensity is phone-first (390px) and calm: one column, max 36rem, nothing decorative. Colour is information, not mood.",
+    "keyCharacteristics": [
+      "Serif verdict, sans everything else, tabular figures throughout.",
+      "Two tiers: \"What matters\" cards (max 6, then \"Show N more companies\"), \"Also worth a look\" rows; routine filings collapsed into one row.",
+      "Green/red only on signed numbers; ink-blue only on interactive or \"material\" marks.",
+      "Forced light scheme: the paper is the identity, so the browser may not dark-repaint it.",
+      "Flat paper; the only shadow is a 1px lift on the selected window segment."
+    ],
+    "rules": [
+      { "name": "The Number-Only Rule", "body": "Green and red touch the signed figure and nothing else. If a row is coloured, it is wrong.", "section": "colors" },
+      { "name": "The One Ink Rule", "body": "Ink-blue means \"you can act on this\" or \"this is material\". It never decorates.", "section": "colors" },
+      { "name": "The Paper Stays Paper Rule", "body": "color-scheme: only light on the root and in the viewport. There is no dark theme; do not add dark: variants.", "section": "colors" },
+      { "name": "The Serif Judges Rule", "body": "Serif is reserved for sentences that state a verdict or name a section. Data, labels and controls are always sans.", "section": "typography" },
+      { "name": "The Weight Not Colour Rule", "body": "Hierarchy comes from size and weight (400 / 500 / 600). No all-caps, no letter-spaced labels.", "section": "typography" },
+      { "name": "The Paper Has No Shadows Rule", "body": "Cards are separated by a hairline border and a lighter face, never a drop shadow.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do make the company the unit: one entry per company per window, lead item by priority, the rest folded.",
+      "Do cap \"What matters\" at 6 cards and put the rest behind one \"Show N more companies\" tap.",
+      "Do colour only the signed percentage, via Signed.",
+      "Do keep every target at 44px or more and pad the fixed bars for safe areas.",
+      "Do cite the source on every expanded item (\"Open filing at p. N\").",
+      "Do derive avatar tints from sector, never from the ticker."
+    ],
+    "donts": [
+      "Don't add drop shadows to cards, gradients, glassmorphism or coloured backgrounds.",
+      "Don't use emoji, icon fonts or decorative icons; icons are only the four authored tab glyphs and chevrons.",
+      "Don't use all-caps labels, eyebrows or kickers above headings.",
+      "Don't write long LLM paragraphs or \"insight\" filler; headlines are one line with numbers copied from the filing.",
+      "Don't add a dark theme or let the browser force one.",
+      "Don't repeat \"Reaction pending\" on rows; it is one banner."
+    ]
+  }
+}

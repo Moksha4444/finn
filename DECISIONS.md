@@ -64,6 +64,11 @@ Format: **Decision** · Why · What we gave up.
 - **Results period headers are parsed from 8 different label formats** seen in real filings ("30.09.2026", "30th Sep'26", "3 Months ended 30.09.2026"…). Unrecognised labels are shown as printed. Tested.
 - **Not built today:** motion (later pass), filing alerts linking to the in-app row (they open the PDF), credibility chip (waits for PvD), dark mode, PWA manifest.
 
+- **Redesign after the phone review (12 Nov): the company is the unit, not the filing.** One entry per company per window; the lead is chosen by priority (results > mgmt change > fund raise > …); results decks and outcome letters fold into the results item; a P1 that isn't the lead shows as an "Also:" line so a CEO change can't hide under results. Gave up: one-row-per-filing (still there inside folds and the routine list).
+- **Human titles from the cheap model, not rules.** ≤12 words from PDF pages 1–2, numbers copied as printed; the classifier's headline is reused when it already ran; results titles are written in the app from the card's numbers (no LLM arithmetic). Any failure falls back to the subject with boilerplate stripped by rule. 98 calls, $0.044.
+- **Boxed cards for "What matters" (deliberate departure from the original brief's "no boxes").** The phone review asked for an app feel; cards give the 2–6 material companies a clear tier above compact rows. Capped at 6 so a results-season month stays scannable.
+- **Forced light (`color-scheme: only light`).** No dark theme yet; letting Android auto-darken broke the paper identity and hid the P1 marker.
+
 ## Spike findings (11 Nov)
 - **BSE API needs full browser headers** (`Origin` + `sec-fetch-*`), not just User-Agent + Referer. Without them it returns 403. No cookies needed. **Works from a cloud IP:** `/health/bse` on Render (Singapore, free tier) returned live rows on 11 Nov, so live pull and cloud ingest can call BSE directly. Gave up: nothing; the local-ingest fallback wasn't needed.
 - **BSE's category alone misses results.** HDFCBANK filed Q2 results under "Board Meeting / Outcome of Board Meeting". The classifier needs a keyword rule on the subject ("financial results").
