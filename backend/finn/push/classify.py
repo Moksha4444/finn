@@ -42,6 +42,9 @@ RULES = [
 ROUTINE = r"board meeting intimation|prior intimation|newspaper|clipping|audio recording|video recording|schedule of"
 # Results decks / media releases accompany the results filing; the filing itself stays P1.
 SUPPORTING = r"presentation|press release|media|shareholders'? letter|quarterly report|analyst|investor meet"
+# A company's own results are "approved by the board", never "issued by" someone: this is another company's
+# (MARUTI: "Reference To The Financial Results Issued By Suzuki Motor Corporation", its parent's results).
+OTHERS_RESULTS = r"results?\b.{0,40}\b(issued|released|declared|announced|published) by\b"
 CATEGORIES = sorted({c for c, _ in RULES} | set(TIER_OF))
 SCHEMA = {"type": "object", "properties": {
     "category": {"type": "string", "enum": CATEGORIES},
@@ -123,6 +126,8 @@ def classify(row: dict, get_pdf=None, lender: bool = False) -> dict:
     lender: bank/NBFC (their debt raises are routine). LLM errors fall through to 'unclassified'."""
     cat = by_rules(row)
     out = {"by": "rule" if cat else "default"}
+    if cat == "results" and re.search(OTHERS_RESULTS, text_of(row)):
+        cat, out["note"] = "press_release", "Another company's results (e.g. the parent's), not this company's own"
     if cat is None and get_pdf:
         try:
             b = get_pdf()

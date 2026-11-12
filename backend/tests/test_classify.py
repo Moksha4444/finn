@@ -18,6 +18,8 @@ CASES = [  # (CATEGORYNAME, SUBCATNAME, NEWSSUB, HEADLINE) -> (category, tier)
     (("Company Update", "General", "Regulation 30 Capacity Addition", ""), ("capex", "P2")),
     ((None, None, "Announcement under Regulation 30 (LODR) - Bagging/receiving of order(s) or contract(s)", ""), ("press_release", "P2")),
     ((None, "Analysts/Institutional Investor Meet/Con. Call Updates", "CDSL has informed the Exchange about Schedule of Analyst Call with J.P. Morgan", None), ("investor_meetings", "P3")),
+    # MARUTI: its Japanese parent's results are not Maruti's results
+    (("Company Update", "General", "Reference To The Financial Results Issued By Suzuki Motor Corporation", "Reference to the Financial Results issued by Suzuki Motor Corporation"), ("press_release", "P2")),
 ]
 
 
