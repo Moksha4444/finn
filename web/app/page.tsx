@@ -5,7 +5,7 @@ import { CompanyCard, CompanyRow, shortName } from "@/components/Company";
 import { Collapse } from "@/components/Collapse";
 import { FeedRow } from "@/components/FeedRow";
 import { FeedSkeleton, LoadFailed } from "@/components/States";
-import { WIN_HOURS, WIN_PERIOD, inWindow, istTime, longDate, ranked, shortDate, useFeed, useSettings, type Feed, type RankedItem, type Win } from "@/lib/feed";
+import { WIN_HOURS, WIN_PERIOD, filedAt, inWindow, istTime, longDate, ranked, shortDate, useFeed, useSettings, type Feed, type RankedItem, type Win } from "@/lib/feed";
 import { group, type Group } from "@/lib/group";
 
 const WINS: Win[] = ["24h", "7d", "30d"];
@@ -68,6 +68,11 @@ export default function Brief() {
   const coverageDays = Math.round((Date.parse(feed.window[1]) - Date.parse(feed.window[0])) / 864e5);
   const short = WIN_HOURS[win] / 24 > coverageDays + 1;
   const end = feed.generated_at.slice(0, 10);
+  const missing = feed.failed.filter((f) => !f.as_of).map((f) => f.symbol);
+  const staleBy = new Map<string, string[]>(); // as-of time -> symbols kept from that fetch
+  for (const [sym, c] of Object.entries(feed.companies ?? {}))
+    if (c.stale_as_of) staleBy.set(c.stale_as_of, [...(staleBy.get(c.stale_as_of) ?? []), sym]);
+  const stale = [...staleBy];
 
   return (
     <>
@@ -141,11 +146,16 @@ export default function Brief() {
         </button>
       )}
 
-      {feed.failed.length > 0 && (
+      {missing.length > 0 && (
         <p className="mt-4 text-[0.875rem] text-ink-2">
-          Couldn&rsquo;t fetch filings for {feed.failed.map((f) => f.symbol).join(", ")}. They are missing from this brief.
+          Couldn&rsquo;t fetch filings for {missing.join(", ")}. They are missing from this brief.
         </p>
       )}
+      {stale.map(([asOf, syms]) => (
+        <p key={asOf} className="mt-4 text-[0.875rem] text-ink-2">
+          Couldn&rsquo;t refresh {syms.join(", ")}. Showing {syms.length === 1 ? "its" : "their"} filings as of {filedAt(asOf)} IST.
+        </p>
+      ))}
 
       <footer className="mt-8 text-[0.8125rem] leading-[1.45] text-ink-2">
         <p className="font-serif text-[1rem] text-ink">That&rsquo;s everything{win === "24h" ? " for today" : ""}.</p>

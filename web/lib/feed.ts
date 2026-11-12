@@ -23,13 +23,14 @@ export type Item = {
 // credibility: measured PvD promises from the last 4 calls (kept = hit/ahead, missed = miss/behind/moved away,
 // open = on track); null when nothing was measurable. See DECISIONS.md.
 export type Credibility = { kept: number; missed: number; open: number };
-export type Company = { name: string; sector: string | null; closes: [string, number][]; credibility?: Credibility | null };
+// stale_as_of: this run couldn't refresh the company, so its filings are the last good fetch from that time
+export type Company = { name: string; sector: string | null; closes: [string, number][]; credibility?: Credibility | null; stale_as_of?: string };
 export type Day = Reaction & { symbol: string; date: string };
 export type Feed = {
   generated_at: string; window: [string, string]; thresholds: { volume_multiple: number; excess_move_pct: number };
   portfolio?: string[]; companies?: Record<string, Company>; nifty?: [string, number][];
   items: Item[]; alerts: { symbol: string; date: string; kind: string; text: string }[]; days: Day[];
-  failed: { symbol: string; error: string }[];
+  failed: { symbol: string; error: string; as_of?: string }[];
 };
 export type RankedItem = Item & Ranked;
 
@@ -129,7 +130,7 @@ export function buildAlerts(feed: Feed, s: Settings): Alert[] {
   for (const a of feed.alerts.filter((a) => a.kind === "error"))
     out.push({ key: `error|${a.symbol}|${a.date}`, symbol: a.symbol, date: a.date, kind: "error", text: a.text });
   for (const f of feed.failed)
-    out.push({ key: `error|${f.symbol}|failed`, symbol: f.symbol, date: feed.window[1], kind: "error", text: `Couldn't fetch filings: ${f.error}` });
+    out.push({ key: `error|${f.symbol}|failed`, symbol: f.symbol, date: feed.window[1], kind: "error", text: f.as_of ? `Couldn't refresh; showing filings as of ${filedAt(f.as_of)}` : `Couldn't fetch filings: ${f.error}` });
   return out.sort((a, b) => b.date.localeCompare(a.date) || a.symbol.localeCompare(b.symbol));
 }
 

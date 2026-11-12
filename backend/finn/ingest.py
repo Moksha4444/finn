@@ -55,6 +55,8 @@ def ticker(sym: str, start: dt.date, end: dt.date, nifty) -> tuple[list[dict], l
         source, rows = "nse", nse.announcements(sym, start, end)
     lender = "Financing Profit" in co.get("quarters", {}).get("rows", {})  # screener's bank/NBFC table layout
     h = prices.history(sym)
+    if h.empty:  # yfinance swallows network errors and returns an empty frame: a fetch failure, not "no prices"
+        raise ConnectionError(f"no price history for {sym}")
     last_bar = h.index[-1].isoformat() if len(h) else None
 
     items, has_results_card = [], False
@@ -110,15 +112,35 @@ def credibility(sym: str) -> dict | None:
     return c if any(c.values()) else None
 
 
-def main(argv=None):
+MAX_FAILED = 2  # more failed tickers than this = the network is down, not one bad source: keep the old feed
+
+
+def carry_over(old: dict, sym: str, start: dt.date) -> dict | None:
+    """Last good data for one ticker from the previous feed, trimmed to the new window; None if it has none.
+    as_of = when that data was fetched (kept across repeated failures)."""
+    co = (old.get("companies") or {}).get(sym)
+    if co is None:
+        return None
+    s = start.isoformat()
+    return {"items": [i for i in old["items"] if i["symbol"] == sym and i["filed"][:10] >= s],
+            "alerts": [x for x in old["alerts"] if x["symbol"] == sym and x["date"] >= s and x["kind"] != "error"],
+            "days": [d for d in old["days"] if d["symbol"] == sym and d["date"] >= s],
+            "company": co | {"stale_as_of": co.get("stale_as_of") or old["generated_at"]}}
+
+
+def main(argv=None) -> int:
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser()
     ap.add_argument("--days", type=int, default=7)
+    ap.add_argument("--force", action="store_true", help=f"write the feed even if more than {MAX_FAILED} tickers failed")
     ap.add_argument("symbols", nargs="*", default=PORTFOLIO)
     a = ap.parse_args(argv)
     end = dt.datetime.now(rank.IST).date()
     start = end - dt.timedelta(days=a.days)
     nifty = prices.history(prices.NIFTY)
+    if nifty.empty and not a.force:
+        print("REFUSED: no Nifty history (network down?). feed.json left as it was; --force to write anyway.", file=sys.stderr)
+        return 1
 
     items, alerts, days, failed, companies = [], [], [], [], {}
     for sym in a.symbols:
@@ -129,17 +151,35 @@ def main(argv=None):
         except Exception as e:  # whole ticker failed (BSE + NSE down): say so in the feed
             failed.append({"symbol": sym, "error": _err(e)})
             print(f"  {sym:<11} FAILED {_err(e)}", file=sys.stderr)
+    if len(failed) > MAX_FAILED and not a.force:
+        print(f"REFUSED: {len(failed)} tickers failed (> {MAX_FAILED}). feed.json left as it was; --force to write anyway.", file=sys.stderr)
+        return 1
+
+    # A failed ticker keeps its last good data, marked stale. So do portfolio tickers this run didn't ask for,
+    # so `ingest TCS` refreshes TCS without wiping the rest of the feed.
+    old = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else {}
+    symbols = a.symbols + [s for s in old.get("portfolio", []) if s not in a.symbols]
+    for f in failed:
+        if c := carry_over(old, f["symbol"], start):
+            f["as_of"] = c["company"]["stale_as_of"]
+    for sym in symbols:
+        if sym not in companies and (c := carry_over(old, sym, start)):
+            items += c["items"]; alerts += c["alerts"]; days += c["days"]; companies[sym] = c["company"]
+            print(f"  {sym:<11} kept data as of {c['company']['stale_as_of']}", file=sys.stderr)
 
     items.sort(key=lambda x: (x["score"], x["filed"]), reverse=True)  # rank, then newest first
     alerts.sort(key=lambda x: x["date"], reverse=True)
     feed = {"generated_at": dt.datetime.now(rank.IST).isoformat(timespec="minutes"), "window": [start.isoformat(), end.isoformat()],
             "thresholds": {"volume_multiple": VOLUME_MULTIPLE, "excess_move_pct": EXCESS_MOVE_PCT},
-            "portfolio": a.symbols, "companies": companies,
+            "portfolio": symbols, "companies": companies,
             "nifty": [[d.isoformat(), round(float(c), 2)] for d, c in nifty["Close"].items() if d >= start - dt.timedelta(days=31)],
             "items": items, "alerts": alerts, "days": days, "failed": failed}
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(feed, ensure_ascii=False, indent=1), encoding="utf-8")
+    tmp = OUT.with_suffix(".tmp")  # write-then-rename: a crash mid-write can't leave half a feed
+    tmp.write_text(json.dumps(feed, ensure_ascii=False, indent=1), encoding="utf-8")
+    tmp.replace(OUT)
     print_digest(feed)
+    return 0
 
 
 def print_digest(feed: dict) -> None:
@@ -171,8 +211,8 @@ def print_digest(feed: dict) -> None:
     for a in feed["alerts"]:
         print(f"  {a['date']} {a['symbol']:<11} {a['kind']:<6} {a['text'][:110]}")
     for f in feed["failed"]:
-        print(f"  FAILED {f['symbol']}: {f['error']}")
+        print(f"  FAILED {f['symbol']}: {f['error']}" + (f" (kept data as of {f['as_of']})" if f.get("as_of") else " (missing)"))
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

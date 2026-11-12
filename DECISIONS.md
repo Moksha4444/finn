@@ -150,6 +150,13 @@ Format: **Decision** · Why · What we gave up.
 
 - **Maruti's parent-company results no longer count as Maruti's results.** A company's own results are "approved by the board", never "issued by" someone, so "results ... issued/released/declared by" turns a results match into a press release (P2) with a note. Tested on the real row.
 
+## Overnight round (13 Nov): ingest safety, classifier, Also lines, segment PvD
+
+- **A partial ingest never overwrites a good feed.** On 12 Nov a DNS outage made 8 tickers fail mid-run and the run still wrote `feed.json`, wiping them. Now a ticker that fails keeps its last good items, alerts and price days from the previous feed (trimmed to the new window), and the feed marks it `stale_as_of` with the time of that fetch. The brief shows "Couldn't refresh X. Showing its filings as of 12 Nov 22:24 IST." If more than 2 tickers fail, or Nifty has no prices, ingest refuses to write and exits 1 (a CI run then fails visibly); `--force` overrides. Threshold 2: one bad scrip is normal (IRCTC on 11 Nov), three at once means the network, not the source. Gave up: nothing, since the stale data is labelled.
+- **An empty yfinance history counts as a fetch failure.** yfinance reports a network error as "possibly delisted" and returns an empty frame instead of raising, so a dropped connection used to look like "no price data". Every portfolio ticker has prices, so empty = failed.
+- **A single-ticker run (`ingest TCS`) now refreshes only TCS** and keeps the rest of the portfolio from the previous feed, marked with their as-of time. Before, it rewrote the feed with TCS alone. Writes are write-then-rename, so a crash can't leave half a file.
+- Tested with a simulated outage (all traffic through a dead proxy): refused, file byte-identical; with `--force`, 20/20 tickers kept their data, marked stale.
+
 ## Spike findings (11 Nov)
 - **BSE API needs full browser headers** (`Origin` + `sec-fetch-*`), not just User-Agent + Referer. Without them it returns 403. No cookies needed. **Works from a cloud IP:** `/health/bse` on Render (Singapore, free tier) returned live rows on 11 Nov, so live pull and cloud ingest can call BSE directly. Gave up: nothing; the local-ingest fallback wasn't needed.
 - **BSE's category alone misses results.** HDFCBANK filed Q2 results under "Board Meeting / Outcome of Board Meeting". The classifier needs a keyword rule on the subject ("financial results").
