@@ -176,7 +176,7 @@ function Credible({ sym, c }: { sym: string; c: Credibility }) {
   const shown = `Promises: ${parts}`;
   return (
     <Link
-      href={`/research?symbol=${sym}`}
+      href={`/research?symbol=${sym}#pvd`}
       aria-label={`Management promises, last 4 calls: ${parts}. Open research`}
       className="relative z-10 rounded-full border border-rule px-2 py-0.5 text-[0.75rem] leading-[1.1rem] font-medium text-accent after:absolute after:-inset-y-2.5 after:inset-x-0 after:content-[''] active:bg-paper-2"
     >
@@ -301,7 +301,7 @@ export function CompanyCard({ g, co, nifty, end, initialOpen = false }: {
       <div className="flex items-center gap-2.5">
         <Avatar name={co?.name ?? i.name} sector={co?.sector} />
         <div className="min-w-0 flex-1 leading-tight">
-          <p className="text-[0.875rem] font-medium">{shortName(co?.name ?? i.name)}</p>
+          <p className="text-[0.875rem] font-medium"><ResearchLink sym={g.symbol} name={shortName(co?.name ?? i.name)} /></p>
           <p className="text-[0.75rem] text-ink-2 [overflow-wrap:anywhere]">{g.symbol} · {eventLabel(i)} · {filedAt(i.filed)}</p>
         </div>
         <Chevron open={open} />
@@ -328,7 +328,8 @@ export function CompanyCard({ g, co, nifty, end, initialOpen = false }: {
   );
 }
 
-// "Also worth a look": a compact row per company (the button holds only inline text). Headlines wrap to 2 lines.
+// "Also worth a look": a compact row per company. The company name links to Research, so (as on the card) only the
+// headline is the toggle and a stretched overlay makes the rest of the row tappable. Headlines wrap to 2 lines.
 export function CompanyRow({ g, co, initialOpen = false }: { g: Group; co?: Co; initialOpen?: boolean }) {
   const [open, setOpen] = useState(false);
   const ref = useDeepOpen(initialOpen, setOpen);
@@ -337,26 +338,38 @@ export function CompanyRow({ g, co, initialOpen = false }: { g: Group; co?: Co; 
   const id = `r-${g.symbol}`;
   return (
     <li ref={ref} className="scroll-mt-4 border-b border-rule">
-      <button type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}
-        className="flex w-full items-start gap-3 py-3 text-left transition-colors duration-150 ease-out active:bg-paper-2">
+      <div className="relative flex items-start gap-3 py-3 transition-colors duration-150 ease-out has-[button:active]:bg-paper-2">
         <Avatar name={co?.name ?? i.name} sector={co?.sector} />
-        <span className="min-w-0 flex-1">
-          <span className="flex flex-wrap items-baseline gap-x-2">
-            <span className="text-[0.875rem] font-medium">{shortName(co?.name ?? i.name)}</span>
+        <div className="min-w-0 flex-1">
+          <p className="flex flex-wrap items-baseline gap-x-2">
+            <span className="text-[0.875rem] font-medium"><ResearchLink sym={g.symbol} name={shortName(co?.name ?? i.name)} /></span>
             <span className="shrink-0 text-[0.75rem] text-ink-2">{eventLabel(i)}{folded(g).length > 0 && ` +${folded(g).length}`}</span>
             {chip && <span className={`ml-auto shrink-0 text-[0.75rem] ${chip.strong ? "font-semibold" : "text-ink-2"}`}><Signed text={chip.text} /></span>}
-          </span>
-          <span className="mt-0.5 flex items-start gap-x-3 text-[0.875rem] leading-[1.35]">
-            <span className="line-clamp-2 min-w-0 flex-1"><Signed text={headlineOf(i)} /></span>
+          </p>
+          <div className="mt-0.5 flex items-start gap-x-3 text-[0.875rem] leading-[1.35]">
+            <button type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}
+              className="line-clamp-2 min-w-0 flex-1 text-left after:absolute after:inset-0 after:content-['']">
+              <span className="sr-only">{shortName(co?.name ?? i.name)}: </span>
+              <Signed text={headlineOf(i)} />
+            </button>
             <span className="shrink-0 pt-px text-[0.75rem] text-ink-2">{shortDate(i.filed)}</span>
-          </span>
-        </span>
-      </button>
+          </div>
+        </div>
+      </div>
       <Collapse open={open} id={id}>
         <div className="pb-2">
           <Body g={g} />
         </div>
       </Collapse>
     </li>
+  );
+}
+
+// The company name opens its research page; it sits above a card's or row's stretched toggle overlay.
+function ResearchLink({ sym, name }: { sym: string; name: string }) {
+  return (
+    <Link href={`/research?symbol=${sym}`} className="relative z-10 underline decoration-accent/40 underline-offset-[0.2em] after:absolute after:-inset-y-3 after:-inset-x-1 after:content-[''] active:text-accent">
+      {name}
+    </Link>
   );
 }

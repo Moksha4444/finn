@@ -38,10 +38,10 @@ export function FeedSkeleton({ rows = 7, header = true }: { rows?: number; heade
   );
 }
 
-export function LoadFailed({ error, retry }: { error: string; retry: () => void }) {
+export function LoadFailed({ error, retry, what = "The brief" }: { error: string; retry: () => void; what?: string }) {
   return (
     <section className="pt-5" role="alert">
-      <h1 className="font-serif text-[1.75rem] leading-[1.15] font-semibold tracking-[-0.015em]">The brief didn&rsquo;t load.</h1>
+      <h1 className="font-serif text-[1.75rem] leading-[1.15] font-semibold tracking-[-0.015em]">{what} didn&rsquo;t load.</h1>
       <p className="mt-2 text-[0.9375rem] text-ink-2">
         {error.startsWith("HTTP 5")
           ? `FINN's data server didn't respond (${error}). Try again in a minute.`
