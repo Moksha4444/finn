@@ -13,7 +13,7 @@ PORTFOLIO = [
 
 TIERS = {
     "P1": ["results", "m_and_a", "management_change", "fund_raise", "litigation", "credit_rating_downgrade", "pledging"],
-    "P2": ["earnings_call", "dividend", "bonus_split", "capex", "press_release", "credit_rating"],
+    "P2": ["internal_restructuring", "earnings_call", "dividend", "bonus_split", "capex", "press_release", "credit_rating"],
     "P3": ["investor_meetings", "postal_ballot", "agm_egm", "insider_trading", "unclassified"],
 }
 

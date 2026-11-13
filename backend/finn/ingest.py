@@ -79,6 +79,8 @@ def ticker(sym: str, start: dt.date, end: dt.date, nifty) -> tuple[list[dict], l
             else:
                 _card(item, get_pdf)
                 has_results_card |= item["category"] == "results" and "card" in item
+                if item["category"] == "management_change" and (t := classify.mgmt_tier(item.get("card"))):
+                    item["tier"], item["note"] = t[0], t[1] or item.get("note")
         items.append(item | rank.rank(item))
 
     window = [s for d in h.index if d >= start and (s := prices.day_stats(h, nifty, d))]

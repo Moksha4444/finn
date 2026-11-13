@@ -93,3 +93,36 @@ def test_sizing_applies_inside_classify():
     r = {"SUBCATNAME": "General", "NEWSSUB": "Disclosure Under Regulation 30 Of SEBI (LODR)",
          "HEADLINE": "Received notice from Department of Telecommunications imposing penalty of Rs 1,60,000"}
     assert classify(r) == {"by": "rule", "category": "litigation", "tier": "P3", "note": "₹1.6 lakh at stake, below ₹1 cr"}
+
+
+# --- 13 Nov P1 rules (user): management change P1 only for a CEO / MD / CFO / Chairman joining or leaving ---
+from finn.push.classify import mgmt_tier
+
+
+@pytest.mark.parametrize("people,want", [
+    ([("appointed", "MD & CEO"), ("retired", "MD & CEO")], "P1"),                              # HDFCBANK
+    ([("retired", "Chairman and Independent Director")], "P1"),                                # ASIANPAINT: the Chairman leaves
+    ([("appointed", "Additional Director and CEO Designate")], "P1"),                          # TATAPOWER
+    ([("re-appointed", "Whole-time Director (designated as Executive Director)")], "P2"),      # HDFCBANK re-appointment
+    ([("re-appointed", "Independent Director"), ("ceased", "Deputy Managing Director")], "P2"),  # a deputy MD is not the MD
+    ([("ceased", "Independent Director")], "P2"),                                              # KPITTECH
+    ([("retired", "Senior Vice President, Operations")], "P2"),                                # CDSL
+    ([("appointed", "Chairman Emeritus")], "P2"),
+])
+def test_management_change_tier(people, want):
+    assert mgmt_tier({"people": [{"change": c, "role": r} for c, r in people]})[0] == want
+    assert mgmt_tier({"people": []}) is None and mgmt_tier(None) is None  # nothing to decide from: stays P1
+
+
+@pytest.mark.parametrize("row,want", [
+    # internal restructurings are P2, not M&A
+    (("Company Update", "Business Transfer", "Business Transfer Agreement With Vyoma.AI Limited (Vyoma), Wholly Owned Subsidiary Of The Company", ""), ("internal_restructuring", "P2")),
+    (("Company Update", "Restructuring", "Announcement under Regulation 30 (LODR)-Restructuring", "Eternal Limited has informed the exchange regarding proposed restructuring, acquisition and divestment."), ("internal_restructuring", "P2")),
+    (("Company Update", "Acquisition", "Announcement under Regulation 30 (LODR)-Updates on Acquisition", "completion of acquisition of BBY Services India LLP."), ("m_and_a", "P1")),
+    # DIXON's US$7m guarantee for its subsidiary: housekeeping
+    (("Company Update", "Giving Of Guarantees", "Announcement Under Regulation 30 Of SEBI LODR- Giving Of Guarantees Or Indemnity Or Becoming A Surety For Any Third Party",
+      "Dixon Technologies provided a guarantee of USD 7 million for its subsidiary Padget Electronics"), ("unclassified", "P3")),
+])
+def test_internal_restructuring_and_subsidiary_guarantee(row, want):
+    got = classify(dict(zip(("CATEGORYNAME", "SUBCATNAME", "NEWSSUB", "HEADLINE"), row)))
+    assert (got["category"], got["tier"]) == want

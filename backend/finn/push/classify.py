@@ -48,8 +48,20 @@ OTHERS_RESULTS = r"results?\b.{0,40}\b(issued|released|declared|announced|publis
 # One board-outcome PDF is often filed once per decision, each copy under its own BSE subcategory ("Acquisition",
 # "Scheme of Arrangement"). Setting up, striking off or backing a subsidiary is housekeeping, not a deal (13 Nov:
 # KPIT's Vietnam subsidiary as "Acquisition", a dormant step-down's strike-off as "Scheme of Arrangement").
-SUBSIDIARY_ROUTINE = r"incorporat\w*\b.{0,60}\bsubsidiar|\bstrike[- ]?off|struck off|voluntary liquidation|letter of comfort"
+# A guarantee for a subsidiary is the same housekeeping (user, 13 Nov: DIXON's US$7m guarantee for Padget is P3).
+SUBSIDIARY_ROUTINE = (r"incorporat\w*\b.{0,60}\bsubsidiar|\bstrike[- ]?off|struck off|voluntary liquidation|letter of comfort"
+                      r"|guarantee\w*\b.{0,80}\bsubsidiar|corporate guarantee")
 DEAL = r"acqui|merger|amalgamat|demerg|joint venture|stake|share purchase|business transfer"
+# Moving a business inside the group is not a deal (user, 13 Nov: P2, not M&A): L&T's transfer to its wholly owned
+# Vyoma, ITC folding in its subsidiary Sproutlife, ETERNAL's restructuring. Buying or selling outside the group stays M&A.
+INTERNAL_HEAD = r"restructur|internal reorgani[sz]"
+INTERNAL = (r"wholly[- ]owned subsidiar.{0,150}\b(amalgamat|merg|business transfer)|(amalgamat|merg|business transfer)\w*.{0,150}"
+            r"wholly[- ]owned subsidiar")
+# Management change is P1 only when a CEO, MD, CFO or Chairman joins or leaves (user, 13 Nov). Re-appointments,
+# directors, independent directors and senior management below them are P2.
+TOP_ROLE = re.compile(r"\b(chief executive|ceo|managing director|m\.?d\.?|chief financial|cfo|chair(?:man|person|woman)?)\b", re.I)
+NOT_TOP = re.compile(r"deputy managing director|joint managing director|chair(?:man|person) emeritus|vice[- ]chair\w*", re.I)
+JOIN_LEAVE = ("appointed", "resigned", "retired", "ceased")
 # The listed company's director taking a seat on a subsidiary's board (Reg 24) is not a change in its management.
 SUBSIDIARY_BOARD = r"on the board of [^,;]*?(subsidiar|\b(inc|llc|gmbh|pte|plc|b\.?v|ag)\b)"
 # "Press Release" is a carrier, not an event: a P1 event in its headline wins (POLYCAB: "NCLAT stayed NCLT order
@@ -142,6 +154,30 @@ def _detail(row: dict) -> str:
     return str(row.get("HEADLINE") or row.get("NEWSSUB") or "").lower()
 
 
+def _internal(row: dict, get_pdf) -> bool:
+    """Subject/headline first; the first 2 PDF pages only if they don't say (ITC's subject names no subsidiary)."""
+    if re.search(INTERNAL_HEAD, _head(row)) or re.search(INTERNAL, _head(row)):
+        return True
+    try:
+        body = " ".join(pdf.pages(pdf.open_pdf(get_pdf()))[:2]).lower() if get_pdf else ""
+    except Exception:
+        return False
+    return bool(re.search(INTERNAL, " ".join(body.split())))
+
+
+def mgmt_tier(card: dict | None) -> tuple[str, str | None] | None:
+    """Tier for a management change from the people its filing names (the card): P1 when a CEO, MD, CFO or Chairman
+    is appointed or leaves, else P2 with why. None = no card to decide from (the filing stays P1: never hide it)."""
+    people = (card or {}).get("people") or []
+    if not people:
+        return None
+    if any(p.get("change") in JOIN_LEAVE and TOP_ROLE.search(NOT_TOP.sub("", p.get("role") or "")) for p in people):
+        return "P1", None
+    if all(p.get("change") not in JOIN_LEAVE for p in people):
+        return "P2", "Re-appointment or change of designation; nobody joins or leaves"
+    return "P2", "Not a CEO, MD, CFO or Chairman joining or leaving"
+
+
 def classify(row: dict, get_pdf=None, lender: bool = False) -> dict:
     """{'category', 'tier', 'by': rule|llm|default, 'headline'?, 'note'?}. get_pdf() -> attachment bytes (may raise).
     lender: bank/NBFC (their debt raises are routine). LLM errors fall through to 'unclassified'."""
@@ -150,7 +186,9 @@ def classify(row: dict, get_pdf=None, lender: bool = False) -> dict:
     if cat == "results" and re.search(OTHERS_RESULTS, text_of(row)):
         cat, out["note"] = "press_release", "Another company's results (e.g. the parent's), not this company's own"
     elif cat != "results" and re.search(SUBSIDIARY_ROUTINE, _head(row)) and not re.search(DEAL, _detail(row)):
-        cat, out = "unclassified", {"by": "rule", "note": "Subsidiary housekeeping (set-up, strike-off or letter of comfort), not a deal"}
+        cat, out = "unclassified", {"by": "rule", "note": "Subsidiary housekeeping (set-up, strike-off, guarantee or letter of comfort), not a deal"}
+    elif cat == "m_and_a" and _internal(row, get_pdf):
+        cat, out["note"] = "internal_restructuring", "Moves a business within the group; nothing is bought or sold outside it"
     if cat is None and get_pdf:
         try:
             b = get_pdf()
