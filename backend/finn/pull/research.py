@@ -190,12 +190,15 @@ WIN = re.compile(r"\b(?:beat|beats|beating|beaten|exceed\w*|surpass\w*|outperfor
 LOSS = re.compile(r"\b(?:miss\w*|fell short|falls? short|short of|failed|fails)\b", re.I)
 FAMILY = (("margin", re.compile(r"margin|pbdit|ebitda", re.I)), ("revenue", re.compile(r"revenue|sales|total income", re.I)),
           ("pat", re.compile(r"\bpat\b|net profit|profit after tax", re.I)))
+QUALIFIED = re.compile(r"gross|segment|standalone|\bnim\b|net interest", re.I)
 
 
 def fact(text: str) -> tuple[str, str, float] | None:
     """(metric family, period, first % figure) of a sentence about one company metric, for the same-facts check."""
+    if QUALIFIED.search(text):  # gross / segment / standalone margins are other metrics, not a second figure for this one
+        return None
     fam = [f for f, rx in FAMILY if rx.search(text)]
-    per, pct = NAMED_PERIOD.search(text), re.search(r"([+−-]?\d+(?:\.\d+)?)\s?%", text)
+    per, pct =NAMED_PERIOD.search(text), re.search(r"([+−-]?\d+(?:\.\d+)?)\s?%", text)
     if len(fam) != 1 or not per or not pct:
         return None
     return fam[0], per.group(0), float(pct.group(1).replace("−", "-"))
@@ -346,6 +349,10 @@ def main(argv=None):
         print(f"{sym}: {out['summary']['sentence']} · snapshot {', '.join(k for k in ('quarters', 'margin', 'cash', 'leverage') if k in out['snapshot'])}"
               f" · bull/bear {'%d+%d (dropped %d)' % (len(bb['bull']), len(bb['bear']), bb['dropped']) if bb else 'hidden'}")
     index()
+    from finn import consistency  # the data build fails when one fact has two numbers anywhere (user, 13 Nov)
+    if bad := consistency.run_all():
+        print("\n".join(f"INCONSISTENT {b}" for b in bad))
+        sys.exit(1)
 
 
 if __name__ == "__main__":
