@@ -126,10 +126,20 @@ def test_ebitda_excludes_other_income_and_keeps_all_three_columns():
         col["other_income"] = oi
     c = results_card(ex)
     lines = {l["name"]: l for l in c["lines"]}
-    assert lines["EBITDA"]["value"] == 18638 + 252 + 1262 - 1000 and c["note"].endswith("− other income")
+    assert lines["EBITDA"]["value"] == 18638 + 252 + 1262 - 1000 and "− other income; associates' share not excluded" in c["note"]
     assert lines["Revenue"]["values"] == [73188, 72275, 65799]
     ex["data"]["columns"][1]["other_income"] = None  # one column lacks it: none excluded, and the note says so
     assert "other income not printed" in results_card(ex)["note"]
+
+
+def test_ebitda_bottom_up_keeps_other_income_associates_and_one_offs_out():
+    # ASIANPAINT Q2 FY27 shape: revenue 9,976.51, total expenses 8,786.4 incl. finance 55 and D&A 314 -> EBITDA 1,559.11
+    ex = _fake("TCS_results.pdf")
+    for col, te in zip(ex["data"]["columns"], [8786.40, 8700.0, 7400.0]):
+        col.update(revenue_from_operations=9976.51 if te == 8786.40 else col["revenue_from_operations"], total_expenses=te, finance_costs=55, depreciation_amortisation=314)
+    c = results_card(ex)
+    assert {l["name"]: l for l in c["lines"]}["EBITDA"]["value"] == round(9976.51 - (8786.40 - 55 - 314), 2)
+    assert c["note"].startswith("EBITDA = revenue from operations − (total expenses")
 
 
 def test_revenue_is_net_of_excise_when_the_filing_prints_it():
@@ -139,3 +149,15 @@ def test_revenue_is_net_of_excise_when_the_filing_prints_it():
         col["excise_duty"] = e
     c = results_card(ex)
     assert {l["name"]: l for l in c["lines"]}["Revenue"]["value"] == 73188 - 10000 and c["note"].startswith("Revenue net of excise duty")
+
+
+def test_total_expenses_printed_before_finance_costs_and_dna():
+    # BHARTIARTL Q2 FY27 (₹ million): "Total expenses" 259,316 excludes finance costs and D&A; EBITDA 349,459, not 552,703
+    cols = [dict(period_label=p, revenue_from_operations=r, other_income=oi, total_expenses=te, finance_costs=f, depreciation_amortisation=da,
+                 profit_before_exceptional_and_tax=pbe, profit_before_tax=pbt, profit_after_tax=pat, profit_attributable_to_owners=o)
+            for p, r, oi, te, f, da, pbe, pbt, pat, o in [
+                ("Sep 26", 608775, 8769, 259316, 57073, 146171, 156012, 154280, 107104, 88875),
+                ("Jun 26", 585391, 9066, 252363, 59564, 142350, 141262, 137728, 100116, 81674),
+                ("Sep 25", 521454, 7277, 225840, 48657, 131821, 123223, 123223, 86508, 67917)]]
+    c = results_card({"data": {"basis": "consolidated", "unit": "₹ million", "is_bank_or_nbfc": False, "columns": cols}, "pages": [2]})
+    assert {l["name"]: l for l in c["lines"]}["EBITDA"]["values"][0] == round((608775 - 259316) * 0.1, 2)

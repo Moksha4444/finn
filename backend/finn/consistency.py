@@ -49,7 +49,7 @@ def check(r: dict, feed: dict | None) -> list[str]:
             elif not snap.get("lender"):
                 say(f"PAT definition {cur}", f"feed shows {[n for n in lines if n.startswith('PAT')]}", f"research shows {pname}")
             e, rv = lines.get("EBITDA", {}).get("value"), lines.get("Revenue", {}).get("value")
-            if e is not None and rv and cur in margin and "− other income" in c["card"]["note"] and abs(e / rv * 100 - margin[cur]) > TOL_PCT:
+            if e is not None and rv and cur in margin and "EBITDA = revenue from operations" in c["card"]["note"] and abs(e / rv * 100 - margin[cur]) > TOL_PCT:
                 say(f"EBITDA margin {cur} feed vs research", round(e / rv * 100, 2), margin[cur])
 
     # 2. snapshot claims vs their own series

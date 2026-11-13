@@ -42,6 +42,8 @@ NOT_MONEY = re.compile(r"order|inflow|\baum\b|assets under|volume|\bunits?\b|ton
 # "value growth" (paints, consumer goods) is one business's sales in value terms, usually the domestic decorative
 # business, not group revenue: measured on that segment if the filing reports it, otherwise not measurable
 SEGMENT_ONLY = re.compile(r"\bvalue growth\b", re.I)
+# a margin the results table can't compute: never judged on the company's EBITDA series (ASIANPAINT gross margin 41-43%)
+OTHER_MARGIN = re.compile(r"gross|contribution|material|\bnim\b|net interest|\bpat\b|net margin", re.I)
 USD = re.compile(r"\$|\busd\b|dollar|constant currency|\bcc\b", re.I)
 COST = re.compile(r"cost|opex|expense|\bnpa\b|working capital|\bnwc\b|net debt|leverage", re.I)  # lower is better
 
@@ -385,6 +387,8 @@ def series(p: dict, quarters: dict, margin: dict | None = None, bank=None, seg=N
         return {"q": {q: (v / row[shift(q, -4)] - 1) * 100 for q, v in row.items() if row.get(shift(q, -4))}, "kind": "growth", "agg": agg,
                 "name": f"{'Revenue' if key == 'revenue' else 'Net profit'} growth YoY", "source": SOURCE, "cites": {}}
     if tt == "margin_pct" and key in ("operating_margin", "net_profit"):
+        if key == "operating_margin" and p.get("margin_basis") != "net" and OTHER_MARGIN.search(p["metric"]):
+            return None
         if key == "net_profit" or p.get("margin_basis") == "net":
             net, den = _row(quarters, ["Net Profit"]), _row(quarters, ["Sales"]) or _row(quarters, ["Revenue"])
             m = net and den and {"q": {q: v / den[q] * 100 for q, v in net.items() if den.get(q)}, "w": den,
@@ -472,14 +476,22 @@ def pace_reported(p: dict, used: list[dict], latest: str | None) -> dict | None:
         return None  # zero or several numbers: can't tell which one is the level
     v = float(nums[0])
     ends = period_end(p)
+    # margins and growth add up over the period; a level (CD ratio, working capital) at the period end is the period's figure
+    one_quarter = p["target_type"] in ("margin_pct", "growth_pct") and p["horizon"] in ("fiscal_year", "half_year") and QUARTER_FIG.search(newest.get("quote", "")) and not SPAN_FIG.search(newest.get("quote", ""))
     complete = bool(ends and latest and _q(ends) <= _q(latest) and _q(newest["said_in"]) >= _q(ends))
     verdict, goal = judge(v, p, complete)
+    if complete and one_quarter:  # L&T "EBITDA margin for Q4 FY '26 is 10.4%" can't settle the FY26 8.5% target
+        return {"verdict": NYM, "chart": None,
+                "why": f"Not measurable: the latest statement ({fy_name(newest['said_in'])} call) gives one quarter's {newest['value']}, "
+                       f"not the figure for the whole period, so it can't settle a {goal} target for {period_label(p) or 'the period'}."}
     return {"verdict": verdict, "chart": chart(p, "level", [[fy_name(newest["said_in"]), v]]),
             "why": f"Reported {newest['value']} ({fy_name(newest['said_in'])} call) against {goal}"
                    f"{'' if complete else ', with the period still running, so no hit or miss yet'}; compared in Python."}
 
 
 PACE = {"hit": "on track", "miss": "behind pace", "partial": "behind pace"}
+QUARTER_FIG = re.compile(r"\bQ[1-4]\b|\bquarter\b", re.I)  # a statement about one quarter ...
+SPAN_FIG = re.compile(r"full[- ]year|for the (?:full )?year|annual|year[- ]to[- ]date|nine months|\b9M\b|\bH[12]\b|\bas (?:of|on|at) march", re.I)  # ... unless it covers the period
 
 
 def before_deadline(verdict: str, p: dict, latest: str | None) -> str:
@@ -640,7 +652,7 @@ def company(symbol: str) -> dict:
             put("Revenue", v["Total income"] - oi if isinstance(v.get("Total income"), (int, float)) else None)
         else:
             put("Sales", v.get("Revenue"))
-            if "− other income" in v["_note"]:  # the same EBITDA definition as the table's operating profit
+            if v["_note"].startswith(("EBITDA = revenue from operations", "Revenue net of excise duty; EBITDA = revenue from operations")):  # = operating profit
                 put("Operating Profit", v.get("EBITDA"))
         used.append(quarter)
     co["filing_quarters"] = used
@@ -752,7 +764,8 @@ def run(symbol: str) -> dict:
         p = promises[k]
         # evidence must be about the same metric: a net margin can't measure an operating-margin promise
         same = lambda i: p["metric_key"] == by_id[i]["metric_key"] or "other" in (p["metric_key"], by_id[i]["metric_key"])
-        used = [i for i in x.get("used_reported", []) if i in p["eligible_reported"] and same(i)]
+        end = period_end(p)  # statements about quarters after the deadline are not evidence for it (L&T FY26 margin on a Q1 FY27 figure)
+        used = [i for i in x.get("used_reported", []) if i in p["eligible_reported"] and same(i) and (not end or _q(by_id[i]["said_in"]) <= _q(end))]
         said = evidence(p, reported, used)
         j = {"verdict": before_deadline(x["verdict"], p, latest) if said else NYM,  # no shown evidence, no verdict
              "actual": "; ".join(said) or "not disclosed", "actual_source": SAID if said else None, "model": model, "why": x["why"]}

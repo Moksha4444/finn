@@ -12,7 +12,7 @@ RESULTS_SCHEMA = {
         "is_bank_or_nbfc": {"type": "boolean"},
         "columns": {"type": "array", "items": {"type": "object", "properties": {
             "period_label": {"type": "string"},
-            **{k: _num for k in ["revenue_from_operations", "excise_duty", "other_income", "total_income", "interest_earned", "interest_expended",
+            **{k: _num for k in ["revenue_from_operations", "excise_duty", "other_income", "total_expenses", "total_income", "interest_earned", "interest_expended",
                                  "finance_costs", "depreciation_amortisation", "exceptional_items", "profit_before_exceptional_and_tax",
                                  "profit_before_tax", "profit_after_tax", "profit_attributable_to_owners"]},
         }, "required": ["period_label", "profit_before_tax", "profit_after_tax"]}},
@@ -20,9 +20,12 @@ RESULTS_SCHEMA = {
     "required": ["basis", "unit", "is_bank_or_nbfc", "columns"],
 }
 TO_CRORE = {"crore": 1, "lakh": 0.01, "lac": 0.01, "million": 0.1, "mn": 0.1, "billion": 100, "bn": 100, "thousand": 1e-4}
-# Other income out: the companies' own PBDIT / EBITDA and screener's operating profit exclude it, so the card, the
-# research page's margin and the promise checks all show one number (ASIANPAINT Q2 FY27: 15.6%, not 18.5%).
-EBITDA_NOTE = "EBITDA = profit before exceptional items & tax + finance costs + D&A − other income"
+# Operating EBITDA, built bottom-up: revenue from operations − (total expenses − finance costs − D&A). Other income,
+# associates' share and exceptional items stay out whatever order the filing prints them in. It is what companies report
+# as PBDIT / EBITDA and what screener calls operating profit, so the card, the research page's margin and the promise
+# checks show one number (ASIANPAINT Q2 FY27: 15.6%; 18.5% with other income, 16.0% with associates' share).
+EBITDA_NOTE = "EBITDA = revenue from operations − (total expenses − finance costs − D&A): other income, associates and exceptional items excluded"
+EBITDA_TOP = "EBITDA = profit before exceptional items & tax + finance costs + D&A − other income"
 
 
 def extract_results(pdf_bytes: bytes, path: str = "pdf_pages") -> dict:
@@ -53,6 +56,17 @@ def _sub(a, b):
     return None if a is None or b is None else a - b
 
 
+def _bottom_up(c: dict, top_down: float | None) -> float | None:
+    """Revenue from operations − operating expenses. "Total expenses" usually includes finance costs and D&A (the SEBI
+    format), but some tables print it before them (BHARTIARTL): take the reading that agrees with the top-down figure,
+    which differs from the true one only by the associates' share."""
+    rev, te = c.get("revenue_from_operations"), c.get("total_expenses")
+    if rev is None or te is None:
+        return None
+    with_fd = rev - (te - (c.get("finance_costs") or 0) - (c.get("depreciation_amortisation") or 0))
+    return with_fd if top_down is None else min((with_fd, rev - te), key=lambda x: abs(x - top_down))
+
+
 def results_card(ex: dict) -> dict:
     """Card from extract_results() output: 4 lines x (this Q, QoQ %, YoY %), in ₹ crore."""
     d = ex["data"]
@@ -80,14 +94,20 @@ def results_card(ex: dict) -> dict:
         excise = [c.get("excise_duty") for c in cols]
         # ITC since Feb 2026: excise on cigarettes sits inside revenue from operations (+44% "growth"); net it out
         net = None not in excise and any(excise)
-        lines = {"Revenue": [_sub(c.get("revenue_from_operations"), e if net else 0) for e, c in zip(excise, cols)],
-                 "EBITDA": [_sub(_add(p if has_pbe else c["profit_before_tax"], c.get("finance_costs"), c.get("depreciation_amortisation")), o if has_oi else 0)
-                            for p, o, c in zip(pbe, oi, cols)]}
-        note = EBITDA_NOTE if has_pbe else EBITDA_NOTE.replace("profit before exceptional items & tax", "PBT (no pre-exceptional line)")
+        lines = {"Revenue": [_sub(c.get("revenue_from_operations"), e if net else 0) for e, c in zip(excise, cols)]}
+        top_down = [_sub(_add(p if has_pbe else c["profit_before_tax"], c.get("finance_costs"), c.get("depreciation_amortisation")), o if has_oi else 0)
+                    for p, o, c in zip(pbe, oi, cols)]
+        # excise sits in both revenue and expenses, so it cancels out of the bottom-up EBITDA
+        bottom_up = [_bottom_up(c, t) for c, t in zip(cols, top_down)]
+        if None not in bottom_up:
+            lines["EBITDA"], note = bottom_up, EBITDA_NOTE
+        else:  # no total-expenses line: top-down, and the note says what is still in
+            lines["EBITDA"] = top_down
+            note = (EBITDA_TOP if has_pbe else EBITDA_TOP.replace("profit before exceptional items & tax", "PBT (no pre-exceptional line)")) + "; associates' share not excluded"
+            if not has_oi:
+                note = note.replace(" − other income", "; other income not printed, so not excluded")
         if net:
             note = "Revenue net of excise duty; " + note
-        if not has_oi:
-            note = note.replace(" − other income", "; other income not printed, so not excluded")
     # Owners' share matches the headline net profit and EPS; only if all 3 columns have it, so QoQ/YoY compare like with like.
     owners = [c.get("profit_attributable_to_owners") for c in cols]
     pat = ("PAT (to owners)", owners) if None not in owners else ("PAT", [c["profit_after_tax"] for c in cols])

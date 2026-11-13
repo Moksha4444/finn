@@ -332,3 +332,23 @@ def test_unmeasurable_reasons_are_labelled():
     single = lambda since: {"Sep 2026": {"single": True, "segments": {}}}
     assert pvd.unmeasurable(vg, single, "Sep 2026").startswith("Not measurable (segment not reported)")
     assert pvd.SEGMENT_ONLY.search(vg["target"]) and not pvd.SEGMENT_ONLY.search("revenue growth")
+
+
+def test_a_gross_margin_is_never_judged_on_the_ebitda_series():
+    p = P(metric="gross margin", metric_key="operating_margin", target_type="margin_pct", target_low=41, target_high=43, horizon="fiscal_year", fy=27)
+    assert prog(p, "Mar 2026") is None  # to the model with management's statements, or not measurable
+
+
+def test_single_segment_sentence_across_lines():
+    assert segments.SINGLE.search("there is no separate\nreportable segment as per ind as 108")
+
+
+
+def test_one_quarter_cannot_settle_a_full_year_margin_once_the_year_is_over():
+    # L&T: "full year EBITDA margin target of 8.5%" (FY26); the Q4 FY26 call gives Q4's 10.4% only
+    p = P(metric="EBITDA margin", metric_key="operating_margin", target_type="margin_pct", target="8.5%", target_low=8.5, horizon="fiscal_year", fy=26, said_in="Sep 2025")
+    q4 = {"said_in": "Mar 2026", "value": "10.4%", "quote": "our group-level EBITDA margin, excluding other income, for Q4 FY '26 is 10.4%"}
+    assert pvd.pace_reported(p, [q4], "Sep 2026")["verdict"] == "not-yet-measurable"
+    fy = q4 | {"quote": "full year EBITDA margin came in at 10.4%"}
+    assert pvd.pace_reported(p, [fy], "Sep 2026")["verdict"] == "hit"
+    assert pvd.pace_reported(p | {"fy": 27}, [q4 | {"said_in": "Jun 2026"}], "Sep 2026")["verdict"] == "on track"  # running: pace

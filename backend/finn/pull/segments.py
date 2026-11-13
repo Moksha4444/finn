@@ -14,7 +14,8 @@ SCHEMA = {"type": "object", "properties": {
         "required": ["name", "revenue_q", "revenue_yago", "result_q", "result_yago"]}}},
     "required": ["found", "basis", "col_q", "col_yago", "unit", "page", "segments"]}
 SKIP = re.compile(r"total|inter[- ]?segment|unallocat|corporate|elimination", re.I)
-SINGLE = re.compile(r"no (?:separate )?reportable segments?|(?:single|one|only one) (?:reportable |operating |business )*segment")
+# the sentence often breaks across lines in the PDF text ("no separate\nreportable segment")
+SINGLE = re.compile(r"no\s+(?:separate\s+)?reportable\s+segments?|(?:single|one|only\s+one)\s+(?:(?:reportable|operating|business)\s+)*segment")
 GENERIC = {"business", "segment", "products", "product", "division", "and", "the", "others", "other", "services", "margin", "margins",
            "revenue", "revenues", "growth", "ebitda", "ebit", "income", "sales"}
 

@@ -15,7 +15,7 @@ def test_the_check_catches_a_second_number_for_one_fact():
                          "quarters": {"periods": ["Sep 2025", "Sep 2026"], "revenue": [8531, 9977], "pat": [993.0, 1085.0], "claim": "Revenue +17.0% YoY in Q2 FY27."},
                          "margin": {"periods": ["Sep 2025", "Sep 2026"], "values": [17.6, 18.51]}},
             "bull_bear": {"bull": [{"point": "EBITDA margin 18.2% in Q2 FY27, inside the band."}], "bear": []}}
-    card = {"type": "results", "basis": "consolidated", "periods": ["30.09.2026"], "note": "EBITDA = ... − other income",
+    card = {"type": "results", "basis": "consolidated", "periods": ["30.09.2026"], "note": "EBITDA = revenue from operations − (total expenses − finance costs − D&A): ...",
             "lines": [{"name": "Revenue", "value": 9977, "yoy_pct": 17.0}, {"name": "EBITDA", "value": 1557, "yoy_pct": 3.6},
                       {"name": "PAT (to owners)", "value": 1067.63, "yoy_pct": 7.5}]}
     feed = {"items": [{"symbol": "X", "filed": "2026-11-06T16:00", "card": card}]}
