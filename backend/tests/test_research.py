@@ -23,8 +23,12 @@ def test_summary_counts_and_sentence():
     s = research.summary(rows, 4)
     assert {k: s[k] for k in ("kept", "missed", "open", "partial", "measured", "total")} == \
         {"kept": 2, "missed": 2, "open": 1, "partial": 1, "measured": 6, "total": 7}
-    assert s["sentence"] == "Kept 2 of 6 measured promises from the last 4 calls; missed 2, the latest on EBITDA margin (Q3 FY26 call)."
-    assert research.summary([row("hit")], 4)["sentence"] == "Kept 1 of 1 measured promise from the last 4 calls, none missed."
+    assert s["sentence"] == "Kept 2 of 6 measured promises from the last 4 calls; missed 2, the latest on EBITDA margin (Q3 FY26 call); 1 on track; 1 partly met."
+    assert research.summary([row("on track", "Operating Margin"), row("miss", "Operating Margin")], 4)["sentence"] == \
+        "Kept 0 of 2 measured promises from the last 4 calls; missed on operating margin (Q2 FY26 call); 1 on track."
+    assert research.summary([], 0)["sentence"] == "No earnings-call transcripts were found to check promises against."
+    assert research.summary([row("partial")], 4)["sentence"] == "Kept 0 of 1 measured promise from the last 4 calls; 1 partly met; none missed."
+    assert research.summary([row("hit")], 4)["sentence"] == "Kept 1 of 1 measured promise from the last 4 calls; none missed."
     assert research.summary([row("not-yet-measurable")], 3)["sentence"].startswith("None of the 1 promises from the last 3 calls")
     assert research.summary([], 4)["sentence"] == "No checkable promises found on the last 4 calls."
 
@@ -56,8 +60,25 @@ def test_snapshot_math_industrial_and_lender():
 
 def test_chart_carries_the_verdict_bounds():
     # growth floor with a band: shaded 10-12, judged as at_least; a cost ceiling keeps only hi
-    assert pvd.chart({"metric": "revenue growth", "target": "10% to 12%", "metric_key": "revenue", "target_low": 10, "target_high": 12, "direction": "within"},
-                     "growth", [["Q1 FY27", 11.0]]) == {"kind": "growth", "points": [["Q1 FY27", 11.0]], "lo": 10, "hi": 12, "direction": "at_least"}
-    c = pvd.chart({"metric": "working capital", "target": "around 12%", "metric_key": "other", "target_low": 12, "target_high": None, "direction": "at_most"},
+    assert pvd.chart({"metric": "revenue growth", "target": "10% to 12%", "metric_key": "revenue", "target_low": 10, "target_high": 12, "direction": "within", "horizon": "long_term"},
+                     "growth", [["Q1 FY27", 11.0]]) == {"kind": "growth", "points": [["Q1 FY27", 11.0]], "lo": 10, "hi": 12, "direction": "at_least", "end": None}
+    c = pvd.chart({"metric": "working capital", "target": "around 12%", "metric_key": "other", "target_low": 12, "target_high": None, "direction": "at_most", "horizon": "long_term"},
                   "level", [["Q4 FY26", 4.1]])
     assert (c["lo"], c["hi"], c["direction"]) == (None, 12, "at_most")
+
+
+def test_dedupe_treats_15_15_as_15():
+    base = {"metric_key": "revenue", "fy": 26, "target": "15%"}
+    ps = [base | {"said_in": "Dec 2025", "target_low": 15, "target_high": 15}, base | {"said_in": "Sep 2025", "target_low": 15.0, "target_high": None}]
+    assert [p["said_in"] for p in pvd.dedupe(ps)] == ["Sep 2025"]  # the oldest mention, longest track record
+
+
+def test_chart_end_is_the_deadline_quarter():
+    p = {"metric": "revenue growth", "target": "15%", "metric_key": "revenue", "target_low": 15, "target_high": None,
+         "direction": "at_least", "horizon": "fiscal_year", "fy": 26, "said_in": "Sep 2025"}
+    assert pvd.chart(p, "growth", [["Q2 FY26", 10.4]])["end"] == "Q4 FY26"
+
+
+def test_checked_survives_malformed_model_output():
+    keep, dropped = research.checked([{"point": "x"}, "text", {"cites": ["S1"]}], {"S1": {"text": "", "cite": {}}})
+    assert keep == [] and dropped == 3

@@ -95,20 +95,29 @@ def summary(rows: list[dict], n_calls: int) -> dict:
          "partial": sum(x in MEASURED_OTHER for x in v), "unmeasured": v.count("not-yet-measurable"), "total": len(v)}
     c["measured"] = c["total"] - c["unmeasured"]
     calls = f"the last {n_calls} {'call' if n_calls == 1 else 'calls'}"
-    if not rows:
+    if not n_calls:
+        s = "No earnings-call transcripts were found to check promises against."
+    elif not rows:
         s = f"No checkable promises found on {calls}."
     elif not c["measured"]:
         s = f"None of the {c['total']} promises from {calls} can be checked yet; the reasons are listed below."
     else:
         s = f"Kept {c['kept']} of {c['measured']} measured {'promise' if c['measured'] == 1 else 'promises'} from {calls}"
+        tail = []
         missed = [r for r in rows if r["verdict"] in MISSED]
         if missed:  # name only the latest miss: two wordings of one target read as two failures
             m = max(missed, key=lambda r: pvd._q(r["said_in"]))
-            name = m["metric"][:1].lower() + m["metric"][1:] if m["metric"][1:2].islower() else m["metric"]
-            s += f"; missed {len(missed)}, the latest on {name} ({m['call']} call)" if len(missed) > 1 else f"; missed on {name} ({m['call']} call)"
-        else:
-            s += ", none missed"
-        s += "."
+            words = m["metric"].split()
+            # "Operating Margin" -> "operating margin"; keep acronyms ("EBITDA margin", "FY 26")
+            name = m["metric"] if any(len(w) > 1 and w.isupper() for w in words) else m["metric"].lower()
+            tail.append(f"missed {len(missed)}, the latest on {name} ({m['call']} call)" if len(missed) > 1 else f"missed on {name} ({m['call']} call)")
+        if c["open"]:
+            tail.append(f"{c['open']} on track")
+        if c["partial"]:
+            tail.append(f"{c['partial']} partly met")
+        if not missed:
+            tail.append("none missed")
+        s += "; " + "; ".join(tail) + "."
     return c | {"sentence": s}
 
 
@@ -163,6 +172,9 @@ def checked(points: list[dict], by_id: dict[str, dict]) -> tuple[list[dict], int
     """(first 3 points whose every number is printed in the evidence they cite, number rejected)."""
     keep, dropped = [], 0
     for pt in points:
+        if not isinstance(pt, dict) or not isinstance(pt.get("point"), str) or not isinstance(pt.get("cites"), list):
+            dropped += 1
+            continue
         ids = [i for i in dict.fromkeys(pt["cites"]) if i in by_id]
         body = re.sub(r"[,\s]", "", " ".join(by_id[i]["text"] for i in ids))
         if not ids or any(n not in body for n in _nums(PERIOD.sub("", pt["point"]))):
@@ -181,8 +193,9 @@ def bull_bear(name: str, latest: str | None, ev: list[dict], symbol: str) -> dic
         print(f"  bull/bear unavailable for {symbol}: {type(e).__name__}: {str(e)[:120]}")
         return None
     by_id = {e["id"]: e for e in ev}
-    bull, d1 = checked(r["data"]["bull"], by_id)
-    bear, d2 = checked(r["data"]["bear"], by_id)
+    data = r["data"] if isinstance(r["data"], dict) else {}
+    bull, d1 = checked(data.get("bull") or [], by_id)
+    bear, d2 = checked(data.get("bear") or [], by_id)
     if not bull or not bear:
         return None
     return {"bull": bull, "bear": bear, "dropped": d1 + d2, "model": r["model"], "model_note": r.get("model_note")}

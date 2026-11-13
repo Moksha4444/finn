@@ -354,7 +354,8 @@ def chart(p: dict, kind: str, points: list[list]) -> dict | None:
     d, lo, hi = _bounds(p)
     if d == "at_most":
         lo, hi = None, hi if hi is not None else lo
-    return {"kind": kind, "points": points, "lo": lo, "hi": hi, "direction": d}
+    end = period_end(p)  # the band stops at the deadline; quarters after it are context, not the verdict
+    return {"kind": kind, "points": points, "lo": lo, "hi": hi, "direction": d, "end": end and fy_name(end)}
 
 
 def progress(p: dict, call_q: str, s: dict | None) -> dict | None:
@@ -432,6 +433,7 @@ def dedupe(promises: list[dict]) -> list[dict]:
     seen, out = set(), []
     for p in sorted(promises, key=lambda p: _q(p["said_in"])):  # stable: within a call the first mention wins
         lo, hi = p.get("target_low"), p.get("target_high")
+        hi = None if hi == lo else hi  # "15%" comes back as 15-15 on one call and 15-None on the next (L&T counted it twice)
         k = (p["metric_key"], lo, hi, p.get("fy")) if lo is not None or hi is not None else (p["said_in"], p["metric_key"], p["target"].lower())
         if k not in seen:
             seen.add(k)

@@ -53,3 +53,14 @@ def test_pdf_tasks_never_go_to_groq(fake, monkeypatch):
     monkeypatch.setenv("FINN_TASK_PVD_VERDICT", "groq:openai/gpt-oss-120b")
     r = llm.run("pvd_verdict", "pvd_verdict", ["s", b"%PDF-1.4"], SCHEMA)
     assert r["model"] == "gemini-3.8-flash" and "openai/gpt-oss-120b" not in fake[1]
+
+
+def test_daily_cap_skips_straight_to_the_next_model(fake, monkeypatch):
+    calls = fake[1]
+
+    def capped(model, parts, schema):
+        calls.append(model)
+        raise llm.Exhausted("429, retry after 770s")
+    monkeypatch.setitem(llm.ADAPTERS, "groq", capped)
+    r = llm.run("bull_bear", "bull_bear", ["{}"], SCHEMA, patient=True)
+    assert calls == ["openai/gpt-oss-120b", "gemini-3.8-flash"] and r["model"] == "gemini-3.8-flash"
