@@ -41,7 +41,9 @@ def extract_results(pdf_bytes: bytes, path: str = "pdf_pages") -> dict:
     pages = [i + 1 for i in idx] or list(range(1, len(texts) + 1))
     key = f"{hashlib.sha256(pdf_bytes).hexdigest()}:{path}:{pages}"
     out = llm.run("extract_results", "extract_results", inputs, RESULTS_SCHEMA, key=key, path=path, pages=pages)
-    return out | {"path": path, "pages": pages}
+    # no non-controlling interests anywhere in the filing: all of PAT is the owners' (PERSISTENT)
+    no_nci = not any(k in t.lower() for t in texts for k in ("non-controlling", "non controlling", "minority interest"))
+    return out | {"path": path, "pages": pages, "no_nci": no_nci}
 
 
 def _pct(a, b):
@@ -54,6 +56,35 @@ def _add(*xs):
 
 def _sub(a, b):
     return None if a is None or b is None else a - b
+
+
+MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
+
+
+def _month_end(label: str) -> tuple[int, int] | None:
+    """(year, month) of a column header: '30.09.2026', '30 Sep 26', 'September 30, 2026'; None if unreadable."""
+    s = label.lower()
+    if m := re.search(r"\b\d{1,2}[./-](\d{1,2})[./-](\d{2,4})\b", s):
+        mo, y = int(m.group(1)), int(m.group(2))
+    elif m := re.search(r"\b(" + "|".join(MONTHS) + r")[a-z]*\.?\s*(?:\d{1,2}(?:st|nd|rd|th)?,?\s*)?(\d{4}|\d{2})\b", s):
+        mo, y = MONTHS.index(m.group(1)) + 1, int(m.group(2))
+    else:
+        return None
+    return (y + 2000 if y < 100 else y, mo) if 1 <= mo <= 12 else None
+
+
+def _in_order(cols: list[dict]) -> list[dict]:
+    """Columns as (this quarter, previous quarter, year-ago quarter) whatever order the filing prints them in (ITC prints
+    the year-ago quarter second). Headers that can't be read keep the printed order; readable ones without a previous
+    and a year-ago quarter can't make a card (POLYCAB: two year-ago columns, restated and not)."""
+    ends = [_month_end(c["period_label"]) for c in cols]
+    if None in ends:
+        return cols
+    y, m = max(ends)
+    want = [(y, m), (y, m - 3) if m > 3 else (y - 1, m + 9), (y - 1, m)]
+    if sorted(ends) != sorted(want):
+        raise ValueError(f"columns are not this quarter, previous and year-ago: {[c['period_label'] for c in cols]}")
+    return [cols[ends.index(w)] for w in want]
 
 
 def _bottom_up(c: dict, top_down: float | None) -> float | None:
@@ -79,6 +110,7 @@ def results_card(ex: dict) -> dict:
     # a page without all 3 quarters makes the model pad columns, and a YoY number gets shown as QoQ
     if len(cols) < 3 or any(c.get("profit_before_tax") is None or c.get("profit_after_tax") is None for c in cols)             or len({c["period_label"] for c in cols}) < 3:
         raise ValueError("need current, previous and year-ago columns with PBT and PAT")
+    cols = _in_order(cols)
 
     # One-offs out of EBITDA: start from the printed pre-exceptional line (TATAPOWER Q2 had a ₹119 cr exceptional
     # gain inside PBT). One-off = PBT - that line, so Python gets the sign; the LLM's sign for exceptional_items varies.
@@ -110,7 +142,10 @@ def results_card(ex: dict) -> dict:
             note = "Revenue net of excise duty; " + note
     # Owners' share matches the headline net profit and EPS; only if all 3 columns have it, so QoQ/YoY compare like with like.
     owners = [c.get("profit_attributable_to_owners") for c in cols]
-    pat = ("PAT (to owners)", owners) if None not in owners else ("PAT", [c["profit_after_tax"] for c in cols])
+    if None not in owners:
+        pat = ("PAT (to owners)", owners)
+    else:
+        pat = ("PAT (to owners)" if ex.get("no_nci") else "PAT", [c["profit_after_tax"] for c in cols])
     lines |= {"PBT": [c["profit_before_tax"] for c in cols], pat[0]: pat[1]}
 
     one_offs = []

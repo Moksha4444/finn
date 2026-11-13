@@ -204,6 +204,10 @@ def fact(text: str) -> tuple[str, str, float] | None:
     return fam[0], per.group(0), float(pct.group(1).replace("−", "-"))
 
 
+# management quoting the economy (LT: "Headline CPI 4.4% in June 2026") is not a case for or against the company
+MACRO = re.compile(r"\b(?:cpi|wpi|gdp|repo rate|headline inflation|consumer price)\b", re.I)
+
+
 def problem(pt: dict, ids: list[str], by_id: dict[str, dict]) -> str | None:
     """Why a bull/bear point can't be shown (None = fine). Python checks, not prompt wishes."""
     text = f"{pt['claim']} {pt['why']}"
@@ -214,6 +218,8 @@ def problem(pt: dict, ids: list[str], by_id: dict[str, dict]) -> str | None:
         return "the why restates numbers instead of arguing"
     if _nums(PERIOD.sub("", pt["claim"])) and not NAMED_PERIOD.search(pt["claim"]):
         return "a number without its period"
+    if MACRO.search(pt["claim"]):
+        return "an economy statistic, not a fact about the company"
     verdicts = {by_id[i].get("verdict") for i in ids}
     if WIN.search(text) and "hit" not in verdicts:
         return "claims a target was beaten that isn't a hit"
@@ -242,14 +248,15 @@ def checked(points: list[dict], by_id: dict[str, dict], facts: dict | None = Non
     return keep[:3], dropped
 
 
-def bull_bear(name: str, latest: str | None, ev: list[dict], symbol: str) -> dict | None:
-    """None when the model is unavailable or a side has no point that survives the number check (page hides it)."""
+def bull_bear(name: str, latest: str | None, ev: list[dict], symbol: str, prev: dict | None = None) -> dict | None:
+    """None when a side has no point that survives the number check, or the model is unavailable and there is no
+    previous section (page hides it). prev: the page's last checked section, kept when the model is unavailable."""
     payload = {"company": name, "latest_quarter": latest, "evidence": [{"id": e["id"], "text": e["text"]} for e in ev]}
     try:
         r = llm.run("bull_bear", "bull_bear", [json.dumps(payload, ensure_ascii=False)], BB, symbol=symbol, patient=True)
-    except Exception as e:  # quota / network: hide the section, keep the rest of the page
-        print(f"  bull/bear unavailable for {symbol}: {type(e).__name__}: {str(e)[:120]}")
-        return None
+    except Exception as e:  # quota / network: keep the last checked section rather than blank it (14 Nov: Groq's daily cap)
+        print(f"  bull/bear unavailable for {symbol}: {type(e).__name__}: {str(e)[:120]}{'; kept the previous one' if prev else ''}")
+        return prev
     by_id = {e["id"]: e for e in ev}
     data = r["data"] if isinstance(r["data"], dict) else {}
     facts: dict = {}
@@ -296,6 +303,8 @@ def sources(out: dict, co: dict) -> list[dict]:
 def build(symbol: str) -> dict:
     sym = symbol.upper()
     f = OUT / f"{sym}.json"
+    # read before pvd.run(), which rewrites the file without it
+    prev = (json.loads(f.read_text(encoding="utf-8")).get("bull_bear") or None) if f.exists() else None
     try:
         out = pvd.run(sym)
         co, reported, texts = out.pop("_company"), out.pop("_reported"), out.pop("_texts")
@@ -315,7 +324,7 @@ def build(symbol: str) -> dict:
     snap = snapshot(co)
     ev = evidence(out["promises"], reported, analyst_questions(texts, urls), snap, urls)
     out |= {"sector": co.get("sector"), "summary": summary(out["promises"], len(out["calls"])), "prices": price_lines(sym),
-            "snapshot": snap, "bull_bear": bull_bear(out["name"], out.get("latest_quarter"), ev, sym), "sources": sources(out, co)}
+            "snapshot": snap, "bull_bear": bull_bear(out["name"], out.get("latest_quarter"), ev, sym, prev), "sources": sources(out, co)}
     tmp = f.with_suffix(".tmp")
     tmp.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
     tmp.replace(f)

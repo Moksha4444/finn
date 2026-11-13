@@ -317,7 +317,8 @@ def company_margin(quarters: dict, reported: dict[str, dict], call_qs: list[str]
         cites = {q: {"label": f"{fy_name(q)} call, p.{reported[q]['page']}: “{reported[q]['quote']}”", "url": reported[q]["transcript"]} for q in call_qs}
         name = f"{r0['name'][:1].upper()}{r0['name'][1:]}"
         if m and all(q in m and abs(m[q] - reported[q]["value"]) <= AGREE_PP for q in call_qs):
-            return {"q": m, "w": sales, "name": f"{name} (operating profit over revenue; matches what management reports)",
+            how = "operating profit less depreciation, over revenue" if ebit else "operating profit over revenue"  # TCS: EBIT, not the snapshot's EBITDA
+            return {"q": m, "w": sales, "name": f"{name} ({how}; matches what management reports)",
                     "source": SOURCE, "cites": cites}
         return {"q": {q: reported[q]["value"] for q in call_qs}, "w": sales or {}, "name": f"{name} (as reported)",
                 "source": SAID_MARGIN, "cites": cites}

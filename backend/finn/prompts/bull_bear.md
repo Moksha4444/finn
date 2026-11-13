@@ -17,6 +17,8 @@ One set of facts for both sides:
 - Bull and bear argue from the same evidence. If both mention the same metric for the same period, they use the same number. Never put two figures for one metric and period on the page (a quarter's margin and a half-year margin are different periods: name them).
 - Never contradict a `P` verdict. Only a verdict of hit may be called beaten, met or achieved; only a verdict of miss may be called missed or fallen short. For ahead, on track and behind pace the period is still running: say "ahead of", "on track for" or "behind pace for" the target, never beaten or missed.
 - Do not repeat one fact in both lists. Do not make two points from the same fact.
+- For a metric with figures from several periods, use the newest. Never argue from an older figure that a later figure or a `P` verdict has overturned (a working-capital ratio from an earlier call when the target has since been hit).
+- Facts about the company only. Economy figures management quoted (inflation, CPI, GDP, interest rates) are not points.
 
 What goes where:
 - The bear case must not be only management's own caveats. Use, where the evidence has them: promises that were missed, are behind pace or moved away (`P`); falling or weakening figures (`F`); and concerns analysts pressed on (`Q`) — say what the analyst was worried about, not that "an analyst asked".

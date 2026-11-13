@@ -37,7 +37,10 @@ def find_results_pages(texts: list[str]) -> tuple[list[int], str | None]:
             idx = [i]
             # table may spill onto the next page when PAT isn't on this one
             low = texts[i].lower()
-            if i + 1 < len(texts) and not any(k in low for k in ("net profit", "profit for the period", "profit after tax")):
+            # or when the owners / non-controlling split is on the next page (KPITTECH Q2 FY27)
+            nxt = texts[i + 1].lower() if i + 1 < len(texts) else ""
+            if nxt and (not any(k in low for k in ("net profit", "profit for the period", "profit after tax"))
+                        or ("attributable to" not in low and "attributable to" in nxt)):
                 idx.append(i + 1)
             return idx, basis
     return [], None

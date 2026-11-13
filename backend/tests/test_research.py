@@ -104,3 +104,18 @@ def test_chart_end_is_the_deadline_quarter():
 def test_checked_survives_malformed_model_output():
     keep, dropped = research.checked([{"claim": "x"}, "text", {"cites": ["S1"]}], {"S1": {"text": "", "cite": {}}})
     assert keep == [] and dropped == 3
+
+
+def test_an_economy_statistic_is_not_a_bull_or_bear_point():
+    by_id = {"S1": {"text": "Headline CPI at 4.4% in June 2026"}}
+    pt = {"claim": "Headline CPI 4.4% in Q1 FY27", "why": "Input costs rise and squeeze margins", "cites": ["S1"]}
+    assert research.problem(pt, ["S1"], by_id) == "an economy statistic, not a fact about the company"
+
+
+def test_an_unavailable_model_keeps_the_previous_bull_bear(monkeypatch):
+    def down(*a, **k):
+        raise research.llm.Exhausted("429 daily cap")
+    monkeypatch.setattr(research.llm, "run", down)
+    prev = {"bull": [{"point": "x", "why": "y", "cites": []}], "bear": [], "model": "openai/gpt-oss-120b"}
+    assert research.bull_bear("Co", "Sep 2026", [], "X", prev) is prev
+    assert research.bull_bear("Co", "Sep 2026", [], "X") is None

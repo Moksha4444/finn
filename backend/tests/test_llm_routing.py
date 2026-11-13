@@ -81,3 +81,23 @@ def test_long_text_is_chunked_for_groq_and_lists_are_joined():
     assert len(parts) == 3 and all(p[0] == "ctx" and len(p[1]) <= llm.GROQ_CHARS for p in parts) and parts[1][1].startswith("[p.3]")
     assert llm.merge([{"promises": [1], "m": None}, {"promises": [2], "m": {"v": 1}}], schema) == {"promises": [1, 2], "m": {"v": 1}}
     assert len(llm.chunks(["ctx", text], {"type": "object", "properties": {"basis": {"type": "string"}}})) == 1  # scalars can't be joined
+
+
+def test_gemini_daily_quota_is_exhausted_not_retryable(monkeypatch):
+    from google import genai
+    from google.genai import errors
+    monkeypatch.setenv("GEMINI_API_KEY", "x")
+
+    def client(msg):
+        class C:
+            class models:
+                @staticmethod
+                def generate_content(**k):
+                    raise errors.APIError(429, {"error": {"code": 429, "message": msg, "status": "RESOURCE_EXHAUSTED"}})
+        return lambda **k: C()
+    monkeypatch.setattr(genai, "Client", client("quota exceeded, quotaId: GenerateRequestsPerDayPerProjectPerModel-FreeTier"))
+    with pytest.raises(llm.Exhausted):
+        llm._gemini("gemini-3.8-flash", ["x"], SCHEMA)
+    monkeypatch.setattr(genai, "Client", client("quota exceeded, quotaId: GenerateRequestsPerMinutePerProjectPerModel-FreeTier"))
+    with pytest.raises(llm.Retryable):
+        llm._gemini("gemini-3.8-flash", ["x"], SCHEMA)

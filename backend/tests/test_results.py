@@ -161,3 +161,32 @@ def test_total_expenses_printed_before_finance_costs_and_dna():
                 ("Sep 25", 521454, 7277, 225840, 48657, 131821, 123223, 123223, 86508, 67917)]]
     c = results_card({"data": {"basis": "consolidated", "unit": "₹ million", "is_bank_or_nbfc": False, "columns": cols}, "pages": [2]})
     assert {l["name"]: l for l in c["lines"]}["EBITDA"]["values"][0] == round((608775 - 259316) * 0.1, 2)
+
+
+def test_columns_are_put_in_order_by_their_dates():
+    from finn.push.cards import _in_order, _month_end
+    assert _month_end("3 Months ended 30.09.2026") == (2026, 9) and _month_end("30 Sep 26") == (2026, 9)
+    assert _month_end("Quarter ended September 30, 2025") == (2025, 9) and _month_end("Q2") is None
+    # ITC prints this quarter, year-ago, previous
+    cols = [{"period_label": l} for l in ["30.09.2026", "30.09.2025", "30.06.2026"]]
+    assert [c["period_label"] for c in _in_order(cols)] == ["30.09.2026", "30.06.2026", "30.09.2025"]
+    # Q4 wraps the year: Mar 2026, Dec 2025, Mar 2025
+    cols = [{"period_label": l} for l in ["31.03.2026", "31.12.2025", "31.03.2025"]]
+    assert _in_order(cols) == cols
+    with pytest.raises(ValueError):  # POLYCAB: two year-ago columns, no previous quarter
+        _in_order([{"period_label": l} for l in ["30 Sep 26", "30 Sep 25", "30 Sep 25 (Restated)"]])
+
+
+def test_pat_is_owners_when_the_filing_has_no_non_controlling_interests():
+    ex = _fake("TCS_results.pdf")
+    for c in ex["data"]["columns"]:
+        c["profit_attributable_to_owners"] = None
+    assert "PAT" in {l["name"] for l in results_card(ex)["lines"]}
+    assert "PAT (to owners)" in {l["name"] for l in results_card(ex | {"no_nci": True})["lines"]}
+
+
+def test_the_owners_split_on_the_next_page_is_sent_too():
+    t = ["cover", "statement of consolidated results for the quarter revenue from operations total expenses profit before tax tax expense profit for the period consolidated",
+         "profit for the period attributable to owners of the company non-controlling interests"]
+    assert pdf.find_results_pages(t)[0] == [1, 2]
+
