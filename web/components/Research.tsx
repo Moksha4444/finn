@@ -210,10 +210,10 @@ const ExtLink = ({ c, className = "" }: { c: Cite; className?: string }) =>
 // Inline citations are one line of small text: extend the hit area to 44px without changing the layout.
 const HIT = "relative after:absolute after:-inset-y-3 after:-inset-x-1 after:content-['']";
 
-// "Loan-to-deposit ratio · FY26": the period tells two promises on one metric apart.
+// "Loan-to-deposit ratio · FY26 (Apr 2025 – Mar 2026)": the period tells two promises on one metric apart.
 const title = (p: PromiseRow) => {
   const m = p.metric[0].toUpperCase() + p.metric.slice(1);
-  const skip = /^(not stated|unspecified|n\/a)$/i.test(p.period.trim()) || p.period.length > 24 || m.includes(p.period.replace(/'/g, ""));
+  const skip = /^(not stated|unspecified|n\/a)$/i.test(p.period.trim()) || p.period.length > 32 || m.includes(p.period.replace(/'/g, ""));
   return skip ? m : `${m} · ${p.period}`;
 };
 
@@ -395,7 +395,7 @@ function BullBear({ d }: { d: Research }) {
       <ol className="mt-1 border-t border-rule">
         {pts.map((p, k) => (
           <li key={k} className="border-b border-rule py-2.5">
-            <p className="text-[0.9375rem] leading-snug"><Signed text={p.point} /></p>
+            <p className="text-[0.9375rem] leading-snug"><Signed text={p.point} />{p.why && <span className="text-ink-2"> {p.why}</span>}</p>
             <p className="mt-1 text-[0.75rem] leading-6 text-ink-2">{p.cites.map((c, j) => <span key={j}>{j > 0 && " · "}<ExtLink c={c} className={HIT} /></span>)}</p>
           </li>
         ))}

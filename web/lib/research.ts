@@ -19,7 +19,7 @@ export type Snapshot = {
   cash?: { years: string[]; cfo: number[]; pat: number[]; claim: string } | { note: string };
   leverage?: { years: string[]; values: number[]; claim: string } | { note: string };
 };
-export type Point = { point: string; cites: Cite[] };
+export type Point = { point: string; why?: string; cites: Cite[] }; // point = the claim, why = why it matters
 export type Research = {
   symbol: string; name: string; sector: string | null; generated_at: string; latest_quarter: string | null;
   calls: { quarter: string; call: string; transcript: string }[]; skipped_calls: { call: string; transcript: string; error: string }[];

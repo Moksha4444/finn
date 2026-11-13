@@ -1,5 +1,5 @@
-// Colours signed percentages (the only colour on a row): muted green/red on the number itself, never a background.
-const NUM = /([+−-]\d+(?:\.\d+)?%)/;
+// Colours signed percentages, not ranges (lib/signed.ts). The only colour on a row: muted green/red on the number itself, never a background.
+import { SIGNED_NUM as NUM } from "@/lib/signed";
 
 export function Signed({ text }: { text: string }) {
   return (

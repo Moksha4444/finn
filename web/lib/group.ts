@@ -4,7 +4,7 @@ import type { RankedItem } from "./feed";
 
 // "results > mgmt change > fund raise > ..." (the user's order, 12 Nov)
 const ORDER = ["results", "management_change", "fund_raise", "m_and_a", "litigation", "credit_rating_downgrade", "pledging",
-  "capex", "dividend", "bonus_split", "credit_rating", "press_release", "earnings_call"];
+  "internal_restructuring", "capex", "dividend", "bonus_split", "credit_rating", "press_release", "earnings_call"];
 const rankOf = (c: string) => (ORDER.indexOf(c) + 1 || ORDER.length + 1);
 
 export type Group = {

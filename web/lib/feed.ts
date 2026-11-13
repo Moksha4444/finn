@@ -37,7 +37,7 @@ export type RankedItem = Item & Ranked;
 // ---- settings (localStorage) ----
 // Defaults mirror backend/finn/config.py (VOLUME_MULTIPLE, EXCESS_MOVE_PCT, TIERS["P1"]).
 export const P1_CATS = ["results", "m_and_a", "management_change", "fund_raise", "litigation", "credit_rating_downgrade", "pledging"];
-export const P2_CATS = ["earnings_call", "dividend", "bonus_split", "capex", "press_release", "credit_rating"];
+export const P2_CATS = ["internal_restructuring", "earnings_call", "dividend", "bonus_split", "capex", "press_release", "credit_rating"];
 export type Settings = { volN: number; moveX: number; cats: string[] };
 export const DEFAULTS: Settings = { volN: 2, moveX: 3, cats: P1_CATS };
 
@@ -112,26 +112,35 @@ export function ranked(items: Item[], s: Settings): RankedItem[] {
 }
 
 // ---- alerts (recomputed here so threshold/category changes apply immediately) ----
-export type Alert = { key: string; symbol: string; date: string; kind: "price" | "filing" | "error"; text: string; url?: string | null; item?: Item };
+// sev orders a day's alerts (material filing > price move by size > volume by multiple > data problem);
+// minor = a volume-only spike under MINOR_VOL, folded behind "+N smaller volume spikes" (user, 13 Nov)
+export type Alert = { key: string; symbol: string; date: string; kind: "price" | "filing" | "error"; text: string; url?: string | null; item?: Item; sev: number; minor?: boolean };
+export const MINOR_VOL = 3;
+export const ALERT_DAYS = 7;
 
 export function buildAlerts(feed: Feed, s: Settings): Alert[] {
   const out: Alert[] = [];
   for (const d of feed.days) {
     const h = hits(d, s.volN, s.moveX);
-    if (h.length) out.push({ key: `price|${d.symbol}|${d.date}`, symbol: d.symbol, date: d.date, kind: "price", text: h.join(" · ") });
+    if (!h.length) continue;
+    const move = Math.abs(d.excess_pct ?? d.move_pct);
+    const moved = move >= s.moveX, vol = d.vol_ratio ?? 0;
+    out.push({ key: `price|${d.symbol}|${d.date}`, symbol: d.symbol, date: d.date, kind: "price", text: h.join(" · "),
+      sev: moved ? 200 + move : 100 + vol, minor: !moved && vol < MINOR_VOL });
   }
   const seen = new Set<string>(); // one alert per (symbol, day, category): results are often filed twice
   for (const i of [...feed.items].sort((a, b) => a.tier.localeCompare(b.tier))) {
     const key = `filing|${i.symbol}|${i.filed.slice(0, 10)}|${i.category}`;
     if (i.tier === "P3" || !s.cats.includes(i.category) || seen.has(key)) continue;
     seen.add(key);
-    out.push({ key, symbol: i.symbol, date: i.filed.slice(0, 10), kind: "filing", text: `${sentence(label(i.category))}: ${i.headline || i.subject}`, url: i.url, item: i });
+    out.push({ key, symbol: i.symbol, date: i.filed.slice(0, 10), kind: "filing", text: `${sentence(label(i.category))}: ${i.headline || i.subject}`, url: i.url, item: i,
+      sev: i.tier === "P1" ? 300 : 250 });
   }
   for (const a of feed.alerts.filter((a) => a.kind === "error"))
-    out.push({ key: `error|${a.symbol}|${a.date}`, symbol: a.symbol, date: a.date, kind: "error", text: a.text });
+    out.push({ key: `error|${a.symbol}|${a.date}`, symbol: a.symbol, date: a.date, kind: "error", text: a.text, sev: 0 });
   for (const f of feed.failed)
-    out.push({ key: `error|${f.symbol}|failed`, symbol: f.symbol, date: feed.window[1], kind: "error", text: f.as_of ? `Couldn't refresh; showing filings as of ${filedAt(f.as_of)}` : `Couldn't fetch filings: ${f.error}` });
-  return out.sort((a, b) => b.date.localeCompare(a.date) || a.symbol.localeCompare(b.symbol));
+    out.push({ key: `error|${f.symbol}|failed`, symbol: f.symbol, date: feed.window[1], kind: "error", text: f.as_of ? `Couldn't refresh; showing filings as of ${filedAt(f.as_of)}` : `Couldn't fetch filings: ${f.error}`, sev: 0 });
+  return out.sort((a, b) => b.date.localeCompare(a.date) || b.sev - a.sev || a.symbol.localeCompare(b.symbol));
 }
 
 // Unseen alerts. First visit: everything before the latest day counts as seen (user's rule, 12 Nov).

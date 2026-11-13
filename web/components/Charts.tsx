@@ -25,11 +25,15 @@ const Label = ({ x, y, children, className = "", align = "center" }: { x: number
 );
 
 // ---- a quarterly path against a target band (Promised vs Delivered), also the margin trend (no band) ----
-export function PathLine({ points, lo = null, hi = null, end = null, signed = false, labelAt, drawKey, describe, plot = 44 }: {
+export function PathLine({ points: all, lo = null, hi = null, end = null, signed = false, labelAt, drawKey, describe, plot = 44 }: {
   points: [string, number][]; lo?: number | null; hi?: number | null; end?: string | null; signed?: boolean; labelAt?: number[];
   drawKey?: string; describe: string; plot?: number;
 }) {
   const animate = useDrawOnce(drawKey);
+  // Quarters after the deadline aren't evidence for the promise: off the chart, so they can't stretch the scale
+  // (L&T: a post-deadline +15.8% squeezed the FY26 dots at 10-11% up against the 15% line).
+  const cut = end ? all.findIndex(([q]) => q === end) : -1;
+  const points = cut >= 0 ? all.slice(0, cut + 1) : all;
   const n = points.length;
   const vals = points.map(([, v]) => v);
   const bounds = [...vals, ...[lo, hi].filter((v): v is number => v != null)];
@@ -40,6 +44,13 @@ export function PathLine({ points, lo = null, hi = null, end = null, signed = fa
   const gut = banded0(lo, hi) ? 15 : 7; // left gutter holds the band labels
   const x = (k: number) => (n === 1 ? (gut + 93) / 2 : gut + (k * (91 - gut)) / (n - 1));
   const y = (v: number) => top + (1 - (v - min) / (max - min)) * plot;
+  // a value label sits above its dot, or below it when a target line would run through the text
+  const lines = [lo, hi].filter((b): b is number => b != null).map(y);
+  const clash = (t: number) => lines.some((l) => l > t - 1 && l < t + 15);
+  const labelY = (v: number) => {
+    const up = y(v) - 16, down = y(v) + 6;
+    return clash(up) && !clash(down) && down + 14 <= top + plot + 4 ? down : up;
+  };
   const show = new Set(labelAt ?? points.map((_, k) => k));
   const value = (v: number) => (signed ? <Signed text={pct(v)} /> : fmt1(v));
   const bandTop = hi != null ? y(hi) : top, bandBottom = lo != null ? y(lo) : top + plot;
@@ -73,7 +84,7 @@ export function PathLine({ points, lo = null, hi = null, end = null, signed = fa
             style={{ left: `${x(k)}%`, top: y(v) }} />
         ))}
         {points.map(([q, v], k) => show.has(k) && (
-          <Label key={q} x={x(k)} y={y(v) - 16} className={after(k) ? "text-ink-2" : "font-medium"}>{value(v)}</Label>
+          <Label key={q} x={x(k)} y={labelY(v)} className={after(k) ? "text-ink-2" : "font-medium"}>{value(v)}</Label>
         ))}
       </div>
       {points.map(([q], k) => (show.has(k) || n <= 5) && <Label key={q} x={x(k)} y={h - 14} className={k === endAt ? "font-medium text-ink" : "text-ink-2"}>{q}</Label>)}
