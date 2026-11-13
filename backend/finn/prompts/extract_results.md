@@ -6,6 +6,8 @@ Rules:
 - Copy every number exactly as printed. No arithmetic, no rounding, no unit conversion. Brackets mean negative.
 - `unit` is the unit printed on the table (e.g. "₹ crore", "₹ lakh", "₹ million").
 - Use null when a line is not in the table. Do not use outside knowledge.
+- `excise_duty`: the "Excise duty" expense line as printed, if the table has one (0 if it shows "-"); null otherwise.
+- `other_income`: the "Other income" line (income outside operations, e.g. treasury income) as printed; null if the table has no such line. For banks and lenders leave it null.
 - `exceptional_items`: the total of exceptional items for that column (0 if the line shows "-"; null if there is no such line).
 - `profit_before_exceptional_and_tax`: the "profit before exceptional items and tax" line as printed; null if the table has no such line.
 - `profit_before_tax`: profit before tax after exceptional items.

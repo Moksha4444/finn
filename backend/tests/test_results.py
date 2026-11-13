@@ -117,3 +117,25 @@ def test_prefers_sebi_statement_over_clean_summary_page():
     # BHARTIARTL: p.1 = OCR-garbled SEBI statement (3 quarters), p.2 = clean 2-column investor-report summary
     idx, basis = pdf.find_results_pages(pdf.pages(pdf.open_pdf((FIX / "BHARTIARTL_statement_p2_summary_p33.pdf").read_bytes())))
     assert idx[0] == 0 and basis == "consolidated"
+
+
+def test_ebitda_excludes_other_income_and_keeps_all_three_columns():
+    # ASIANPAINT Q2 FY27: PBDIT as the company reports it excludes other income (15.6% margin, not 18.5%)
+    ex = _fake("TCS_results.pdf")
+    for col, oi in zip(ex["data"]["columns"], [1000, 900, 800]):
+        col["other_income"] = oi
+    c = results_card(ex)
+    lines = {l["name"]: l for l in c["lines"]}
+    assert lines["EBITDA"]["value"] == 18638 + 252 + 1262 - 1000 and c["note"].endswith("− other income")
+    assert lines["Revenue"]["values"] == [73188, 72275, 65799]
+    ex["data"]["columns"][1]["other_income"] = None  # one column lacks it: none excluded, and the note says so
+    assert "other income not printed" in results_card(ex)["note"]
+
+
+def test_revenue_is_net_of_excise_when_the_filing_prints_it():
+    # ITC since Feb 2026: excise on cigarettes inside revenue from operations
+    ex = _fake("TCS_results.pdf")
+    for col, e in zip(ex["data"]["columns"], [10000, 9000, 1000]):
+        col["excise_duty"] = e
+    c = results_card(ex)
+    assert {l["name"]: l for l in c["lines"]}["Revenue"]["value"] == 73188 - 10000 and c["note"].startswith("Revenue net of excise duty")

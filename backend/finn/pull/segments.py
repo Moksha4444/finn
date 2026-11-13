@@ -14,6 +14,7 @@ SCHEMA = {"type": "object", "properties": {
         "required": ["name", "revenue_q", "revenue_yago", "result_q", "result_yago"]}}},
     "required": ["found", "basis", "col_q", "col_yago", "unit", "page", "segments"]}
 SKIP = re.compile(r"total|inter[- ]?segment|unallocat|corporate|elimination", re.I)
+SINGLE = re.compile(r"no (?:separate )?reportable segments?|(?:single|one|only one) (?:reportable |operating |business )*segment")
 GENERIC = {"business", "segment", "products", "product", "division", "and", "the", "others", "other", "services", "margin", "margins",
            "revenue", "revenues", "growth", "ebitda", "ebit", "income", "sales"}
 
@@ -32,6 +33,7 @@ def quarter(scrip: str, q: str, symbol: str = "") -> dict | None:
         rows = _candidates(scrip, qe)
     except Exception:
         return None  # BSE down: the promise stays unmeasured rather than failing the page
+    single = None
     for row in rows:
         try:
             b = bse.attachment(row["ATTACHMENTNAME"])
@@ -39,6 +41,8 @@ def quarter(scrip: str, q: str, symbol: str = "") -> dict | None:
             continue
         doc = pdf.open_pdf(b)
         texts = [t.lower() for t in pdf.pages(doc)]
+        if not single and any(SINGLE.search(t) for t in texts):
+            single = {"quarter": q, "single": True, "segments": {}, "url": VIEWER + row["ATTACHMENTNAME"]}
         idx = [i for i, t in enumerate(texts) if "segment" in t and "revenue" in t and "result" in t]
         idx.sort(key=lambda i: "consolidated" not in texts[i])  # the group first, as on the results card
         if not idx:
@@ -60,7 +64,7 @@ def quarter(scrip: str, q: str, symbol: str = "") -> dict | None:
         if segs:
             return {"quarter": q, "basis": d["basis"], "unit": d["unit"], "page": idx[0] + 1, "segments": segs,
                     "url": VIEWER + row["ATTACHMENTNAME"]}
-    return None
+    return single  # "no separate reportable segment": the filing says there is nothing to split (ASIANPAINT)
 
 
 def _words(s: str) -> set[str]:

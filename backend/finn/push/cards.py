@@ -12,7 +12,7 @@ RESULTS_SCHEMA = {
         "is_bank_or_nbfc": {"type": "boolean"},
         "columns": {"type": "array", "items": {"type": "object", "properties": {
             "period_label": {"type": "string"},
-            **{k: _num for k in ["revenue_from_operations", "total_income", "interest_earned", "interest_expended",
+            **{k: _num for k in ["revenue_from_operations", "excise_duty", "other_income", "total_income", "interest_earned", "interest_expended",
                                  "finance_costs", "depreciation_amortisation", "exceptional_items", "profit_before_exceptional_and_tax",
                                  "profit_before_tax", "profit_after_tax", "profit_attributable_to_owners"]},
         }, "required": ["period_label", "profit_before_tax", "profit_after_tax"]}},
@@ -20,7 +20,9 @@ RESULTS_SCHEMA = {
     "required": ["basis", "unit", "is_bank_or_nbfc", "columns"],
 }
 TO_CRORE = {"crore": 1, "lakh": 0.01, "lac": 0.01, "million": 0.1, "mn": 0.1, "billion": 100, "bn": 100, "thousand": 1e-4}
-EBITDA_NOTE = "EBITDA = profit before exceptional items & tax + finance costs + D&A; other income not excluded"
+# Other income out: the companies' own PBDIT / EBITDA and screener's operating profit exclude it, so the card, the
+# research page's margin and the promise checks all show one number (ASIANPAINT Q2 FY27: 15.6%, not 18.5%).
+EBITDA_NOTE = "EBITDA = profit before exceptional items & tax + finance costs + D&A − other income"
 
 
 def extract_results(pdf_bytes: bytes, path: str = "pdf_pages") -> dict:
@@ -73,10 +75,19 @@ def results_card(ex: dict) -> dict:
                  "Total income": [c.get("total_income") for c in cols]}
         note = "NII = interest earned − interest expended"
     else:
-        lines = {"Revenue": [c.get("revenue_from_operations") for c in cols],
-                 "EBITDA": [_add(p if has_pbe else c["profit_before_tax"], c.get("finance_costs"), c.get("depreciation_amortisation"))
-                            for p, c in zip(pbe, cols)]}
+        oi = [c.get("other_income") for c in cols]
+        has_oi = None not in oi  # all three or none, so QoQ/YoY compare like with like
+        excise = [c.get("excise_duty") for c in cols]
+        # ITC since Feb 2026: excise on cigarettes sits inside revenue from operations (+44% "growth"); net it out
+        net = None not in excise and any(excise)
+        lines = {"Revenue": [_sub(c.get("revenue_from_operations"), e if net else 0) for e, c in zip(excise, cols)],
+                 "EBITDA": [_sub(_add(p if has_pbe else c["profit_before_tax"], c.get("finance_costs"), c.get("depreciation_amortisation")), o if has_oi else 0)
+                            for p, o, c in zip(pbe, oi, cols)]}
         note = EBITDA_NOTE if has_pbe else EBITDA_NOTE.replace("profit before exceptional items & tax", "PBT (no pre-exceptional line)")
+        if net:
+            note = "Revenue net of excise duty; " + note
+        if not has_oi:
+            note = note.replace(" − other income", "; other income not printed, so not excluded")
     # Owners' share matches the headline net profit and EPS; only if all 3 columns have it, so QoQ/YoY compare like with like.
     owners = [c.get("profit_attributable_to_owners") for c in cols]
     pat = ("PAT (to owners)", owners) if None not in owners else ("PAT", [c["profit_after_tax"] for c in cols])
@@ -93,7 +104,9 @@ def results_card(ex: dict) -> dict:
             one_offs.append(f"{label} includes ₹{abs(x):,.0f} cr one-off{kind}")
     return {
         "basis": d["basis"], "unit": "₹ crore", "note": note, "periods": [c["period_label"] for c in cols],
-        "lines": [{"name": n, "value": None if v[0] is None else round(v[0], 2), "qoq_pct": _pct(v[0], v[1]), "yoy_pct": _pct(v[0], v[2])}
+        # values: all 3 columns, so the research page uses the filing's own numbers for these quarters
+        "lines": [{"name": n, "value": None if v[0] is None else round(v[0], 2), "qoq_pct": _pct(v[0], v[1]), "yoy_pct": _pct(v[0], v[2]),
+                   "values": [None if x is None else round(x, 2) for x in v]}
                   for n, v in lines.items()],
         "one_offs": one_offs, "pages": ex["pages"], "model_note": ex.get("model_note"),
     }

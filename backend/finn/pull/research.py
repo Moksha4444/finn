@@ -35,6 +35,11 @@ def fy(p: str) -> str:
     return f"FY{int(p[-2:])}"
 
 
+def fy_range(first: str, last: str) -> str:
+    """'FY22–FY26 (Apr 2021 – Mar 2026)' for annual columns 'Mar 2022' ... 'Mar 2026'."""
+    return f"{fy(first)}–{fy(last)} (Apr {int(first[-4:]) - 1} – Mar {last[-4:]})"
+
+
 def snapshot(co: dict) -> dict:
     """Revenue & PAT (8 quarters), margin (8 quarters), cash conversion and debt/equity (5 years), each with one
     claim sentence. Lenders: total income and net margin; CFO and debt/equity don't mean anything for a bank's book."""
@@ -47,27 +52,28 @@ def snapshot(co: dict) -> dict:
     pat = pvd._row(q, ["Net Profit"]) or {}
     periods = [p for p in q["periods"] if p in rev and p in pat][-8:]
     rev_name = "Total income" if lender else "Revenue"
-    out = {"basis": co["basis"], "lender": lender, "unit": "₹ crore", "source": SNAP_SOURCE}
+    pat_name = "PAT (to owners)" if co.get("pat_basis", "").startswith("to owners") else "PAT"
+    out = {"basis": co["basis"], "lender": lender, "unit": "₹ crore", "source": SNAP_SOURCE, "pat_name": pat_name,
+           "filing_quarters": co.get("filing_quarters", [])}
 
     if periods:
         last, ago = periods[-1], pvd.shift(periods[-1], -4)
-        claim = f"{rev_name} {money(rev[last])} in the {last} quarter"
+        claim = f"{rev_name} {money(rev[last])} in {pvd.fy_name(last)}"
         if rev.get(ago) and pat.get(ago) and pat[ago] > 0:
-            claim = f"{rev_name} {signed((rev[last] / rev[ago] - 1) * 100)} YoY in the {last} quarter; PAT {signed((pat[last] / pat[ago] - 1) * 100)}"
+            claim = f"{rev_name} {signed((rev[last] / rev[ago] - 1) * 100)} YoY in {pvd.fy_name(last)}; {pat_name} {signed((pat[last] / pat[ago] - 1) * 100)}"
         out["quarters"] = {"periods": periods, "revenue": [rev[p] for p in periods], "pat": [pat[p] for p in periods],
                            "revenue_name": rev_name, "claim": claim + "."}
 
     if lender:
         m = {p: pat[p] / rev[p] * 100 for p in pat if rev.get(p)}
         m_name = "Net margin (PAT / total income)"
-    else:  # EBITDA = PBT + finance costs + D&A, other income included: the same definition as the results card
-        pbt, intr, dep = (pvd._row(q, [n]) or {} for n in ("Profit before tax", "Interest", "Depreciation"))
-        m = {p: (pbt[p] + intr.get(p, 0) + dep.get(p, 0)) / rev[p] * 100 for p in pbt if rev.get(p)}
-        m_name = "EBITDA margin (PBT + finance costs + D&A, other income included)"
+    else:  # one EBITDA definition everywhere: the results card's, the promise checks', and what companies report
+        m = pvd.ebitda_margin(q)
+        m_name = "EBITDA margin (operating profit over revenue, other income excluded)"
     mp = [p for p in periods if p in m]
     if len(mp) >= 2:
         last, ago = mp[-1], pvd.shift(mp[-1], -4)
-        claim = f"{m_name.split(' (')[0]} {m[last]:.1f}% in the {last} quarter" + (f", {signed(m[last] - m[ago], ' pp')} YoY" if ago in m else "")
+        claim = f"{m_name.split(' (')[0]} {m[last]:.1f}% in {pvd.fy_name(last)}" + (f", {signed(m[last] - m[ago], ' pp')} YoY" if ago in m else "")
         out["margin"] = {"name": m_name, "periods": mp, "values": [round(m[p], 2) for p in mp], "claim": claim + "."}
 
     if lender:
@@ -78,7 +84,7 @@ def snapshot(co: dict) -> dict:
     years = [p for p in a["cash-flow"]["periods"] if p in cfo and p in apat][-5:]
     if len(years) >= 2:
         c, n = sum(cfo[y] for y in years), sum(apat[y] for y in years)
-        span = f"{fy(years[0])}–{fy(years[-1])}"
+        span = fy_range(years[0], years[-1])
         claim = (f"Operating cash flow was {c / n:.2f}× PAT over {span} ({money(c)} vs {money(n)})." if n > 0
                  else f"PAT summed to {money(n)} over {span} (a net loss), so cash conversion isn't meaningful.")
         out["cash"] = {"years": [fy(y) for y in years], "cfo": [cfo[y] for y in years], "pat": [apat[y] for y in years], "claim": claim}
@@ -88,7 +94,7 @@ def snapshot(co: dict) -> dict:
     if len(years) >= 2:
         de = {y: debt[y] / (eq[y] + res[y]) for y in years}
         out["leverage"] = {"years": [fy(y) for y in years], "values": [round(de[y], 2) for y in years],
-                           "claim": f"Debt/equity {de[years[-1]]:.2f} at {fy(years[-1])} end, from {de[years[0]]:.2f} at {fy(years[0])} end."}
+                           "claim": f"Debt/equity {de[years[-1]]:.2f} at {fy(years[-1])} end (Mar {years[-1][-4:]}), from {de[years[0]]:.2f} at {fy(years[0])} end."}
     return out
 
 
@@ -150,15 +156,20 @@ def evidence(rows: list[dict], reported: list[dict], questions: list[dict], snap
     """Everything the model may cite: {id, text, cite: {label, url}}. S = management's numbers, Q = analysts'
     questions, P = promises with their computed verdict, F = snapshot claims."""
     ev = []
-    for x in sorted(reported, key=lambda r: pvd._q(r["said_in"]), reverse=True)[:24]:  # newest 24: Groq's 8k tokens/min
+    # Revenue, profit and margin come only from the computed figures (F) and promise rows (P): management's own
+    # statements of them mix standalone, segment and half-year numbers (ASIANPAINT: standalone 17.1%, H1 18.2% and
+    # consolidated 15.6%, all "PBDIT margin"), and bull and bear must argue from one set of facts.
+    canon = ("revenue", "net_profit", "operating_margin")
+    for x in sorted((r for r in reported if r["metric_key"] not in canon), key=lambda r: pvd._q(r["said_in"]), reverse=True)[:24]:  # Groq: 8k tokens/min
         ev.append({"id": f"S{len(ev) + 1}", "text": f"{x['metric']}: {x['value']} ({x['period']}). “{x['quote']}”",
                    "cite": {"label": f"{pvd.fy_name(x['said_in'])} call, p.{x['page']}", "url": urls.get(x["said_in"])}})
     for k, x in enumerate(questions):
         ev.append({"id": f"Q{k + 1}", "text": f"Analyst on the {x['call']} call: “{x['quote']}”",
                    "cite": {"label": f"{x['call']} call, p.{x['page']} (analyst)", "url": x["url"]}})
     for k, r in enumerate(rows):
-        ev.append({"id": f"P{k + 1}", "text": f"Promised on the {r['call']} call: {r['metric']}: {r['target']} ({r['period']}). "
-                                              f"Verdict: {r['verdict']}. Actual: {r['actual']}",
+        ev.append({"id": f"P{k + 1}", "verdict": r["verdict"],
+                   "text": f"Promised on the {r['call']} call: {r['metric']}: {r['target']} ({r['period']}). "
+                           f"Verdict: {r['verdict']}{RUNNING.get(r['verdict'], '')}. Actual: {r['actual']}",
                    "cite": {"label": f"{r['call']} call, p.{r['page']} (promise)", "url": r["transcript"]}})
     for k, key in enumerate(("quarters", "margin", "cash", "leverage")):
         if snap.get(key, {}).get("claim"):
@@ -166,26 +177,65 @@ def evidence(rows: list[dict], reported: list[dict], questions: list[dict], snap
     return ev
 
 
-POINT = {"type": "object", "properties": {"point": {"type": "string"}, "cites": {"type": "array", "items": {"type": "string"}}},
-         "required": ["point", "cites"]}
+RUNNING = {"on track": " (period still running: no hit or miss yet)", "ahead": " (period still running: no hit or miss yet)",
+           "behind pace": " (period still running: no hit or miss yet)"}
+POINT = {"type": "object", "properties": {"claim": {"type": "string"}, "why": {"type": "string"},
+                                          "cites": {"type": "array", "items": {"type": "string"}}}, "required": ["claim", "why", "cites"]}
 BB = {"type": "object", "properties": {"bull": {"type": "array", "items": POINT}, "bear": {"type": "array", "items": POINT}},
       "required": ["bull", "bear"]}
 PERIOD = re.compile(r"\b(?:FY|Q|H)\s?'?\d+\b|\b[SQPF]\d+\b")  # period names and evidence ids are not claims
+NAMED_PERIOD = re.compile(r"\b(?:Q[1-4]|H[12])\s?FY\d{2}\b|\bFY\d{2}\b|\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w* \d{4}\b")
+# a target is beaten or missed only once its period has ended (user's rule, 13 Nov)
+WIN = re.compile(r"\b(?:beat|beats|beating|beaten|exceed\w*|surpass\w*|outperform\w*|hit|achiev\w*|met)\b", re.I)
+LOSS = re.compile(r"\b(?:miss\w*|fell short|falls? short|short of|failed|fails)\b", re.I)
+FAMILY = (("margin", re.compile(r"margin|pbdit|ebitda", re.I)), ("revenue", re.compile(r"revenue|sales|total income", re.I)),
+          ("pat", re.compile(r"\bpat\b|net profit|profit after tax", re.I)))
 
 
-def checked(points: list[dict], by_id: dict[str, dict]) -> tuple[list[dict], int]:
-    """(first 3 points whose every number is printed in the evidence they cite, number rejected)."""
+def fact(text: str) -> tuple[str, str, float] | None:
+    """(metric family, period, first % figure) of a sentence about one company metric, for the same-facts check."""
+    fam = [f for f, rx in FAMILY if rx.search(text)]
+    per, pct = NAMED_PERIOD.search(text), re.search(r"([+−-]?\d+(?:\.\d+)?)\s?%", text)
+    if len(fam) != 1 or not per or not pct:
+        return None
+    return fam[0], per.group(0), float(pct.group(1).replace("−", "-"))
+
+
+def problem(pt: dict, ids: list[str], by_id: dict[str, dict]) -> str | None:
+    """Why a bull/bear point can't be shown (None = fine). Python checks, not prompt wishes."""
+    text = f"{pt['claim']} {pt['why']}"
+    body = re.sub(r"[,\s]", "", " ".join(by_id[i]["text"] for i in ids))
+    if not ids or any(n not in body for n in _nums(PERIOD.sub("", text))):
+        return "a number not in its cited evidence"
+    if _nums(PERIOD.sub("", pt["why"])):
+        return "the why restates numbers instead of arguing"
+    if _nums(PERIOD.sub("", pt["claim"])) and not NAMED_PERIOD.search(pt["claim"]):
+        return "a number without its period"
+    verdicts = {by_id[i].get("verdict") for i in ids}
+    if WIN.search(text) and "hit" not in verdicts:
+        return "claims a target was beaten that isn't a hit"
+    if LOSS.search(text) and "miss" not in verdicts:
+        return "claims a miss that isn't a miss"
+    return None
+
+
+def checked(points: list[dict], by_id: dict[str, dict], facts: dict | None = None) -> tuple[list[dict], int]:
+    """(first 3 points that pass problem() and agree with facts already used, number rejected).
+    facts: {(family, period): figure} shared by both sides, so bull and bear can't quote two numbers for one fact."""
+    facts = {} if facts is None else facts
     keep, dropped = [], 0
     for pt in points:
-        if not isinstance(pt, dict) or not isinstance(pt.get("point"), str) or not isinstance(pt.get("cites"), list):
+        if not isinstance(pt, dict) or not all(isinstance(pt.get(k), str) for k in ("claim", "why")) or not isinstance(pt.get("cites"), list):
             dropped += 1
             continue
         ids = [i for i in dict.fromkeys(pt["cites"]) if i in by_id]
-        body = re.sub(r"[,\s]", "", " ".join(by_id[i]["text"] for i in ids))
-        if not ids or any(n not in body for n in _nums(PERIOD.sub("", pt["point"]))):
+        f = fact(pt["claim"])
+        if problem(pt, ids, by_id) or (f and facts.get(f[:2], f[2]) != f[2]):
             dropped += 1
             continue
-        keep.append({"point": pt["point"].strip(), "cites": [by_id[i]["cite"] for i in ids]})
+        if f:
+            facts[f[:2]] = f[2]
+        keep.append({"point": pt["claim"].strip(), "why": pt["why"].strip(), "cites": [by_id[i]["cite"] for i in ids]})
     return keep[:3], dropped
 
 
@@ -199,8 +249,9 @@ def bull_bear(name: str, latest: str | None, ev: list[dict], symbol: str) -> dic
         return None
     by_id = {e["id"]: e for e in ev}
     data = r["data"] if isinstance(r["data"], dict) else {}
-    bull, d1 = checked(data.get("bull") or [], by_id)
-    bear, d2 = checked(data.get("bear") or [], by_id)
+    facts: dict = {}
+    bull, d1 = checked(data.get("bull") or [], by_id, facts)
+    bear, d2 = checked(data.get("bear") or [], by_id, facts)
     if not bull or not bear:
         return None
     return {"bull": bull, "bear": bear, "dropped": d1 + d2, "model": r["model"], "model_note": r.get("model_note")}
@@ -251,7 +302,7 @@ def build(symbol: str) -> dict:
             raise
         print(f"  {sym}: PvD not re-run ({type(e).__name__}: {str(e)[:100]}); kept the previous promises")
         out = {k: v for k, v in json.loads(f.read_text(encoding="utf-8")).items() if k not in ("snapshot", "bull_bear", "prices", "summary", "sources")}
-        co, reported, texts = screener.company(sym), [], {}
+        co, reported, texts = pvd.company(sym), [], {}
         for c in out["calls"]:
             try:
                 texts[c["quarter"]] = pdf.pages(pdf.open_pdf(pvd.transcript(c["transcript"])))
