@@ -29,7 +29,7 @@ def test_summary_counts_and_sentence():
     assert research.summary([], 0)["sentence"] == "No earnings-call transcripts were found to check promises against."
     assert research.summary([row("partial")], 4)["sentence"] == "Kept 0 of 1 measured promise from the last 4 calls; 1 partly met; none missed."
     assert research.summary([row("hit")], 4)["sentence"] == "Kept 1 of 1 measured promise from the last 4 calls; none missed."
-    assert research.summary([row("not-yet-measurable")], 3)["sentence"].startswith("None of the 1 promises from the last 3 calls")
+    assert research.summary([row("not-yet-measurable")], 3)["sentence"] == "The one promise from the last 3 calls can't be checked yet; the reason is below."
     assert research.summary([], 4)["sentence"] == "No checkable promises found on the last 4 calls."
 
 

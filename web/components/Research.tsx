@@ -279,7 +279,7 @@ function PromiseItem({ p, k, sym }: { p: PromiseRow; k: number; sym: string }) {
         <div className="pb-1 text-[0.8125rem] leading-snug">
           <p>{plain(p.why)}</p>
           {p.path && <p className="mt-1 text-ink-2">Path: <Signed text={p.path} /></p>}
-          {p.actual_source && <p className="mt-1 text-ink-2">Source: {p.actual_source}{p.model && !p.model.startsWith("python") ? ` · evidence picked by ${p.model.split(" ")[0].replace(/^openai\//, "")}` : ""}</p>}
+          {p.actual_source && <p className="mt-1 text-ink-2">Source: {p.actual_source}{p.model && !p.model.startsWith("python") ? ` · evidence picked by ${p.model.split(" ")[0].split("/").pop()}` : ""}</p>}
           {p.cites.length > 0 && (
             <ul className="mt-1.5 space-y-1">
               {p.cites.map((c, j) => <li key={j} className="py-1.5"><ExtLink c={c} className={HIT} /></li>)}
@@ -408,7 +408,7 @@ function BullBear({ d }: { d: Research }) {
       {side("Bull", b.bull)}
       {side("Bear", b.bear)}
       <p className="mt-2 text-[0.75rem] leading-snug text-ink-2">
-        Written by {b.model.replace(/^openai\//, "")} from the cited statements, questions and figures only.
+        Written by {b.model.split("/").pop()} from the cited statements, questions and figures only.
         {b.dropped > 0 && ` ${b.dropped} ${b.dropped === 1 ? "point was" : "points were"} dropped because ${b.dropped === 1 ? "its" : "their"} numbers weren't in the cited source.`}
         {b.model_note && ` ${b.model_note}.`}
       </p>

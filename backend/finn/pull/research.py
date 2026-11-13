@@ -27,6 +27,10 @@ def _annual(t: dict, names: list[str]) -> dict[str, float]:
     return {p: v for p, v in (pvd._row(t, names) or {}).items() if re.fullmatch(r"Mar \d{4}", p)}
 
 
+def money(v: float) -> str:
+    return f"{'−' if v < 0 else ''}₹{abs(v):,.0f} cr"
+
+
 def fy(p: str) -> str:
     return f"FY{int(p[-2:])}"
 
@@ -47,7 +51,7 @@ def snapshot(co: dict) -> dict:
 
     if periods:
         last, ago = periods[-1], pvd.shift(periods[-1], -4)
-        claim = f"{rev_name} ₹{rev[last]:,.0f} cr in the {last} quarter"
+        claim = f"{rev_name} {money(rev[last])} in the {last} quarter"
         if rev.get(ago) and pat.get(ago) and pat[ago] > 0:
             claim = f"{rev_name} {signed((rev[last] / rev[ago] - 1) * 100)} YoY in the {last} quarter; PAT {signed((pat[last] / pat[ago] - 1) * 100)}"
         out["quarters"] = {"periods": periods, "revenue": [rev[p] for p in periods], "pat": [pat[p] for p in periods],
@@ -75,8 +79,8 @@ def snapshot(co: dict) -> dict:
     if len(years) >= 2:
         c, n = sum(cfo[y] for y in years), sum(apat[y] for y in years)
         span = f"{fy(years[0])}–{fy(years[-1])}"
-        claim = (f"Operating cash flow was {c / n:.2f}× PAT over {span} (₹{c:,.0f} cr vs ₹{n:,.0f} cr)." if n > 0
-                 else f"PAT summed to ₹{n:,.0f} cr over {span}, so cash conversion isn't meaningful.")
+        claim = (f"Operating cash flow was {c / n:.2f}× PAT over {span} ({money(c)} vs {money(n)})." if n > 0
+                 else f"PAT summed to {money(n)} over {span} (a net loss), so cash conversion isn't meaningful.")
         out["cash"] = {"years": [fy(y) for y in years], "cfo": [cfo[y] for y in years], "pat": [apat[y] for y in years], "claim": claim}
     bs = a["balance-sheet"]
     debt, eq, res = (_annual(bs, n) for n in (["Borrowings", "Borrowing"], ["Equity Capital"], ["Reserves"]))
@@ -100,7 +104,8 @@ def summary(rows: list[dict], n_calls: int) -> dict:
     elif not rows:
         s = f"No checkable promises found on {calls}."
     elif not c["measured"]:
-        s = f"None of the {c['total']} promises from {calls} can be checked yet; the reasons are listed below."
+        s = (f"The one promise from {calls} can't be checked yet; the reason is below." if c["total"] == 1
+             else f"None of the {c['total']} promises from {calls} can be checked yet; the reasons are listed below.")
     else:
         s = f"Kept {c['kept']} of {c['measured']} measured {'promise' if c['measured'] == 1 else 'promises'} from {calls}"
         tail = []

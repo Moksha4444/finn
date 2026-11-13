@@ -79,11 +79,14 @@ def _groq(model: str, parts: list, schema: dict) -> tuple[dict, int, int]:
             raise Exhausted(f"groq 429, retry after {wait:.0f}s")
         time.sleep(wait)
         raise Retryable("groq 429")
-    if r.status_code in (500, 502, 503):
-        raise Retryable(f"groq {r.status_code}")
+    if r.status_code in (500, 502, 503) or (r.status_code == 400 and "json_validate_failed" in r.text):
+        raise Retryable(f"groq {r.status_code}")  # a 400 json_validate_failed is the model's output missing the schema: sampling again fixes it
     r.raise_for_status()
     j = r.json()
-    return json.loads(j["choices"][0]["message"]["content"]), j["usage"]["prompt_tokens"], j["usage"]["completion_tokens"]
+    data = json.loads(j["choices"][0]["message"]["content"])
+    if not isinstance(data, dict) or any(k not in data for k in schema.get("required", [])):
+        raise Retryable("groq answer missing required keys")  # Groq doesn't enforce the schema; never cache a half answer
+    return data, j["usage"]["prompt_tokens"], j["usage"]["completion_tokens"]
 
 
 ADAPTERS = {"gemini": _gemini, "groq": _groq}

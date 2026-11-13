@@ -370,7 +370,7 @@ def progress(p: dict, call_q: str, s: dict | None) -> dict | None:
     fmt = (lambda v: f"{v:+.1f}%") if s["kind"] == "growth" else (lambda v: f"{v:.1f}%")
     path = f"{' → '.join(fmt(vals[q]) for q in pts)} ({fy_name(pts[0])} → {fy_name(pts[-1])})" if len(pts) > 1 else None
     out = {"path": path, "actual_source": s["source"], "model": RULE, "cites": [s["cites"][q] for q in pts if q in s["cites"]],
-           "chart": len(pts) > 1 and chart(p, s["kind"], [[fy_name(q), round(vals[q], 2)] for q in pts]) or None}
+           "chart": chart(p, s["kind"], [[fy_name(q), round(vals[q], 2)] for q in pts])}
     if p["horizon"] in DIRECTIONAL or not p.get("fy") and p["horizon"] in ("quarter", "half_year", "fiscal_year"):  # no year stated = no deadline
         if len(pts) < 2:
             return None
