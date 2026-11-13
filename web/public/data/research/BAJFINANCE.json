@@ -1,7 +1,7 @@
 {
  "symbol": "BAJFINANCE",
  "name": "Bajaj Finance Ltd",
- "generated_at": "2026-11-13T03:06",
+ "generated_at": "2026-11-13T05:40",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -52,6 +52,19 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6eb34dc2-bde9-4df5-8b93-aad3d461140e.pdf",
    "path": null,
    "cites": [],
+   "chart": {
+    "kind": "level",
+    "points": [
+     [
+      "Q2 FY27",
+      7.31
+     ]
+    ],
+    "lo": null,
+    "hi": 7.6,
+    "direction": "at_most",
+    "end": "Q4 FY26"
+   },
    "verdict": "hit",
    "actual": "Q4 FY26 call, p.4: “Cost of funds improved by 4 basis points in Q4 and came in at 7.41%.”; Q2 FY27 call, p.4: “Cost of funds came down sequentially by 9 basis points and came in at 7.31%.”",
    "actual_source": "management's statements on later calls (transcripts)",
@@ -69,6 +82,19 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a448b6b0-edb5-4b99-a122-d602950310af.pdf",
    "path": null,
    "cites": [],
+   "chart": {
+    "kind": "level",
+    "points": [
+     [
+      "Q2 FY27",
+      4.6
+     ]
+    ],
+    "lo": 4.4,
+    "hi": 4.6,
+    "direction": "within",
+    "end": "Q4 FY27"
+   },
    "verdict": "on track",
    "actual": "Q2 FY27 call, p.3: “ROA for the quarter came in at 4.6% and ROE came in at 20.6%.”; Q1 FY27 call, p.4: “ROA came in at 4.7% and ROE at 20.4%.”",
    "actual_source": "management's statements on later calls (transcripts)",
@@ -86,6 +112,7 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6eb34dc2-bde9-4df5-8b93-aad3d461140e.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
@@ -103,6 +130,7 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6eb34dc2-bde9-4df5-8b93-aad3d461140e.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
@@ -120,6 +148,7 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a448b6b0-edb5-4b99-a122-d602950310af.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "Q2 FY27 call, p.3: “AUM, as you can see, grew by 26.5% to INR 5,84,624 crores, delivering net AUM addition of close to INR 38,000 crores in the quarter.”; Q2 FY27 call, p.3: “AUM, as you can see, grew by 26.5% to INR 5,84,624 crores, delivering net AUM addition of close to INR 38,000 crores in the quarter.”",
    "actual_source": "management's statements on later calls (transcripts)",
@@ -137,11 +166,660 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a448b6b0-edb5-4b99-a122-d602950310af.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
    "why": "Not measured yet: no later filing or call statement measures this promise."
+  }
+ ],
+ "sector": "Financial Services",
+ "summary": {
+  "kept": 1,
+  "missed": 0,
+  "open": 1,
+  "partial": 0,
+  "unmeasured": 4,
+  "total": 6,
+  "measured": 2,
+  "sentence": "Kept 1 of 2 measured promises from the last 4 calls; 1 on track; none missed."
+ },
+ "prices": {
+  "closes": [
+   [
+    "2026-08-17",
+    1089.3
+   ],
+   [
+    "2026-08-18",
+    1094.3
+   ],
+   [
+    "2026-08-19",
+    1080.2
+   ],
+   [
+    "2026-08-20",
+    1095.0
+   ],
+   [
+    "2026-08-21",
+    1095.0
+   ],
+   [
+    "2026-08-24",
+    1077.0
+   ],
+   [
+    "2026-08-25",
+    1087.4
+   ],
+   [
+    "2026-08-26",
+    1085.0
+   ],
+   [
+    "2026-08-27",
+    1083.0
+   ],
+   [
+    "2026-08-28",
+    1079.9
+   ],
+   [
+    "2026-08-31",
+    1057.0
+   ],
+   [
+    "2026-09-01",
+    1053.9
+   ],
+   [
+    "2026-09-02",
+    1055.9
+   ],
+   [
+    "2026-09-03",
+    1049.0
+   ],
+   [
+    "2026-09-04",
+    1060.5
+   ],
+   [
+    "2026-09-07",
+    1060.0
+   ],
+   [
+    "2026-09-08",
+    1054.1
+   ],
+   [
+    "2026-09-09",
+    1039.3
+   ],
+   [
+    "2026-09-10",
+    1043.5
+   ],
+   [
+    "2026-09-11",
+    1034.5
+   ],
+   [
+    "2026-09-15",
+    1009.2
+   ],
+   [
+    "2026-09-16",
+    1006.2
+   ],
+   [
+    "2026-09-17",
+    1015.0
+   ],
+   [
+    "2026-09-18",
+    1040.3
+   ],
+   [
+    "2026-09-21",
+    1021.3
+   ],
+   [
+    "2026-09-22",
+    1008.8
+   ],
+   [
+    "2026-09-23",
+    1043.2
+   ],
+   [
+    "2026-09-24",
+    982.0
+   ],
+   [
+    "2026-09-25",
+    996.9
+   ],
+   [
+    "2026-09-28",
+    985.0
+   ],
+   [
+    "2026-09-29",
+    973.8
+   ],
+   [
+    "2026-09-30",
+    959.4
+   ],
+   [
+    "2026-10-01",
+    948.3
+   ],
+   [
+    "2026-10-05",
+    970.0
+   ],
+   [
+    "2026-10-06",
+    963.1
+   ],
+   [
+    "2026-10-07",
+    963.85
+   ],
+   [
+    "2026-10-08",
+    955.95
+   ],
+   [
+    "2026-10-09",
+    960.0
+   ],
+   [
+    "2026-10-12",
+    957.25
+   ],
+   [
+    "2026-10-13",
+    982.75
+   ],
+   [
+    "2026-10-14",
+    957.0
+   ],
+   [
+    "2026-10-15",
+    965.25
+   ],
+   [
+    "2026-10-16",
+    982.1
+   ],
+   [
+    "2026-10-19",
+    957.35
+   ],
+   [
+    "2026-10-21",
+    926.0
+   ],
+   [
+    "2026-10-22",
+    942.1
+   ],
+   [
+    "2026-10-23",
+    928.95
+   ],
+   [
+    "2026-10-26",
+    918.7
+   ],
+   [
+    "2026-10-27",
+    912.0
+   ],
+   [
+    "2026-10-28",
+    917.25
+   ],
+   [
+    "2026-10-29",
+    938.9
+   ],
+   [
+    "2026-10-30",
+    939.1
+   ],
+   [
+    "2026-11-02",
+    959.4
+   ],
+   [
+    "2026-11-03",
+    970.0
+   ],
+   [
+    "2026-11-04",
+    994.0
+   ],
+   [
+    "2026-11-05",
+    1070.0
+   ],
+   [
+    "2026-11-06",
+    1087.75
+   ],
+   [
+    "2026-11-09",
+    1064.85
+   ],
+   [
+    "2026-11-11",
+    1078.8
+   ]
+  ],
+  "nifty": [
+   [
+    "2026-08-17",
+    24287.65
+   ],
+   [
+    "2026-08-18",
+    24154.9
+   ],
+   [
+    "2026-08-19",
+    24078.3
+   ],
+   [
+    "2026-08-20",
+    24231.85
+   ],
+   [
+    "2026-08-21",
+    24252.0
+   ],
+   [
+    "2026-08-24",
+    24219.05
+   ],
+   [
+    "2026-08-25",
+    24334.55
+   ],
+   [
+    "2026-08-26",
+    24207.75
+   ],
+   [
+    "2026-08-27",
+    24090.85
+   ],
+   [
+    "2026-08-28",
+    24175.65
+   ],
+   [
+    "2026-08-31",
+    24080.4
+   ],
+   [
+    "2026-09-01",
+    24055.8
+   ],
+   [
+    "2026-09-02",
+    23914.45
+   ],
+   [
+    "2026-09-03",
+    23873.45
+   ],
+   [
+    "2026-09-04",
+    23897.7
+   ],
+   [
+    "2026-09-07",
+    23779.15
+   ],
+   [
+    "2026-09-08",
+    23635.1
+   ],
+   [
+    "2026-09-09",
+    23431.5
+   ],
+   [
+    "2026-09-10",
+    23477.8
+   ],
+   [
+    "2026-09-11",
+    23398.1
+   ],
+   [
+    "2026-09-15",
+    23118.6
+   ],
+   [
+    "2026-09-16",
+    23217.6
+   ],
+   [
+    "2026-09-17",
+    23270.6
+   ],
+   [
+    "2026-09-18",
+    23346.4
+   ],
+   [
+    "2026-09-21",
+    23414.3
+   ],
+   [
+    "2026-09-22",
+    23329.0
+   ],
+   [
+    "2026-09-23",
+    23446.8
+   ],
+   [
+    "2026-09-24",
+    23063.1
+   ],
+   [
+    "2026-09-25",
+    23140.5
+   ],
+   [
+    "2026-09-28",
+    22780.25
+   ],
+   [
+    "2026-09-29",
+    22716.2
+   ],
+   [
+    "2026-09-30",
+    22620.45
+   ],
+   [
+    "2026-10-01",
+    22421.95
+   ],
+   [
+    "2026-10-05",
+    22555.75
+   ],
+   [
+    "2026-10-06",
+    22776.1
+   ],
+   [
+    "2026-10-07",
+    22603.05
+   ],
+   [
+    "2026-10-08",
+    22231.8
+   ],
+   [
+    "2026-10-09",
+    22520.45
+   ],
+   [
+    "2026-10-12",
+    22363.35
+   ],
+   [
+    "2026-10-13",
+    22721.95
+   ],
+   [
+    "2026-10-14",
+    22622.7
+   ],
+   [
+    "2026-10-15",
+    22997.35
+   ],
+   [
+    "2026-10-16",
+    23146.15
+   ],
+   [
+    "2026-10-19",
+    22888.95
+   ],
+   [
+    "2026-10-21",
+    22811.35
+   ],
+   [
+    "2026-10-22",
+    22687.65
+   ],
+   [
+    "2026-10-23",
+    22600.0
+   ],
+   [
+    "2026-10-26",
+    22753.2
+   ],
+   [
+    "2026-10-27",
+    22749.75
+   ],
+   [
+    "2026-10-28",
+    22698.85
+   ],
+   [
+    "2026-10-29",
+    22936.75
+   ],
+   [
+    "2026-10-30",
+    23053.1
+   ],
+   [
+    "2026-11-02",
+    23440.8
+   ],
+   [
+    "2026-11-03",
+    23810.85
+   ],
+   [
+    "2026-11-04",
+    23960.6
+   ],
+   [
+    "2026-11-05",
+    24536.6
+   ],
+   [
+    "2026-11-06",
+    25030.35
+   ],
+   [
+    "2026-11-09",
+    25044.65
+   ],
+   [
+    "2026-11-11",
+    25255.05
+   ]
+  ]
+ },
+ "snapshot": {
+  "basis": "consolidated",
+  "lender": true,
+  "unit": "₹ crore",
+  "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "quarters": {
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "revenue": [
+    18061.0,
+    18315.0,
+    19529.0,
+    19995.0,
+    20751.0,
+    21617.0,
+    23171.0,
+    24579.0
+   ],
+   "pat": [
+    4308.0,
+    4546.0,
+    4765.0,
+    4948.0,
+    4066.0,
+    5553.0,
+    6081.0,
+    6367.0
+   ],
+   "revenue_name": "Total income",
+   "claim": "Total income +22.9% YoY in the Sep 2026 quarter; PAT +28.7%."
+  },
+  "margin": {
+   "name": "Net margin (PAT / total income)",
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "values": [
+    23.85,
+    24.82,
+    24.4,
+    24.75,
+    19.59,
+    25.69,
+    26.24,
+    25.9
+   ],
+   "claim": "Net margin 25.9% in the Sep 2026 quarter, +1.2 pp YoY."
+  },
+  "cash": {
+   "note": "Not shown for lenders: deposits and loans run through operating cash flow, and borrowing is the business."
+  },
+  "leverage": {
+   "note": "Not shown for lenders: deposits and loans run through operating cash flow, and borrowing is the business."
+  }
+ },
+ "bull_bear": {
+  "bull": [
+   {
+    "point": "26.5% AUM growth to INR 5,84,624 crores, adding ~INR 38,000 crores AUM.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.3",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf"
+     }
+    ]
+   },
+   {
+    "point": "29% PAT increase to INR6,367 crores, boosting earnings.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.3",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf"
+     }
+    ]
+   },
+   {
+    "point": "7.31% cost of funds, down 9 basis points sequentially.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.4",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf"
+     }
+    ]
+   }
+  ],
+  "bear": [
+   {
+    "point": "GNPA rose to 1.06% in Q2, up from 0.96% in Q1.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.5",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf"
+     },
+     {
+      "label": "Q1 FY27 call, p.5",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b101e24e-b807-4c74-9025-90009f4b47a5.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Opex to NTI increased to 33.4% in Q1, marginally higher than last year.",
+    "cites": [
+     {
+      "label": "Q1 FY27 call, p.4",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b101e24e-b807-4c74-9025-90009f4b47a5.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Analyst noted GNPA up 10 basis points, warning of potential stress.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.8 (analyst)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf"
+     }
+    ]
+   }
+  ],
+  "dropped": 0,
+  "model": "openai/gpt-oss-120b",
+  "model_note": null
+ },
+ "sources": [
+  {
+   "label": "Q2 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf"
+  },
+  {
+   "label": "Q1 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b101e24e-b807-4c74-9025-90009f4b47a5.pdf"
+  },
+  {
+   "label": "Q4 FY26 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a448b6b0-edb5-4b99-a122-d602950310af.pdf"
+  },
+  {
+   "label": "Q3 FY26 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6eb34dc2-bde9-4df5-8b93-aad3d461140e.pdf"
+  },
+  {
+   "label": "Quarterly and annual tables (consolidated), screener.in, from the exchange filings",
+   "url": "https://www.screener.in/company/BAJFINANCE/consolidated/"
   }
  ]
 }

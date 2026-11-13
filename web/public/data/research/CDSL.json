@@ -1,7 +1,7 @@
 {
  "symbol": "CDSL",
  "name": "Central Depository Services (India) Ltd",
- "generated_at": "2026-11-13T03:06",
+ "generated_at": "2026-11-13T05:40",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -43,5 +43,688 @@
   "miss": 0,
   "not-yet-measurable": 0
  },
- "promises": []
+ "promises": [],
+ "sector": "Financial Services",
+ "summary": {
+  "kept": 0,
+  "missed": 0,
+  "open": 0,
+  "partial": 0,
+  "unmeasured": 0,
+  "total": 0,
+  "measured": 0,
+  "sentence": "No checkable promises found on the last 4 calls."
+ },
+ "prices": {
+  "closes": [
+   [
+    "2026-08-17",
+    1356.8
+   ],
+   [
+    "2026-08-18",
+    1340.6
+   ],
+   [
+    "2026-08-19",
+    1329.0
+   ],
+   [
+    "2026-08-20",
+    1345.9
+   ],
+   [
+    "2026-08-21",
+    1388.9
+   ],
+   [
+    "2026-08-24",
+    1385.1
+   ],
+   [
+    "2026-08-25",
+    1394.8
+   ],
+   [
+    "2026-08-26",
+    1434.0
+   ],
+   [
+    "2026-08-27",
+    1410.8
+   ],
+   [
+    "2026-08-28",
+    1414.7
+   ],
+   [
+    "2026-08-31",
+    1402.5
+   ],
+   [
+    "2026-09-01",
+    1391.0
+   ],
+   [
+    "2026-09-02",
+    1365.2
+   ],
+   [
+    "2026-09-03",
+    1394.0
+   ],
+   [
+    "2026-09-04",
+    1394.6
+   ],
+   [
+    "2026-09-07",
+    1414.9
+   ],
+   [
+    "2026-09-08",
+    1400.0
+   ],
+   [
+    "2026-09-09",
+    1368.6
+   ],
+   [
+    "2026-09-10",
+    1355.0
+   ],
+   [
+    "2026-09-11",
+    1360.0
+   ],
+   [
+    "2026-09-15",
+    1311.0
+   ],
+   [
+    "2026-09-16",
+    1299.0
+   ],
+   [
+    "2026-09-17",
+    1349.4
+   ],
+   [
+    "2026-09-18",
+    1390.0
+   ],
+   [
+    "2026-09-21",
+    1361.0
+   ],
+   [
+    "2026-09-22",
+    1348.0
+   ],
+   [
+    "2026-09-23",
+    1351.1
+   ],
+   [
+    "2026-09-24",
+    1320.0
+   ],
+   [
+    "2026-09-25",
+    1318.0
+   ],
+   [
+    "2026-09-28",
+    1289.0
+   ],
+   [
+    "2026-09-29",
+    1261.9
+   ],
+   [
+    "2026-09-30",
+    1264.0
+   ],
+   [
+    "2026-10-01",
+    1242.5
+   ],
+   [
+    "2026-10-05",
+    1250.0
+   ],
+   [
+    "2026-10-06",
+    1263.4
+   ],
+   [
+    "2026-10-07",
+    1275.0
+   ],
+   [
+    "2026-10-08",
+    1258.0
+   ],
+   [
+    "2026-10-09",
+    1260.0
+   ],
+   [
+    "2026-10-12",
+    1266.0
+   ],
+   [
+    "2026-10-13",
+    1292.0
+   ],
+   [
+    "2026-10-14",
+    1284.0
+   ],
+   [
+    "2026-10-15",
+    1293.0
+   ],
+   [
+    "2026-10-16",
+    1286.9
+   ],
+   [
+    "2026-10-19",
+    1270.0
+   ],
+   [
+    "2026-10-21",
+    1237.2
+   ],
+   [
+    "2026-10-22",
+    1225.0
+   ],
+   [
+    "2026-10-23",
+    1188.5
+   ],
+   [
+    "2026-10-26",
+    1196.0
+   ],
+   [
+    "2026-10-27",
+    1222.0
+   ],
+   [
+    "2026-10-28",
+    1232.0
+   ],
+   [
+    "2026-10-29",
+    1282.0
+   ],
+   [
+    "2026-10-30",
+    1263.0
+   ],
+   [
+    "2026-11-02",
+    1252.0
+   ],
+   [
+    "2026-11-03",
+    1320.0
+   ],
+   [
+    "2026-11-04",
+    1323.8
+   ],
+   [
+    "2026-11-05",
+    1334.0
+   ],
+   [
+    "2026-11-06",
+    1331.4
+   ],
+   [
+    "2026-11-09",
+    1356.0
+   ],
+   [
+    "2026-11-11",
+    1407.0
+   ]
+  ],
+  "nifty": [
+   [
+    "2026-08-17",
+    24287.65
+   ],
+   [
+    "2026-08-18",
+    24154.9
+   ],
+   [
+    "2026-08-19",
+    24078.3
+   ],
+   [
+    "2026-08-20",
+    24231.85
+   ],
+   [
+    "2026-08-21",
+    24252.0
+   ],
+   [
+    "2026-08-24",
+    24219.05
+   ],
+   [
+    "2026-08-25",
+    24334.55
+   ],
+   [
+    "2026-08-26",
+    24207.75
+   ],
+   [
+    "2026-08-27",
+    24090.85
+   ],
+   [
+    "2026-08-28",
+    24175.65
+   ],
+   [
+    "2026-08-31",
+    24080.4
+   ],
+   [
+    "2026-09-01",
+    24055.8
+   ],
+   [
+    "2026-09-02",
+    23914.45
+   ],
+   [
+    "2026-09-03",
+    23873.45
+   ],
+   [
+    "2026-09-04",
+    23897.7
+   ],
+   [
+    "2026-09-07",
+    23779.15
+   ],
+   [
+    "2026-09-08",
+    23635.1
+   ],
+   [
+    "2026-09-09",
+    23431.5
+   ],
+   [
+    "2026-09-10",
+    23477.8
+   ],
+   [
+    "2026-09-11",
+    23398.1
+   ],
+   [
+    "2026-09-15",
+    23118.6
+   ],
+   [
+    "2026-09-16",
+    23217.6
+   ],
+   [
+    "2026-09-17",
+    23270.6
+   ],
+   [
+    "2026-09-18",
+    23346.4
+   ],
+   [
+    "2026-09-21",
+    23414.3
+   ],
+   [
+    "2026-09-22",
+    23329.0
+   ],
+   [
+    "2026-09-23",
+    23446.8
+   ],
+   [
+    "2026-09-24",
+    23063.1
+   ],
+   [
+    "2026-09-25",
+    23140.5
+   ],
+   [
+    "2026-09-28",
+    22780.25
+   ],
+   [
+    "2026-09-29",
+    22716.2
+   ],
+   [
+    "2026-09-30",
+    22620.45
+   ],
+   [
+    "2026-10-01",
+    22421.95
+   ],
+   [
+    "2026-10-05",
+    22555.75
+   ],
+   [
+    "2026-10-06",
+    22776.1
+   ],
+   [
+    "2026-10-07",
+    22603.05
+   ],
+   [
+    "2026-10-08",
+    22231.8
+   ],
+   [
+    "2026-10-09",
+    22520.45
+   ],
+   [
+    "2026-10-12",
+    22363.35
+   ],
+   [
+    "2026-10-13",
+    22721.95
+   ],
+   [
+    "2026-10-14",
+    22622.7
+   ],
+   [
+    "2026-10-15",
+    22997.35
+   ],
+   [
+    "2026-10-16",
+    23146.15
+   ],
+   [
+    "2026-10-19",
+    22888.95
+   ],
+   [
+    "2026-10-21",
+    22811.35
+   ],
+   [
+    "2026-10-22",
+    22687.65
+   ],
+   [
+    "2026-10-23",
+    22600.0
+   ],
+   [
+    "2026-10-26",
+    22753.2
+   ],
+   [
+    "2026-10-27",
+    22749.75
+   ],
+   [
+    "2026-10-28",
+    22698.85
+   ],
+   [
+    "2026-10-29",
+    22936.75
+   ],
+   [
+    "2026-10-30",
+    23053.1
+   ],
+   [
+    "2026-11-02",
+    23440.8
+   ],
+   [
+    "2026-11-03",
+    23810.85
+   ],
+   [
+    "2026-11-04",
+    23960.6
+   ],
+   [
+    "2026-11-05",
+    24536.6
+   ],
+   [
+    "2026-11-06",
+    25030.35
+   ],
+   [
+    "2026-11-09",
+    25044.65
+   ],
+   [
+    "2026-11-11",
+    25255.05
+   ]
+  ]
+ },
+ "snapshot": {
+  "basis": "consolidated",
+  "lender": false,
+  "unit": "₹ crore",
+  "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "quarters": {
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "revenue": [
+    278.0,
+    224.0,
+    259.0,
+    319.0,
+    304.0,
+    263.0,
+    293.0,
+    394.0
+   ],
+   "pat": [
+    130.0,
+    100.0,
+    102.0,
+    140.0,
+    133.0,
+    80.0,
+    118.0,
+    173.0
+   ],
+   "revenue_name": "Revenue",
+   "claim": "Revenue +23.5% YoY in the Sep 2026 quarter; PAT +23.6%."
+  },
+  "margin": {
+   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "values": [
+    65.11,
+    62.95,
+    64.09,
+    62.38,
+    62.17,
+    46.01,
+    63.48,
+    63.45
+   ],
+   "claim": "EBITDA margin 63.5% in the Sep 2026 quarter, +1.1 pp YoY."
+  },
+  "cash": {
+   "years": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+   ],
+   "cfo": [
+    283.0,
+    249.0,
+    386.0,
+    543.0,
+    467.0
+   ],
+   "pat": [
+    312.0,
+    276.0,
+    420.0,
+    526.0,
+    455.0
+   ],
+   "claim": "Operating cash flow was 0.97× PAT over FY22–FY26 (₹1,928 cr vs ₹1,989 cr)."
+  },
+  "leverage": {
+   "years": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+   ],
+   "values": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "claim": "Debt/equity 0.00 at FY26 end, from 0.00 at FY22 end."
+  }
+ },
+ "bull_bear": {
+  "bull": [
+   {
+    "point": "EBITDA margin expanded 1.1 pp to 63.5%, reflecting improved operational efficiency.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
+     }
+    ]
+   },
+   {
+    "point": "18.59 crore demat accounts with 80% market share secure dominant market position.",
+    "cites": [
+     {
+      "label": "Q1 FY27 call, p.3",
+      "url": "https://nsearchives.nseindia.com/corporate/CDSL_07082026155803_NSEintimationtranscript.pdf"
+     },
+     {
+      "label": "Q1 FY27 call, p.3",
+      "url": "https://nsearchives.nseindia.com/corporate/CDSL_07082026155803_NSEintimationtranscript.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Debt/equity of 0.00 ensures a pristine balance sheet with zero leverage risk.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#leverage"
+     }
+    ]
+   }
+  ],
+  "bear": [
+   {
+    "point": "CVL profit fell 12% to INR23.74 crores, dragging consolidated earnings despite revenue growth.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.6",
+      "url": "https://nsearchives.nseindia.com/corporate/CDSL_05112026164633_NSEIntimationTranscript02112026Sd.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Analysts questioned if e-voting adoption declined YoY, indicating potential market share loss.",
+    "cites": [
+     {
+      "label": "Q3 FY26 call, p.7 (analyst)",
+      "url": "https://nsearchives.nseindia.com/corporate/CDSL_06022026152040_NSEintimationtranscriptSigned.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Government CKYC data improvements threaten pricing power in the KYC registration business.",
+    "cites": [
+     {
+      "label": "Q3 FY26 call, p.5 (analyst)",
+      "url": "https://nsearchives.nseindia.com/corporate/CDSL_06022026152040_NSEintimationtranscriptSigned.pdf"
+     }
+    ]
+   }
+  ],
+  "dropped": 1,
+  "model": "qwen/qwen3.8-27b",
+  "model_note": null
+ },
+ "sources": [
+  {
+   "label": "Q2 FY27 earnings call transcript",
+   "url": "https://nsearchives.nseindia.com/corporate/CDSL_05112026164633_NSEIntimationTranscript02112026Sd.pdf"
+  },
+  {
+   "label": "Q1 FY27 earnings call transcript",
+   "url": "https://nsearchives.nseindia.com/corporate/CDSL_07082026155803_NSEintimationtranscript.pdf"
+  },
+  {
+   "label": "Q4 FY26 earnings call transcript",
+   "url": "https://nsearchives.nseindia.com/corporate/CDSL_07052026193244_NSEintimationtranscript_Sign.pdf"
+  },
+  {
+   "label": "Q3 FY26 earnings call transcript",
+   "url": "https://nsearchives.nseindia.com/corporate/CDSL_06022026152040_NSEintimationtranscriptSigned.pdf"
+  },
+  {
+   "label": "Quarterly and annual tables (consolidated), screener.in, from the exchange filings",
+   "url": "https://www.screener.in/company/CDSL/consolidated/"
+  }
+ ]
 }

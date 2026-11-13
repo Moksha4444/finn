@@ -1,7 +1,7 @@
 {
  "symbol": "TITAN",
  "name": "Titan Company Ltd",
- "generated_at": "2026-11-13T03:05",
+ "generated_at": "2026-11-13T05:42",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -60,6 +60,19 @@
      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=86009cba-ca03-4d35-bad8-b1988cfcff13.pdf"
     }
    ],
+   "chart": {
+    "kind": "margin",
+    "points": [
+     [
+      "Q2 FY27",
+      12.98
+     ]
+    ],
+    "lo": 11,
+    "hi": null,
+    "direction": "at_least",
+    "end": "Q4 FY27"
+   },
    "actual_source": "the company's results filings on BSE: segment information; growth and margins computed in Python",
    "model": "python (computed)",
    "verdict": "on track",
@@ -77,6 +90,7 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c3a5d70a-78ac-4407-aed7-e06b93e17a8f.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
@@ -94,6 +108,7 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f70a0a33-43cf-40b6-a753-67b06123e8de.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
@@ -111,6 +126,7 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f70a0a33-43cf-40b6-a753-67b06123e8de.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
@@ -128,6 +144,7 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f70a0a33-43cf-40b6-a753-67b06123e8de.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "Q2 FY27 call, p.4: “Does the same competition argument apply there from the challenger daily wear brand, or has it got to do with the festive shift? That would be my first question. ... From 10.2% in the base period to 6.5%.”",
    "actual_source": "management's statements on later calls (transcripts)",
@@ -145,11 +162,703 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=daa6c172-771a-4af5-b4b3-9813fdf7536a.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
    "why": "Not measurable yet: promised on the latest call (Q2 FY27), and no results have come out since."
+  }
+ ],
+ "sector": "Consumer Discretionary",
+ "summary": {
+  "kept": 0,
+  "missed": 0,
+  "open": 1,
+  "partial": 0,
+  "unmeasured": 5,
+  "total": 6,
+  "measured": 1,
+  "sentence": "Kept 0 of 1 measured promise from the last 4 calls; 1 on track; none missed."
+ },
+ "prices": {
+  "closes": [
+   [
+    "2026-08-17",
+    5068.5
+   ],
+   [
+    "2026-08-18",
+    5048.6
+   ],
+   [
+    "2026-08-19",
+    5068.0
+   ],
+   [
+    "2026-08-20",
+    5068.0
+   ],
+   [
+    "2026-08-21",
+    5086.1
+   ],
+   [
+    "2026-08-24",
+    5079.0
+   ],
+   [
+    "2026-08-25",
+    5124.8
+   ],
+   [
+    "2026-08-26",
+    5100.0
+   ],
+   [
+    "2026-08-27",
+    5139.3
+   ],
+   [
+    "2026-08-28",
+    5169.2
+   ],
+   [
+    "2026-08-31",
+    5102.4
+   ],
+   [
+    "2026-09-01",
+    5050.0
+   ],
+   [
+    "2026-09-02",
+    5074.0
+   ],
+   [
+    "2026-09-03",
+    5027.0
+   ],
+   [
+    "2026-09-04",
+    5020.0
+   ],
+   [
+    "2026-09-07",
+    4995.0
+   ],
+   [
+    "2026-09-08",
+    4987.0
+   ],
+   [
+    "2026-09-09",
+    5005.0
+   ],
+   [
+    "2026-09-10",
+    5021.0
+   ],
+   [
+    "2026-09-11",
+    5009.5
+   ],
+   [
+    "2026-09-15",
+    4856.0
+   ],
+   [
+    "2026-09-16",
+    4908.5
+   ],
+   [
+    "2026-09-17",
+    4841.0
+   ],
+   [
+    "2026-09-18",
+    4798.5
+   ],
+   [
+    "2026-09-21",
+    4875.0
+   ],
+   [
+    "2026-09-22",
+    4928.5
+   ],
+   [
+    "2026-09-23",
+    4880.0
+   ],
+   [
+    "2026-09-24",
+    4832.5
+   ],
+   [
+    "2026-09-25",
+    4884.0
+   ],
+   [
+    "2026-09-28",
+    4819.5
+   ],
+   [
+    "2026-09-29",
+    4675.0
+   ],
+   [
+    "2026-09-30",
+    4587.0
+   ],
+   [
+    "2026-10-01",
+    4515.7
+   ],
+   [
+    "2026-10-05",
+    4580.0
+   ],
+   [
+    "2026-10-06",
+    4550.0
+   ],
+   [
+    "2026-10-07",
+    4377.0
+   ],
+   [
+    "2026-10-08",
+    4359.5
+   ],
+   [
+    "2026-10-09",
+    4410.0
+   ],
+   [
+    "2026-10-12",
+    4400.0
+   ],
+   [
+    "2026-10-13",
+    4487.0
+   ],
+   [
+    "2026-10-14",
+    4444.0
+   ],
+   [
+    "2026-10-15",
+    4455.8
+   ],
+   [
+    "2026-10-16",
+    4444.8
+   ],
+   [
+    "2026-10-19",
+    4424.2
+   ],
+   [
+    "2026-10-21",
+    4380.9
+   ],
+   [
+    "2026-10-22",
+    4350.0
+   ],
+   [
+    "2026-10-23",
+    4299.7
+   ],
+   [
+    "2026-10-26",
+    4323.0
+   ],
+   [
+    "2026-10-27",
+    4365.9
+   ],
+   [
+    "2026-10-28",
+    4337.9
+   ],
+   [
+    "2026-10-29",
+    4434.0
+   ],
+   [
+    "2026-10-30",
+    4436.5
+   ],
+   [
+    "2026-11-02",
+    4476.3
+   ],
+   [
+    "2026-11-03",
+    4562.0
+   ],
+   [
+    "2026-11-04",
+    4754.4
+   ],
+   [
+    "2026-11-05",
+    4834.6
+   ],
+   [
+    "2026-11-06",
+    5000.0
+   ],
+   [
+    "2026-11-09",
+    5005.0
+   ],
+   [
+    "2026-11-11",
+    4970.0
+   ]
+  ],
+  "nifty": [
+   [
+    "2026-08-17",
+    24287.65
+   ],
+   [
+    "2026-08-18",
+    24154.9
+   ],
+   [
+    "2026-08-19",
+    24078.3
+   ],
+   [
+    "2026-08-20",
+    24231.85
+   ],
+   [
+    "2026-08-21",
+    24252.0
+   ],
+   [
+    "2026-08-24",
+    24219.05
+   ],
+   [
+    "2026-08-25",
+    24334.55
+   ],
+   [
+    "2026-08-26",
+    24207.75
+   ],
+   [
+    "2026-08-27",
+    24090.85
+   ],
+   [
+    "2026-08-28",
+    24175.65
+   ],
+   [
+    "2026-08-31",
+    24080.4
+   ],
+   [
+    "2026-09-01",
+    24055.8
+   ],
+   [
+    "2026-09-02",
+    23914.45
+   ],
+   [
+    "2026-09-03",
+    23873.45
+   ],
+   [
+    "2026-09-04",
+    23897.7
+   ],
+   [
+    "2026-09-07",
+    23779.15
+   ],
+   [
+    "2026-09-08",
+    23635.1
+   ],
+   [
+    "2026-09-09",
+    23431.5
+   ],
+   [
+    "2026-09-10",
+    23477.8
+   ],
+   [
+    "2026-09-11",
+    23398.1
+   ],
+   [
+    "2026-09-15",
+    23118.6
+   ],
+   [
+    "2026-09-16",
+    23217.6
+   ],
+   [
+    "2026-09-17",
+    23270.6
+   ],
+   [
+    "2026-09-18",
+    23346.4
+   ],
+   [
+    "2026-09-21",
+    23414.3
+   ],
+   [
+    "2026-09-22",
+    23329.0
+   ],
+   [
+    "2026-09-23",
+    23446.8
+   ],
+   [
+    "2026-09-24",
+    23063.1
+   ],
+   [
+    "2026-09-25",
+    23140.5
+   ],
+   [
+    "2026-09-28",
+    22780.25
+   ],
+   [
+    "2026-09-29",
+    22716.2
+   ],
+   [
+    "2026-09-30",
+    22620.45
+   ],
+   [
+    "2026-10-01",
+    22421.95
+   ],
+   [
+    "2026-10-05",
+    22555.75
+   ],
+   [
+    "2026-10-06",
+    22776.1
+   ],
+   [
+    "2026-10-07",
+    22603.05
+   ],
+   [
+    "2026-10-08",
+    22231.8
+   ],
+   [
+    "2026-10-09",
+    22520.45
+   ],
+   [
+    "2026-10-12",
+    22363.35
+   ],
+   [
+    "2026-10-13",
+    22721.95
+   ],
+   [
+    "2026-10-14",
+    22622.7
+   ],
+   [
+    "2026-10-15",
+    22997.35
+   ],
+   [
+    "2026-10-16",
+    23146.15
+   ],
+   [
+    "2026-10-19",
+    22888.95
+   ],
+   [
+    "2026-10-21",
+    22811.35
+   ],
+   [
+    "2026-10-22",
+    22687.65
+   ],
+   [
+    "2026-10-23",
+    22600.0
+   ],
+   [
+    "2026-10-26",
+    22753.2
+   ],
+   [
+    "2026-10-27",
+    22749.75
+   ],
+   [
+    "2026-10-28",
+    22698.85
+   ],
+   [
+    "2026-10-29",
+    22936.75
+   ],
+   [
+    "2026-10-30",
+    23053.1
+   ],
+   [
+    "2026-11-02",
+    23440.8
+   ],
+   [
+    "2026-11-03",
+    23810.85
+   ],
+   [
+    "2026-11-04",
+    23960.6
+   ],
+   [
+    "2026-11-05",
+    24536.6
+   ],
+   [
+    "2026-11-06",
+    25030.35
+   ],
+   [
+    "2026-11-09",
+    25044.65
+   ],
+   [
+    "2026-11-11",
+    25255.05
+   ]
+  ]
+ },
+ "snapshot": {
+  "basis": "consolidated",
+  "lender": false,
+  "unit": "₹ crore",
+  "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "quarters": {
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "revenue": [
+    17740.0,
+    14916.0,
+    16523.0,
+    18725.0,
+    25416.0,
+    26920.0,
+    21356.0,
+    20614.0
+   ],
+   "pat": [
+    1047.0,
+    871.0,
+    1091.0,
+    1120.0,
+    1684.0,
+    1179.0,
+    1777.0,
+    2393.0
+   ],
+   "revenue_name": "Revenue",
+   "claim": "Revenue +10.1% YoY in the Sep 2026 quarter; PAT +113.7%."
+  },
+  "margin": {
+   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "values": [
+    10.16,
+    11.08,
+    11.71,
+    10.62,
+    10.67,
+    8.07,
+    14.23,
+    18.43
+   ],
+   "claim": "EBITDA margin 18.4% in the Sep 2026 quarter, +7.8 pp YoY."
+  },
+  "cash": {
+   "years": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+   ],
+   "cfo": [
+    -724.0,
+    1370.0,
+    1695.0,
+    -541.0,
+    5590.0
+   ],
+   "pat": [
+    2198.0,
+    3274.0,
+    3496.0,
+    3337.0,
+    5073.0
+   ],
+   "claim": "Operating cash flow was 0.43× PAT over FY22–FY26 (₹7,390 cr vs ₹17,378 cr)."
+  },
+  "leverage": {
+   "years": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+   ],
+   "values": [
+    0.78,
+    0.79,
+    1.65,
+    1.79,
+    1.95
+   ],
+   "claim": "Debt/equity 1.95 at FY26 end, from 0.78 at FY22 end."
+  }
+ },
+ "bull_bear": {
+  "bull": [
+   {
+    "point": "PAT +113.7% YoY in Sep 2026 quarter, driven by ₹490 crores customs duty gain.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     },
+     {
+      "label": "Q2 FY27 call, p.3",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=daa6c172-771a-4af5-b4b3-9813fdf7536a.pdf"
+     }
+    ]
+   },
+   {
+    "point": "EBITDA margin 18.4% in Sep 2026, up 7.8 pp YoY, indicating improved profitability.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
+     }
+    ]
+   },
+   {
+    "point": "Jewellery margin 13.0% vs 11% target, confirming on-track performance for FY27.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.7 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=daa6c172-771a-4af5-b4b3-9813fdf7536a.pdf"
+     }
+    ]
+   }
+  ],
+  "bear": [
+   {
+    "point": "Debt/equity 1.95 at FY26 end, up from 0.78 at FY22 end, increasing leverage.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#leverage"
+     }
+    ]
+   },
+   {
+    "point": "Operating cash flow 0.43× PAT over FY22–FY26, signaling weak cash conversion.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#cash"
+     }
+    ]
+   },
+   {
+    "point": "CaratLane EBIT margin fell to 6.5% from 10.2% base period, missing double-digit promise.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.4",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=daa6c172-771a-4af5-b4b3-9813fdf7536a.pdf"
+     },
+     {
+      "label": "Q1 FY27 call, p.14 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f70a0a33-43cf-40b6-a753-67b06123e8de.pdf"
+     }
+    ]
+   }
+  ],
+  "dropped": 0,
+  "model": "qwen/qwen3.8-27b",
+  "model_note": null
+ },
+ "sources": [
+  {
+   "label": "Q2 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=daa6c172-771a-4af5-b4b3-9813fdf7536a.pdf"
+  },
+  {
+   "label": "Q1 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f70a0a33-43cf-40b6-a753-67b06123e8de.pdf"
+  },
+  {
+   "label": "Q3 FY26 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=0ee5b68b-8f66-4705-9a84-9debaa9aae1d.pdf"
+  },
+  {
+   "label": "Q2 FY26 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c3a5d70a-78ac-4407-aed7-e06b93e17a8f.pdf"
+  },
+  {
+   "label": "Q2 FY27 results filing, p.14",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=86009cba-ca03-4d35-bad8-b1988cfcff13.pdf"
+  },
+  {
+   "label": "Quarterly and annual tables (consolidated), screener.in, from the exchange filings",
+   "url": "https://www.screener.in/company/TITAN/consolidated/"
   }
  ]
 }

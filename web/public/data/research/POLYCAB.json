@@ -1,7 +1,7 @@
 {
  "symbol": "POLYCAB",
  "name": "Polycab India Ltd",
- "generated_at": "2026-11-13T03:05",
+ "generated_at": "2026-11-13T05:41",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -68,6 +68,27 @@
      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=4ac93ea0-d4d1-4b85-8849-14a19e0dcceb.pdf"
     }
    ],
+   "chart": {
+    "kind": "margin",
+    "points": [
+     [
+      "Q4 FY26",
+      4.41
+     ],
+     [
+      "Q1 FY27",
+      7.97
+     ],
+     [
+      "Q2 FY27",
+      10.13
+     ]
+    ],
+    "lo": 8,
+    "hi": 10,
+    "direction": "at_least",
+    "end": null
+   },
    "actual_source": "the company's results filings on BSE: segment information; growth and margins computed in Python",
    "model": "python (computed)",
    "verdict": "hit",
@@ -98,6 +119,27 @@
      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=4ac93ea0-d4d1-4b85-8849-14a19e0dcceb.pdf"
     }
    ],
+   "chart": {
+    "kind": "margin",
+    "points": [
+     [
+      "Q4 FY26",
+      7.58
+     ],
+     [
+      "Q1 FY27",
+      10.99
+     ],
+     [
+      "Q2 FY27",
+      7.19
+     ]
+    ],
+    "lo": 6,
+    "hi": 9,
+    "direction": "at_least",
+    "end": null
+   },
    "actual_source": "the company's results filings on BSE: segment information; growth and margins computed in Python",
    "model": "python (computed)",
    "verdict": "hit",
@@ -124,6 +166,23 @@
      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=4ac93ea0-d4d1-4b85-8849-14a19e0dcceb.pdf"
     }
    ],
+   "chart": {
+    "kind": "margin",
+    "points": [
+     [
+      "Q1 FY27",
+      13.32
+     ],
+     [
+      "Q2 FY27",
+      14.19
+     ]
+    ],
+    "lo": 11,
+    "hi": 13,
+    "direction": "at_least",
+    "end": null
+   },
    "actual_source": "the company's results filings on BSE: segment information; growth and margins computed in Python",
    "model": "python (computed)",
    "verdict": "hit",
@@ -141,6 +200,7 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
@@ -158,6 +218,7 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f66f17ac-c40f-4309-afca-3e66af0956a0.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
@@ -175,11 +236,719 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f66f17ac-c40f-4309-afca-3e66af0956a0.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
    "why": "Not measurable: results filings don't report this figure (volumes, NOV/GMV, orders, AUM, mix or payout)."
+  }
+ ],
+ "sector": "Industrials",
+ "summary": {
+  "kept": 3,
+  "missed": 0,
+  "open": 0,
+  "partial": 0,
+  "unmeasured": 3,
+  "total": 6,
+  "measured": 3,
+  "sentence": "Kept 3 of 3 measured promises from the last 4 calls; none missed."
+ },
+ "prices": {
+  "closes": [
+   [
+    "2026-08-17",
+    9370.0
+   ],
+   [
+    "2026-08-18",
+    9139.0
+   ],
+   [
+    "2026-08-19",
+    9140.0
+   ],
+   [
+    "2026-08-20",
+    9125.0
+   ],
+   [
+    "2026-08-21",
+    8966.0
+   ],
+   [
+    "2026-08-24",
+    9054.0
+   ],
+   [
+    "2026-08-25",
+    9098.0
+   ],
+   [
+    "2026-08-26",
+    9060.0
+   ],
+   [
+    "2026-08-27",
+    9079.0
+   ],
+   [
+    "2026-08-28",
+    9088.0
+   ],
+   [
+    "2026-08-31",
+    9445.0
+   ],
+   [
+    "2026-09-01",
+    8895.5
+   ],
+   [
+    "2026-09-02",
+    8804.0
+   ],
+   [
+    "2026-09-03",
+    8807.5
+   ],
+   [
+    "2026-09-04",
+    8300.0
+   ],
+   [
+    "2026-09-07",
+    8261.0
+   ],
+   [
+    "2026-09-08",
+    8373.5
+   ],
+   [
+    "2026-09-09",
+    8354.0
+   ],
+   [
+    "2026-09-10",
+    8358.0
+   ],
+   [
+    "2026-09-11",
+    8241.0
+   ],
+   [
+    "2026-09-15",
+    8143.5
+   ],
+   [
+    "2026-09-16",
+    8121.5
+   ],
+   [
+    "2026-09-17",
+    8208.5
+   ],
+   [
+    "2026-09-18",
+    8400.0
+   ],
+   [
+    "2026-09-21",
+    8369.5
+   ],
+   [
+    "2026-09-22",
+    8350.0
+   ],
+   [
+    "2026-09-23",
+    8417.0
+   ],
+   [
+    "2026-09-24",
+    8366.5
+   ],
+   [
+    "2026-09-25",
+    8408.5
+   ],
+   [
+    "2026-09-28",
+    8191.0
+   ],
+   [
+    "2026-09-29",
+    8102.5
+   ],
+   [
+    "2026-09-30",
+    8026.0
+   ],
+   [
+    "2026-10-01",
+    7990.0
+   ],
+   [
+    "2026-10-05",
+    8080.0
+   ],
+   [
+    "2026-10-06",
+    8147.0
+   ],
+   [
+    "2026-10-07",
+    8310.0
+   ],
+   [
+    "2026-10-08",
+    8151.0
+   ],
+   [
+    "2026-10-09",
+    8255.0
+   ],
+   [
+    "2026-10-12",
+    8405.0
+   ],
+   [
+    "2026-10-13",
+    8290.0
+   ],
+   [
+    "2026-10-14",
+    8335.0
+   ],
+   [
+    "2026-10-15",
+    8207.0
+   ],
+   [
+    "2026-10-16",
+    8219.0
+   ],
+   [
+    "2026-10-19",
+    8025.0
+   ],
+   [
+    "2026-10-21",
+    7770.5
+   ],
+   [
+    "2026-10-22",
+    7671.0
+   ],
+   [
+    "2026-10-23",
+    7440.0
+   ],
+   [
+    "2026-10-26",
+    7739.0
+   ],
+   [
+    "2026-10-27",
+    7718.0
+   ],
+   [
+    "2026-10-28",
+    7680.0
+   ],
+   [
+    "2026-10-29",
+    7745.0
+   ],
+   [
+    "2026-10-30",
+    7787.0
+   ],
+   [
+    "2026-11-02",
+    7920.0
+   ],
+   [
+    "2026-11-03",
+    7837.0
+   ],
+   [
+    "2026-11-04",
+    7930.0
+   ],
+   [
+    "2026-11-05",
+    7849.0
+   ],
+   [
+    "2026-11-06",
+    7871.0
+   ],
+   [
+    "2026-11-09",
+    7832.5
+   ],
+   [
+    "2026-11-11",
+    7948.0
+   ]
+  ],
+  "nifty": [
+   [
+    "2026-08-17",
+    24287.65
+   ],
+   [
+    "2026-08-18",
+    24154.9
+   ],
+   [
+    "2026-08-19",
+    24078.3
+   ],
+   [
+    "2026-08-20",
+    24231.85
+   ],
+   [
+    "2026-08-21",
+    24252.0
+   ],
+   [
+    "2026-08-24",
+    24219.05
+   ],
+   [
+    "2026-08-25",
+    24334.55
+   ],
+   [
+    "2026-08-26",
+    24207.75
+   ],
+   [
+    "2026-08-27",
+    24090.85
+   ],
+   [
+    "2026-08-28",
+    24175.65
+   ],
+   [
+    "2026-08-31",
+    24080.4
+   ],
+   [
+    "2026-09-01",
+    24055.8
+   ],
+   [
+    "2026-09-02",
+    23914.45
+   ],
+   [
+    "2026-09-03",
+    23873.45
+   ],
+   [
+    "2026-09-04",
+    23897.7
+   ],
+   [
+    "2026-09-07",
+    23779.15
+   ],
+   [
+    "2026-09-08",
+    23635.1
+   ],
+   [
+    "2026-09-09",
+    23431.5
+   ],
+   [
+    "2026-09-10",
+    23477.8
+   ],
+   [
+    "2026-09-11",
+    23398.1
+   ],
+   [
+    "2026-09-15",
+    23118.6
+   ],
+   [
+    "2026-09-16",
+    23217.6
+   ],
+   [
+    "2026-09-17",
+    23270.6
+   ],
+   [
+    "2026-09-18",
+    23346.4
+   ],
+   [
+    "2026-09-21",
+    23414.3
+   ],
+   [
+    "2026-09-22",
+    23329.0
+   ],
+   [
+    "2026-09-23",
+    23446.8
+   ],
+   [
+    "2026-09-24",
+    23063.1
+   ],
+   [
+    "2026-09-25",
+    23140.5
+   ],
+   [
+    "2026-09-28",
+    22780.25
+   ],
+   [
+    "2026-09-29",
+    22716.2
+   ],
+   [
+    "2026-09-30",
+    22620.45
+   ],
+   [
+    "2026-10-01",
+    22421.95
+   ],
+   [
+    "2026-10-05",
+    22555.75
+   ],
+   [
+    "2026-10-06",
+    22776.1
+   ],
+   [
+    "2026-10-07",
+    22603.05
+   ],
+   [
+    "2026-10-08",
+    22231.8
+   ],
+   [
+    "2026-10-09",
+    22520.45
+   ],
+   [
+    "2026-10-12",
+    22363.35
+   ],
+   [
+    "2026-10-13",
+    22721.95
+   ],
+   [
+    "2026-10-14",
+    22622.7
+   ],
+   [
+    "2026-10-15",
+    22997.35
+   ],
+   [
+    "2026-10-16",
+    23146.15
+   ],
+   [
+    "2026-10-19",
+    22888.95
+   ],
+   [
+    "2026-10-21",
+    22811.35
+   ],
+   [
+    "2026-10-22",
+    22687.65
+   ],
+   [
+    "2026-10-23",
+    22600.0
+   ],
+   [
+    "2026-10-26",
+    22753.2
+   ],
+   [
+    "2026-10-27",
+    22749.75
+   ],
+   [
+    "2026-10-28",
+    22698.85
+   ],
+   [
+    "2026-10-29",
+    22936.75
+   ],
+   [
+    "2026-10-30",
+    23053.1
+   ],
+   [
+    "2026-11-02",
+    23440.8
+   ],
+   [
+    "2026-11-03",
+    23810.85
+   ],
+   [
+    "2026-11-04",
+    23960.6
+   ],
+   [
+    "2026-11-05",
+    24536.6
+   ],
+   [
+    "2026-11-06",
+    25030.35
+   ],
+   [
+    "2026-11-09",
+    25044.65
+   ],
+   [
+    "2026-11-11",
+    25255.05
+   ]
+  ]
+ },
+ "snapshot": {
+  "basis": "consolidated",
+  "lender": false,
+  "unit": "₹ crore",
+  "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "quarters": {
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "revenue": [
+    5226.0,
+    6986.0,
+    5906.0,
+    6477.0,
+    7636.0,
+    8864.0,
+    8210.0,
+    9899.0
+   ],
+   "pat": [
+    464.0,
+    734.0,
+    600.0,
+    693.0,
+    630.0,
+    786.0,
+    797.0,
+    990.0
+   ],
+   "revenue_name": "Revenue",
+   "claim": "Revenue +52.8% YoY in the Sep 2026 quarter; PAT +42.9%."
+  },
+  "margin": {
+   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "values": [
+    14.27,
+    15.37,
+    15.88,
+    16.46,
+    13.32,
+    13.79,
+    15.12,
+    15.26
+   ],
+   "claim": "EBITDA margin 15.3% in the Sep 2026 quarter, −1.2 pp YoY."
+  },
+  "cash": {
+   "years": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+   ],
+   "cfo": [
+    512.0,
+    1428.0,
+    1296.0,
+    1809.0,
+    3811.0
+   ],
+   "pat": [
+    917.0,
+    1282.0,
+    1803.0,
+    2046.0,
+    2708.0
+   ],
+   "claim": "Operating cash flow was 1.01× PAT over FY22–FY26 (₹8,856 cr vs ₹8,756 cr)."
+  },
+  "leverage": {
+   "years": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+   ],
+   "values": [
+    0.02,
+    0.03,
+    0.02,
+    0.02,
+    0.02
+   ],
+   "claim": "Debt/equity 0.02 at FY26 end, from 0.02 at FY22 end."
+  }
+ },
+ "bull_bear": {
+  "bull": [
+   {
+    "point": "FMEG EBIT margin hit 10.1%, meeting the 8-10% FY30 target.",
+    "cites": [
+     {
+      "label": "Q3 FY26 call, p.7 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf"
+     },
+     {
+      "label": "Q2 FY27 call, p.7",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Wires & Cables EBIT margin reached 14.2%, exceeding the 11-13% target.",
+    "cites": [
+     {
+      "label": "Q1 FY27 call, p.5 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=e47a217c-cefa-4ff6-8e34-6bbd07d42b13.pdf"
+     }
+    ]
+   },
+   {
+    "point": "PAT margin 10.0% and EBITDA margin 14.4% show operational efficiency.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.6",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"
+     },
+     {
+      "label": "Q2 FY27 call, p.6",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"
+     }
+    ]
+   }
+  ],
+  "bear": [
+   {
+    "point": "EBITDA margin 15.3% fell 1.2 pp YoY despite 52.8% revenue growth.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
+     },
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     }
+    ]
+   },
+   {
+    "point": "EPC revenues INR 3,077 million declined 11% YoY in Q1 FY27.",
+    "cites": [
+     {
+      "label": "Q1 FY27 call, p.6",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=e47a217c-cefa-4ff6-8e34-6bbd07d42b13.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Analysts question sustainability of 53% growth amid rising distribution competition.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.9 (analyst)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"
+     },
+     {
+      "label": "Q2 FY27 call, p.5",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"
+     }
+    ]
+   }
+  ],
+  "dropped": 0,
+  "model": "qwen/qwen3.8-27b",
+  "model_note": null
+ },
+ "sources": [
+  {
+   "label": "Q2 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"
+  },
+  {
+   "label": "Q1 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=e47a217c-cefa-4ff6-8e34-6bbd07d42b13.pdf"
+  },
+  {
+   "label": "Q4 FY26 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f66f17ac-c40f-4309-afca-3e66af0956a0.pdf"
+  },
+  {
+   "label": "Q3 FY26 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf"
+  },
+  {
+   "label": "Q4 FY26 results filing, p.9",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1538e3eb-56c6-4ad2-a1ea-a25b2291b09e.pdf"
+  },
+  {
+   "label": "Q1 FY27 results filing, p.5",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=faa11982-c753-4036-96ed-0e11eb17832b.pdf"
+  },
+  {
+   "label": "Q2 FY27 results filing, p.5",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=4ac93ea0-d4d1-4b85-8849-14a19e0dcceb.pdf"
+  },
+  {
+   "label": "Quarterly and annual tables (consolidated), screener.in, from the exchange filings",
+   "url": "https://www.screener.in/company/POLYCAB/consolidated/"
   }
  ]
 }

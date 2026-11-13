@@ -1,0 +1,310 @@
+[
+ {
+  "symbol": "ASIANPAINT",
+  "name": "Asian Paints Ltd",
+  "sector": "Consumer Discretionary",
+  "generated_at": "2026-11-12T18:02",
+  "summary": {
+   "kept": 1,
+   "missed": 1,
+   "open": 1,
+   "partial": 0,
+   "measured": 3,
+   "total": 6
+  }
+ },
+ {
+  "symbol": "ASTRAL",
+  "name": "Astral Ltd",
+  "sector": "Industrials",
+  "generated_at": "2026-11-13T03:03",
+  "summary": {
+   "kept": 2,
+   "missed": 0,
+   "open": 0,
+   "partial": 0,
+   "measured": 2,
+   "total": 6
+  }
+ },
+ {
+  "symbol": "BAJFINANCE",
+  "name": "Bajaj Finance Ltd",
+  "sector": "Financial Services",
+  "generated_at": "2026-11-13T05:40",
+  "summary": {
+   "kept": 1,
+   "missed": 0,
+   "open": 1,
+   "partial": 0,
+   "measured": 2,
+   "total": 6
+  }
+ },
+ {
+  "symbol": "BHARTIARTL",
+  "name": "Bharti Airtel Ltd",
+  "sector": "Telecommunication",
+  "generated_at": "2026-11-13T03:04",
+  "summary": {
+   "kept": 0,
+   "missed": 0,
+   "open": 0,
+   "partial": 0,
+   "measured": 0,
+   "total": 0
+  }
+ },
+ {
+  "symbol": "CDSL",
+  "name": "Central Depository Services (India) Ltd",
+  "sector": "Financial Services",
+  "generated_at": "2026-11-13T05:40",
+  "summary": {
+   "kept": 0,
+   "missed": 0,
+   "open": 0,
+   "partial": 0,
+   "measured": 0,
+   "total": 0
+  }
+ },
+ {
+  "symbol": "DEEPAKNTR",
+  "name": "Deepak Nitrite Ltd",
+  "sector": "Commodities",
+  "generated_at": "2026-11-12T18:02",
+  "summary": {
+   "kept": 0,
+   "missed": 0,
+   "open": 0,
+   "partial": 0,
+   "measured": 0,
+   "total": 1
+  }
+ },
+ {
+  "symbol": "DIXON",
+  "name": "Dixon Technologies (India) Ltd",
+  "sector": "Consumer Discretionary",
+  "generated_at": "2026-11-13T05:41",
+  "summary": {
+   "kept": 0,
+   "missed": 0,
+   "open": 0,
+   "partial": 1,
+   "measured": 1,
+   "total": 6
+  }
+ },
+ {
+  "symbol": "ETERNAL",
+  "name": "Eternal Ltd",
+  "sector": "Consumer Discretionary",
+  "generated_at": "2026-11-12T18:02",
+  "summary": {
+   "kept": 0,
+   "missed": 0,
+   "open": 0,
+   "partial": 0,
+   "measured": 0,
+   "total": 4
+  }
+ },
+ {
+  "symbol": "HDFCBANK",
+  "name": "HDFC Bank Ltd",
+  "sector": "Financial Services",
+  "generated_at": "2026-11-13T05:41",
+  "summary": {
+   "kept": 1,
+   "missed": 1,
+   "open": 0,
+   "partial": 0,
+   "measured": 2,
+   "total": 3
+  }
+ },
+ {
+  "symbol": "IRCTC",
+  "name": "Indian Railway Catering & Tourism Corporation Ltd",
+  "sector": "Consumer Discretionary",
+  "generated_at": "2026-11-12T18:02",
+  "summary": {
+   "kept": 0,
+   "missed": 1,
+   "open": 0,
+   "partial": 0,
+   "measured": 1,
+   "total": 1
+  }
+ },
+ {
+  "symbol": "ITC",
+  "name": "ITC Ltd",
+  "sector": "Fast Moving Consumer Goods",
+  "generated_at": "2026-11-13T05:43",
+  "summary": {
+   "kept": 0,
+   "missed": 0,
+   "open": 0,
+   "partial": 0,
+   "measured": 0,
+   "total": 0
+  }
+ },
+ {
+  "symbol": "KPITTECH",
+  "name": "KPIT Technologies Ltd",
+  "sector": "Information Technology",
+  "generated_at": "2026-11-12T18:02",
+  "summary": {
+   "kept": 0,
+   "missed": 2,
+   "open": 0,
+   "partial": 1,
+   "measured": 3,
+   "total": 5
+  }
+ },
+ {
+  "symbol": "LT",
+  "name": "Larsen & Toubro Ltd",
+  "sector": "Industrials",
+  "generated_at": "2026-11-13T05:43",
+  "summary": {
+   "kept": 2,
+   "missed": 1,
+   "open": 2,
+   "partial": 0,
+   "measured": 5,
+   "total": 6
+  }
+ },
+ {
+  "symbol": "MARUTI",
+  "name": "Maruti Suzuki India Ltd",
+  "sector": "Consumer Discretionary",
+  "generated_at": "2026-11-13T05:41",
+  "summary": {
+   "kept": 0,
+   "missed": 0,
+   "open": 0,
+   "partial": 0,
+   "measured": 0,
+   "total": 1
+  }
+ },
+ {
+  "symbol": "PERSISTENT",
+  "name": "Persistent Systems Ltd",
+  "sector": "Information Technology",
+  "generated_at": "2026-11-12T18:02",
+  "summary": {
+   "kept": 0,
+   "missed": 0,
+   "open": 0,
+   "partial": 0,
+   "measured": 0,
+   "total": 3
+  }
+ },
+ {
+  "symbol": "POLYCAB",
+  "name": "Polycab India Ltd",
+  "sector": "Industrials",
+  "generated_at": "2026-11-13T05:41",
+  "summary": {
+   "kept": 3,
+   "missed": 0,
+   "open": 0,
+   "partial": 0,
+   "measured": 3,
+   "total": 6
+  }
+ },
+ {
+  "symbol": "RELIANCE",
+  "name": "Reliance Industries Ltd",
+  "sector": "Energy",
+  "generated_at": "2026-11-13T05:41",
+  "summary": {
+   "kept": 0,
+   "missed": 0,
+   "open": 0,
+   "partial": 0,
+   "measured": 0,
+   "total": 2
+  }
+ },
+ {
+  "symbol": "SUNPHARMA",
+  "name": "Sun Pharmaceutical Industries Ltd",
+  "sector": "Healthcare",
+  "generated_at": "2026-11-13T05:41",
+  "summary": {
+   "kept": 1,
+   "missed": 0,
+   "open": 1,
+   "partial": 0,
+   "measured": 2,
+   "total": 4
+  }
+ },
+ {
+  "symbol": "TATAPOWER",
+  "name": "Tata Power Company Ltd",
+  "sector": "Utilities",
+  "generated_at": "2026-11-12T18:02",
+  "summary": {
+   "kept": 0,
+   "missed": 0,
+   "open": 0,
+   "partial": 2,
+   "measured": 2,
+   "total": 4
+  }
+ },
+ {
+  "symbol": "TCS",
+  "name": "Tata Consultancy Services Ltd",
+  "sector": "Information Technology",
+  "generated_at": "2026-11-13T05:42",
+  "summary": {
+   "kept": 0,
+   "missed": 2,
+   "open": 0,
+   "partial": 0,
+   "measured": 2,
+   "total": 2
+  }
+ },
+ {
+  "symbol": "TITAN",
+  "name": "Titan Company Ltd",
+  "sector": "Consumer Discretionary",
+  "generated_at": "2026-11-13T05:42",
+  "summary": {
+   "kept": 0,
+   "missed": 0,
+   "open": 1,
+   "partial": 0,
+   "measured": 1,
+   "total": 6
+  }
+ },
+ {
+  "symbol": "TRENT",
+  "name": "Trent Ltd",
+  "sector": "Consumer Discretionary",
+  "generated_at": "2026-11-13T05:43",
+  "summary": {
+   "kept": 0,
+   "missed": 0,
+   "open": 0,
+   "partial": 0,
+   "measured": 0,
+   "total": 0
+  }
+ }
+]

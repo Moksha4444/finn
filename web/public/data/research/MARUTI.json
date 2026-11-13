@@ -1,7 +1,7 @@
 {
  "symbol": "MARUTI",
  "name": "Maruti Suzuki India Ltd",
- "generated_at": "2026-11-13T03:06",
+ "generated_at": "2026-11-13T05:41",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -55,11 +55,691 @@
    "transcript": "https://az-ci-afde-prd-arena-03-efddeyfchzf9akbb.z01.azurefd.net/msilintiwebpdfcopyfromdefault/Transcript_earnings_call_Maruti_Suzuki_Q4_FY_26.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
    "why": "Not measurable: results filings don't report this figure (volumes, NOV/GMV, orders, AUM, mix or payout)."
+  }
+ ],
+ "sector": "Consumer Discretionary",
+ "summary": {
+  "kept": 0,
+  "missed": 0,
+  "open": 0,
+  "partial": 0,
+  "unmeasured": 1,
+  "total": 1,
+  "measured": 0,
+  "sentence": "The one promise from the last 4 calls can't be checked yet; the reason is below."
+ },
+ "prices": {
+  "closes": [
+   [
+    "2026-08-17",
+    13760.0
+   ],
+   [
+    "2026-08-18",
+    13691.0
+   ],
+   [
+    "2026-08-19",
+    13690.0
+   ],
+   [
+    "2026-08-20",
+    13809.0
+   ],
+   [
+    "2026-08-21",
+    13565.0
+   ],
+   [
+    "2026-08-24",
+    13620.0
+   ],
+   [
+    "2026-08-25",
+    13678.0
+   ],
+   [
+    "2026-08-26",
+    13520.0
+   ],
+   [
+    "2026-08-27",
+    13440.0
+   ],
+   [
+    "2026-08-28",
+    13376.0
+   ],
+   [
+    "2026-08-31",
+    13547.0
+   ],
+   [
+    "2026-09-01",
+    12950.0
+   ],
+   [
+    "2026-09-02",
+    12849.0
+   ],
+   [
+    "2026-09-03",
+    12857.0
+   ],
+   [
+    "2026-09-04",
+    12694.0
+   ],
+   [
+    "2026-09-07",
+    12760.0
+   ],
+   [
+    "2026-09-08",
+    12641.0
+   ],
+   [
+    "2026-09-09",
+    12618.0
+   ],
+   [
+    "2026-09-10",
+    12590.0
+   ],
+   [
+    "2026-09-11",
+    12400.0
+   ],
+   [
+    "2026-09-15",
+    12231.0
+   ],
+   [
+    "2026-09-16",
+    12166.0
+   ],
+   [
+    "2026-09-17",
+    12338.0
+   ],
+   [
+    "2026-09-18",
+    12103.0
+   ],
+   [
+    "2026-09-21",
+    12153.0
+   ],
+   [
+    "2026-09-22",
+    12190.0
+   ],
+   [
+    "2026-09-23",
+    12230.0
+   ],
+   [
+    "2026-09-24",
+    11990.0
+   ],
+   [
+    "2026-09-25",
+    12065.0
+   ],
+   [
+    "2026-09-28",
+    12008.0
+   ],
+   [
+    "2026-09-29",
+    11877.0
+   ],
+   [
+    "2026-09-30",
+    11967.0
+   ],
+   [
+    "2026-10-01",
+    11386.0
+   ],
+   [
+    "2026-10-05",
+    11532.0
+   ],
+   [
+    "2026-10-06",
+    11625.0
+   ],
+   [
+    "2026-10-07",
+    11450.0
+   ],
+   [
+    "2026-10-08",
+    11228.0
+   ],
+   [
+    "2026-10-09",
+    11420.0
+   ],
+   [
+    "2026-10-12",
+    11315.0
+   ],
+   [
+    "2026-10-13",
+    11245.0
+   ],
+   [
+    "2026-10-14",
+    11178.0
+   ],
+   [
+    "2026-10-15",
+    11445.0
+   ],
+   [
+    "2026-10-16",
+    11489.0
+   ],
+   [
+    "2026-10-19",
+    11475.0
+   ],
+   [
+    "2026-10-21",
+    11200.0
+   ],
+   [
+    "2026-10-22",
+    11170.0
+   ],
+   [
+    "2026-10-23",
+    11230.0
+   ],
+   [
+    "2026-10-26",
+    11220.0
+   ],
+   [
+    "2026-10-27",
+    11450.0
+   ],
+   [
+    "2026-10-28",
+    11579.0
+   ],
+   [
+    "2026-10-29",
+    11426.0
+   ],
+   [
+    "2026-10-30",
+    11397.0
+   ],
+   [
+    "2026-11-02",
+    11672.0
+   ],
+   [
+    "2026-11-03",
+    11869.0
+   ],
+   [
+    "2026-11-04",
+    11995.0
+   ],
+   [
+    "2026-11-05",
+    12652.0
+   ],
+   [
+    "2026-11-06",
+    12750.0
+   ],
+   [
+    "2026-11-09",
+    12928.0
+   ],
+   [
+    "2026-11-11",
+    13185.0
+   ]
+  ],
+  "nifty": [
+   [
+    "2026-08-17",
+    24287.65
+   ],
+   [
+    "2026-08-18",
+    24154.9
+   ],
+   [
+    "2026-08-19",
+    24078.3
+   ],
+   [
+    "2026-08-20",
+    24231.85
+   ],
+   [
+    "2026-08-21",
+    24252.0
+   ],
+   [
+    "2026-08-24",
+    24219.05
+   ],
+   [
+    "2026-08-25",
+    24334.55
+   ],
+   [
+    "2026-08-26",
+    24207.75
+   ],
+   [
+    "2026-08-27",
+    24090.85
+   ],
+   [
+    "2026-08-28",
+    24175.65
+   ],
+   [
+    "2026-08-31",
+    24080.4
+   ],
+   [
+    "2026-09-01",
+    24055.8
+   ],
+   [
+    "2026-09-02",
+    23914.45
+   ],
+   [
+    "2026-09-03",
+    23873.45
+   ],
+   [
+    "2026-09-04",
+    23897.7
+   ],
+   [
+    "2026-09-07",
+    23779.15
+   ],
+   [
+    "2026-09-08",
+    23635.1
+   ],
+   [
+    "2026-09-09",
+    23431.5
+   ],
+   [
+    "2026-09-10",
+    23477.8
+   ],
+   [
+    "2026-09-11",
+    23398.1
+   ],
+   [
+    "2026-09-15",
+    23118.6
+   ],
+   [
+    "2026-09-16",
+    23217.6
+   ],
+   [
+    "2026-09-17",
+    23270.6
+   ],
+   [
+    "2026-09-18",
+    23346.4
+   ],
+   [
+    "2026-09-21",
+    23414.3
+   ],
+   [
+    "2026-09-22",
+    23329.0
+   ],
+   [
+    "2026-09-23",
+    23446.8
+   ],
+   [
+    "2026-09-24",
+    23063.1
+   ],
+   [
+    "2026-09-25",
+    23140.5
+   ],
+   [
+    "2026-09-28",
+    22780.25
+   ],
+   [
+    "2026-09-29",
+    22716.2
+   ],
+   [
+    "2026-09-30",
+    22620.45
+   ],
+   [
+    "2026-10-01",
+    22421.95
+   ],
+   [
+    "2026-10-05",
+    22555.75
+   ],
+   [
+    "2026-10-06",
+    22776.1
+   ],
+   [
+    "2026-10-07",
+    22603.05
+   ],
+   [
+    "2026-10-08",
+    22231.8
+   ],
+   [
+    "2026-10-09",
+    22520.45
+   ],
+   [
+    "2026-10-12",
+    22363.35
+   ],
+   [
+    "2026-10-13",
+    22721.95
+   ],
+   [
+    "2026-10-14",
+    22622.7
+   ],
+   [
+    "2026-10-15",
+    22997.35
+   ],
+   [
+    "2026-10-16",
+    23146.15
+   ],
+   [
+    "2026-10-19",
+    22888.95
+   ],
+   [
+    "2026-10-21",
+    22811.35
+   ],
+   [
+    "2026-10-22",
+    22687.65
+   ],
+   [
+    "2026-10-23",
+    22600.0
+   ],
+   [
+    "2026-10-26",
+    22753.2
+   ],
+   [
+    "2026-10-27",
+    22749.75
+   ],
+   [
+    "2026-10-28",
+    22698.85
+   ],
+   [
+    "2026-10-29",
+    22936.75
+   ],
+   [
+    "2026-10-30",
+    23053.1
+   ],
+   [
+    "2026-11-02",
+    23440.8
+   ],
+   [
+    "2026-11-03",
+    23810.85
+   ],
+   [
+    "2026-11-04",
+    23960.6
+   ],
+   [
+    "2026-11-05",
+    24536.6
+   ],
+   [
+    "2026-11-06",
+    25030.35
+   ],
+   [
+    "2026-11-09",
+    25044.65
+   ],
+   [
+    "2026-11-11",
+    25255.05
+   ]
+  ]
+ },
+ "snapshot": {
+  "basis": "consolidated",
+  "lender": false,
+  "unit": "₹ crore",
+  "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "quarters": {
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "revenue": [
+    38764.0,
+    40920.0,
+    38605.0,
+    42344.0,
+    49904.0,
+    52462.0,
+    52470.0,
+    53356.0
+   ],
+   "pat": [
+    3727.0,
+    3911.0,
+    3792.0,
+    3349.0,
+    3879.0,
+    3659.0,
+    3447.0,
+    2466.0
+   ],
+   "revenue_name": "Revenue",
+   "claim": "Revenue +26.0% YoY in the Sep 2026 quarter; PAT −26.4%."
+  },
+  "margin": {
+   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "values": [
+    16.0,
+    15.71,
+    16.96,
+    14.4,
+    13.45,
+    12.85,
+    11.98,
+    9.83
+   ],
+   "claim": "EBITDA margin 9.8% in the Sep 2026 quarter, −4.6 pp YoY."
+  },
+  "cash": {
+   "years": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+   ],
+   "cfo": [
+    1840.0,
+    10815.0,
+    16801.0,
+    16180.0,
+    19100.0
+   ],
+   "pat": [
+    3880.0,
+    8264.0,
+    13488.0,
+    14500.0,
+    14680.0
+   ],
+   "claim": "Operating cash flow was 1.18× PAT over FY22–FY26 (₹64,736 cr vs ₹54,812 cr)."
+  },
+  "leverage": {
+   "years": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+   ],
+   "values": [
+    0.01,
+    0.02,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "claim": "Debt/equity 0.00 at FY26 end, from 0.01 at FY22 end."
+  }
+ },
+ "bull_bear": {
+  "bull": [
+   {
+    "point": "Record FY26 net sales of INR1.74 trillion, up 20.2%, confirm top-line expansion.",
+    "cites": [
+     {
+      "label": "Q4 FY26 call, p.6",
+      "url": "https://az-ci-afde-prd-arena-03-efddeyfchzf9akbb.z01.azurefd.net/msilintiwebpdfcopyfromdefault/Transcript_earnings_call_Maruti_Suzuki_Q4_FY_26.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Q4 EBIT hit all-time high of INR44 billion, up 30.4% YoY.",
+    "cites": [
+     {
+      "label": "Q4 FY26 call, p.5",
+      "url": "https://az-ci-afde-prd-arena-03-efddeyfchzf9akbb.z01.azurefd.net/msilintiwebpdfcopyfromdefault/Transcript_earnings_call_Maruti_Suzuki_Q4_FY_26.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Debt/equity at 0.00, down from 0.01, indicates zero leverage.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#leverage"
+     }
+    ]
+   }
+  ],
+  "bear": [
+   {
+    "point": "PAT fell 26.4% YoY in Sep 2026 quarter despite revenue growth.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     }
+    ]
+   },
+   {
+    "point": "EBITDA margin compressed 4.6 pp YoY to 9.8% in Sep 2026.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
+     }
+    ]
+   },
+   {
+    "point": "Analysts pressed on steel repricing and incremental cost headwinds for next two quarters.",
+    "cites": [
+     {
+      "label": "Q4 FY26 call, p.6 (analyst)",
+      "url": "https://az-ci-afde-prd-arena-03-efddeyfchzf9akbb.z01.azurefd.net/msilintiwebpdfcopyfromdefault/Transcript_earnings_call_Maruti_Suzuki_Q4_FY_26.pdf"
+     }
+    ]
+   }
+  ],
+  "dropped": 0,
+  "model": "qwen/qwen3.8-27b",
+  "model_note": null
+ },
+ "sources": [
+  {
+   "label": "Q2 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=4a189744-1646-4de4-809b-e936a67b6fe4.pdf"
+  },
+  {
+   "label": "Q1 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=e5ed553b-9881-4cd9-a131-370360446a83.pdf"
+  },
+  {
+   "label": "Q4 FY26 earnings call transcript",
+   "url": "https://az-ci-afde-prd-arena-03-efddeyfchzf9akbb.z01.azurefd.net/msilintiwebpdfcopyfromdefault/Transcript_earnings_call_Maruti_Suzuki_Q4_FY_26.pdf"
+  },
+  {
+   "label": "Q3 FY26 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1d7965cf-ea8d-4a59-b2d1-30d9c0c4969f.pdf"
+  },
+  {
+   "label": "Quarterly and annual tables (consolidated), screener.in, from the exchange filings",
+   "url": "https://www.screener.in/company/MARUTI/consolidated/"
   }
  ]
 }

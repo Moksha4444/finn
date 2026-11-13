@@ -129,5 +129,684 @@
    "model": "openai/gpt-oss-120b",
    "why": "H2 performance not reported yet, cannot assess claim."
   }
+ ],
+ "sector": "Information Technology",
+ "summary": {
+  "kept": 0,
+  "missed": 2,
+  "open": 0,
+  "partial": 1,
+  "unmeasured": 2,
+  "total": 5,
+  "measured": 3,
+  "sentence": "Kept 0 of 3 measured promises from the last 4 calls; missed 2, the latest on EBITDA margin (Q4 FY26 call); 1 partly met."
+ },
+ "prices": {
+  "closes": [
+   [
+    "2026-08-17",
+    609.0
+   ],
+   [
+    "2026-08-18",
+    596.65
+   ],
+   [
+    "2026-08-19",
+    589.1
+   ],
+   [
+    "2026-08-20",
+    592.9
+   ],
+   [
+    "2026-08-21",
+    589.3
+   ],
+   [
+    "2026-08-24",
+    583.1
+   ],
+   [
+    "2026-08-25",
+    592.0
+   ],
+   [
+    "2026-08-26",
+    590.0
+   ],
+   [
+    "2026-08-27",
+    588.0
+   ],
+   [
+    "2026-08-28",
+    609.4
+   ],
+   [
+    "2026-08-31",
+    585.0
+   ],
+   [
+    "2026-09-01",
+    590.0
+   ],
+   [
+    "2026-09-02",
+    588.0
+   ],
+   [
+    "2026-09-03",
+    583.5
+   ],
+   [
+    "2026-09-04",
+    575.45
+   ],
+   [
+    "2026-09-07",
+    562.25
+   ],
+   [
+    "2026-09-08",
+    562.0
+   ],
+   [
+    "2026-09-09",
+    553.1
+   ],
+   [
+    "2026-09-10",
+    550.95
+   ],
+   [
+    "2026-09-11",
+    553.75
+   ],
+   [
+    "2026-09-15",
+    563.0
+   ],
+   [
+    "2026-09-16",
+    555.0
+   ],
+   [
+    "2026-09-17",
+    559.3
+   ],
+   [
+    "2026-09-18",
+    532.0
+   ],
+   [
+    "2026-09-21",
+    536.8
+   ],
+   [
+    "2026-09-22",
+    529.05
+   ],
+   [
+    "2026-09-23",
+    527.0
+   ],
+   [
+    "2026-09-24",
+    516.85
+   ],
+   [
+    "2026-09-25",
+    519.4
+   ],
+   [
+    "2026-09-28",
+    509.0
+   ],
+   [
+    "2026-09-29",
+    519.7
+   ],
+   [
+    "2026-09-30",
+    499.1
+   ],
+   [
+    "2026-10-01",
+    492.0
+   ],
+   [
+    "2026-10-05",
+    489.5
+   ],
+   [
+    "2026-10-06",
+    492.7
+   ],
+   [
+    "2026-10-07",
+    484.25
+   ],
+   [
+    "2026-10-08",
+    471.0
+   ],
+   [
+    "2026-10-09",
+    479.0
+   ],
+   [
+    "2026-10-12",
+    481.0
+   ],
+   [
+    "2026-10-13",
+    513.75
+   ],
+   [
+    "2026-10-14",
+    523.8
+   ],
+   [
+    "2026-10-15",
+    526.0
+   ],
+   [
+    "2026-10-16",
+    555.0
+   ],
+   [
+    "2026-10-19",
+    536.95
+   ],
+   [
+    "2026-10-21",
+    544.7
+   ],
+   [
+    "2026-10-22",
+    537.75
+   ],
+   [
+    "2026-10-23",
+    532.65
+   ],
+   [
+    "2026-10-26",
+    536.55
+   ],
+   [
+    "2026-10-27",
+    531.9
+   ],
+   [
+    "2026-10-28",
+    552.5
+   ],
+   [
+    "2026-10-29",
+    543.7
+   ],
+   [
+    "2026-10-30",
+    530.25
+   ],
+   [
+    "2026-11-02",
+    531.95
+   ],
+   [
+    "2026-11-03",
+    519.8
+   ],
+   [
+    "2026-11-04",
+    520.0
+   ],
+   [
+    "2026-11-05",
+    539.8
+   ],
+   [
+    "2026-11-06",
+    540.45
+   ],
+   [
+    "2026-11-09",
+    542.35
+   ],
+   [
+    "2026-11-11",
+    546.0
+   ]
+  ],
+  "nifty": [
+   [
+    "2026-08-17",
+    24287.65
+   ],
+   [
+    "2026-08-18",
+    24154.9
+   ],
+   [
+    "2026-08-19",
+    24078.3
+   ],
+   [
+    "2026-08-20",
+    24231.85
+   ],
+   [
+    "2026-08-21",
+    24252.0
+   ],
+   [
+    "2026-08-24",
+    24219.05
+   ],
+   [
+    "2026-08-25",
+    24334.55
+   ],
+   [
+    "2026-08-26",
+    24207.75
+   ],
+   [
+    "2026-08-27",
+    24090.85
+   ],
+   [
+    "2026-08-28",
+    24175.65
+   ],
+   [
+    "2026-08-31",
+    24080.4
+   ],
+   [
+    "2026-09-01",
+    24055.8
+   ],
+   [
+    "2026-09-02",
+    23914.45
+   ],
+   [
+    "2026-09-03",
+    23873.45
+   ],
+   [
+    "2026-09-04",
+    23897.7
+   ],
+   [
+    "2026-09-07",
+    23779.15
+   ],
+   [
+    "2026-09-08",
+    23635.1
+   ],
+   [
+    "2026-09-09",
+    23431.5
+   ],
+   [
+    "2026-09-10",
+    23477.8
+   ],
+   [
+    "2026-09-11",
+    23398.1
+   ],
+   [
+    "2026-09-15",
+    23118.6
+   ],
+   [
+    "2026-09-16",
+    23217.6
+   ],
+   [
+    "2026-09-17",
+    23270.6
+   ],
+   [
+    "2026-09-18",
+    23346.4
+   ],
+   [
+    "2026-09-21",
+    23414.3
+   ],
+   [
+    "2026-09-22",
+    23329.0
+   ],
+   [
+    "2026-09-23",
+    23446.8
+   ],
+   [
+    "2026-09-24",
+    23063.1
+   ],
+   [
+    "2026-09-25",
+    23140.5
+   ],
+   [
+    "2026-09-28",
+    22780.25
+   ],
+   [
+    "2026-09-29",
+    22716.2
+   ],
+   [
+    "2026-09-30",
+    22620.45
+   ],
+   [
+    "2026-10-01",
+    22421.95
+   ],
+   [
+    "2026-10-05",
+    22555.75
+   ],
+   [
+    "2026-10-06",
+    22776.1
+   ],
+   [
+    "2026-10-07",
+    22603.05
+   ],
+   [
+    "2026-10-08",
+    22231.8
+   ],
+   [
+    "2026-10-09",
+    22520.45
+   ],
+   [
+    "2026-10-12",
+    22363.35
+   ],
+   [
+    "2026-10-13",
+    22721.95
+   ],
+   [
+    "2026-10-14",
+    22622.7
+   ],
+   [
+    "2026-10-15",
+    22997.35
+   ],
+   [
+    "2026-10-16",
+    23146.15
+   ],
+   [
+    "2026-10-19",
+    22888.95
+   ],
+   [
+    "2026-10-21",
+    22811.35
+   ],
+   [
+    "2026-10-22",
+    22687.65
+   ],
+   [
+    "2026-10-23",
+    22600.0
+   ],
+   [
+    "2026-10-26",
+    22753.2
+   ],
+   [
+    "2026-10-27",
+    22749.75
+   ],
+   [
+    "2026-10-28",
+    22698.85
+   ],
+   [
+    "2026-10-29",
+    22936.75
+   ],
+   [
+    "2026-10-30",
+    23053.1
+   ],
+   [
+    "2026-11-02",
+    23440.8
+   ],
+   [
+    "2026-11-03",
+    23810.85
+   ],
+   [
+    "2026-11-04",
+    23960.6
+   ],
+   [
+    "2026-11-05",
+    24536.6
+   ],
+   [
+    "2026-11-06",
+    25030.35
+   ],
+   [
+    "2026-11-09",
+    25044.65
+   ],
+   [
+    "2026-11-11",
+    25255.05
+   ]
+  ]
+ },
+ "snapshot": {
+  "basis": "consolidated",
+  "lender": false,
+  "unit": "₹ crore",
+  "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "quarters": {
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "revenue": [
+    1478.0,
+    1528.0,
+    1539.0,
+    1588.0,
+    1617.0,
+    1711.0,
+    1675.0,
+    1691.0
+   ],
+   "pat": [
+    187.0,
+    245.0,
+    172.0,
+    169.0,
+    133.0,
+    163.0,
+    116.0,
+    121.0
+   ],
+   "revenue_name": "Revenue",
+   "claim": "Revenue +6.5% YoY in the Sep 2026 quarter; PAT −28.4%."
+  },
+  "margin": {
+   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "values": [
+    21.99,
+    25.07,
+    20.21,
+    20.28,
+    17.63,
+    19.23,
+    15.88,
+    16.26
+   ],
+   "claim": "EBITDA margin 16.3% in the Sep 2026 quarter, −4.0 pp YoY."
+  },
+  "cash": {
+   "years": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+   ],
+   "cfo": [
+    475.0,
+    462.0,
+    1002.0,
+    1390.0,
+    1195.0
+   ],
+   "pat": [
+    276.0,
+    387.0,
+    599.0,
+    840.0,
+    637.0
+   ],
+   "claim": "Operating cash flow was 1.65× PAT over FY22–FY26 (₹4,524 cr vs ₹2,739 cr)."
+  },
+  "leverage": {
+   "years": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+   ],
+   "values": [
+    0.17,
+    0.17,
+    0.15,
+    0.12,
+    0.24
+   ],
+   "claim": "Debt/equity 0.24 at FY26 end, from 0.17 at FY22 end."
+  }
+ },
+ "bull_bear": {
+  "bull": [
+   {
+    "point": "Operating cash flow at 1.65× PAT over FY22–FY26 ensures high quality earnings.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#cash"
+     }
+    ]
+   },
+   {
+    "point": "Solutions and products revenue grew 25% YoY, partially meeting the 30% FY27 target.",
+    "cites": [
+     {
+      "label": "Q4 FY26 call, p.17 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=70c85b6c-58e6-423f-9b32-50b17a948674.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Debt/equity of 0.24 remains low, preserving balance sheet flexibility for investments.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#leverage"
+     }
+    ]
+   }
+  ],
+  "bear": [
+   {
+    "point": "EBITDA margin fell to 15.8% from 18.5%, missing the 22–24% medium-term target.",
+    "cites": [
+     {
+      "label": "Q4 FY26 call, p.18 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=70c85b6c-58e6-423f-9b32-50b17a948674.pdf"
+     }
+    ]
+   },
+   {
+    "point": "EBITDA margin at 15.6% trails the 20.5–21.2% FY27 guidance, indicating execution slippage.",
+    "cites": [
+     {
+      "label": "Q4 FY26 call, p.17 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=70c85b6c-58e6-423f-9b32-50b17a948674.pdf"
+     }
+    ]
+   },
+   {
+    "point": "PAT declined 28.4% YoY despite 6.5% revenue growth, showing severe operating leverage erosion.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     }
+    ]
+   }
+  ],
+  "dropped": 0,
+  "model": "qwen/qwen3.8-27b",
+  "model_note": null
+ },
+ "sources": [
+  {
+   "label": "Q2 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a7331811-fe14-4c79-896d-f0a9df901335.pdf"
+  },
+  {
+   "label": "Q1 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d07f9c52-5c5a-443b-b239-6acd5e94b97a.pdf"
+  },
+  {
+   "label": "Q4 FY26 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=70c85b6c-58e6-423f-9b32-50b17a948674.pdf"
+  },
+  {
+   "label": "Q3 FY26 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a574a9b4-2ec3-4418-afd7-7deb13264328.pdf"
+  },
+  {
+   "label": "Quarterly and annual tables (consolidated), screener.in, from the exchange filings",
+   "url": "https://www.screener.in/company/KPITTECH/consolidated/"
+  }
  ]
 }

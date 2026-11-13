@@ -1,7 +1,7 @@
 {
  "symbol": "SUNPHARMA",
  "name": "Sun Pharmaceutical Industries Ltd",
- "generated_at": "2026-11-13T03:06",
+ "generated_at": "2026-11-13T05:41",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -55,6 +55,19 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=287022b2-8de5-487d-8d0d-77b819ee3eb4.pdf",
    "path": null,
    "cites": [],
+   "chart": {
+    "kind": "level",
+    "points": [
+     [
+      "Q1 FY27",
+      27.8
+     ]
+    ],
+    "lo": 25.0,
+    "hi": null,
+    "direction": "within",
+    "end": null
+   },
    "verdict": "on track",
    "actual": "Q1 FY27 call, p.4: “Effective tax rate for the quarter was at 27.8% versus 24.3% in Q1 FY26.”",
    "actual_source": "management's statements on later calls (transcripts)",
@@ -72,6 +85,23 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=34be7c92-1d9f-4010-ba30-2344c959bc5e.pdf",
    "path": "+10.5% → +11.9% (Q1 FY27 → Q2 FY27)",
    "cites": [],
+   "chart": {
+    "kind": "growth",
+    "points": [
+     [
+      "Q1 FY27",
+      10.46
+     ],
+     [
+      "Q2 FY27",
+      11.89
+     ]
+    ],
+    "lo": 7.0,
+    "hi": 9.0,
+    "direction": "at_least",
+    "end": null
+   },
    "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
    "model": "python (computed)",
    "verdict": "hit",
@@ -89,6 +119,7 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=287022b2-8de5-487d-8d0d-77b819ee3eb4.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
@@ -106,11 +137,699 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=287022b2-8de5-487d-8d0d-77b819ee3eb4.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "Q2 FY27 call, p.6: “Consolidated investments towards R&D for Q2 '27 stands at INR7,784 million or 4.8% of sales.”",
    "actual_source": "management's statements on later calls (transcripts)",
    "model": "openai/gpt-oss-120b",
    "why": "The period runs to Mar 2027; a part-period number can't be a miss yet."
+  }
+ ],
+ "sector": "Healthcare",
+ "summary": {
+  "kept": 1,
+  "missed": 0,
+  "open": 1,
+  "partial": 0,
+  "unmeasured": 2,
+  "total": 4,
+  "measured": 2,
+  "sentence": "Kept 1 of 2 measured promises from the last 4 calls; 1 on track; none missed."
+ },
+ "prices": {
+  "closes": [
+   [
+    "2026-08-17",
+    1882.0
+   ],
+   [
+    "2026-08-18",
+    1875.1
+   ],
+   [
+    "2026-08-19",
+    1900.0
+   ],
+   [
+    "2026-08-20",
+    1904.0
+   ],
+   [
+    "2026-08-21",
+    1902.4
+   ],
+   [
+    "2026-08-24",
+    1910.0
+   ],
+   [
+    "2026-08-25",
+    1922.0
+   ],
+   [
+    "2026-08-26",
+    1899.5
+   ],
+   [
+    "2026-08-27",
+    1913.3
+   ],
+   [
+    "2026-08-28",
+    1920.0
+   ],
+   [
+    "2026-08-31",
+    1984.8
+   ],
+   [
+    "2026-09-01",
+    1929.0
+   ],
+   [
+    "2026-09-02",
+    1931.7
+   ],
+   [
+    "2026-09-03",
+    1916.0
+   ],
+   [
+    "2026-09-04",
+    1899.0
+   ],
+   [
+    "2026-09-07",
+    1895.0
+   ],
+   [
+    "2026-09-08",
+    1885.9
+   ],
+   [
+    "2026-09-09",
+    1864.9
+   ],
+   [
+    "2026-09-10",
+    1861.0
+   ],
+   [
+    "2026-09-11",
+    1840.0
+   ],
+   [
+    "2026-09-15",
+    1835.0
+   ],
+   [
+    "2026-09-16",
+    1853.5
+   ],
+   [
+    "2026-09-17",
+    1867.3
+   ],
+   [
+    "2026-09-18",
+    1837.3
+   ],
+   [
+    "2026-09-21",
+    1868.9
+   ],
+   [
+    "2026-09-22",
+    1846.4
+   ],
+   [
+    "2026-09-23",
+    1865.0
+   ],
+   [
+    "2026-09-24",
+    1849.9
+   ],
+   [
+    "2026-09-25",
+    1852.2
+   ],
+   [
+    "2026-09-28",
+    1838.0
+   ],
+   [
+    "2026-09-29",
+    1865.0
+   ],
+   [
+    "2026-09-30",
+    1816.6
+   ],
+   [
+    "2026-10-01",
+    1801.0
+   ],
+   [
+    "2026-10-05",
+    1779.7
+   ],
+   [
+    "2026-10-06",
+    1804.1
+   ],
+   [
+    "2026-10-07",
+    1781.0
+   ],
+   [
+    "2026-10-08",
+    1759.8
+   ],
+   [
+    "2026-10-09",
+    1760.0
+   ],
+   [
+    "2026-10-12",
+    1760.0
+   ],
+   [
+    "2026-10-13",
+    1770.7
+   ],
+   [
+    "2026-10-14",
+    1746.4
+   ],
+   [
+    "2026-10-15",
+    1764.0
+   ],
+   [
+    "2026-10-16",
+    1758.8
+   ],
+   [
+    "2026-10-19",
+    1743.0
+   ],
+   [
+    "2026-10-21",
+    1745.1
+   ],
+   [
+    "2026-10-22",
+    1758.0
+   ],
+   [
+    "2026-10-23",
+    1748.0
+   ],
+   [
+    "2026-10-26",
+    1740.0
+   ],
+   [
+    "2026-10-27",
+    1751.2
+   ],
+   [
+    "2026-10-28",
+    1757.5
+   ],
+   [
+    "2026-10-29",
+    1761.0
+   ],
+   [
+    "2026-10-30",
+    1777.7
+   ],
+   [
+    "2026-11-02",
+    1770.0
+   ],
+   [
+    "2026-11-03",
+    1769.9
+   ],
+   [
+    "2026-11-04",
+    1773.4
+   ],
+   [
+    "2026-11-05",
+    1829.0
+   ],
+   [
+    "2026-11-06",
+    1860.0
+   ],
+   [
+    "2026-11-09",
+    1904.5
+   ],
+   [
+    "2026-11-11",
+    1902.3
+   ]
+  ],
+  "nifty": [
+   [
+    "2026-08-17",
+    24287.65
+   ],
+   [
+    "2026-08-18",
+    24154.9
+   ],
+   [
+    "2026-08-19",
+    24078.3
+   ],
+   [
+    "2026-08-20",
+    24231.85
+   ],
+   [
+    "2026-08-21",
+    24252.0
+   ],
+   [
+    "2026-08-24",
+    24219.05
+   ],
+   [
+    "2026-08-25",
+    24334.55
+   ],
+   [
+    "2026-08-26",
+    24207.75
+   ],
+   [
+    "2026-08-27",
+    24090.85
+   ],
+   [
+    "2026-08-28",
+    24175.65
+   ],
+   [
+    "2026-08-31",
+    24080.4
+   ],
+   [
+    "2026-09-01",
+    24055.8
+   ],
+   [
+    "2026-09-02",
+    23914.45
+   ],
+   [
+    "2026-09-03",
+    23873.45
+   ],
+   [
+    "2026-09-04",
+    23897.7
+   ],
+   [
+    "2026-09-07",
+    23779.15
+   ],
+   [
+    "2026-09-08",
+    23635.1
+   ],
+   [
+    "2026-09-09",
+    23431.5
+   ],
+   [
+    "2026-09-10",
+    23477.8
+   ],
+   [
+    "2026-09-11",
+    23398.1
+   ],
+   [
+    "2026-09-15",
+    23118.6
+   ],
+   [
+    "2026-09-16",
+    23217.6
+   ],
+   [
+    "2026-09-17",
+    23270.6
+   ],
+   [
+    "2026-09-18",
+    23346.4
+   ],
+   [
+    "2026-09-21",
+    23414.3
+   ],
+   [
+    "2026-09-22",
+    23329.0
+   ],
+   [
+    "2026-09-23",
+    23446.8
+   ],
+   [
+    "2026-09-24",
+    23063.1
+   ],
+   [
+    "2026-09-25",
+    23140.5
+   ],
+   [
+    "2026-09-28",
+    22780.25
+   ],
+   [
+    "2026-09-29",
+    22716.2
+   ],
+   [
+    "2026-09-30",
+    22620.45
+   ],
+   [
+    "2026-10-01",
+    22421.95
+   ],
+   [
+    "2026-10-05",
+    22555.75
+   ],
+   [
+    "2026-10-06",
+    22776.1
+   ],
+   [
+    "2026-10-07",
+    22603.05
+   ],
+   [
+    "2026-10-08",
+    22231.8
+   ],
+   [
+    "2026-10-09",
+    22520.45
+   ],
+   [
+    "2026-10-12",
+    22363.35
+   ],
+   [
+    "2026-10-13",
+    22721.95
+   ],
+   [
+    "2026-10-14",
+    22622.7
+   ],
+   [
+    "2026-10-15",
+    22997.35
+   ],
+   [
+    "2026-10-16",
+    23146.15
+   ],
+   [
+    "2026-10-19",
+    22888.95
+   ],
+   [
+    "2026-10-21",
+    22811.35
+   ],
+   [
+    "2026-10-22",
+    22687.65
+   ],
+   [
+    "2026-10-23",
+    22600.0
+   ],
+   [
+    "2026-10-26",
+    22753.2
+   ],
+   [
+    "2026-10-27",
+    22749.75
+   ],
+   [
+    "2026-10-28",
+    22698.85
+   ],
+   [
+    "2026-10-29",
+    22936.75
+   ],
+   [
+    "2026-10-30",
+    23053.1
+   ],
+   [
+    "2026-11-02",
+    23440.8
+   ],
+   [
+    "2026-11-03",
+    23810.85
+   ],
+   [
+    "2026-11-04",
+    23960.6
+   ],
+   [
+    "2026-11-05",
+    24536.6
+   ],
+   [
+    "2026-11-06",
+    25030.35
+   ],
+   [
+    "2026-11-09",
+    25044.65
+   ],
+   [
+    "2026-11-11",
+    25255.05
+   ]
+  ]
+ },
+ "snapshot": {
+  "basis": "consolidated",
+  "lender": false,
+  "unit": "₹ crore",
+  "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "quarters": {
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "revenue": [
+    13675.0,
+    12959.0,
+    13851.0,
+    14478.0,
+    15521.0,
+    14612.0,
+    15300.0,
+    16199.0
+   ],
+   "pat": [
+    2913.0,
+    2154.0,
+    2293.0,
+    3125.0,
+    3381.0,
+    2710.0,
+    2901.0,
+    1995.0
+   ],
+   "revenue_name": "Revenue",
+   "claim": "Revenue +11.9% YoY in the Sep 2026 quarter; PAT −36.2%."
+  },
+  "margin": {
+   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "values": [
+    30.41,
+    30.61,
+    28.51,
+    34.52,
+    32.45,
+    30.19,
+    32.27,
+    24.64
+   ],
+   "claim": "EBITDA margin 24.6% in the Sep 2026 quarter, −9.9 pp YoY."
+  },
+  "cash": {
+   "years": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+   ],
+   "cfo": [
+    8985.0,
+    4959.0,
+    12135.0,
+    14072.0,
+    12419.0
+   ],
+   "pat": [
+    3389.0,
+    8513.0,
+    9610.0,
+    10965.0,
+    11509.0
+   ],
+   "claim": "Operating cash flow was 1.20× PAT over FY22–FY26 (₹52,570 cr vs ₹43,986 cr)."
+  },
+  "leverage": {
+   "years": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+   ],
+   "values": [
+    0.03,
+    0.12,
+    0.05,
+    0.03,
+    0.06
+   ],
+   "claim": "Debt/equity 0.06 at FY26 end, from 0.03 at FY22 end."
+  }
+ },
+ "bull_bear": {
+  "bull": [
+   {
+    "point": "Sales grew 11.8% YoY to INR1,61,000 million, exceeding high single-digit targets.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.3",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf"
+     },
+     {
+      "label": "Q2 FY27 call, p.3",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Gross margin reached 80.8%, higher than last year due to better product mix.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.3",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf"
+     }
+    ]
+   },
+   {
+    "point": "India formulations sales grew 17.3% to INR55,523 million, outpacing overall company growth.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.5",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf"
+     }
+    ]
+   }
+  ],
+  "bear": [
+   {
+    "point": "PAT fell 36.2% YoY despite 11.9% revenue growth, indicating severe bottom-line erosion.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     }
+    ]
+   },
+   {
+    "point": "EBITDA margin dropped 9.9 pp YoY to 24.6%, showing significant operating leverage loss.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
+     }
+    ]
+   },
+   {
+    "point": "US sales declined 8.2% to USD455 million, driven by Ilumya growth slowdown.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.5",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf"
+     },
+     {
+      "label": "Q2 FY27 call, p.7 (analyst)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf"
+     }
+    ]
+   }
+  ],
+  "dropped": 0,
+  "model": "qwen/qwen3.8-27b",
+  "model_note": null
+ },
+ "sources": [
+  {
+   "label": "Q2 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf"
+  },
+  {
+   "label": "Q1 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=34be7c92-1d9f-4010-ba30-2344c959bc5e.pdf"
+  },
+  {
+   "label": "Q4 FY26 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=287022b2-8de5-487d-8d0d-77b819ee3eb4.pdf"
+  },
+  {
+   "label": "Q3 FY26 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1082d0ab-d6fb-40f5-873e-d7301397cd05.pdf"
+  },
+  {
+   "label": "Quarterly and annual tables (consolidated), screener.in, from the exchange filings",
+   "url": "https://www.screener.in/company/SUNPHARMA/consolidated/"
   }
  ]
 }

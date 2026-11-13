@@ -1,7 +1,7 @@
 # FINN — build plan (11–15 Nov 2026)
 
 Single source of truth for the build. Scope and hard rules live in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.
-Current status: see §3j (overnight 13 Nov: ingest safety, classifier, Also lines, segment PvD), §3i (feed UI round 3), §3h (PvD review), §3g (PvD rework), §3f (PvD backend), §3e (redesign), §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
+Current status: see §3k (13 Nov morning: Research page), §3j (overnight 13 Nov: ingest safety, classifier, Also lines, segment PvD), §3i (feed UI round 3), §3h (PvD review), §3g (PvD rework), §3f (PvD backend), §3e (redesign), §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
 
 ---
 
@@ -216,6 +216,16 @@ Cheap model reads each transcript once → `{metric, target, period, quote, page
 | **Total** | **72** | **30 (27)** | **42** | **4** | hit 12, on track 5, partial 4, moved away 3, behind pace 3, miss 3 |
 
 \* not re-run this round (Gemini free-tier daily quota; DEEPAKNTR: DNS error); previous file kept. Not-measurable reasons: no segment figures readable 8 (DIXON single segment, ASTRAL parse), no later evidence 7, figure not in results filings (volume/AUM/mix/payout) 5, promised on the latest call 2, plus model-written reasons in the 7 starred files.
+
+## 3k. Status at 13 Nov, ~05:50 (Research page; no Gemini today)
+- **Research tab** (`/research`): search any NSE symbol or name, the 22 researched companies with their promise record, a calm "isn't researched yet" state (on-request research opens 14 Nov). **Company page** (`/research?symbol=X`): header with a 90-day line vs Nifty; Promised vs Delivered as the hero (counts line, Python-template sentence, one row per promise with quote, call + page link, a mini-chart of the target band up to its deadline and the quarterly path, the actual, verdict badge; unmeasurable ones folded with reasons); financial snapshot (8Q revenue/PAT bars, margin line, 5Y CFO vs PAT, 5Y debt/equity; lenders get total income, net margin and a note), each chart under the claim it supports; bull vs bear, 3 each, cited; sources. Hand-built SVG charts, values labelled on the marks.
+- **Linking:** the credibility chip opens `#pvd`; company names on feed cards and rows open the company page.
+- **Backend:** `pull/research.py` (snapshot, prices, summary, bull/bear, sources, `index.json`); PvD rows carry chart data (points, the verdict's bounds, the deadline quarter). Bull/bear evidence = management's numbers, analysts' questions (Python rule), PvD verdicts, snapshot claims; Python drops any point whose numbers aren't in its cited evidence.
+- **Precomputed all 22**, Gemini blocked (cache-only): 13 re-ran PvD, 9 kept their previous promises (the 7 starred in §3j plus ASTRAL and BHARTIARTL, which also needed uncached cheap-model calls), so their rows show text without charts. 7 pages have mini-charts (16 rows; most other promises are unmeasured, or measured from a single statement without chart data in the kept files); 20 of 22 have bull/bear (ITC and TRENT have no transcripts on screener, so no evidence).
+- **Found on the way:** L&T's FY26 15% revenue target was counted twice (extracted as 15–15 on one call, 15–None on the next); fixed in `dedupe()`, L&T now Kept 2 · Missed 1 · Open 2, feed chip updated. Groq's gpt-oss-120b daily cap (200k tokens) ran out after 9 companies; the rest used qwen3.8-27b via `FINN_STRONG`, and a daily-cap 429 now skips to the fallback instead of sleeping. Groq answers missing schema keys are retried, never cached.
+- **Critique** (impeccable, two isolated assessments, 390px): 26/40. P0 (crash on research files in the old shape, seen mid-run) fixed with a rebuilding state + route error boundary; P1s fixed (double-counted promise, band past the deadline, legend over no charts, hero heading), tap targets on citations/sources raised to 44px, placeholder contrast, stragglers. Not changed: see DECISIONS.
+- 125 backend + 11 web tests pass; static build OK. LLM spend this round **$0.022 / 27 calls** (Groq only); to date **$2.66 / 763 calls**.
+- **Next (Sat 14):** re-run PvD for the 9 kept tickers once the Gemini quota resets (`python -m finn.pull.research ASIANPAINT ASTRAL BHARTIARTL DEEPAKNTR ETERNAL IRCTC KPITTECH PERSISTENT TATAPOWER`), then live pull for unseen symbols.
 
 ## 4. Day-by-day
 

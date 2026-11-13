@@ -1,7 +1,7 @@
 {
  "symbol": "LT",
  "name": "Larsen & Toubro Ltd",
- "generated_at": "2026-11-13T03:06",
+ "generated_at": "2026-11-13T05:43",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -32,16 +32,16 @@
  },
  "model_note": null,
  "score": {
-  "hit": 3,
+  "hit": 2,
   "ahead": 0,
-  "on track": 1,
+  "on track": 2,
   "moved closer": 0,
   "partial": 0,
   "no change": 0,
   "behind pace": 0,
   "moved away": 0,
-  "miss": 2,
-  "not-yet-measurable": 0
+  "miss": 1,
+  "not-yet-measurable": 1
  },
  "promises": [
   {
@@ -55,6 +55,35 @@
    "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q2FY26%20Earnings%20Call%20Transcript%20.pdf",
    "path": "+10.4% → +10.5% → +11.3% → +6.7% → +15.8% (Q2 FY26 → Q2 FY27)",
    "cites": [],
+   "chart": {
+    "kind": "growth",
+    "points": [
+     [
+      "Q2 FY26",
+      10.44
+     ],
+     [
+      "Q3 FY26",
+      10.49
+     ],
+     [
+      "Q4 FY26",
+      11.25
+     ],
+     [
+      "Q1 FY27",
+      6.69
+     ],
+     [
+      "Q2 FY27",
+      15.84
+     ]
+    ],
+    "lo": 15.0,
+    "hi": null,
+    "direction": "at_least",
+    "end": "Q4 FY26"
+   },
    "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
    "model": "python (computed)",
    "verdict": "miss",
@@ -72,6 +101,19 @@
    "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q2FY26%20Earnings%20Call%20Transcript%20.pdf",
    "path": null,
    "cites": [],
+   "chart": {
+    "kind": "level",
+    "points": [
+     [
+      "Q4 FY26",
+      4.1
+     ]
+    ],
+    "lo": null,
+    "hi": 12.0,
+    "direction": "at_most",
+    "end": "Q4 FY26"
+   },
    "verdict": "hit",
    "actual": "Q4 FY26 call, p.6: “As of March 2026, the Net Working Capital to Revenue ratio improved sharply to 4.1%”",
    "actual_source": "management's statements on later calls (transcripts)",
@@ -79,55 +121,22 @@
    "why": "Reported 4.1% (Q4 FY26 call) against ≤12%; compared in Python."
   },
   {
-   "metric": "revenue growth guidance for FY 26",
-   "target": "full year revenue growth guidance of 15%",
-   "period": "FY '26",
-   "said_in": "Dec 2025",
-   "call": "Q3 FY26",
-   "quote": "We expect the customary ramp-up in project execution during Q4 and are reasonably confident of achieving our full year revenue growth guidance of 15%.",
-   "page": 8,
-   "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Transcript%20Q3FY26.pdf",
-   "path": "+10.5% → +11.3% → +6.7% → +15.8% (Q3 FY26 → Q2 FY27)",
-   "cites": [],
-   "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
-   "model": "python (computed)",
-   "verdict": "miss",
-   "actual": "FY26 (Jun 2025 – Mar 2026): Revenue growth YoY +11.8% vs target ≥15%",
-   "why": "+11.8% against ≥15%; computed in Python."
-  },
-  {
-   "metric": "Projects & Manufacturing EBITDA margin for FY 26",
-   "target": "8.5% for the full year FY '26",
-   "period": "FY '26",
-   "said_in": "Dec 2025",
-   "call": "Q3 FY26",
-   "quote": "Our Projects & Manufacturing EBITDA at 7.9% for 9 months of the current year is in line with the target that we have set ourselves at 8.5% for the full year FY '26.",
-   "page": 8,
-   "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Transcript%20Q3FY26.pdf",
+   "metric": "order inflows growth",
+   "target": "10% to 12%",
+   "period": "FY27",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "we expect the group order inflows to grow in the range of 10% to 12% in FY27.",
+   "page": 13,
+   "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "hit",
-   "actual": "Q4 FY26 call, p.7: “The EBITDA margin in the Projects and Manufacturing business for Q4 FY '26 is at 9.4%”; Q4 FY26 call, p.5: “The Projects and Manufacturing portfolio margin declined by 50 basis points YoY to 9.4%”",
+   "actual": "Q1 FY27 call, p.4: “Reflecting this momentum, the group order inflows at Rs. 1,080 billion, registered a 14% Y-on-Y growth.”",
    "actual_source": "management's statements on later calls (transcripts)",
-   "model": "openai/gpt-oss-120b picked the evidence; python (computed)",
-   "why": "Reported 9.4% (Q4 FY26 call) against ≥8.5%; compared in Python."
-  },
-  {
-   "metric": "Net Working Capital to Revenue",
-   "target": "close the year with a revised target of around 10%",
-   "period": "FY '26",
-   "said_in": "Dec 2025",
-   "call": "Q3 FY26",
-   "quote": "with stronger collection intensity and improved contractual terms, our Net Working Capital to Revenue has improved sharply to 8.2% as of December '25, and we expect to close the year with a revised target of around 10%.",
-   "page": 9,
-   "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Transcript%20Q3FY26.pdf",
-   "path": null,
-   "cites": [],
-   "verdict": "hit",
-   "actual": "Q1 FY27 call, p.6: “The NWC to Sales ratio improved significantly to 4.9% in June 2026 from 10.1% in June 2025.”; Q4 FY26 call, p.6: “As of March 2026, the Net Working Capital to Revenue ratio improved sharply to 4.1%”",
-   "actual_source": "management's statements on later calls (transcripts)",
-   "model": "openai/gpt-oss-120b picked the evidence; python (computed)",
-   "why": "Reported 4.9% (Q1 FY27 call) against ≤10%; compared in Python."
+   "model": "qwen/qwen3.8-27b",
+   "why": "Q1 FY27 group order inflows growth of 14% exceeds the 10-12% target range."
   },
   {
    "metric": "revenue growth",
@@ -140,11 +149,767 @@
    "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf",
    "path": "+11.3% → +6.7% → +15.8% (Q4 FY26 → Q2 FY27)",
    "cites": [],
+   "chart": {
+    "kind": "growth",
+    "points": [
+     [
+      "Q4 FY26",
+      11.25
+     ],
+     [
+      "Q1 FY27",
+      6.69
+     ],
+     [
+      "Q2 FY27",
+      15.84
+     ]
+    ],
+    "lo": 10,
+    "hi": 12,
+    "direction": "at_least",
+    "end": "Q4 FY27"
+   },
    "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
    "model": "python (computed)",
    "verdict": "on track",
    "actual": "FY27 so far (2 of 4 quarters: Jun 2026, Sep 2026): Revenue growth YoY +11.4% vs target 10–12%",
    "why": "+11.4% against 10–12% with the period still running; computed in Python."
+  },
+  {
+   "metric": "working capital to sales ratio",
+   "target": "around 10%",
+   "period": "FY27",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "Accordingly, we are guiding the working capital to be around 10% in FY27",
+   "page": 13,
+   "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf",
+   "path": null,
+   "cites": [],
+   "chart": {
+    "kind": "level",
+    "points": [
+     [
+      "Q1 FY27",
+      4.9
+     ]
+    ],
+    "lo": null,
+    "hi": 10,
+    "direction": "at_most",
+    "end": "Q4 FY27"
+   },
+   "verdict": "on track",
+   "actual": "Q1 FY27 call, p.6: “The NWC to Sales ratio improved significantly to 4.9% in June 2026 from 10.1% in June 2025.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "qwen/qwen3.8-27b picked the evidence; python (computed)",
+   "why": "Reported 4.9% (Q1 FY27 call) against ≤10%; compared in Python."
+  },
+  {
+   "metric": "group order inflows growth",
+   "target": "exceeding our full year FY '26 guidance of 10% growth in group order inflows for the current year",
+   "period": "FY '26",
+   "said_in": "Sep 2025",
+   "call": "Q2 FY26",
+   "quote": "We are confident of exceeding our full year FY '26 guidance of 10% growth in group order inflows for the current year.",
+   "page": 9,
+   "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q2FY26%20Earnings%20Call%20Transcript%20.pdf",
+   "path": null,
+   "cites": [],
+   "chart": null,
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "Not measurable: results filings don't report this figure (volumes, NOV/GMV, orders, AUM, mix or payout)."
+  }
+ ],
+ "sector": "Industrials",
+ "summary": {
+  "kept": 2,
+  "missed": 1,
+  "open": 2,
+  "partial": 0,
+  "unmeasured": 1,
+  "total": 6,
+  "measured": 5,
+  "sentence": "Kept 2 of 5 measured promises from the last 4 calls; missed on full year revenue growth (Q2 FY26 call); 2 on track."
+ },
+ "prices": {
+  "closes": [
+   [
+    "2026-08-17",
+    4086.7
+   ],
+   [
+    "2026-08-18",
+    4064.3
+   ],
+   [
+    "2026-08-19",
+    4041.3
+   ],
+   [
+    "2026-08-20",
+    4081.0
+   ],
+   [
+    "2026-08-21",
+    4093.0
+   ],
+   [
+    "2026-08-24",
+    4090.0
+   ],
+   [
+    "2026-08-25",
+    4119.0
+   ],
+   [
+    "2026-08-26",
+    4038.1
+   ],
+   [
+    "2026-08-27",
+    4027.0
+   ],
+   [
+    "2026-08-28",
+    4045.8
+   ],
+   [
+    "2026-08-31",
+    4044.9
+   ],
+   [
+    "2026-09-01",
+    3980.1
+   ],
+   [
+    "2026-09-02",
+    3981.0
+   ],
+   [
+    "2026-09-03",
+    3975.0
+   ],
+   [
+    "2026-09-04",
+    3964.1
+   ],
+   [
+    "2026-09-07",
+    3999.0
+   ],
+   [
+    "2026-09-08",
+    3946.1
+   ],
+   [
+    "2026-09-09",
+    3922.6
+   ],
+   [
+    "2026-09-10",
+    3955.0
+   ],
+   [
+    "2026-09-11",
+    3930.7
+   ],
+   [
+    "2026-09-15",
+    3850.7
+   ],
+   [
+    "2026-09-16",
+    3807.7
+   ],
+   [
+    "2026-09-17",
+    3836.2
+   ],
+   [
+    "2026-09-18",
+    3885.0
+   ],
+   [
+    "2026-09-21",
+    3904.8
+   ],
+   [
+    "2026-09-22",
+    3866.4
+   ],
+   [
+    "2026-09-23",
+    3929.9
+   ],
+   [
+    "2026-09-24",
+    3858.4
+   ],
+   [
+    "2026-09-25",
+    3876.2
+   ],
+   [
+    "2026-09-28",
+    3766.4
+   ],
+   [
+    "2026-09-29",
+    3749.1
+   ],
+   [
+    "2026-09-30",
+    3760.0
+   ],
+   [
+    "2026-10-01",
+    3693.4
+   ],
+   [
+    "2026-10-05",
+    3750.0
+   ],
+   [
+    "2026-10-06",
+    3770.0
+   ],
+   [
+    "2026-10-07",
+    3701.5
+   ],
+   [
+    "2026-10-08",
+    3625.1
+   ],
+   [
+    "2026-10-09",
+    3703.3
+   ],
+   [
+    "2026-10-12",
+    3627.5
+   ],
+   [
+    "2026-10-13",
+    3675.0
+   ],
+   [
+    "2026-10-14",
+    3642.0
+   ],
+   [
+    "2026-10-15",
+    3632.0
+   ],
+   [
+    "2026-10-16",
+    3627.1
+   ],
+   [
+    "2026-10-19",
+    3661.9
+   ],
+   [
+    "2026-10-21",
+    3636.0
+   ],
+   [
+    "2026-10-22",
+    3638.3
+   ],
+   [
+    "2026-10-23",
+    3647.0
+   ],
+   [
+    "2026-10-26",
+    3680.0
+   ],
+   [
+    "2026-10-27",
+    3665.1
+   ],
+   [
+    "2026-10-28",
+    3801.3
+   ],
+   [
+    "2026-10-29",
+    3837.1
+   ],
+   [
+    "2026-10-30",
+    3871.7
+   ],
+   [
+    "2026-11-02",
+    3939.9
+   ],
+   [
+    "2026-11-03",
+    3948.2
+   ],
+   [
+    "2026-11-04",
+    3944.4
+   ],
+   [
+    "2026-11-05",
+    4050.0
+   ],
+   [
+    "2026-11-06",
+    4117.7
+   ],
+   [
+    "2026-11-09",
+    4185.0
+   ],
+   [
+    "2026-11-11",
+    4212.0
+   ]
+  ],
+  "nifty": [
+   [
+    "2026-08-17",
+    24287.65
+   ],
+   [
+    "2026-08-18",
+    24154.9
+   ],
+   [
+    "2026-08-19",
+    24078.3
+   ],
+   [
+    "2026-08-20",
+    24231.85
+   ],
+   [
+    "2026-08-21",
+    24252.0
+   ],
+   [
+    "2026-08-24",
+    24219.05
+   ],
+   [
+    "2026-08-25",
+    24334.55
+   ],
+   [
+    "2026-08-26",
+    24207.75
+   ],
+   [
+    "2026-08-27",
+    24090.85
+   ],
+   [
+    "2026-08-28",
+    24175.65
+   ],
+   [
+    "2026-08-31",
+    24080.4
+   ],
+   [
+    "2026-09-01",
+    24055.8
+   ],
+   [
+    "2026-09-02",
+    23914.45
+   ],
+   [
+    "2026-09-03",
+    23873.45
+   ],
+   [
+    "2026-09-04",
+    23897.7
+   ],
+   [
+    "2026-09-07",
+    23779.15
+   ],
+   [
+    "2026-09-08",
+    23635.1
+   ],
+   [
+    "2026-09-09",
+    23431.5
+   ],
+   [
+    "2026-09-10",
+    23477.8
+   ],
+   [
+    "2026-09-11",
+    23398.1
+   ],
+   [
+    "2026-09-15",
+    23118.6
+   ],
+   [
+    "2026-09-16",
+    23217.6
+   ],
+   [
+    "2026-09-17",
+    23270.6
+   ],
+   [
+    "2026-09-18",
+    23346.4
+   ],
+   [
+    "2026-09-21",
+    23414.3
+   ],
+   [
+    "2026-09-22",
+    23329.0
+   ],
+   [
+    "2026-09-23",
+    23446.8
+   ],
+   [
+    "2026-09-24",
+    23063.1
+   ],
+   [
+    "2026-09-25",
+    23140.5
+   ],
+   [
+    "2026-09-28",
+    22780.25
+   ],
+   [
+    "2026-09-29",
+    22716.2
+   ],
+   [
+    "2026-09-30",
+    22620.45
+   ],
+   [
+    "2026-10-01",
+    22421.95
+   ],
+   [
+    "2026-10-05",
+    22555.75
+   ],
+   [
+    "2026-10-06",
+    22776.1
+   ],
+   [
+    "2026-10-07",
+    22603.05
+   ],
+   [
+    "2026-10-08",
+    22231.8
+   ],
+   [
+    "2026-10-09",
+    22520.45
+   ],
+   [
+    "2026-10-12",
+    22363.35
+   ],
+   [
+    "2026-10-13",
+    22721.95
+   ],
+   [
+    "2026-10-14",
+    22622.7
+   ],
+   [
+    "2026-10-15",
+    22997.35
+   ],
+   [
+    "2026-10-16",
+    23146.15
+   ],
+   [
+    "2026-10-19",
+    22888.95
+   ],
+   [
+    "2026-10-21",
+    22811.35
+   ],
+   [
+    "2026-10-22",
+    22687.65
+   ],
+   [
+    "2026-10-23",
+    22600.0
+   ],
+   [
+    "2026-10-26",
+    22753.2
+   ],
+   [
+    "2026-10-27",
+    22749.75
+   ],
+   [
+    "2026-10-28",
+    22698.85
+   ],
+   [
+    "2026-10-29",
+    22936.75
+   ],
+   [
+    "2026-10-30",
+    23053.1
+   ],
+   [
+    "2026-11-02",
+    23440.8
+   ],
+   [
+    "2026-11-03",
+    23810.85
+   ],
+   [
+    "2026-11-04",
+    23960.6
+   ],
+   [
+    "2026-11-05",
+    24536.6
+   ],
+   [
+    "2026-11-06",
+    25030.35
+   ],
+   [
+    "2026-11-09",
+    25044.65
+   ],
+   [
+    "2026-11-11",
+    25255.05
+   ]
+  ]
+ },
+ "snapshot": {
+  "basis": "consolidated",
+  "lender": false,
+  "unit": "₹ crore",
+  "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "quarters": {
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "revenue": [
+    64668.0,
+    74392.0,
+    63679.0,
+    67984.0,
+    71450.0,
+    82762.0,
+    67942.0,
+    78750.0
+   ],
+   "pat": [
+    3974.0,
+    6156.0,
+    4318.0,
+    4678.0,
+    3825.0,
+    6133.0,
+    4988.0,
+    5949.0
+   ],
+   "revenue_name": "Revenue",
+   "claim": "Revenue +15.8% YoY in the Sep 2026 quarter; PAT +27.2%."
+  },
+  "margin": {
+   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "values": [
+    13.71,
+    15.44,
+    14.73,
+    14.56,
+    12.37,
+    14.58,
+    15.49,
+    14.12
+   ],
+   "claim": "EBITDA margin 14.1% in the Sep 2026 quarter, −0.4 pp YoY."
+  },
+  "cash": {
+   "years": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+   ],
+   "cfo": [
+    19164.0,
+    22777.0,
+    18266.0,
+    9151.0,
+    16741.0
+   ],
+   "pat": [
+    10419.0,
+    12531.0,
+    15547.0,
+    17673.0,
+    18954.0
+   ],
+   "claim": "Operating cash flow was 1.15× PAT over FY22–FY26 (₹86,099 cr vs ₹75,124 cr)."
+  },
+  "leverage": {
+   "years": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+   ],
+   "values": [
+    1.52,
+    1.35,
+    1.35,
+    1.36,
+    1.15
+   ],
+   "claim": "Debt/equity 1.15 at FY26 end, from 1.52 at FY22 end."
+  }
+ },
+ "bull_bear": {
+  "bull": [
+   {
+    "point": "Order inflows hit Rs. 1,080 billion, beating 10-12% guidance with 14% growth.",
+    "cites": [
+     {
+      "label": "Q1 FY27 call, p.4",
+      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2027AnalysttransL&T-Earnings-Jul28-2026.pdf"
+     },
+     {
+      "label": "Q4 FY26 call, p.13 (promise)",
+      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf"
+     }
+    ]
+   },
+   {
+    "point": "NWC to sales ratio improved to 4.9%, beating 10% target.",
+    "cites": [
+     {
+      "label": "Q1 FY27 call, p.6",
+      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2027AnalysttransL&T-Earnings-Jul28-2026.pdf"
+     },
+     {
+      "label": "Q4 FY26 call, p.13 (promise)",
+      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf"
+     }
+    ]
+   },
+   {
+    "point": "PAT grew 27.2% YoY, outpacing 15.8% revenue growth.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     }
+    ]
+   }
+  ],
+  "bear": [
+   {
+    "point": "FY26 revenue growth of 11.8% missed the 15% guidance.",
+    "cites": [
+     {
+      "label": "Q2 FY26 call, p.10 (promise)",
+      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q2FY26%20Earnings%20Call%20Transcript%20.pdf"
+     }
+    ]
+   },
+   {
+    "point": "EBITDA margin fell 0.4 pp YoY to 14.1%.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
+     }
+    ]
+   },
+   {
+    "point": "Analysts fear prospect list shifts to next calendar year.",
+    "cites": [
+     {
+      "label": "Q1 FY27 call, p.12 (analyst)",
+      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2027AnalysttransL&T-Earnings-Jul28-2026.pdf"
+     }
+    ]
+   }
+  ],
+  "dropped": 0,
+  "model": "qwen/qwen3.8-27b",
+  "model_note": null
+ },
+ "sources": [
+  {
+   "label": "Q1 FY27 earnings call transcript",
+   "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2027AnalysttransL&T-Earnings-Jul28-2026.pdf"
+  },
+  {
+   "label": "Q4 FY26 earnings call transcript",
+   "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf"
+  },
+  {
+   "label": "Q3 FY26 earnings call transcript",
+   "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Transcript%20Q3FY26.pdf"
+  },
+  {
+   "label": "Q2 FY26 earnings call transcript",
+   "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q2FY26%20Earnings%20Call%20Transcript%20.pdf"
+  },
+  {
+   "label": "Quarterly and annual tables (consolidated), screener.in, from the exchange filings",
+   "url": "https://www.screener.in/company/LT/consolidated/"
   }
  ]
 }

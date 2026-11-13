@@ -1,7 +1,7 @@
 {
  "symbol": "HDFCBANK",
  "name": "HDFC Bank Ltd",
- "generated_at": "2026-11-13T03:04",
+ "generated_at": "2026-11-13T05:41",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -69,6 +69,31 @@
      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f5d5fb37-aa66-401c-85d6-58ccd3982828.pdf"
     }
    ],
+   "chart": {
+    "kind": "level",
+    "points": [
+     [
+      "Q3 FY26",
+      98.7
+     ],
+     [
+      "Q4 FY26",
+      94.6
+     ],
+     [
+      "Q1 FY27",
+      95.8
+     ],
+     [
+      "Q2 FY27",
+      96.0
+     ]
+    ],
+    "lo": 90,
+    "hi": 96,
+    "direction": "within",
+    "end": "Q4 FY26"
+   },
    "actual_source": "the bank's results filings on BSE: statement of assets and liabilities; ratio computed in Python",
    "model": "python (computed)",
    "verdict": "hit",
@@ -103,6 +128,31 @@
      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f5d5fb37-aa66-401c-85d6-58ccd3982828.pdf"
     }
    ],
+   "chart": {
+    "kind": "level",
+    "points": [
+     [
+      "Q3 FY26",
+      98.7
+     ],
+     [
+      "Q4 FY26",
+      94.6
+     ],
+     [
+      "Q1 FY27",
+      95.8
+     ],
+     [
+      "Q2 FY27",
+      96.0
+     ]
+    ],
+    "lo": 85,
+    "hi": 90,
+    "direction": "within",
+    "end": "Q4 FY27"
+   },
    "actual_source": "the bank's results filings on BSE: statement of assets and liabilities; ratio computed in Python",
    "model": "python (computed)",
    "verdict": "behind pace",
@@ -120,11 +170,672 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e45f8a0-0fe6-40a3-8e5a-51c53713e6f0.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "Q2 FY27 call, p.4: “On the MSME and mid-market business, growth momentum is also improving rapidly. September'26 EOP loan growth has grown 23.5% year-on-year compared to 17% to 18% year-on-year growth levels seen in the last few quarters.”; Q2 FY27 call, p.4: “This is also reflected in the rising growth trend in EOP loan book, especially for retail assets ex agri, September'26 annual growth is about 11.2% compared to 9.1% as of June'26 and 7.4% as of March'26.”",
    "actual_source": "management's statements on later calls (transcripts)",
    "model": "openai/gpt-oss-120b",
    "why": "Target qualitative; FY27 ongoing; loan growth evidence R7 23.5% YoY, R6 11.2% YoY not comparable to target."
+  }
+ ],
+ "sector": "Financial Services",
+ "summary": {
+  "kept": 1,
+  "missed": 1,
+  "open": 0,
+  "partial": 0,
+  "unmeasured": 1,
+  "total": 3,
+  "measured": 2,
+  "sentence": "Kept 1 of 2 measured promises from the last 4 calls; missed on loan-to-deposit ratio (Q3 FY26 call)."
+ },
+ "prices": {
+  "closes": [
+   [
+    "2026-08-17",
+    729.0
+   ],
+   [
+    "2026-08-18",
+    723.0
+   ],
+   [
+    "2026-08-19",
+    720.0
+   ],
+   [
+    "2026-08-20",
+    725.05
+   ],
+   [
+    "2026-08-21",
+    726.95
+   ],
+   [
+    "2026-08-24",
+    729.0
+   ],
+   [
+    "2026-08-25",
+    727.5
+   ],
+   [
+    "2026-08-26",
+    727.2
+   ],
+   [
+    "2026-08-27",
+    711.0
+   ],
+   [
+    "2026-08-28",
+    720.3
+   ],
+   [
+    "2026-08-31",
+    709.0
+   ],
+   [
+    "2026-09-01",
+    711.9
+   ],
+   [
+    "2026-09-02",
+    700.8
+   ],
+   [
+    "2026-09-03",
+    706.65
+   ],
+   [
+    "2026-09-04",
+    712.1
+   ],
+   [
+    "2026-09-07",
+    710.5
+   ],
+   [
+    "2026-09-08",
+    703.0
+   ],
+   [
+    "2026-09-09",
+    687.1
+   ],
+   [
+    "2026-09-10",
+    693.8
+   ],
+   [
+    "2026-09-11",
+    708.25
+   ],
+   [
+    "2026-09-15",
+    716.55
+   ],
+   [
+    "2026-09-16",
+    721.5
+   ],
+   [
+    "2026-09-17",
+    713.0
+   ],
+   [
+    "2026-09-18",
+    731.0
+   ],
+   [
+    "2026-09-21",
+    739.5
+   ],
+   [
+    "2026-09-22",
+    738.6
+   ],
+   [
+    "2026-09-23",
+    737.25
+   ],
+   [
+    "2026-09-24",
+    728.9
+   ],
+   [
+    "2026-09-25",
+    735.6
+   ],
+   [
+    "2026-09-28",
+    719.05
+   ],
+   [
+    "2026-09-29",
+    722.7
+   ],
+   [
+    "2026-09-30",
+    708.7
+   ],
+   [
+    "2026-10-01",
+    721.2
+   ],
+   [
+    "2026-10-05",
+    704.8
+   ],
+   [
+    "2026-10-06",
+    711.45
+   ],
+   [
+    "2026-10-07",
+    702.75
+   ],
+   [
+    "2026-10-08",
+    692.25
+   ],
+   [
+    "2026-10-09",
+    707.25
+   ],
+   [
+    "2026-10-12",
+    704.9
+   ],
+   [
+    "2026-10-13",
+    714.0
+   ],
+   [
+    "2026-10-14",
+    710.7
+   ],
+   [
+    "2026-10-15",
+    726.85
+   ],
+   [
+    "2026-10-16",
+    728.85
+   ],
+   [
+    "2026-10-19",
+    712.0
+   ],
+   [
+    "2026-10-21",
+    706.95
+   ],
+   [
+    "2026-10-22",
+    694.05
+   ],
+   [
+    "2026-10-23",
+    692.8
+   ],
+   [
+    "2026-10-26",
+    688.05
+   ],
+   [
+    "2026-10-27",
+    680.2
+   ],
+   [
+    "2026-10-28",
+    685.3
+   ],
+   [
+    "2026-10-29",
+    683.3
+   ],
+   [
+    "2026-10-30",
+    692.8
+   ],
+   [
+    "2026-11-02",
+    700.0
+   ],
+   [
+    "2026-11-03",
+    725.5
+   ],
+   [
+    "2026-11-04",
+    736.7
+   ],
+   [
+    "2026-11-05",
+    760.0
+   ],
+   [
+    "2026-11-06",
+    788.25
+   ],
+   [
+    "2026-11-09",
+    798.15
+   ],
+   [
+    "2026-11-11",
+    806.6
+   ]
+  ],
+  "nifty": [
+   [
+    "2026-08-17",
+    24287.65
+   ],
+   [
+    "2026-08-18",
+    24154.9
+   ],
+   [
+    "2026-08-19",
+    24078.3
+   ],
+   [
+    "2026-08-20",
+    24231.85
+   ],
+   [
+    "2026-08-21",
+    24252.0
+   ],
+   [
+    "2026-08-24",
+    24219.05
+   ],
+   [
+    "2026-08-25",
+    24334.55
+   ],
+   [
+    "2026-08-26",
+    24207.75
+   ],
+   [
+    "2026-08-27",
+    24090.85
+   ],
+   [
+    "2026-08-28",
+    24175.65
+   ],
+   [
+    "2026-08-31",
+    24080.4
+   ],
+   [
+    "2026-09-01",
+    24055.8
+   ],
+   [
+    "2026-09-02",
+    23914.45
+   ],
+   [
+    "2026-09-03",
+    23873.45
+   ],
+   [
+    "2026-09-04",
+    23897.7
+   ],
+   [
+    "2026-09-07",
+    23779.15
+   ],
+   [
+    "2026-09-08",
+    23635.1
+   ],
+   [
+    "2026-09-09",
+    23431.5
+   ],
+   [
+    "2026-09-10",
+    23477.8
+   ],
+   [
+    "2026-09-11",
+    23398.1
+   ],
+   [
+    "2026-09-15",
+    23118.6
+   ],
+   [
+    "2026-09-16",
+    23217.6
+   ],
+   [
+    "2026-09-17",
+    23270.6
+   ],
+   [
+    "2026-09-18",
+    23346.4
+   ],
+   [
+    "2026-09-21",
+    23414.3
+   ],
+   [
+    "2026-09-22",
+    23329.0
+   ],
+   [
+    "2026-09-23",
+    23446.8
+   ],
+   [
+    "2026-09-24",
+    23063.1
+   ],
+   [
+    "2026-09-25",
+    23140.5
+   ],
+   [
+    "2026-09-28",
+    22780.25
+   ],
+   [
+    "2026-09-29",
+    22716.2
+   ],
+   [
+    "2026-09-30",
+    22620.45
+   ],
+   [
+    "2026-10-01",
+    22421.95
+   ],
+   [
+    "2026-10-05",
+    22555.75
+   ],
+   [
+    "2026-10-06",
+    22776.1
+   ],
+   [
+    "2026-10-07",
+    22603.05
+   ],
+   [
+    "2026-10-08",
+    22231.8
+   ],
+   [
+    "2026-10-09",
+    22520.45
+   ],
+   [
+    "2026-10-12",
+    22363.35
+   ],
+   [
+    "2026-10-13",
+    22721.95
+   ],
+   [
+    "2026-10-14",
+    22622.7
+   ],
+   [
+    "2026-10-15",
+    22997.35
+   ],
+   [
+    "2026-10-16",
+    23146.15
+   ],
+   [
+    "2026-10-19",
+    22888.95
+   ],
+   [
+    "2026-10-21",
+    22811.35
+   ],
+   [
+    "2026-10-22",
+    22687.65
+   ],
+   [
+    "2026-10-23",
+    22600.0
+   ],
+   [
+    "2026-10-26",
+    22753.2
+   ],
+   [
+    "2026-10-27",
+    22749.75
+   ],
+   [
+    "2026-10-28",
+    22698.85
+   ],
+   [
+    "2026-10-29",
+    22936.75
+   ],
+   [
+    "2026-10-30",
+    23053.1
+   ],
+   [
+    "2026-11-02",
+    23440.8
+   ],
+   [
+    "2026-11-03",
+    23810.85
+   ],
+   [
+    "2026-11-04",
+    23960.6
+   ],
+   [
+    "2026-11-05",
+    24536.6
+   ],
+   [
+    "2026-11-06",
+    25030.35
+   ],
+   [
+    "2026-11-09",
+    25044.65
+   ],
+   [
+    "2026-11-11",
+    25255.05
+   ]
+  ]
+ },
+ "snapshot": {
+  "basis": "consolidated",
+  "lender": true,
+  "unit": "₹ crore",
+  "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "quarters": {
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "revenue": [
+    112194.0,
+    120268.0,
+    133055.0,
+    118561.0,
+    126927.0,
+    116919.0,
+    133110.0,
+    129359.0
+   ],
+   "pat": [
+    18340.0,
+    19285.0,
+    17090.0,
+    20364.0,
+    20691.0,
+    21074.0,
+    20383.0,
+    21537.0
+   ],
+   "revenue_name": "Total income",
+   "claim": "Total income +9.1% YoY in the Sep 2026 quarter; PAT +5.8%."
+  },
+  "margin": {
+   "name": "Net margin (PAT / total income)",
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "values": [
+    16.35,
+    16.04,
+    12.84,
+    17.18,
+    16.3,
+    18.02,
+    15.31,
+    16.65
+   ],
+   "claim": "Net margin 16.6% in the Sep 2026 quarter, −0.5 pp YoY."
+  },
+  "cash": {
+   "note": "Not shown for lenders: deposits and loans run through operating cash flow, and borrowing is the business."
+  },
+  "leverage": {
+   "note": "Not shown for lenders: deposits and loans run through operating cash flow, and borrowing is the business."
+  }
+ },
+ "bull_bear": {
+  "bull": [
+   {
+    "point": "Deposits grew 18.8% YoY, outpacing credit growth, supporting funding stability.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.3",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d7e45614-ae12-4bb9-b92d-623b3a63f166.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Retail CASA rose 11.2% YoY, enhancing low-cost funding mix.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.3",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d7e45614-ae12-4bb9-b92d-623b3a63f166.pdf"
+     }
+    ]
+   },
+   {
+    "point": "MSME loan growth accelerated to 23.5% YoY, driving higher loan book expansion.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.4",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d7e45614-ae12-4bb9-b92d-623b3a63f166.pdf"
+     }
+    ]
+   }
+  ],
+  "bear": [
+   {
+    "point": "Loan-to-deposit ratio at 96.0% exceeds 85–90% target, indicating rising funding pressure.",
+    "cites": [
+     {
+      "label": "Q3 FY26 call, p.6 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e45f8a0-0fe6-40a3-8e5a-51c53713e6f0.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Net margin slipped to 16.6%, down 0.5 pp YoY, compressing profitability.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
+     }
+    ]
+   },
+   {
+    "point": "Analyst flagged margin pressure amid competitive environment, questioning future margin trajectory.",
+    "cites": [
+     {
+      "label": "Q1 FY27 call, p.7 (analyst)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=509cc499-6cb1-4d9f-8de9-9c7de6c70eef.pdf"
+     }
+    ]
+   }
+  ],
+  "dropped": 0,
+  "model": "openai/gpt-oss-120b",
+  "model_note": null
+ },
+ "sources": [
+  {
+   "label": "Q2 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d7e45614-ae12-4bb9-b92d-623b3a63f166.pdf"
+  },
+  {
+   "label": "Q1 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=509cc499-6cb1-4d9f-8de9-9c7de6c70eef.pdf"
+  },
+  {
+   "label": "Q4 FY26 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a77abbbb-954a-4221-8240-67bf0da6ba1c.pdf"
+  },
+  {
+   "label": "Q3 FY26 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e45f8a0-0fe6-40a3-8e5a-51c53713e6f0.pdf"
+  },
+  {
+   "label": "Q3 FY26 results filing, p.5",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=9bbca52b-6e66-4b9a-ae83-ef30ec660628.pdf"
+  },
+  {
+   "label": "Q4 FY26 results filing, p.6",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ea66a60f-a54e-4aac-bbcc-789303bf74cc.pdf"
+  },
+  {
+   "label": "Q1 FY27 results filing, p.4",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7abdb29f-c7a2-4f32-a37f-5273fded5000.pdf"
+  },
+  {
+   "label": "Q2 FY27 results filing, p.4",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f5d5fb37-aa66-401c-85d6-58ccd3982828.pdf"
+  },
+  {
+   "label": "Quarterly and annual tables (consolidated), screener.in, from the exchange filings",
+   "url": "https://www.screener.in/company/HDFCBANK/consolidated/"
   }
  ]
 }

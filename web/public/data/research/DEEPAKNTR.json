@@ -61,5 +61,684 @@
    "model": "openai/gpt-oss-120b",
    "why": "Reported data does not include energy mix percentage, so target cannot be assessed."
   }
+ ],
+ "sector": "Commodities",
+ "summary": {
+  "kept": 0,
+  "missed": 0,
+  "open": 0,
+  "partial": 0,
+  "unmeasured": 1,
+  "total": 1,
+  "measured": 0,
+  "sentence": "The one promise from the last 4 calls can't be checked yet; the reason is below."
+ },
+ "prices": {
+  "closes": [
+   [
+    "2026-08-17",
+    1780.5
+   ],
+   [
+    "2026-08-18",
+    1771.0
+   ],
+   [
+    "2026-08-19",
+    1768.3
+   ],
+   [
+    "2026-08-20",
+    1750.4
+   ],
+   [
+    "2026-08-21",
+    1747.1
+   ],
+   [
+    "2026-08-24",
+    1730.3
+   ],
+   [
+    "2026-08-25",
+    1751.0
+   ],
+   [
+    "2026-08-26",
+    1776.7
+   ],
+   [
+    "2026-08-27",
+    1752.8
+   ],
+   [
+    "2026-08-28",
+    1762.9
+   ],
+   [
+    "2026-08-31",
+    1749.4
+   ],
+   [
+    "2026-09-01",
+    1782.8
+   ],
+   [
+    "2026-09-02",
+    1734.1
+   ],
+   [
+    "2026-09-03",
+    1725.3
+   ],
+   [
+    "2026-09-04",
+    1712.4
+   ],
+   [
+    "2026-09-07",
+    1642.1
+   ],
+   [
+    "2026-09-08",
+    1647.8
+   ],
+   [
+    "2026-09-09",
+    1641.9
+   ],
+   [
+    "2026-09-10",
+    1645.8
+   ],
+   [
+    "2026-09-11",
+    1587.8
+   ],
+   [
+    "2026-09-15",
+    1561.3
+   ],
+   [
+    "2026-09-16",
+    1590.5
+   ],
+   [
+    "2026-09-17",
+    1604.8
+   ],
+   [
+    "2026-09-18",
+    1586.3
+   ],
+   [
+    "2026-09-21",
+    1586.3
+   ],
+   [
+    "2026-09-22",
+    1613.2
+   ],
+   [
+    "2026-09-23",
+    1635.8
+   ],
+   [
+    "2026-09-24",
+    1600.9
+   ],
+   [
+    "2026-09-25",
+    1587.1
+   ],
+   [
+    "2026-09-28",
+    1550.8
+   ],
+   [
+    "2026-09-29",
+    1529.0
+   ],
+   [
+    "2026-09-30",
+    1529.8
+   ],
+   [
+    "2026-10-01",
+    1492.8
+   ],
+   [
+    "2026-10-05",
+    1497.0
+   ],
+   [
+    "2026-10-06",
+    1560.6
+   ],
+   [
+    "2026-10-07",
+    1553.9
+   ],
+   [
+    "2026-10-08",
+    1584.1
+   ],
+   [
+    "2026-10-09",
+    1621.9
+   ],
+   [
+    "2026-10-12",
+    1618.3
+   ],
+   [
+    "2026-10-13",
+    1622.1
+   ],
+   [
+    "2026-10-14",
+    1645.4
+   ],
+   [
+    "2026-10-15",
+    1599.6
+   ],
+   [
+    "2026-10-16",
+    1598.5
+   ],
+   [
+    "2026-10-19",
+    1550.6
+   ],
+   [
+    "2026-10-21",
+    1506.2
+   ],
+   [
+    "2026-10-22",
+    1487.4
+   ],
+   [
+    "2026-10-23",
+    1446.8
+   ],
+   [
+    "2026-10-26",
+    1442.5
+   ],
+   [
+    "2026-10-27",
+    1431.5
+   ],
+   [
+    "2026-10-28",
+    1488.4
+   ],
+   [
+    "2026-10-29",
+    1476.4
+   ],
+   [
+    "2026-10-30",
+    1519.4
+   ],
+   [
+    "2026-11-02",
+    1531.2
+   ],
+   [
+    "2026-11-03",
+    1520.6
+   ],
+   [
+    "2026-11-04",
+    1578.4
+   ],
+   [
+    "2026-11-05",
+    1544.0
+   ],
+   [
+    "2026-11-06",
+    1533.6
+   ],
+   [
+    "2026-11-09",
+    1540.0
+   ],
+   [
+    "2026-11-11",
+    1588.9
+   ]
+  ],
+  "nifty": [
+   [
+    "2026-08-17",
+    24287.65
+   ],
+   [
+    "2026-08-18",
+    24154.9
+   ],
+   [
+    "2026-08-19",
+    24078.3
+   ],
+   [
+    "2026-08-20",
+    24231.85
+   ],
+   [
+    "2026-08-21",
+    24252.0
+   ],
+   [
+    "2026-08-24",
+    24219.05
+   ],
+   [
+    "2026-08-25",
+    24334.55
+   ],
+   [
+    "2026-08-26",
+    24207.75
+   ],
+   [
+    "2026-08-27",
+    24090.85
+   ],
+   [
+    "2026-08-28",
+    24175.65
+   ],
+   [
+    "2026-08-31",
+    24080.4
+   ],
+   [
+    "2026-09-01",
+    24055.8
+   ],
+   [
+    "2026-09-02",
+    23914.45
+   ],
+   [
+    "2026-09-03",
+    23873.45
+   ],
+   [
+    "2026-09-04",
+    23897.7
+   ],
+   [
+    "2026-09-07",
+    23779.15
+   ],
+   [
+    "2026-09-08",
+    23635.1
+   ],
+   [
+    "2026-09-09",
+    23431.5
+   ],
+   [
+    "2026-09-10",
+    23477.8
+   ],
+   [
+    "2026-09-11",
+    23398.1
+   ],
+   [
+    "2026-09-15",
+    23118.6
+   ],
+   [
+    "2026-09-16",
+    23217.6
+   ],
+   [
+    "2026-09-17",
+    23270.6
+   ],
+   [
+    "2026-09-18",
+    23346.4
+   ],
+   [
+    "2026-09-21",
+    23414.3
+   ],
+   [
+    "2026-09-22",
+    23329.0
+   ],
+   [
+    "2026-09-23",
+    23446.8
+   ],
+   [
+    "2026-09-24",
+    23063.1
+   ],
+   [
+    "2026-09-25",
+    23140.5
+   ],
+   [
+    "2026-09-28",
+    22780.25
+   ],
+   [
+    "2026-09-29",
+    22716.2
+   ],
+   [
+    "2026-09-30",
+    22620.45
+   ],
+   [
+    "2026-10-01",
+    22421.95
+   ],
+   [
+    "2026-10-05",
+    22555.75
+   ],
+   [
+    "2026-10-06",
+    22776.1
+   ],
+   [
+    "2026-10-07",
+    22603.05
+   ],
+   [
+    "2026-10-08",
+    22231.8
+   ],
+   [
+    "2026-10-09",
+    22520.45
+   ],
+   [
+    "2026-10-12",
+    22363.35
+   ],
+   [
+    "2026-10-13",
+    22721.95
+   ],
+   [
+    "2026-10-14",
+    22622.7
+   ],
+   [
+    "2026-10-15",
+    22997.35
+   ],
+   [
+    "2026-10-16",
+    23146.15
+   ],
+   [
+    "2026-10-19",
+    22888.95
+   ],
+   [
+    "2026-10-21",
+    22811.35
+   ],
+   [
+    "2026-10-22",
+    22687.65
+   ],
+   [
+    "2026-10-23",
+    22600.0
+   ],
+   [
+    "2026-10-26",
+    22753.2
+   ],
+   [
+    "2026-10-27",
+    22749.75
+   ],
+   [
+    "2026-10-28",
+    22698.85
+   ],
+   [
+    "2026-10-29",
+    22936.75
+   ],
+   [
+    "2026-10-30",
+    23053.1
+   ],
+   [
+    "2026-11-02",
+    23440.8
+   ],
+   [
+    "2026-11-03",
+    23810.85
+   ],
+   [
+    "2026-11-04",
+    23960.6
+   ],
+   [
+    "2026-11-05",
+    24536.6
+   ],
+   [
+    "2026-11-06",
+    25030.35
+   ],
+   [
+    "2026-11-09",
+    25044.65
+   ],
+   [
+    "2026-11-11",
+    25255.05
+   ]
+  ]
+ },
+ "snapshot": {
+  "basis": "consolidated",
+  "lender": false,
+  "unit": "₹ crore",
+  "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "quarters": {
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "revenue": [
+    1903.0,
+    2180.0,
+    1890.0,
+    1902.0,
+    1975.0,
+    2120.0,
+    2578.0,
+    3076.0
+   ],
+   "pat": [
+    98.0,
+    202.0,
+    112.0,
+    119.0,
+    100.0,
+    220.0,
+    345.0,
+    398.0
+   ],
+   "revenue_name": "Revenue",
+   "claim": "Revenue +61.7% YoY in the Sep 2026 quarter; PAT +234.5%."
+  },
+  "margin": {
+   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "values": [
+    9.93,
+    15.55,
+    11.32,
+    11.78,
+    10.48,
+    18.07,
+    21.53,
+    20.9
+   ],
+   "claim": "EBITDA margin 20.9% in the Sep 2026 quarter, +9.1 pp YoY."
+  },
+  "cash": {
+   "years": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+   ],
+   "cfo": [
+    824.0,
+    650.0,
+    874.0,
+    625.0,
+    539.0
+   ],
+   "pat": [
+    1067.0,
+    852.0,
+    811.0,
+    697.0,
+    551.0
+   ],
+   "claim": "Operating cash flow was 0.88× PAT over FY22–FY26 (₹3,512 cr vs ₹3,978 cr)."
+  },
+  "leverage": {
+   "years": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+   ],
+   "values": [
+    0.09,
+    0.02,
+    0.06,
+    0.24,
+    0.28
+   ],
+   "claim": "Debt/equity 0.28 at FY26 end, from 0.09 at FY22 end."
+  }
+ },
+ "bull_bear": {
+  "bull": [
+   {
+    "point": "Revenue +61.7% YoY in Sep 2026 quarter, driving top-line acceleration.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     }
+    ]
+   },
+   {
+    "point": "EBITDA margin 20.9%, up 9.1 pp YoY, expanding profitability.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
+     }
+    ]
+   },
+   {
+    "point": "Debt/equity 0.28, low leverage versus 0.09 FY22, preserving balance sheet strength.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#leverage"
+     }
+    ]
+   }
+  ],
+  "bear": [
+   {
+    "point": "Energy mix target 60%‑70% from renewables remains not‑yet‑measurable, uncertainty on cost benefits.",
+    "cites": [
+     {
+      "label": "Q3 FY26 call, p.4 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=5fe2e422-45bb-44a8-a6e2-c9677c942a8d.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Analyst flagged 2‑year delay in MIBK and MIBC commercialization, risking earnings momentum.",
+    "cites": [
+     {
+      "label": "Q3 FY26 call, p.20 (analyst)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=5fe2e422-45bb-44a8-a6e2-c9677c942a8d.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Analyst concerned about Chinese competition in phenolics and advanced intermediates, potential market share erosion.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.20 (analyst)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=5dfbdab4-d040-4a99-b694-bbe26f015f14.pdf"
+     }
+    ]
+   }
+  ],
+  "dropped": 0,
+  "model": "openai/gpt-oss-120b",
+  "model_note": null
+ },
+ "sources": [
+  {
+   "label": "Q2 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=5dfbdab4-d040-4a99-b694-bbe26f015f14.pdf"
+  },
+  {
+   "label": "Q1 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=830edde9-d00b-4243-98bd-a0e7c77d716b.pdf"
+  },
+  {
+   "label": "Q4 FY26 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=589629dc-be30-42d5-8ed4-bb605071a9bc.pdf"
+  },
+  {
+   "label": "Q3 FY26 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=5fe2e422-45bb-44a8-a6e2-c9677c942a8d.pdf"
+  },
+  {
+   "label": "Quarterly and annual tables (consolidated), screener.in, from the exchange filings",
+   "url": "https://www.screener.in/company/DEEPAKNTR/consolidated/"
+  }
  ]
 }

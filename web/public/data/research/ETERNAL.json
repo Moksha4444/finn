@@ -112,5 +112,684 @@
    "model": "openai/gpt-oss-120b",
    "why": "No eligible reported quick commerce CAGR evidence."
   }
+ ],
+ "sector": "Consumer Discretionary",
+ "summary": {
+  "kept": 0,
+  "missed": 0,
+  "open": 0,
+  "partial": 0,
+  "unmeasured": 4,
+  "total": 4,
+  "measured": 0,
+  "sentence": "None of the 4 promises from the last 4 calls can be checked yet; the reasons are listed below."
+ },
+ "prices": {
+  "closes": [
+   [
+    "2026-08-17",
+    318.0
+   ],
+   [
+    "2026-08-18",
+    315.9
+   ],
+   [
+    "2026-08-19",
+    320.0
+   ],
+   [
+    "2026-08-20",
+    327.95
+   ],
+   [
+    "2026-08-21",
+    328.0
+   ],
+   [
+    "2026-08-24",
+    327.15
+   ],
+   [
+    "2026-08-25",
+    331.0
+   ],
+   [
+    "2026-08-26",
+    327.0
+   ],
+   [
+    "2026-08-27",
+    328.5
+   ],
+   [
+    "2026-08-28",
+    328.0
+   ],
+   [
+    "2026-08-31",
+    328.1
+   ],
+   [
+    "2026-09-01",
+    327.75
+   ],
+   [
+    "2026-09-02",
+    327.3
+   ],
+   [
+    "2026-09-03",
+    324.8
+   ],
+   [
+    "2026-09-04",
+    322.75
+   ],
+   [
+    "2026-09-07",
+    320.8
+   ],
+   [
+    "2026-09-08",
+    321.6
+   ],
+   [
+    "2026-09-09",
+    320.6
+   ],
+   [
+    "2026-09-10",
+    322.1
+   ],
+   [
+    "2026-09-11",
+    323.5
+   ],
+   [
+    "2026-09-15",
+    315.25
+   ],
+   [
+    "2026-09-16",
+    317.0
+   ],
+   [
+    "2026-09-17",
+    322.35
+   ],
+   [
+    "2026-09-18",
+    326.85
+   ],
+   [
+    "2026-09-21",
+    335.9
+   ],
+   [
+    "2026-09-22",
+    342.0
+   ],
+   [
+    "2026-09-23",
+    342.65
+   ],
+   [
+    "2026-09-24",
+    335.5
+   ],
+   [
+    "2026-09-25",
+    335.0
+   ],
+   [
+    "2026-09-28",
+    330.95
+   ],
+   [
+    "2026-09-29",
+    327.85
+   ],
+   [
+    "2026-09-30",
+    320.0
+   ],
+   [
+    "2026-10-01",
+    313.9
+   ],
+   [
+    "2026-10-05",
+    320.8
+   ],
+   [
+    "2026-10-06",
+    329.0
+   ],
+   [
+    "2026-10-07",
+    328.0
+   ],
+   [
+    "2026-10-08",
+    319.05
+   ],
+   [
+    "2026-10-09",
+    323.45
+   ],
+   [
+    "2026-10-12",
+    323.0
+   ],
+   [
+    "2026-10-13",
+    320.45
+   ],
+   [
+    "2026-10-14",
+    316.0
+   ],
+   [
+    "2026-10-15",
+    323.0
+   ],
+   [
+    "2026-10-16",
+    325.3
+   ],
+   [
+    "2026-10-19",
+    320.2
+   ],
+   [
+    "2026-10-21",
+    312.35
+   ],
+   [
+    "2026-10-22",
+    304.45
+   ],
+   [
+    "2026-10-23",
+    317.4
+   ],
+   [
+    "2026-10-26",
+    325.55
+   ],
+   [
+    "2026-10-27",
+    331.0
+   ],
+   [
+    "2026-10-28",
+    326.0
+   ],
+   [
+    "2026-10-29",
+    337.85
+   ],
+   [
+    "2026-10-30",
+    343.65
+   ],
+   [
+    "2026-11-02",
+    344.0
+   ],
+   [
+    "2026-11-03",
+    349.45
+   ],
+   [
+    "2026-11-04",
+    344.5
+   ],
+   [
+    "2026-11-05",
+    358.3
+   ],
+   [
+    "2026-11-06",
+    363.15
+   ],
+   [
+    "2026-11-09",
+    363.45
+   ],
+   [
+    "2026-11-11",
+    361.1
+   ]
+  ],
+  "nifty": [
+   [
+    "2026-08-17",
+    24287.65
+   ],
+   [
+    "2026-08-18",
+    24154.9
+   ],
+   [
+    "2026-08-19",
+    24078.3
+   ],
+   [
+    "2026-08-20",
+    24231.85
+   ],
+   [
+    "2026-08-21",
+    24252.0
+   ],
+   [
+    "2026-08-24",
+    24219.05
+   ],
+   [
+    "2026-08-25",
+    24334.55
+   ],
+   [
+    "2026-08-26",
+    24207.75
+   ],
+   [
+    "2026-08-27",
+    24090.85
+   ],
+   [
+    "2026-08-28",
+    24175.65
+   ],
+   [
+    "2026-08-31",
+    24080.4
+   ],
+   [
+    "2026-09-01",
+    24055.8
+   ],
+   [
+    "2026-09-02",
+    23914.45
+   ],
+   [
+    "2026-09-03",
+    23873.45
+   ],
+   [
+    "2026-09-04",
+    23897.7
+   ],
+   [
+    "2026-09-07",
+    23779.15
+   ],
+   [
+    "2026-09-08",
+    23635.1
+   ],
+   [
+    "2026-09-09",
+    23431.5
+   ],
+   [
+    "2026-09-10",
+    23477.8
+   ],
+   [
+    "2026-09-11",
+    23398.1
+   ],
+   [
+    "2026-09-15",
+    23118.6
+   ],
+   [
+    "2026-09-16",
+    23217.6
+   ],
+   [
+    "2026-09-17",
+    23270.6
+   ],
+   [
+    "2026-09-18",
+    23346.4
+   ],
+   [
+    "2026-09-21",
+    23414.3
+   ],
+   [
+    "2026-09-22",
+    23329.0
+   ],
+   [
+    "2026-09-23",
+    23446.8
+   ],
+   [
+    "2026-09-24",
+    23063.1
+   ],
+   [
+    "2026-09-25",
+    23140.5
+   ],
+   [
+    "2026-09-28",
+    22780.25
+   ],
+   [
+    "2026-09-29",
+    22716.2
+   ],
+   [
+    "2026-09-30",
+    22620.45
+   ],
+   [
+    "2026-10-01",
+    22421.95
+   ],
+   [
+    "2026-10-05",
+    22555.75
+   ],
+   [
+    "2026-10-06",
+    22776.1
+   ],
+   [
+    "2026-10-07",
+    22603.05
+   ],
+   [
+    "2026-10-08",
+    22231.8
+   ],
+   [
+    "2026-10-09",
+    22520.45
+   ],
+   [
+    "2026-10-12",
+    22363.35
+   ],
+   [
+    "2026-10-13",
+    22721.95
+   ],
+   [
+    "2026-10-14",
+    22622.7
+   ],
+   [
+    "2026-10-15",
+    22997.35
+   ],
+   [
+    "2026-10-16",
+    23146.15
+   ],
+   [
+    "2026-10-19",
+    22888.95
+   ],
+   [
+    "2026-10-21",
+    22811.35
+   ],
+   [
+    "2026-10-22",
+    22687.65
+   ],
+   [
+    "2026-10-23",
+    22600.0
+   ],
+   [
+    "2026-10-26",
+    22753.2
+   ],
+   [
+    "2026-10-27",
+    22749.75
+   ],
+   [
+    "2026-10-28",
+    22698.85
+   ],
+   [
+    "2026-10-29",
+    22936.75
+   ],
+   [
+    "2026-10-30",
+    23053.1
+   ],
+   [
+    "2026-11-02",
+    23440.8
+   ],
+   [
+    "2026-11-03",
+    23810.85
+   ],
+   [
+    "2026-11-04",
+    23960.6
+   ],
+   [
+    "2026-11-05",
+    24536.6
+   ],
+   [
+    "2026-11-06",
+    25030.35
+   ],
+   [
+    "2026-11-09",
+    25044.65
+   ],
+   [
+    "2026-11-11",
+    25255.05
+   ]
+  ]
+ },
+ "snapshot": {
+  "basis": "consolidated",
+  "lender": false,
+  "unit": "₹ crore",
+  "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "quarters": {
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "revenue": [
+    5405.0,
+    5833.0,
+    7167.0,
+    13590.0,
+    16315.0,
+    17292.0,
+    20211.0,
+    24138.0
+   ],
+   "pat": [
+    59.0,
+    39.0,
+    25.0,
+    65.0,
+    102.0,
+    174.0,
+    92.0,
+    125.0
+   ],
+   "revenue_name": "Revenue",
+   "claim": "Revenue +77.6% YoY in the Sep 2026 quarter; PAT +92.3%."
+  },
+  "margin": {
+   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "periods": [
+    "Dec 2024",
+    "Mar 2025",
+    "Jun 2025",
+    "Sep 2025",
+    "Dec 2025",
+    "Mar 2026",
+    "Jun 2026",
+    "Sep 2026"
+   ],
+   "values": [
+    7.66,
+    7.54,
+    6.54,
+    4.35,
+    4.39,
+    4.79,
+    4.79,
+    4.57
+   ],
+   "claim": "EBITDA margin 4.6% in the Sep 2026 quarter, +0.2 pp YoY."
+  },
+  "cash": {
+   "years": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+   ],
+   "cfo": [
+    -693.0,
+    -844.0,
+    646.0,
+    308.0,
+    632.0
+   ],
+   "pat": [
+    -1222.0,
+    -971.0,
+    351.0,
+    527.0,
+    366.0
+   ],
+   "claim": "PAT summed to −₹949 cr over FY22–FY26 (a net loss), so cash conversion isn't meaningful."
+  },
+  "leverage": {
+   "years": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+   ],
+   "values": [
+    0.0,
+    0.03,
+    0.04,
+    0.07,
+    0.15
+   ],
+   "claim": "Debt/equity 0.15 at FY26 end, from 0.00 at FY22 end."
+  }
+ },
+ "bull_bear": {
+  "bull": [
+   {
+    "point": "Revenue grew 77.6% YoY, indicating rapid top-line expansion despite competitive pressure.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     }
+    ]
+   },
+   {
+    "point": "PAT surged 92.3% YoY, showing significant improvement in bottom-line profitability.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     }
+    ]
+   },
+   {
+    "point": "EBITDA margin reached 4.6%, up 0.2 pp YoY, confirming operational efficiency gains.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
+     }
+    ]
+   }
+  ],
+  "bear": [
+   {
+    "point": "Cumulative PAT loss of ₹949 cr over FY22–FY26 indicates persistent cash burn.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#cash"
+     }
+    ]
+   },
+   {
+    "point": "Debt/equity rose to 0.15 from 0.00, signaling increased financial leverage.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#leverage"
+     }
+    ]
+   },
+   {
+    "point": "Analysts question if current interventions suffice to hold market share against well-capitalized rivals.",
+    "cites": [
+     {
+      "label": "Q3 FY26 call, p.9 (analyst)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=91f3f29f-c5c0-49b5-b425-a22374bf08ad.pdf"
+     }
+    ]
+   }
+  ],
+  "dropped": 0,
+  "model": "qwen/qwen3.8-27b",
+  "model_note": null
+ },
+ "sources": [
+  {
+   "label": "Q2 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=64f36e3b-87e9-426e-be3e-515dca4525d2.pdf"
+  },
+  {
+   "label": "Q1 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=faa4f0f7-06e4-4066-9d68-3da95dfe02d9.pdf"
+  },
+  {
+   "label": "Q4 FY26 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=60af607c-5f1b-4d5d-8425-4929efa6aad1.pdf"
+  },
+  {
+   "label": "Q3 FY26 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=91f3f29f-c5c0-49b5-b425-a22374bf08ad.pdf"
+  },
+  {
+   "label": "Quarterly and annual tables (consolidated), screener.in, from the exchange filings",
+   "url": "https://www.screener.in/company/ETERNAL/consolidated/"
+  }
  ]
 }
