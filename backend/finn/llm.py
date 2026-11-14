@@ -35,6 +35,9 @@ def prompt(name: str) -> str:
     return (PROMPTS / f"{name}.md").read_text(encoding="utf-8")
 
 
+CALL_TIMEOUT = 90  # seconds per call (user, 14 Nov): Gemini 3.8 flash once spent 40 min on one bull/bear
+
+
 class Retryable(Exception):
     """Overloaded / rate-limited: worth retrying, then falling back."""
 
@@ -46,7 +49,7 @@ class Exhausted(Exception):
 def _gemini(model: str, parts: list, schema: dict) -> tuple[dict, int, int]:
     from google import genai
     from google.genai import types, errors
-    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"], http_options=types.HttpOptions(timeout=CALL_TIMEOUT * 1000))
     contents = [types.Part.from_bytes(data=p, mime_type="application/pdf") if isinstance(p, bytes) else p for p in parts]
     try:
         r = client.models.generate_content(model=model, contents=contents, config=types.GenerateContentConfig(
@@ -58,7 +61,9 @@ def _gemini(model: str, parts: list, schema: dict) -> tuple[dict, int, int]:
             raise Retryable(str(e)) from e
         raise
     except Exception as e:  # dropped connection / timeout mid-request (seen 12 Nov on a long transcript): retry too
-        if any(k in type(e).__name__ for k in ("ReadError", "ConnectError", "Timeout", "RemoteProtocolError")):
+        if "Timeout" in type(e).__name__:  # slow, not down: the next model, not three more waits on this one
+            raise Exhausted(f"no answer in {CALL_TIMEOUT}s") from e
+        if any(k in type(e).__name__ for k in ("ReadError", "ConnectError", "RemoteProtocolError")):
             raise Retryable(f"{type(e).__name__}: {e}") from e
         raise
     u = r.usage_metadata
@@ -72,10 +77,12 @@ def _groq(model: str, parts: list, schema: dict) -> tuple[dict, int, int]:
     if any(isinstance(p, bytes) for p in parts):
         raise ValueError("groq adapter takes text only")
     try:
-        r = httpx.post("https://api.groq.com/openai/v1/chat/completions", timeout=120,
+        r = httpx.post("https://api.groq.com/openai/v1/chat/completions", timeout=CALL_TIMEOUT,
                        headers={"Authorization": f"Bearer {os.environ['GROQ_API_KEY']}"},
                        json={"model": model, "temperature": 0, "messages": [{"role": "user", "content": "\n\n".join(parts)}],
                              "response_format": {"type": "json_schema", "json_schema": {"name": "out", "schema": schema}}})
+    except httpx.TimeoutException as e:  # slow, not down: the next model, not three more waits on this one
+        raise Exhausted(f"no answer in {CALL_TIMEOUT}s") from e
     except httpx.TransportError as e:
         raise Retryable(f"{type(e).__name__}: {e}") from e
     if r.status_code == 413:  # one request over the free tier's tokens-a-minute: this model can't take it at all

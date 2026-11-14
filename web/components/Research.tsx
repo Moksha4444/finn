@@ -141,6 +141,9 @@ const saved = (sym: string) => `finn:research:${sym}`;
 function readSaved(sym: string): Research | null {
   try { return JSON.parse(localStorage.getItem(saved(sym)) ?? "null"); } catch { return null; }
 }
+function save(d: Research) { // only a finished page: a failed promise check or a pending bull/bear is tried again next visit
+  if (!d.pvd_error && !d.bull_bear_pending) try { localStorage.setItem(saved(d.symbol), JSON.stringify(d)); } catch { /* storage full: the server cache still has it */ }
+}
 
 function LiveResearch({ symbol, auto, onDone }: { symbol: string; auto: boolean; onDone: (d: Research) => void }) {
   const [st, setSt] = useState<{ stage?: string; error?: string; seconds?: number }>({});
@@ -157,15 +160,15 @@ function LiveResearch({ symbol, auto, onDone }: { symbol: string; auto: boolean;
     setSt({ stage: "Waking up the research server…" }); // Render's free tier sleeps: the first answer can take a minute
     try {
       let job = await call(`/research/${symbol}`, { method: "POST" });
-      while (job.status === "running" && alive.current) {
+      while (job.status === "running" && !job.page && alive.current) { // page: promises + snapshot are in; bull/bear follows on the page
         setSt({ stage: job.stage, seconds: job.seconds });
         await new Promise((ok) => setTimeout(ok, 2500));
         job = await call(`/jobs/${job.id}`);
       }
       if (!alive.current) return;
-      if (job.status !== "done") throw new Error(job.message ?? "Research didn't finish. Try again in a few minutes.");
+      if (job.status !== "done" && !job.page) throw new Error(job.message ?? "Research didn't finish. Try again in a few minutes.");
       const d: Research = await call(`/research/${symbol}`);
-      if (!d.pvd_error) try { localStorage.setItem(saved(symbol), JSON.stringify(d)); } catch { /* storage full: the server cache still has it */ }
+      save(d);
       if (alive.current) onDone(d);
     } catch (e) {
       if (alive.current) setSt({ error: e instanceof Error ? e.message : String(e) });
@@ -200,6 +203,17 @@ export function CompanyResearch({ symbol, auto = false }: { symbol: string; auto
   const { data: stat, missing, error, retry } = useJson<Research>(SYMBOL.test(symbol) ? researchUrl(symbol) : null);
   const [live, setLive] = useState<Research | null>(() => (typeof window === "undefined" ? null : readSaved(symbol)));
   const d = stat ?? (missing ? live : undefined);
+  const pending = !!live?.bull_bear_pending;
+  useEffect(() => { // bull/bear is still being written: re-read the page until it lands; after 6 min, the quiet note
+    if (!pending || !API) return;
+    const t0 = Date.now();
+    const id = setInterval(async () => {
+      const r = await fetch(`${API}/research/${symbol}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+      if (r && !r.bull_bear_pending) { clearInterval(id); save(r); setLive(r); }
+      else if (Date.now() - t0 > 6 * 60_000) { clearInterval(id); setLive((l) => l && { ...l, bull_bear_pending: false }); }
+    }, 5000);
+    return () => clearInterval(id);
+  }, [pending, symbol]);
   useEffect(() => { // the credibility chip links to #pvd; the section exists only once the data is in
     if (!d || !location.hash) return;
     document.getElementById(location.hash.slice(1))?.scrollIntoView({ block: "start" });
@@ -451,7 +465,9 @@ function BullBear({ d }: { d: Research }) {
   const b = d.bull_bear;
   if (!b) return (
     <section className="mt-9 border-t border-rule pt-3">
-      <p className="text-[0.8125rem] text-ink-2">The bull and bear case isn&rsquo;t available for {shortName(d.name)} right now. Everything else on this page is computed from the filings.</p>
+      <p className="text-[0.8125rem] text-ink-2" role="status" aria-live="polite">
+        {d.bull_bear_pending ? "Writing bull & bear…" : "Bull/bear couldn’t be generated right now."}
+      </p>
     </section>
   );
   const side = (name: string, pts: typeof b.bull) => (

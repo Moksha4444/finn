@@ -356,12 +356,18 @@ def build(symbol: str, live: bool = False) -> dict:
     pvd.stage("Building the financial snapshot…")
     snap = snapshot(co)
     ev = evidence(out["promises"], reported, analyst_questions(texts, urls), snap, urls)
-    out |= {"sector": co.get("sector"), "summary": summary(out["promises"], len(out["calls"])), "prices": price_lines(sym), "snapshot": snap}
+    out |= {"sector": co.get("sector"), "summary": summary(out["promises"], len(out["calls"])), "prices": price_lines(sym), "snapshot": snap,
+            "sources": sources(out, co)}
+
+    def save(d: dict) -> None:
+        tmp = f.with_suffix(".tmp")
+        tmp.write_text(json.dumps(d, ensure_ascii=False, indent=1), encoding="utf-8")
+        tmp.replace(f)
+    if live:  # the reader gets the page now; bull/bear (the slowest step) is added when it's written (user, 14 Nov)
+        save(out | {"bull_bear": None, "bull_bear_pending": True})
     pvd.stage("Writing bull & bear…")
-    out |= {"bull_bear": bull_bear(out["name"], out.get("latest_quarter"), ev, sym, prev, snap), "sources": sources(out, co)}
-    tmp = f.with_suffix(".tmp")
-    tmp.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
-    tmp.replace(f)
+    out["bull_bear"] = bull_bear(out["name"], out.get("latest_quarter"), ev, sym, prev, snap)
+    save(out)
     return out
 
 

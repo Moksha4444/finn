@@ -28,6 +28,7 @@ export type Research = {
   prices: { closes: [string, number][]; nifty: [string, number][] } | null;
   snapshot: Snapshot; bull_bear: { bull: Point[]; bear: Point[]; dropped: number; model: string; model_note: string | null } | null;
   sources: Cite[];
+  bull_bear_pending?: boolean; // live research only: the page is shown while bull/bear is still being written
   pvd_error?: string; // live research only: why the promise check couldn't run (the rest of the page still shows)
 };
 export type IndexRow = { symbol: string; name: string; sector: string | null; generated_at: string; summary: Counts };

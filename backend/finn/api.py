@@ -95,7 +95,7 @@ def _work(job: dict) -> None:
 
 
 def _view(job: dict) -> dict:
-    out = {k: v for k, v in job.items() if k != "started"}
+    out = {k: v for k, v in job.items() if k != "started"} | {"page": _cached(job["symbol"]) is not None}
     if job["status"] == "running":
         out["seconds"] = round(time.time() - job["started"])
         if out["seconds"] > TIMEOUT:  # the page stops waiting; the job keeps going and caches its page
@@ -104,11 +104,15 @@ def _view(job: dict) -> dict:
 
 
 def _cached(sym: str) -> dict | None:
-    """The finished page, if any. pvd.run writes a partial file mid-job, so a running job's file doesn't count."""
+    """The page, if any: finished, or readable with bull/bear still pending. pvd.run writes a partial file mid-job
+    (promises only, no snapshot), which doesn't count."""
     f = OUT / f"{sym}.json"
-    if not f.exists() or any(j["status"] == "running" and j["symbol"] == sym for j in JOBS.values()):
+    d = json.loads(f.read_text(encoding="utf-8")) if f.exists() else {}
+    if "snapshot" not in d:
         return None
-    return json.loads(f.read_text(encoding="utf-8"))
+    if d.get("bull_bear_pending") and not any(j["status"] == "running" and j["symbol"] == sym for j in JOBS.values()):
+        d["bull_bear_pending"] = False  # the job ended without writing it (server restart): the page shows the quiet note
+    return d
 
 
 @app.get("/research/{symbol}")

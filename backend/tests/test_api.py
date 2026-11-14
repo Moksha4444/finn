@@ -30,7 +30,7 @@ def test_job_runs_reports_stage_and_caches(client, monkeypatch, tmp_path):
     def build(sym, live):
         pvd.stage("Reading Q2 FY27 transcript (1/4)…")
         gate.wait(2)
-        (tmp_path / f"{sym}.json").write_text(json.dumps({"symbol": sym}), encoding="utf-8")
+        (tmp_path / f"{sym}.json").write_text(json.dumps({"symbol": sym, "snapshot": {}}), encoding="utf-8")
     monkeypatch.setattr(research, "build", build)
     job = client.post("/research/kei").json()
     assert job["status"] == "running" and job["symbol"] == "KEI"
@@ -42,7 +42,7 @@ def test_job_runs_reports_stage_and_caches(client, monkeypatch, tmp_path):
     gate.set()
     assert wait(client, job["id"])["status"] == "done"
     assert client.post("/research/KEI").json() == {"status": "done", "symbol": "KEI", "cached": True}
-    assert client.get("/research/KEI").json() == {"symbol": "KEI"}
+    assert client.get("/research/KEI").json() == {"symbol": "KEI", "snapshot": {}}
 
 
 def test_unknown_symbol_and_bad_input(client, monkeypatch):
@@ -72,3 +72,33 @@ def test_api_import_stays_light():
 
 def test_out_matches_pvd():
     assert api.OUT == pvd.OUT
+
+
+def test_page_shown_before_bull_bear(client, monkeypatch, tmp_path):
+    gate = threading.Event()
+    def build(sym, live):
+        (tmp_path / f"{sym}.json").write_text(json.dumps({"symbol": sym, "snapshot": {}, "bull_bear": None, "bull_bear_pending": True}), encoding="utf-8")
+        gate.wait(2)  # bull/bear being written
+        (tmp_path / f"{sym}.json").write_text(json.dumps({"symbol": sym, "snapshot": {}, "bull_bear": {"bull": []}}), encoding="utf-8")
+    monkeypatch.setattr(research, "build", build)
+    job = client.post("/research/FEDERALBNK").json()
+    time.sleep(0.05)
+    assert client.get(f"/jobs/{job['id']}").json()["page"] is True
+    assert client.get("/research/FEDERALBNK").json()["bull_bear_pending"] is True
+    gate.set()
+    wait(client, job["id"])
+    assert client.get("/research/FEDERALBNK").json()["bull_bear"] == {"bull": []}
+
+
+def test_pending_page_without_a_job_shows_the_note(client, tmp_path):
+    (tmp_path / "X.json").write_text(json.dumps({"symbol": "X", "snapshot": {}, "bull_bear": None, "bull_bear_pending": True}), encoding="utf-8")
+    assert client.get("/research/X").json()["bull_bear_pending"] is False  # server restarted mid bull/bear
+
+
+def test_slow_model_hands_over(monkeypatch):
+    monkeypatch.setenv("GROQ_API_KEY", "x")
+    def slow(*a, **k):
+        raise httpx.ReadTimeout("slow")
+    monkeypatch.setattr(httpx, "post", slow)
+    with pytest.raises(api.llm.Exhausted):
+        api.llm._groq("m", ["hi"], {"type": "object"})
