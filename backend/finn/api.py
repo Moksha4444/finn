@@ -7,9 +7,10 @@ import httpx
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from finn import llm
-from finn.config import CACHE
-from finn.pull import pvd, research
+from finn.config import CACHE, ROOT
 from finn.sources import bse
+# The research stack (pandas, yfinance, numpy, PyMuPDF) is imported inside the job, not here: on Render's free
+# instance (0.1 CPU) importing it took minutes and the port scan timed out before uvicorn bound (14 Nov).
 
 app = FastAPI(title="FINN")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET", "POST"], allow_headers=["*"])
@@ -18,6 +19,7 @@ SYMBOL = re.compile(r"[A-Z0-9&-]{1,20}")
 DAILY_JOBS = int(os.getenv("FINN_DAILY_JOBS", "8"))  # ~20k strong-model tokens a company; Groq's free day is 200k
 TIMEOUT = int(os.getenv("FINN_JOB_TIMEOUT", "480"))   # seconds the page waits; the job itself finishes and is cached
 LEDGER = CACHE / "live_jobs.jsonl"
+OUT = ROOT / "web" / "public" / "data" / "research"  # = pvd.OUT
 IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
 JOBS: dict[str, dict] = {}
 LOCK = threading.Lock()
@@ -68,6 +70,7 @@ def _cost_since(symbol: str, since: str) -> dict:
 
 def _work(job: dict) -> None:
     since = dt.datetime.now().isoformat(timespec="seconds")  # same clock as the cost log's ts
+    from finn.pull import pvd, research
     pvd.stage = lambda text: job.update(stage=text)
     llm.LIVE = True  # a reader is waiting: short retries, and the fast model may answer when both strong ones are down
     try:
@@ -102,7 +105,7 @@ def _view(job: dict) -> dict:
 
 def _cached(sym: str) -> dict | None:
     """The finished page, if any. pvd.run writes a partial file mid-job, so a running job's file doesn't count."""
-    f = pvd.OUT / f"{sym}.json"
+    f = OUT / f"{sym}.json"
     if not f.exists() or any(j["status"] == "running" and j["symbol"] == sym for j in JOBS.values()):
         return None
     return json.loads(f.read_text(encoding="utf-8"))

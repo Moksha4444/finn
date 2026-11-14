@@ -4,11 +4,12 @@ import httpx
 import pytest
 from fastapi.testclient import TestClient
 from finn import api
+from finn.pull import pvd, research
 
 
 @pytest.fixture
 def client(tmp_path, monkeypatch):
-    monkeypatch.setattr(api.pvd, "OUT", tmp_path)
+    monkeypatch.setattr(api, "OUT", tmp_path)
     monkeypatch.setattr(api, "LEDGER", tmp_path / "jobs.jsonl")
     monkeypatch.setattr(api.llm, "LOG", tmp_path / "llm.jsonl")
     monkeypatch.setattr(api, "JOBS", {})
@@ -27,10 +28,10 @@ def wait(c, job_id):
 def test_job_runs_reports_stage_and_caches(client, monkeypatch, tmp_path):
     gate = threading.Event()
     def build(sym, live):
-        api.pvd.stage("Reading Q2 FY27 transcript (1/4)…")
+        pvd.stage("Reading Q2 FY27 transcript (1/4)…")
         gate.wait(2)
         (tmp_path / f"{sym}.json").write_text(json.dumps({"symbol": sym}), encoding="utf-8")
-    monkeypatch.setattr(api.research, "build", build)
+    monkeypatch.setattr(research, "build", build)
     job = client.post("/research/kei").json()
     assert job["status"] == "running" and job["symbol"] == "KEI"
     time.sleep(0.05)
@@ -47,7 +48,7 @@ def test_job_runs_reports_stage_and_caches(client, monkeypatch, tmp_path):
 def test_unknown_symbol_and_bad_input(client, monkeypatch):
     def build(sym, live):
         raise httpx.HTTPStatusError("404", request=httpx.Request("GET", "http://x"), response=httpx.Response(404))
-    monkeypatch.setattr(api.research, "build", build)
+    monkeypatch.setattr(research, "build", build)
     j = wait(client, client.post("/research/NOPE").json()["id"])
     assert j["status"] == "failed" and j["error"] == "unknown_symbol"
     assert client.post("/research/<script>").status_code in (400, 404)
@@ -56,7 +57,18 @@ def test_unknown_symbol_and_bad_input(client, monkeypatch):
 
 def test_daily_cap(client, monkeypatch):
     monkeypatch.setattr(api, "DAILY_JOBS", 1)
-    monkeypatch.setattr(api.research, "build", lambda sym, live: None)
+    monkeypatch.setattr(research, "build", lambda sym, live: None)
     wait(client, client.post("/research/AAA").json()["id"])
     r = client.post("/research/BBB")
     assert r.status_code == 429 and "Try again tomorrow" in r.json()["detail"]["message"]
+
+
+def test_api_import_stays_light():
+    # Render's free instance must bind its port in seconds: the research stack loads inside the job only
+    import subprocess, sys
+    code = "import sys, finn.api; print(any(m in sys.modules for m in ('pandas', 'yfinance', 'pymupdf', 'numpy')))"
+    assert subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, check=True).stdout.strip() == "False"
+
+
+def test_out_matches_pvd():
+    assert api.OUT == pvd.OUT
