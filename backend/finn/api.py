@@ -25,7 +25,9 @@ LOCK = threading.Lock()
 
 @app.get("/health")
 def health():
-    return {"ok": True}
+    """keys: whether each provider's key is set (never the key), so a deploy can be checked before a research run."""
+    return {"ok": True, "keys": {k: bool(os.getenv(f"{k.upper()}_API_KEY")) for k in ("gemini", "groq")}, "busy": any(j["status"] == "running" for j in JOBS.values()),
+            "runs_left_today": max(0, DAILY_JOBS - _used_today())}
 
 
 @app.get("/health/bse")
