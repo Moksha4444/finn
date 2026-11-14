@@ -1,7 +1,7 @@
 {
  "symbol": "DEEPAKNTR",
  "name": "Deepak Nitrite Ltd",
- "generated_at": "2026-11-12T18:02",
+ "generated_at": "2026-11-13T21:45",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -55,11 +55,12 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=5fe2e422-45bb-44a8-a6e2-c9677c942a8d.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "Reported data does not include energy mix percentage, so target cannot be assessed."
+   "why": "Not measured yet: no later filing or call statement measures this promise."
   }
  ],
  "sector": "Commodities",
@@ -310,6 +311,14 @@
    [
     "2026-11-11",
     1588.9
+   ],
+   [
+    "2026-11-12",
+    1625.2
+   ],
+   [
+    "2026-11-13",
+    1594.4
    ]
   ],
   "nifty": [
@@ -548,6 +557,14 @@
    [
     "2026-11-11",
     25255.05
+   ],
+   [
+    "2026-11-12",
+    25299.35
+   ],
+   [
+    "2026-11-13",
+    25144.3
    ]
   ]
  },
@@ -556,6 +573,8 @@
   "lender": false,
   "unit": "₹ crore",
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "pat_name": "PAT (to owners)",
+  "filing_quarters": [],
   "quarters": {
    "periods": [
     "Dec 2024",
@@ -588,10 +607,10 @@
     398.0
    ],
    "revenue_name": "Revenue",
-   "claim": "Revenue +61.7% YoY in the Sep 2026 quarter; PAT +234.5%."
+   "claim": "Revenue +61.7% YoY in Q2 FY27; PAT (to owners) +234.5%."
   },
   "margin": {
-   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -603,16 +622,16 @@
     "Sep 2026"
    ],
    "values": [
-    9.93,
-    15.55,
-    11.32,
-    11.78,
-    10.48,
-    18.07,
-    21.53,
-    20.9
+    8.88,
+    14.54,
+    10.05,
+    10.73,
+    10.68,
+    17.74,
+    20.95,
+    20.38
    ],
-   "claim": "EBITDA margin 20.9% in the Sep 2026 quarter, +9.1 pp YoY."
+   "claim": "EBITDA margin 20.4% in Q2 FY27, +9.7 pp YoY."
   },
   "cash": {
    "years": [
@@ -636,7 +655,7 @@
     697.0,
     551.0
    ],
-   "claim": "Operating cash flow was 0.88× PAT over FY22–FY26 (₹3,512 cr vs ₹3,978 cr)."
+   "claim": "Operating cash flow was 0.88× PAT over FY22–FY26 (Apr 2021 – Mar 2026) (₹3,512 cr vs ₹3,978 cr)."
   },
   "leverage": {
    "years": [
@@ -653,22 +672,14 @@
     0.24,
     0.28
    ],
-   "claim": "Debt/equity 0.28 at FY26 end, from 0.09 at FY22 end."
+   "claim": "Debt/equity 0.28 at FY26 end (Mar 2026), from 0.09 at FY22 end."
   }
  },
  "bull_bear": {
   "bull": [
    {
-    "point": "Revenue +61.7% YoY in Sep 2026 quarter, driving top-line acceleration.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#quarters"
-     }
-    ]
-   },
-   {
-    "point": "EBITDA margin 20.9%, up 9.1 pp YoY, expanding profitability.",
+    "point": "EBITDA margin 20.4% in Q2 FY27, +9.7 pp YoY.",
+    "why": "Higher margin boosts earnings per share.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -677,36 +688,50 @@
     ]
    },
    {
-    "point": "Debt/equity 0.28, low leverage versus 0.09 FY22, preserving balance sheet strength.",
+    "point": "Revenue +61.7% YoY in Q2 FY27; PAT +234.5%.",
+    "why": "Revenue surge drives profit acceleration.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
-      "url": "#leverage"
+      "url": "#quarters"
+     }
+    ]
+   },
+   {
+    "point": "Consolidated net worth increased to INR 6,521 crore at end Sep 2026.",
+    "why": "Higher net worth strengthens balance sheet capacity.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.6",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=5dfbdab4-d040-4a99-b694-bbe26f015f14.pdf"
      }
     ]
    }
   ],
   "bear": [
    {
-    "point": "Energy mix target 60%‑70% from renewables remains not‑yet‑measurable, uncertainty on cost benefits.",
+    "point": "Debt/equity 0.28 at FY26 end, up from 0.09 at FY22 end.",
+    "why": "Higher leverage raises financing risk.",
     "cites": [
      {
-      "label": "Q3 FY26 call, p.4 (promise)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=5fe2e422-45bb-44a8-a6e2-c9677c942a8d.pdf"
+      "label": "Financial snapshot (results filings)",
+      "url": "#leverage"
      }
     ]
    },
    {
-    "point": "Analyst flagged 2‑year delay in MIBK and MIBC commercialization, risking earnings momentum.",
+    "point": "Operating cash flow was 0.88× PAT over FY22–FY26.",
+    "why": "Cash generation lagging profit may strain liquidity.",
     "cites": [
      {
-      "label": "Q3 FY26 call, p.20 (analyst)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=5fe2e422-45bb-44a8-a6e2-c9677c942a8d.pdf"
+      "label": "Financial snapshot (results filings)",
+      "url": "#cash"
      }
     ]
    },
    {
-    "point": "Analyst concerned about Chinese competition in phenolics and advanced intermediates, potential market share erosion.",
+    "point": "Analyst asked about Chinese competition affecting Phenolics and Advanced Intermediates.",
+    "why": "Competitive threat could erode market share.",
     "cites": [
      {
       "label": "Q2 FY27 call, p.20 (analyst)",
@@ -715,7 +740,7 @@
     ]
    }
   ],
-  "dropped": 0,
+  "dropped": 2,
   "model": "openai/gpt-oss-120b",
   "model_note": null
  },

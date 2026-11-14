@@ -1,7 +1,7 @@
 {
  "symbol": "LT",
  "name": "Larsen & Toubro Ltd",
- "generated_at": "2026-11-13T05:43",
+ "generated_at": "2026-11-14T13:45",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -32,8 +32,8 @@
  },
  "model_note": null,
  "score": {
-  "hit": 2,
-  "ahead": 0,
+  "hit": 1,
+  "ahead": 1,
   "on track": 2,
   "moved closer": 0,
   "partial": 0,
@@ -47,13 +47,13 @@
   {
    "metric": "full year revenue growth",
    "target": "revenue growth guidance at 15%",
-   "period": "FY '26",
+   "period": "FY26 (Apr 2025 – Mar 2026)",
    "said_in": "Sep 2025",
    "call": "Q2 FY26",
    "quote": "Accordingly, we maintain our full year revenue growth guidance at 15%.",
    "page": 10,
    "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q2FY26%20Earnings%20Call%20Transcript%20.pdf",
-   "path": "+10.4% → +10.5% → +11.3% → +6.7% → +15.8% (Q2 FY26 → Q2 FY27)",
+   "path": "+10.4% → +10.5% → +11.3% (Q2 FY26 → Q4 FY26)",
    "cites": [],
    "chart": {
     "kind": "growth",
@@ -69,14 +69,6 @@
      [
       "Q4 FY26",
       11.25
-     ],
-     [
-      "Q1 FY27",
-      6.69
-     ],
-     [
-      "Q2 FY27",
-      15.84
      ]
     ],
     "lo": 15.0,
@@ -87,13 +79,13 @@
    "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
    "model": "python (computed)",
    "verdict": "miss",
-   "actual": "FY26 (Jun 2025 – Mar 2026): Revenue growth YoY +11.8% vs target ≥15%",
+   "actual": "FY26 (Apr 2025 – Mar 2026): Revenue growth YoY +11.8% vs target ≥15%",
    "why": "+11.8% against ≥15%; computed in Python."
   },
   {
    "metric": "working capital",
    "target": "guidance for working capital for FY '26 remains unchanged at around 12% by March 2026",
-   "period": "FY '26",
+   "period": "FY26 (Apr 2025 – Mar 2026)",
    "said_in": "Sep 2025",
    "call": "Q2 FY26",
    "quote": "On Working Capital, our guidance for working capital for FY '26 remains unchanged at around 12% by March 2026.",
@@ -123,7 +115,7 @@
   {
    "metric": "order inflows growth",
    "target": "10% to 12%",
-   "period": "FY27",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
    "said_in": "Mar 2026",
    "call": "Q4 FY26",
    "quote": "we expect the group order inflows to grow in the range of 10% to 12% in FY27.",
@@ -131,17 +123,29 @@
    "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf",
    "path": null,
    "cites": [],
-   "chart": null,
-   "verdict": "hit",
+   "chart": {
+    "kind": "level",
+    "points": [
+     [
+      "Q1 FY27",
+      14.0
+     ]
+    ],
+    "lo": 10,
+    "hi": 12,
+    "direction": "at_least",
+    "end": "Q4 FY27"
+   },
+   "verdict": "ahead",
    "actual": "Q1 FY27 call, p.4: “Reflecting this momentum, the group order inflows at Rs. 1,080 billion, registered a 14% Y-on-Y growth.”",
    "actual_source": "management's statements on later calls (transcripts)",
-   "model": "qwen/qwen3.8-27b",
-   "why": "Q1 FY27 group order inflows growth of 14% exceeds the 10-12% target range."
+   "model": "qwen/qwen3.8-27b picked the evidence; python (computed)",
+   "why": "Reported 14% (Q1 FY27 call) against 10–12%, with the period still running, so no hit or miss yet; compared in Python."
   },
   {
    "metric": "revenue growth",
    "target": "10% to 12%",
-   "period": "FY27",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
    "said_in": "Mar 2026",
    "call": "Q4 FY26",
    "quote": "On Revenue, we expect growth to be in the range of 10% to 12% for FY27.",
@@ -173,13 +177,13 @@
    "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
    "model": "python (computed)",
    "verdict": "on track",
-   "actual": "FY27 so far (2 of 4 quarters: Jun 2026, Sep 2026): Revenue growth YoY +11.4% vs target 10–12%",
-   "why": "+11.4% against 10–12% with the period still running; computed in Python."
+   "actual": "FY27 (Apr 2026 – Mar 2027) so far (Q1–Q2, 2 of 4 quarters): Revenue growth YoY +11.4% vs target 10–12%",
+   "why": "+11.4% against 10–12% with the period still running, so no hit or miss yet; computed in Python."
   },
   {
    "metric": "working capital to sales ratio",
    "target": "around 10%",
-   "period": "FY27",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
    "said_in": "Mar 2026",
    "call": "Q4 FY26",
    "quote": "Accordingly, we are guiding the working capital to be around 10% in FY27",
@@ -204,12 +208,12 @@
    "actual": "Q1 FY27 call, p.6: “The NWC to Sales ratio improved significantly to 4.9% in June 2026 from 10.1% in June 2025.”",
    "actual_source": "management's statements on later calls (transcripts)",
    "model": "qwen/qwen3.8-27b picked the evidence; python (computed)",
-   "why": "Reported 4.9% (Q1 FY27 call) against ≤10%; compared in Python."
+   "why": "Reported 4.9% (Q1 FY27 call) against ≤10%, with the period still running, so no hit or miss yet; compared in Python."
   },
   {
    "metric": "group order inflows growth",
    "target": "exceeding our full year FY '26 guidance of 10% growth in group order inflows for the current year",
-   "period": "FY '26",
+   "period": "FY26 (Apr 2025 – Mar 2026)",
    "said_in": "Sep 2025",
    "call": "Q2 FY26",
    "quote": "We are confident of exceeding our full year FY '26 guidance of 10% growth in group order inflows for the current year.",
@@ -473,6 +477,14 @@
    [
     "2026-11-11",
     4212.0
+   ],
+   [
+    "2026-11-12",
+    4159.2
+   ],
+   [
+    "2026-11-13",
+    4143.8
    ]
   ],
   "nifty": [
@@ -711,6 +723,14 @@
    [
     "2026-11-11",
     25255.05
+   ],
+   [
+    "2026-11-12",
+    25299.35
+   ],
+   [
+    "2026-11-13",
+    25144.3
    ]
   ]
  },
@@ -719,6 +739,12 @@
   "lender": false,
   "unit": "₹ crore",
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "pat_name": "PAT (to owners)",
+  "filing_quarters": [
+   "Sep 2026",
+   "Jun 2026",
+   "Sep 2025"
+  ],
   "quarters": {
    "periods": [
     "Dec 2024",
@@ -734,27 +760,27 @@
     64668.0,
     74392.0,
     63679.0,
-    67984.0,
+    67983.53,
     71450.0,
     82762.0,
-    67942.0,
-    78750.0
+    67941.74,
+    78749.94
    ],
    "pat": [
-    3974.0,
-    6156.0,
-    4318.0,
-    4678.0,
-    3825.0,
-    6133.0,
-    4988.0,
-    5949.0
+    3359.0,
+    5497.0,
+    3617.0,
+    3926.09,
+    3215.0,
+    5326.0,
+    4122.85,
+    5202.1
    ],
    "revenue_name": "Revenue",
-   "claim": "Revenue +15.8% YoY in the Sep 2026 quarter; PAT +27.2%."
+   "claim": "Revenue +15.8% YoY in Q2 FY27; PAT (to owners) +32.5%."
   },
   "margin": {
-   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -766,16 +792,16 @@
     "Sep 2026"
    ],
    "values": [
-    13.71,
-    15.44,
-    14.73,
-    14.56,
-    12.37,
-    14.58,
-    15.49,
-    14.12
+    12.21,
+    13.28,
+    12.6,
+    10.01,
+    12.86,
+    12.59,
+    9.0,
+    8.69
    ],
-   "claim": "EBITDA margin 14.1% in the Sep 2026 quarter, −0.4 pp YoY."
+   "claim": "EBITDA margin 8.7% in Q2 FY27, −1.3 pp YoY."
   },
   "cash": {
    "years": [
@@ -793,13 +819,13 @@
     16741.0
    ],
    "pat": [
-    10419.0,
-    12531.0,
-    15547.0,
-    17673.0,
-    18954.0
+    8669.0,
+    10471.0,
+    13059.0,
+    15037.0,
+    16084.0
    ],
-   "claim": "Operating cash flow was 1.15× PAT over FY22–FY26 (₹86,099 cr vs ₹75,124 cr)."
+   "claim": "Operating cash flow was 1.36× PAT over FY22–FY26 (Apr 2021 – Mar 2026) (₹86,099 cr vs ₹63,320 cr)."
   },
   "leverage": {
    "years": [
@@ -816,50 +842,58 @@
     1.36,
     1.15
    ],
-   "claim": "Debt/equity 1.15 at FY26 end, from 1.52 at FY22 end."
+   "claim": "Debt/equity 1.15 at FY26 end (Mar 2026), from 1.52 at FY22 end."
   }
  },
  "bull_bear": {
   "bull": [
    {
-    "point": "Order inflows hit Rs. 1,080 billion, beating 10-12% guidance with 14% growth.",
+    "point": "Group order inflows reached Rs. 1,080 billion, up 14% YoY in Q1 FY27.",
+    "why": "Boosts top‑line growth and future revenue visibility.",
     "cites": [
+     {
+      "label": "Q4 FY26 call, p.13 (promise)",
+      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf"
+     },
      {
       "label": "Q1 FY27 call, p.4",
       "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2027AnalysttransL&T-Earnings-Jul28-2026.pdf"
      },
      {
+      "label": "Q1 FY27 call, p.4",
+      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2027AnalysttransL&T-Earnings-Jul28-2026.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Revenue grew 11.4% YoY in FY27 so far.",
+    "why": "Supports earnings expansion and cash generation.",
+    "cites": [
+     {
       "label": "Q4 FY26 call, p.13 (promise)",
       "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf"
      }
     ]
    },
    {
-    "point": "NWC to sales ratio improved to 4.9%, beating 10% target.",
+    "point": "Net Working Capital to Revenue ratio improved to 4.1% in March 2026.",
+    "why": "Reduces balance‑sheet risk and frees cash for projects.",
     "cites": [
      {
-      "label": "Q1 FY27 call, p.6",
-      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2027AnalysttransL&T-Earnings-Jul28-2026.pdf"
+      "label": "Q2 FY26 call, p.10 (promise)",
+      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q2FY26%20Earnings%20Call%20Transcript%20.pdf"
      },
      {
-      "label": "Q4 FY26 call, p.13 (promise)",
+      "label": "Q4 FY26 call, p.6",
       "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf"
-     }
-    ]
-   },
-   {
-    "point": "PAT grew 27.2% YoY, outpacing 15.8% revenue growth.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#quarters"
      }
     ]
    }
   ],
   "bear": [
    {
-    "point": "FY26 revenue growth of 11.8% missed the 15% guidance.",
+    "point": "Revenue growth was +11.8% YoY in FY26, missing the 15% target.",
+    "why": "Weakens earnings outlook and credibility of guidance.",
     "cites": [
      {
       "label": "Q2 FY26 call, p.10 (promise)",
@@ -868,7 +902,8 @@
     ]
    },
    {
-    "point": "EBITDA margin fell 0.4 pp YoY to 14.1%.",
+    "point": "EBITDA margin slipped to 8.7% in Q2 FY27, down 1.3 pp YoY.",
+    "why": "Erodes profitability and cash conversion efficiency.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -877,17 +912,18 @@
     ]
    },
    {
-    "point": "Analysts fear prospect list shifts to next calendar year.",
+    "point": "Analysts flagged inflation and supply‑chain constraints as key risks.",
+    "why": "Could compress margins and delay project execution.",
     "cites": [
      {
-      "label": "Q1 FY27 call, p.12 (analyst)",
-      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2027AnalysttransL&T-Earnings-Jul28-2026.pdf"
+      "label": "Q4 FY26 call, p.15 (analyst)",
+      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf"
      }
     ]
    }
   ],
   "dropped": 0,
-  "model": "qwen/qwen3.8-27b",
+  "model": "openai/gpt-oss-120b",
   "model_note": null
  },
  "sources": [

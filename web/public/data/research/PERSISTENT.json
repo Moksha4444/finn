@@ -1,7 +1,7 @@
 {
  "symbol": "PERSISTENT",
  "name": "Persistent Systems Ltd",
- "generated_at": "2026-11-12T18:02",
+ "generated_at": "2026-11-14T13:47",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -55,11 +55,12 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b68ef2b0-b285-4696-8c08-e3bb58039b0e.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "No USD annual revenue reported yet."
+   "why": "Not measurable: a US-dollar or constant-currency target, and results filings report rupees."
   },
   {
    "metric": "annual revenue aspiration of $5 billion",
@@ -72,16 +73,17 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b68ef2b0-b285-4696-8c08-e3bb58039b0e.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "No USD annual revenue reported yet."
+   "why": "Not measurable: a US-dollar or constant-currency target, and results filings report rupees."
   },
   {
    "metric": "Effective Tax Rate for FY26",
    "target": "20%-24%",
-   "period": "FY26",
+   "period": "FY26 (Apr 2025 – Mar 2026)",
    "said_in": "Dec 2025",
    "call": "Q3 FY26",
    "quote": "ETR for FY26 will be in the range of 20%-24%.",
@@ -89,11 +91,12 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b68ef2b0-b285-4696-8c08-e3bb58039b0e.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "Effective tax rate not reported."
+   "why": "Not measured yet: no later filing or call statement measures this promise."
   }
  ],
  "sector": "Information Technology",
@@ -344,6 +347,14 @@
    [
     "2026-11-11",
     5973.5
+   ],
+   [
+    "2026-11-12",
+    6030.0
+   ],
+   [
+    "2026-11-13",
+    6003.0
    ]
   ],
   "nifty": [
@@ -582,6 +593,14 @@
    [
     "2026-11-11",
     25255.05
+   ],
+   [
+    "2026-11-12",
+    25299.35
+   ],
+   [
+    "2026-11-13",
+    25144.3
    ]
   ]
  },
@@ -590,6 +609,12 @@
   "lender": false,
   "unit": "₹ crore",
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "pat_name": "PAT (to owners)",
+  "filing_quarters": [
+   "Sep 2026",
+   "Jun 2026",
+   "Sep 2025"
+  ],
   "quarters": {
    "periods": [
     "Dec 2024",
@@ -605,27 +630,27 @@
     3062.0,
     3242.0,
     3334.0,
-    3581.0,
+    3580.72,
     3778.0,
     4056.0,
-    4303.0,
-    4664.0
+    4303.23,
+    4663.9
    ],
    "pat": [
     373.0,
     396.0,
     425.0,
-    471.0,
+    471.47,
     439.0,
     529.0,
-    483.0,
-    352.0
+    483.04,
+    351.51
    ],
    "revenue_name": "Revenue",
-   "claim": "Revenue +30.2% YoY in the Sep 2026 quarter; PAT −25.3%."
+   "claim": "Revenue +30.3% YoY in Q2 FY27; PAT (to owners) −25.4%."
   },
   "margin": {
-   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -637,16 +662,16 @@
     "Sep 2026"
    ],
    "values": [
-    18.94,
-    18.57,
-    19.98,
-    20.52,
-    18.13,
-    19.77,
-    17.82,
-    14.13
+    17.57,
+    18.01,
+    18.36,
+    19.08,
+    19.4,
+    18.93,
+    16.19,
+    13.58
    ],
-   "claim": "EBITDA margin 14.1% in the Sep 2026 quarter, −6.4 pp YoY."
+   "claim": "EBITDA margin 13.6% in Q2 FY27, −5.5 pp YoY."
   },
   "cash": {
    "years": [
@@ -670,7 +695,7 @@
     1400.0,
     1865.0
    ],
-   "claim": "Operating cash flow was 1.01× PAT over FY22–FY26 (₹6,027 cr vs ₹5,969 cr)."
+   "claim": "Operating cash flow was 1.01× PAT over FY22–FY26 (Apr 2021 – Mar 2026) (₹6,027 cr vs ₹5,969 cr)."
   },
   "leverage": {
    "years": [
@@ -687,26 +712,24 @@
     0.05,
     0.06
    ],
-   "claim": "Debt/equity 0.06 at FY26 end, from 0.17 at FY22 end."
+   "claim": "Debt/equity 0.06 at FY26 end (Mar 2026), from 0.17 at FY22 end."
   }
  },
  "bull_bear": {
   "bull": [
    {
-    "point": "Revenue grew 30.2% YoY, outpacing the $2 billion annual aspiration pace.",
+    "point": "Revenue +30.3% YoY in Q2 FY27",
+    "why": "top-line growth boosts earnings potential",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
       "url": "#quarters"
-     },
-     {
-      "label": "Q3 FY26 call, p.6 (promise)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b68ef2b0-b285-4696-8c08-e3bb58039b0e.pdf"
      }
     ]
    },
    {
-    "point": "Operating cash flow covered PAT 1.01 times over FY22–FY26, ensuring cash quality.",
+    "point": "Operating cash flow 1.01× PAT over FY22–FY26",
+    "why": "strong cash generation supports dividends",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -715,7 +738,8 @@
     ]
    },
    {
-    "point": "Debt/equity fell to 0.06 from 0.17, reducing financial leverage risk.",
+    "point": "Debt/equity 0.06 at FY26 end",
+    "why": "low leverage reduces financial risk",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -726,26 +750,27 @@
   ],
   "bear": [
    {
-    "point": "PAT fell 25.3% YoY despite 30.2% revenue growth, indicating severe margin compression.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#quarters"
-     }
-    ]
-   },
-   {
-    "point": "EBITDA margin dropped 6.4 pp YoY to 14.1%, eroding profitability.",
+    "point": "EBITDA margin 13.6% in Q2 FY27",
+    "why": "declining profitability pressures earnings",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
       "url": "#margin"
+     },
+     {
+      "label": "Q2 FY27 call, p.19 (analyst)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=524eadda-3966-4f4f-8888-bfaf2cb0d69e.pdf"
      }
     ]
    },
    {
-    "point": "Analysts questioned if productivity benefits are leading to lower deal sizes.",
+    "point": "PAT −25.4% in Q2 FY27",
+    "why": "profit drop erodes earnings and cash generation",
     "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     },
      {
       "label": "Q2 FY27 call, p.19 (analyst)",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=524eadda-3966-4f4f-8888-bfaf2cb0d69e.pdf"
@@ -754,7 +779,7 @@
    }
   ],
   "dropped": 0,
-  "model": "qwen/qwen3.8-27b",
+  "model": "openai/gpt-oss-120b",
   "model_note": null
  },
  "sources": [

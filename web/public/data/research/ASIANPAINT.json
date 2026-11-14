@@ -1,7 +1,7 @@
 {
  "symbol": "ASIANPAINT",
  "name": "Asian Paints Ltd",
- "generated_at": "2026-11-12T18:02",
+ "generated_at": "2026-11-13T21:39",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -27,8 +27,8 @@
  ],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "PBDIT margin (as reported)",
-  "source": "management's reported margin for each quarter, on that quarter's results call (transcripts)"
+  "name": "PBDIT margin (operating profit over revenue; matches what management reports)",
+  "source": "screener.in quarterly results table (from the company's exchange results filings)"
  },
  "model_note": null,
  "score": {
@@ -38,39 +38,22 @@
   "moved closer": 0,
   "partial": 0,
   "no change": 0,
-  "behind pace": 0,
-  "moved away": 1,
+  "behind pace": 1,
+  "moved away": 0,
   "miss": 0,
   "not-yet-measurable": 3
  },
  "promises": [
   {
-   "metric": "value growth",
-   "target": "mid-single-digit value growth",
-   "period": "full year",
-   "said_in": "Sep 2025",
-   "call": "Q2 FY26",
-   "quote": "We are looking at mid-single-digit value growth for the full year.",
-   "page": 25,
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=99e65c90-6bb0-4984-ac71-2a0f0eb4cc7f.pdf",
-   "path": "+6.3% → +3.7% → +10.6% → +17.9% → +16.9% (Q2 FY26 → Q2 FY27)",
-   "cites": [],
-   "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
-   "model": "python (computed)",
-   "verdict": "hit",
-   "actual": "FY26 (Jun 2025 – Mar 2026): Revenue growth YoY +4.9% vs target 4–6%",
-   "why": "+4.9% against 4–6%; computed in Python."
-  },
-  {
    "metric": "PBDIT margin",
    "target": "18 to 20% PBDIT margin band",
-   "period": "not stated",
+   "period": "FY26 (Apr 2025 – Mar 2026)",
    "said_in": "Sep 2025",
    "call": "Q2 FY26",
    "quote": "Given all this, it is okay to maintain the whole guidance of 18 to 20% PBDIT margin band.",
    "page": 27,
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=99e65c90-6bb0-4984-ac71-2a0f0eb4cc7f.pdf",
-   "path": "17.7% → 20.1% → 20.6% → 15.6% (Q2 FY26 → Q2 FY27)",
+   "path": "17.6% → 20.1% → 19.3% (Q2 FY26 → Q4 FY26)",
    "cites": [
     {
      "label": "Q2 FY26 call, p.21: “PBDIT growth was 21.3%, and PBDIT margin of 17.7% was higher by 220 bps points.”",
@@ -79,26 +62,69 @@
     {
      "label": "Q3 FY26 call, p.25: “with PBDIT margin of 20.1%, which is also higher about by 90 bps points.”",
      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=8bc8c7dd-23d0-4cf2-bcdf-620769ed0d1a.pdf"
-    },
-    {
-     "label": "Q1 FY27 call, p.17: “PBDIT margins stand at about 20.6%, almost 240 bps higher YoY.”",
-     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e0d5627-2b8b-4bf1-a7ce-9d0160833a0f.pdf"
-    },
-    {
-     "label": "Q2 FY27 call, p.23: “The PBDIT margin is little bit lower at about 15.6%, lower by about 202 bps.”",
-     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ee7e6efe-1f9b-4b5e-bff7-1da18902ffeb.pdf"
     }
    ],
-   "actual_source": "management's reported margin for each quarter, on that quarter's results call (transcripts)",
+   "chart": {
+    "kind": "margin",
+    "points": [
+     [
+      "Q2 FY26",
+      17.62
+     ],
+     [
+      "Q3 FY26",
+      20.09
+     ],
+     [
+      "Q4 FY26",
+      19.33
+     ]
+    ],
+    "lo": 18,
+    "hi": 20,
+    "direction": "at_least",
+    "end": "Q4 FY26"
+   },
+   "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
    "model": "python (computed)",
-   "verdict": "moved away",
-   "actual": "Moved away: 17.7% → 20.1% → 20.6% → 15.6% (Q2 FY26 → Q2 FY27) vs target 18–20% · PBDIT margin (as reported)",
-   "why": "No deadline, so judged by direction since the Q2 FY26 call; computed in Python."
+   "verdict": "hit",
+   "actual": "FY26 (Apr 2025 – Mar 2026): PBDIT margin (operating profit over revenue; matches what management reports) 18.8% vs target 18–20%",
+   "why": "18.8% against 18–20%; computed in Python. No period was stated, so it is judged on the financial year it was given in."
+  },
+  {
+   "metric": "volume growth",
+   "target": "8-10%",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
+   "said_in": "Jun 2026",
+   "call": "Q1 FY27",
+   "quote": "At the current stage, we are looking at the band of 8-10% for the full FY27.",
+   "page": 20,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e0d5627-2b8b-4bf1-a7ce-9d0160833a0f.pdf",
+   "path": null,
+   "cites": [],
+   "chart": {
+    "kind": "level",
+    "points": [
+     [
+      "Q2 FY27",
+      6.4
+     ]
+    ],
+    "lo": 8,
+    "hi": 10,
+    "direction": "at_least",
+    "end": "Q4 FY27"
+   },
+   "verdict": "behind pace",
+   "actual": "Q2 FY27 call, p.14: “we have been able to grow at a good volume of about 6.4% at the base of the last year”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b picked the evidence; python (computed)",
+   "why": "Reported 6.4% (Q2 FY27 call) against 8–10%, with the period still running, so no hit or miss yet; compared in Python."
   },
   {
    "metric": "EBITDA margin",
    "target": "18% to 20%",
-   "period": "FY27",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
    "said_in": "Sep 2026",
    "call": "Q2 FY27",
    "quote": "for the year we should be able to maintain the band of what we have spoken of 18% to 20%.",
@@ -111,33 +137,47 @@
      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ee7e6efe-1f9b-4b5e-bff7-1da18902ffeb.pdf"
     }
    ],
-   "actual_source": "management's reported margin for each quarter, on that quarter's results call (transcripts)",
+   "chart": {
+    "kind": "margin",
+    "points": [
+     [
+      "Q2 FY27",
+      15.61
+     ]
+    ],
+    "lo": 18.0,
+    "hi": 20.0,
+    "direction": "at_least",
+    "end": "Q4 FY27"
+   },
+   "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
    "model": "python (computed)",
    "verdict": "on track",
-   "actual": "FY27 so far (2 of 4 quarters: Jun 2026, Sep 2026): PBDIT margin (as reported) 18.2% vs target 18–20%",
-   "why": "18.2% against 18–20% with the period still running; computed in Python."
+   "actual": "FY27 (Apr 2026 – Mar 2027) so far (Q1–Q2, 2 of 4 quarters): PBDIT margin (operating profit over revenue; matches what management reports) 18.2% vs target 18–20%",
+   "why": "18.2% against 18–20% with the period still running, so no hit or miss yet; computed in Python."
   },
   {
-   "metric": "volume growth",
-   "target": "8-10%",
-   "period": "full FY27",
-   "said_in": "Jun 2026",
-   "call": "Q1 FY27",
-   "quote": "At the current stage, we are looking at the band of 8-10% for the full FY27.",
-   "page": 20,
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e0d5627-2b8b-4bf1-a7ce-9d0160833a0f.pdf",
+   "metric": "value growth",
+   "target": "mid-single-digit value growth",
+   "period": "FY26 (Apr 2025 – Mar 2026)",
+   "said_in": "Sep 2025",
+   "call": "Q2 FY26",
+   "quote": "We are looking at mid-single-digit value growth for the full year.",
+   "page": 25,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=99e65c90-6bb0-4984-ac71-2a0f0eb4cc7f.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
-   "model": "openai/gpt-oss-120b",
-   "why": "R15 reports 9% volume growth, within 8-10% target."
+   "model": null,
+   "why": "Not measurable (segment not reported): the results filings report no separate segments (Ind AS 108), so one business line can't be told apart from the company total."
   },
   {
    "metric": "gross margin",
    "target": "41% to 43%",
-   "period": "not stated",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
    "said_in": "Sep 2026",
    "call": "Q2 FY27",
    "quote": "This band of about 41% to 43% would really be the band we should be looking forward to.",
@@ -145,16 +185,17 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ee7e6efe-1f9b-4b5e-bff7-1da18902ffeb.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
-   "model": "openai/gpt-oss-120b",
-   "why": "R26 shows 45.6% gross margin, outside 41-43% band."
+   "model": null,
+   "why": "Not measurable yet: promised on the latest call (Q2 FY27), and no results have come out since."
   },
   {
    "metric": "volume growth",
    "target": "about 8% to 9%",
-   "period": "going forward",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
    "said_in": "Sep 2026",
    "call": "Q2 FY27",
    "quote": "we feel that it would be reasonable to expect to see a volume growth of about 8% to 9% going forward.",
@@ -162,11 +203,12 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ee7e6efe-1f9b-4b5e-bff7-1da18902ffeb.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "R7 reports 6.4% volume growth (below 8-9%); R15 reports 9% (within target)."
+   "why": "Not measurable: results filings don't report this figure (volumes, NOV/GMV, orders, AUM, mix or payout)."
   }
  ],
  "sector": "Consumer Discretionary",
@@ -178,7 +220,7 @@
   "unmeasured": 3,
   "total": 6,
   "measured": 3,
-  "sentence": "Kept 1 of 3 measured promises from the last 4 calls; missed on PBDIT margin (Q2 FY26 call); 1 on track."
+  "sentence": "Kept 1 of 3 measured promises from the last 4 calls; missed on volume growth (Q1 FY27 call); 1 on track."
  },
  "prices": {
   "closes": [
@@ -417,6 +459,14 @@
    [
     "2026-11-11",
     2550.3
+   ],
+   [
+    "2026-11-12",
+    2536.5
+   ],
+   [
+    "2026-11-13",
+    2550.0
    ]
   ],
   "nifty": [
@@ -655,6 +705,14 @@
    [
     "2026-11-11",
     25255.05
+   ],
+   [
+    "2026-11-12",
+    25299.35
+   ],
+   [
+    "2026-11-13",
+    25144.3
    ]
   ]
  },
@@ -663,6 +721,12 @@
   "lender": false,
   "unit": "₹ crore",
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "pat_name": "PAT (to owners)",
+  "filing_quarters": [
+   "Sep 2026",
+   "Jun 2026",
+   "Sep 2025"
+  ],
   "quarters": {
    "periods": [
     "Dec 2024",
@@ -678,27 +742,27 @@
     8549.0,
     8359.0,
     8939.0,
-    8531.0,
+    8531.27,
     8867.0,
     9247.0,
-    10542.0,
-    9977.0
+    10541.94,
+    9976.51
    ],
    "pat": [
-    1128.0,
-    701.0,
-    1117.0,
-    1018.0,
-    1074.0,
-    1185.0,
-    1559.0,
-    1085.0
+    1110.0,
+    692.0,
+    1100.0,
+    993.59,
+    1060.0,
+    1172.0,
+    1539.25,
+    1067.63
    ],
    "revenue_name": "Revenue",
-   "claim": "Revenue +16.9% YoY in the Sep 2026 quarter; PAT +6.6%."
+   "claim": "Revenue +16.9% YoY in Q2 FY27; PAT (to owners) +7.5%."
   },
   "margin": {
-   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -710,16 +774,16 @@
     "Sep 2026"
    ],
    "values": [
-    21.41,
-    16.46,
-    20.74,
-    20.41,
-    20.86,
-    21.44,
-    23.22,
-    18.51
+    19.15,
+    17.18,
+    18.18,
+    17.62,
+    20.09,
+    19.33,
+    20.57,
+    15.61
    ],
-   "claim": "EBITDA margin 18.5% in the Sep 2026 quarter, −1.9 pp YoY."
+   "claim": "EBITDA margin 15.6% in Q2 FY27, −2.0 pp YoY."
   },
   "cash": {
    "years": [
@@ -737,13 +801,13 @@
     7088.0
    ],
    "pat": [
-    3085.0,
-    4195.0,
-    5558.0,
-    3710.0,
-    4395.0
+    3031.0,
+    4106.0,
+    5460.0,
+    3667.0,
+    4325.0
    ],
-   "claim": "Operating cash flow was 1.09× PAT over FY22–FY26 (₹22,795 cr vs ₹20,943 cr)."
+   "claim": "Operating cash flow was 1.11× PAT over FY22–FY26 (Apr 2021 – Mar 2026) (₹22,795 cr vs ₹20,589 cr)."
   },
   "leverage": {
    "years": [
@@ -760,42 +824,14 @@
     0.12,
     0.18
    ],
-   "claim": "Debt/equity 0.18 at FY26 end, from 0.11 at FY22 end."
+   "claim": "Debt/equity 0.18 at FY26 end (Mar 2026), from 0.11 at FY22 end."
   }
  },
  "bull_bear": {
   "bull": [
    {
-    "point": "Revenue grew +16.9% YoY in Sep 2026 quarter, boosting top-line momentum.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#quarters"
-     }
-    ]
-   },
-   {
-    "point": "EBITDA margin 18.5% in Sep 2026 quarter, down only -1.9 pp YoY.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#margin"
-     }
-    ]
-   },
-   {
-    "point": "PBDIT margin on track at 18.2% versus target 18–20%.",
-    "cites": [
-     {
-      "label": "Q2 FY27 call, p.28 (promise)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ee7e6efe-1f9b-4b5e-bff7-1da18902ffeb.pdf"
-     }
-    ]
-   }
-  ],
-  "bear": [
-   {
-    "point": "PBDIT margin fell to 15.6% in Q2 FY27, missing 18–20% target.",
+    "point": "PBDIT margin 18.8% in FY26, within 18‑20% target.",
+    "why": "Supports profitability and validates management guidance.",
     "cites": [
      {
       "label": "Q2 FY26 call, p.27 (promise)",
@@ -804,25 +840,63 @@
     ]
    },
    {
-    "point": "Analyst flagged risk to 18%‑20% EBITDA margin band amid margin pressure.",
+    "point": "EBITDA margin 18.2% so far in FY27, within 18‑20% target.",
+    "why": "Sustains earnings margin trajectory.",
     "cites": [
      {
-      "label": "Q2 FY27 call, p.28 (analyst)",
+      "label": "Q2 FY27 call, p.28 (promise)",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ee7e6efe-1f9b-4b5e-bff7-1da18902ffeb.pdf"
      }
     ]
    },
    {
-    "point": "Analyst probed impact of competitor’s 10% free grammage on pricing.",
+    "point": "Revenue +16.9% YoY in Q2 FY27.",
+    "why": "Drives top‑line growth and earnings expansion.",
     "cites": [
      {
-      "label": "Q2 FY26 call, p.24 (analyst)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=99e65c90-6bb0-4984-ac71-2a0f0eb4cc7f.pdf"
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
      }
     ]
    }
   ],
-  "dropped": 0,
+  "bear": [
+   {
+    "point": "Volume growth 6.4% in Q2 FY27, below 8‑10% FY27 target.",
+    "why": "May limit top‑line expansion.",
+    "cites": [
+     {
+      "label": "Q1 FY27 call, p.20 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e0d5627-2b8b-4bf1-a7ce-9d0160833a0f.pdf"
+     },
+     {
+      "label": "Q2 FY27 call, p.14",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ee7e6efe-1f9b-4b5e-bff7-1da18902ffeb.pdf"
+     }
+    ]
+   },
+   {
+    "point": "EBITDA margin 15.6% in Q2 FY27, down 2.0 pp YoY.",
+    "why": "Erodes profitability momentum.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
+     }
+    ]
+   },
+   {
+    "point": "Debt/equity 0.18 at FY26 end, up from 0.11.",
+    "why": "Increases leverage risk.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#leverage"
+     }
+    ]
+   }
+  ],
+  "dropped": 1,
   "model": "openai/gpt-oss-120b",
   "model_note": null
  },

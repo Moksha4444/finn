@@ -1,7 +1,7 @@
 {
  "symbol": "POLYCAB",
  "name": "Polycab India Ltd",
- "generated_at": "2026-11-13T05:41",
+ "generated_at": "2026-11-14T13:44",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -492,6 +492,14 @@
    [
     "2026-11-11",
     7948.0
+   ],
+   [
+    "2026-11-12",
+    8080.5
+   ],
+   [
+    "2026-11-13",
+    7904.0
    ]
   ],
   "nifty": [
@@ -730,6 +738,14 @@
    [
     "2026-11-11",
     25255.05
+   ],
+   [
+    "2026-11-12",
+    25299.35
+   ],
+   [
+    "2026-11-13",
+    25144.3
    ]
   ]
  },
@@ -738,6 +754,12 @@
   "lender": false,
   "unit": "₹ crore",
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "pat_name": "PAT (to owners)",
+  "filing_quarters": [
+   "Sep 2026",
+   "Jun 2026",
+   "Sep 2025"
+  ],
   "quarters": {
    "periods": [
     "Dec 2024",
@@ -753,27 +775,27 @@
     5226.0,
     6986.0,
     5906.0,
-    6477.0,
+    6477.21,
     7636.0,
     8864.0,
-    8210.0,
-    9899.0
+    8209.73,
+    9898.9
    ],
    "pat": [
-    464.0,
-    734.0,
-    600.0,
-    693.0,
-    630.0,
-    786.0,
-    797.0,
-    990.0
+    458.0,
+    727.0,
+    592.0,
+    685.46,
+    622.0,
+    773.0,
+    784.34,
+    977.37
    ],
    "revenue_name": "Revenue",
-   "claim": "Revenue +52.8% YoY in the Sep 2026 quarter; PAT +42.9%."
+   "claim": "Revenue +52.8% YoY in Q2 FY27; PAT (to owners) +42.6%."
   },
   "margin": {
-   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -785,16 +807,16 @@
     "Sep 2026"
    ],
    "values": [
-    14.27,
-    15.37,
-    15.88,
-    16.46,
-    13.32,
-    13.79,
-    15.12,
-    15.26
+    13.78,
+    14.67,
+    14.53,
+    15.76,
+    12.65,
+    13.1,
+    13.84,
+    14.37
    ],
-   "claim": "EBITDA margin 15.3% in the Sep 2026 quarter, −1.2 pp YoY."
+   "claim": "EBITDA margin 14.4% in Q2 FY27, −1.4 pp YoY."
   },
   "cash": {
    "years": [
@@ -812,13 +834,13 @@
     3811.0
    ],
    "pat": [
-    917.0,
-    1282.0,
-    1803.0,
-    2046.0,
-    2708.0
+    909.0,
+    1270.0,
+    1784.0,
+    2020.0,
+    2672.0
    ],
-   "claim": "Operating cash flow was 1.01× PAT over FY22–FY26 (₹8,856 cr vs ₹8,756 cr)."
+   "claim": "Operating cash flow was 1.02× PAT over FY22–FY26 (Apr 2021 – Mar 2026) (₹8,856 cr vs ₹8,655 cr)."
   },
   "leverage": {
    "years": [
@@ -835,86 +857,56 @@
     0.02,
     0.02
    ],
-   "claim": "Debt/equity 0.02 at FY26 end, from 0.02 at FY22 end."
+   "claim": "Debt/equity 0.02 at FY26 end (Mar 2026), from 0.02 at FY22 end."
   }
  },
  "bull_bear": {
   "bull": [
    {
-    "point": "FMEG EBIT margin hit 10.1%, meeting the 8-10% FY30 target.",
+    "point": "EPC margin 11.0% in Q2 FY27",
+    "why": "enhances segment profitability and cash generation",
     "cites": [
      {
       "label": "Q3 FY26 call, p.7 (promise)",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf"
-     },
-     {
-      "label": "Q2 FY27 call, p.7",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"
      }
     ]
    },
    {
-    "point": "Wires & Cables EBIT margin reached 14.2%, exceeding the 11-13% target.",
+    "point": "Wires & Cables margin 14.2% in Q2 FY27",
+    "why": "drives segment earnings and validates margin guidance",
     "cites": [
      {
       "label": "Q1 FY27 call, p.5 (promise)",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=e47a217c-cefa-4ff6-8e34-6bbd07d42b13.pdf"
      }
     ]
-   },
-   {
-    "point": "PAT margin 10.0% and EBITDA margin 14.4% show operational efficiency.",
-    "cites": [
-     {
-      "label": "Q2 FY27 call, p.6",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"
-     },
-     {
-      "label": "Q2 FY27 call, p.6",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"
-     }
-    ]
    }
   ],
   "bear": [
    {
-    "point": "EBITDA margin 15.3% fell 1.2 pp YoY despite 52.8% revenue growth.",
+    "point": "EBITDA margin 14.4% in Q2 FY27, down 1.4 pp YoY",
+    "why": "compresses profitability and cash conversion",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
       "url": "#margin"
-     },
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#quarters"
      }
     ]
    },
    {
-    "point": "EPC revenues INR 3,077 million declined 11% YoY in Q1 FY27.",
-    "cites": [
-     {
-      "label": "Q1 FY27 call, p.6",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=e47a217c-cefa-4ff6-8e34-6bbd07d42b13.pdf"
-     }
-    ]
-   },
-   {
-    "point": "Analysts question sustainability of 53% growth amid rising distribution competition.",
+    "point": "Analyst questioned sustainability of growth in Q2 FY27",
+    "why": "casts doubt on future earnings consistency",
     "cites": [
      {
       "label": "Q2 FY27 call, p.9 (analyst)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"
-     },
-     {
-      "label": "Q2 FY27 call, p.5",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"
      }
     ]
    }
   ],
-  "dropped": 0,
-  "model": "qwen/qwen3.8-27b",
+  "dropped": 4,
+  "model": "openai/gpt-oss-120b",
   "model_note": null
  },
  "sources": [

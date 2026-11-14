@@ -1,12 +1,12 @@
 {
  "symbol": "TRENT",
  "name": "Trent Ltd",
- "generated_at": "2026-11-13T05:43",
+ "generated_at": "2026-11-13T22:49",
  "latest_quarter": "Sep 2026",
  "calls": [],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "EBITDA margin (computed: operating profit over sales)",
+  "name": "EBITDA margin (computed: operating profit over sales, other income excluded)",
   "source": "screener.in quarterly results table (from the company's exchange results filings)"
  },
  "model_note": null,
@@ -271,6 +271,14 @@
    [
     "2026-11-11",
     3222.7
+   ],
+   [
+    "2026-11-12",
+    3180.0
+   ],
+   [
+    "2026-11-13",
+    3165.2
    ]
   ],
   "nifty": [
@@ -509,6 +517,14 @@
    [
     "2026-11-11",
     25255.05
+   ],
+   [
+    "2026-11-12",
+    25299.35
+   ],
+   [
+    "2026-11-13",
+    25144.3
    ]
   ]
  },
@@ -517,6 +533,8 @@
   "lender": false,
   "unit": "₹ crore",
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "pat_name": "PAT (to owners)",
+  "filing_quarters": [],
   "quarters": {
    "periods": [
     "Dec 2024",
@@ -540,19 +558,19 @@
    ],
    "pat": [
     497.0,
-    312.0,
-    425.0,
-    373.0,
-    510.0,
-    413.0,
-    518.0,
-    468.0
+    318.0,
+    430.0,
+    377.0,
+    513.0,
+    400.0,
+    519.0,
+    464.0
    ],
    "revenue_name": "Revenue",
-   "claim": "Revenue +21.9% YoY in the Sep 2026 quarter; PAT +25.5%."
+   "claim": "Revenue +21.9% YoY in Q2 FY27; PAT (to owners) +23.1%."
   },
   "margin": {
-   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -564,16 +582,16 @@
     "Sep 2026"
    ],
    "values": [
-    19.93,
-    17.22,
-    18.39,
-    17.52,
-    20.32,
-    18.7,
-    19.97,
-    18.44
+    18.19,
+    15.44,
+    17.37,
+    16.94,
+    20.22,
+    18.12,
+    19.44,
+    18.0
    ],
-   "claim": "EBITDA margin 18.4% in the Sep 2026 quarter, +0.9 pp YoY."
+   "claim": "EBITDA margin 18.0% in Q2 FY27, +1.1 pp YoY."
   },
   "cash": {
    "years": [
@@ -591,13 +609,13 @@
     2668.0
    ],
    "pat": [
-    35.0,
-    394.0,
-    1477.0,
-    1534.0,
-    1721.0
+    106.0,
+    445.0,
+    1487.0,
+    1547.0,
+    1720.0
    ],
-   "claim": "Operating cash flow was 1.23× PAT over FY22–FY26 (₹6,331 cr vs ₹5,161 cr)."
+   "claim": "Operating cash flow was 1.19× PAT over FY22–FY26 (Apr 2021 – Mar 2026) (₹6,331 cr vs ₹5,305 cr)."
   },
   "leverage": {
    "years": [
@@ -614,10 +632,58 @@
     0.41,
     0.37
    ],
-   "claim": "Debt/equity 0.37 at FY26 end, from 2.00 at FY22 end."
+   "claim": "Debt/equity 0.37 at FY26 end (Mar 2026), from 2.00 at FY22 end."
   }
  },
- "bull_bear": null,
+ "bull_bear": {
+  "bull": [
+   {
+    "point": "Revenue +21.9% YoY in Q2 FY27; PAT +23.1%.",
+    "why": "Boosts top‑line growth, supporting earnings expansion.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     }
+    ]
+   },
+   {
+    "point": "EBITDA margin 18.0% in Q2 FY27, +1.1 pp YoY.",
+    "why": "Higher margin improves profitability and cash generation.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
+     }
+    ]
+   }
+  ],
+  "bear": [
+   {
+    "point": "Operating cash flow 1.19× PAT over FY22–FY26 (₹6,331 cr vs ₹5,305 cr).",
+    "why": "Modest coverage may limit buffer for earnings volatility.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#cash"
+     }
+    ]
+   },
+   {
+    "point": "Debt/equity 0.37 at FY26 end (Mar 2026).",
+    "why": "Remaining leverage could constrain future financing flexibility.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#leverage"
+     }
+    ]
+   }
+  ],
+  "dropped": 0,
+  "model": "openai/gpt-oss-120b",
+  "model_note": null
+ },
  "sources": [
   {
    "label": "Quarterly and annual tables (consolidated), screener.in, from the exchange filings",

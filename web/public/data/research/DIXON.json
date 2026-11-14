@@ -1,7 +1,7 @@
 {
  "symbol": "DIXON",
  "name": "Dixon Technologies (India) Ltd",
- "generated_at": "2026-11-13T05:41",
+ "generated_at": "2026-11-13T21:47",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -27,7 +27,7 @@
  ],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "EBITDA margin (computed: operating profit over sales)",
+  "name": "EBITDA margin (computed: operating profit over sales, other income excluded)",
   "source": "screener.in quarterly results table (from the company's exchange results filings)"
  },
  "model_note": null,
@@ -36,36 +36,18 @@
   "ahead": 0,
   "on track": 0,
   "moved closer": 0,
-  "partial": 1,
+  "partial": 0,
   "no change": 0,
   "behind pace": 0,
   "moved away": 0,
   "miss": 0,
-  "not-yet-measurable": 5
+  "not-yet-measurable": 6
  },
  "promises": [
   {
-   "metric": "IT hardware revenue",
-   "target": "INR3,500 crores to INR4,000 crores",
-   "period": "next year",
-   "said_in": "Dec 2025",
-   "call": "Q3 FY26",
-   "quote": "We feel that for next year, the numbers are going to be somewhere around INR3,500 crores to INR4,000 crores.",
-   "page": 17,
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ad6e72f1-b5f8-4a75-8e45-f2e88c7525e0.pdf",
-   "path": null,
-   "cites": [],
-   "chart": null,
-   "verdict": "partial",
-   "actual": "Q2 FY27 call, p.6: “Revenues for the quarter was Rs. 2,160 crores.”; Q1 FY27 call, p.11: “IT hardware is somewhere around INR1,350-odd crores.”",
-   "actual_source": "management's statements on later calls (transcripts)",
-   "model": "openai/gpt-oss-120b",
-   "why": "IT hardware revenue Rs.2,160 crore (Q2 FY27) below INR3,500 crore target."
-  },
-  {
    "metric": "mobile phone business margins",
    "target": "2.8% to 3.1%, 3.2%",
-   "period": "next few quarters",
+   "period": "FY26 (Apr 2025 – Mar 2026)",
    "said_in": "Dec 2025",
    "call": "Q3 FY26",
    "quote": "We still feel that we should be able to have a margin of somewhere between 2.8% to 3.1%, 3.2% in our mobile phone business.",
@@ -78,7 +60,25 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "Not measured: no segment figures could be read from the results filings since this call (a single-segment company, or the table didn't parse)."
+   "why": "Not measurable (segment not reported): the results filings report no separate segments (Ind AS 108), so one business line can't be told apart from the company total."
+  },
+  {
+   "metric": "IT hardware revenue",
+   "target": "INR3,500 crores to INR4,000 crores",
+   "period": "FY26 (Apr 2025 – Mar 2026)",
+   "said_in": "Dec 2025",
+   "call": "Q3 FY26",
+   "quote": "We feel that for next year, the numbers are going to be somewhere around INR3,500 crores to INR4,000 crores.",
+   "page": 17,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ad6e72f1-b5f8-4a75-8e45-f2e88c7525e0.pdf",
+   "path": null,
+   "cites": [],
+   "chart": null,
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "Not measurable (segment not reported): the results filings report no separate segments (Ind AS 108), so one business line can't be told apart from the company total."
   },
   {
    "metric": "smartphone volumes and selling prices",
@@ -101,7 +101,7 @@
   {
    "metric": "telecom and networking products revenue growth",
    "target": "We expect this vertical to deliver high double-digit revenue growth in the current fiscal.",
-   "period": "current fiscal",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
    "said_in": "Mar 2026",
    "call": "Q4 FY26",
    "quote": "We expect this vertical to deliver high double-digit revenue growth in the current fiscal.",
@@ -114,12 +114,12 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "Not measured: no segment figures could be read from the results filings since this call (a single-segment company, or the table didn't parse)."
+   "why": "Not measurable (segment not reported): the results filings report no separate segments (Ind AS 108), so one business line can't be told apart from the company total."
   },
   {
    "metric": "IT hardware products revenue",
    "target": "we expect 3x growth in the revenues in the current fiscal against last year",
-   "period": "current fiscal",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
    "said_in": "Mar 2026",
    "call": "Q4 FY26",
    "quote": "we expect 3x growth in the revenues in the current fiscal against last year with a huge uptake in order books from all customers.",
@@ -132,12 +132,12 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "Not measured: no segment figures could be read from the results filings since this call (a single-segment company, or the table didn't parse)."
+   "why": "Not measurable (segment not reported): the results filings report no separate segments (Ind AS 108), so one business line can't be told apart from the company total."
   },
   {
    "metric": "lighting revenues growth",
    "target": "we expect the revenues to grow almost to 2x in the current fiscal.",
-   "period": "current fiscal",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
    "said_in": "Mar 2026",
    "call": "Q4 FY26",
    "quote": "we expect the revenues to grow almost to 2x in the current fiscal.",
@@ -150,7 +150,7 @@
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "Not measured: no segment figures could be read from the results filings since this call (a single-segment company, or the table didn't parse)."
+   "why": "Not measurable (segment not reported): the results filings report no separate segments (Ind AS 108), so one business line can't be told apart from the company total."
   }
  ],
  "sector": "Consumer Discretionary",
@@ -158,11 +158,11 @@
   "kept": 0,
   "missed": 0,
   "open": 0,
-  "partial": 1,
-  "unmeasured": 5,
+  "partial": 0,
+  "unmeasured": 6,
   "total": 6,
-  "measured": 1,
-  "sentence": "Kept 0 of 1 measured promise from the last 4 calls; 1 partly met; none missed."
+  "measured": 0,
+  "sentence": "None of the 6 promises from the last 4 calls can be checked yet; the reasons are listed below."
  },
  "prices": {
   "closes": [
@@ -401,6 +401,14 @@
    [
     "2026-11-11",
     12896.0
+   ],
+   [
+    "2026-11-12",
+    12992.0
+   ],
+   [
+    "2026-11-13",
+    12798.0
    ]
   ],
   "nifty": [
@@ -639,6 +647,14 @@
    [
     "2026-11-11",
     25255.05
+   ],
+   [
+    "2026-11-12",
+    25299.35
+   ],
+   [
+    "2026-11-13",
+    25144.3
    ]
   ]
  },
@@ -647,6 +663,12 @@
   "lender": false,
   "unit": "₹ crore",
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "pat_name": "PAT (to owners)",
+  "filing_quarters": [
+   "Sep 2026",
+   "Jun 2026",
+   "Sep 2025"
+  ],
   "quarters": {
    "periods": [
     "Dec 2024",
@@ -662,27 +684,27 @@
     10454.0,
     10293.0,
     12836.0,
-    14855.0,
+    14855.04,
     10672.0,
     10511.0,
-    15548.0,
-    21794.0
+    15547.66,
+    21793.64
    ],
    "pat": [
-    216.0,
-    465.0,
-    280.0,
-    746.0,
-    321.0,
-    298.0,
-    718.0,
-    411.0
+    171.0,
+    401.0,
+    225.0,
+    670.0,
+    287.0,
+    256.0,
+    663.42,
+    343.66
    ],
    "revenue_name": "Revenue",
-   "claim": "Revenue +46.7% YoY in the Sep 2026 quarter; PAT −44.9%."
+   "claim": "Revenue +46.7% YoY in Q2 FY27; PAT (to owners) −48.7%."
   },
   "margin": {
-   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -694,16 +716,16 @@
     "Sep 2026"
    ],
    "values": [
-    3.84,
-    6.88,
-    3.83,
-    7.12,
-    5.19,
-    4.75,
-    6.43,
-    3.07
+    3.74,
+    4.3,
+    3.76,
+    3.78,
+    3.88,
+    3.88,
+    2.98,
+    2.74
    ],
-   "claim": "EBITDA margin 3.1% in the Sep 2026 quarter, −4.1 pp YoY."
+   "claim": "EBITDA margin 2.7% in Q2 FY27, −1.0 pp YoY."
   },
   "cash": {
    "years": [
@@ -722,12 +744,12 @@
    ],
    "pat": [
     190.0,
-    255.0,
-    375.0,
-    1233.0,
-    1644.0
+    256.0,
+    368.0,
+    1096.0,
+    1439.0
    ],
-   "claim": "Operating cash flow was 1.22× PAT over FY22–FY26 (₹4,515 cr vs ₹3,697 cr)."
+   "claim": "Operating cash flow was 1.35× PAT over FY22–FY26 (Apr 2021 – Mar 2026) (₹4,515 cr vs ₹3,349 cr)."
   },
   "leverage": {
    "years": [
@@ -744,13 +766,14 @@
     0.22,
     0.21
    ],
-   "claim": "Debt/equity 0.21 at FY26 end, from 0.67 at FY22 end."
+   "claim": "Debt/equity 0.21 at FY26 end (Mar 2026), from 0.67 at FY22 end."
   }
  },
  "bull_bear": {
   "bull": [
    {
-    "point": "46.7% YoY revenue increase in Sep 2026 quarter, boosting top‑line growth.",
+    "point": "Q2 FY27 revenue grew 46.7% YoY.",
+    "why": "drives top‑line expansion and earnings potential.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -759,40 +782,30 @@
     ]
    },
    {
-    "point": "34.1% return on capital employed in Q1 FY27, indicating efficient capital use.",
+    "point": "Q2 FY27 EBITDA reached INR 609 crores.",
+    "why": "supports higher operating cash generation.",
     "cites": [
      {
-      "label": "Q1 FY27 call, p.4",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7ce2ca16-3043-48f4-97f9-a62a6a086c2f.pdf"
+      "label": "Q2 FY27 call, p.3",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=995a3a71-4a1e-4c1f-a29a-6c6747e4ca10.pdf"
      }
     ]
    },
    {
-    "point": "Semi‑automatic washing machine volume grew 27% to 6.3 lakh units in the quarter.",
+    "point": "FY26 ROCE was 44.8%.",
+    "why": "indicates efficient capital utilization.",
     "cites": [
      {
-      "label": "Q2 FY27 call, p.7",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=995a3a71-4a1e-4c1f-a29a-6c6747e4ca10.pdf"
-     },
-     {
-      "label": "Q2 FY27 call, p.7",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=995a3a71-4a1e-4c1f-a29a-6c6747e4ca10.pdf"
+      "label": "Q4 FY26 call, p.4",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=38b72f07-55a6-4503-91fd-ed3b2c209e96.pdf"
      }
     ]
    }
   ],
   "bear": [
    {
-    "point": "PAT fell 44.9% YoY in Sep 2026 quarter, eroding earnings.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#quarters"
-     }
-    ]
-   },
-   {
-    "point": "EBITDA margin slipped to 3.1%, down 4.1 pp YoY.",
+    "point": "Q2 FY27 EBITDA margin slipped to 2.7%, down 1.0 pp YoY.",
+    "why": "compresses profitability and cash conversion.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -801,14 +814,21 @@
     ]
    },
    {
-    "point": "IT hardware revenue reached only INR2,160 crores, missing the promised INR3,500‑4,000 crores range.",
+    "point": "Q2 FY27 PAT fell 48.7%.",
+    "why": "erodes net earnings and investor returns.",
     "cites": [
      {
-      "label": "Q3 FY26 call, p.17 (promise)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ad6e72f1-b5f8-4a75-8e45-f2e88c7525e0.pdf"
-     },
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     }
+    ]
+   },
+   {
+    "point": "Q2 FY27 analyst warned of consumer demand weakness for the second half.",
+    "why": "raises revenue risk in upcoming quarters.",
+    "cites": [
      {
-      "label": "Q2 FY27 call, p.6",
+      "label": "Q2 FY27 call, p.9 (analyst)",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=995a3a71-4a1e-4c1f-a29a-6c6747e4ca10.pdf"
      }
     ]

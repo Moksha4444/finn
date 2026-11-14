@@ -1,7 +1,7 @@
 {
  "symbol": "ETERNAL",
  "name": "Eternal Ltd",
- "generated_at": "2026-11-12T18:02",
+ "generated_at": "2026-11-13T21:49",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -27,7 +27,7 @@
  ],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "EBITDA margin (computed: operating profit over sales)",
+  "name": "EBITDA margin (computed: operating profit over sales, other income excluded)",
   "source": "screener.in quarterly results table (from the company's exchange results filings)"
  },
  "model_note": null,
@@ -55,11 +55,12 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=91f3f29f-c5c0-49b5-b425-a22374bf08ad.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "No reported USD NOV guidance evidence."
+   "why": "Not measurable: a US-dollar or constant-currency target, and results filings report rupees."
   },
   {
    "metric": "Adjusted EBITDA margin",
@@ -72,11 +73,12 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=91f3f29f-c5c0-49b5-b425-a22374bf08ad.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "No reported margin evidence."
+   "why": "Not measurable: results filings don't report this figure (volumes, NOV/GMV, orders, AUM, mix or payout)."
   },
   {
    "metric": "EBITDA guidance of $1 billion by FY29",
@@ -89,11 +91,12 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=60af607c-5f1b-4d5d-8425-4929efa6aad1.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "No reported EBITDA guidance evidence."
+   "why": "Not measurable: a US-dollar or constant-currency target, and results filings report rupees."
   },
   {
    "metric": "quick commerce NOV growth CAGR of 60%",
@@ -106,11 +109,12 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=60af607c-5f1b-4d5d-8425-4929efa6aad1.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
-   "why": "No eligible reported quick commerce CAGR evidence."
+   "why": "Not measurable: results filings don't report this figure (volumes, NOV/GMV, orders, AUM, mix or payout)."
   }
  ],
  "sector": "Consumer Discretionary",
@@ -361,6 +365,14 @@
    [
     "2026-11-11",
     361.1
+   ],
+   [
+    "2026-11-12",
+    364.35
+   ],
+   [
+    "2026-11-13",
+    363.65
    ]
   ],
   "nifty": [
@@ -599,6 +611,14 @@
    [
     "2026-11-11",
     25255.05
+   ],
+   [
+    "2026-11-12",
+    25299.35
+   ],
+   [
+    "2026-11-13",
+    25144.3
    ]
   ]
  },
@@ -607,6 +627,12 @@
   "lender": false,
   "unit": "₹ crore",
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "pat_name": "PAT (to owners)",
+  "filing_quarters": [
+   "Sep 2026",
+   "Jun 2026",
+   "Sep 2025"
+  ],
   "quarters": {
    "periods": [
     "Dec 2024",
@@ -622,27 +648,27 @@
     5405.0,
     5833.0,
     7167.0,
-    13590.0,
+    13590,
     16315.0,
     17292.0,
-    20211.0,
-    24138.0
+    20211,
+    24138
    ],
    "pat": [
     59.0,
     39.0,
     25.0,
-    65.0,
+    65,
     102.0,
     174.0,
-    92.0,
-    125.0
+    92,
+    125
    ],
    "revenue_name": "Revenue",
-   "claim": "Revenue +77.6% YoY in the Sep 2026 quarter; PAT +92.3%."
+   "claim": "Revenue +77.6% YoY in Q2 FY27; PAT (to owners) +92.3%."
   },
   "margin": {
-   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -654,16 +680,16 @@
     "Sep 2026"
    ],
    "values": [
-    7.66,
-    7.54,
-    6.54,
-    4.35,
-    4.39,
-    4.79,
-    4.79,
-    4.57
+    3.0,
+    1.23,
+    1.6,
+    1.76,
+    2.26,
+    2.81,
+    2.94,
+    3.12
    ],
-   "claim": "EBITDA margin 4.6% in the Sep 2026 quarter, +0.2 pp YoY."
+   "claim": "EBITDA margin 3.1% in Q2 FY27, +1.4 pp YoY."
   },
   "cash": {
    "years": [
@@ -681,13 +707,13 @@
     632.0
    ],
    "pat": [
-    -1222.0,
+    -1209.0,
     -971.0,
     351.0,
     527.0,
     366.0
    ],
-   "claim": "PAT summed to −₹949 cr over FY22–FY26 (a net loss), so cash conversion isn't meaningful."
+   "claim": "PAT summed to −₹936 cr over FY22–FY26 (Apr 2021 – Mar 2026) (a net loss), so cash conversion isn't meaningful."
   },
   "leverage": {
    "years": [
@@ -704,13 +730,14 @@
     0.07,
     0.15
    ],
-   "claim": "Debt/equity 0.15 at FY26 end, from 0.00 at FY22 end."
+   "claim": "Debt/equity 0.15 at FY26 end (Mar 2026), from 0.00 at FY22 end."
   }
  },
  "bull_bear": {
   "bull": [
    {
-    "point": "Revenue grew 77.6% YoY, indicating rapid top-line expansion despite competitive pressure.",
+    "point": "Revenue +77.6% YoY in Q2 FY27.",
+    "why": "drives earnings growth and cash generation potential.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -719,27 +746,40 @@
     ]
    },
    {
-    "point": "PAT surged 92.3% YoY, showing significant improvement in bottom-line profitability.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#quarters"
-     }
-    ]
-   },
-   {
-    "point": "EBITDA margin reached 4.6%, up 0.2 pp YoY, confirming operational efficiency gains.",
+    "point": "EBITDA margin 3.1% in Q2 FY27, +1.4 pp YoY.",
+    "why": "expands profitability margin improving cash conversion.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
       "url": "#margin"
      }
     ]
+   },
+   {
+    "point": "QoQ volume growth: 21% in Q1FY27.",
+    "why": "boosts top-line momentum and market share expansion.",
+    "cites": [
+     {
+      "label": "Q1 FY27 call, p.7",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=faa4f0f7-06e4-4066-9d68-3da95dfe02d9.pdf"
+     }
+    ]
    }
   ],
   "bear": [
    {
-    "point": "Cumulative PAT loss of ₹949 cr over FY22–FY26 indicates persistent cash burn.",
+    "point": "Store throughput down about 6% QoQ in Q3FY26.",
+    "why": "pressures same-store sales and earnings sustainability.",
+    "cites": [
+     {
+      "label": "Q3 FY26 call, p.3",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=91f3f29f-c5c0-49b5-b425-a22374bf08ad.pdf"
+     }
+    ]
+   },
+   {
+    "point": "PAT summed to −₹936 cr over FY22–FY26.",
+    "why": "indicates prolonged losses eroding cash reserves.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -748,26 +788,18 @@
     ]
    },
    {
-    "point": "Debt/equity rose to 0.15 from 0.00, signaling increased financial leverage.",
+    "point": "Debt/equity 0.15 at FY26 end, from 0.00 at FY22.",
+    "why": "raises leverage risk and balance‑sheet vulnerability.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
       "url": "#leverage"
      }
     ]
-   },
-   {
-    "point": "Analysts question if current interventions suffice to hold market share against well-capitalized rivals.",
-    "cites": [
-     {
-      "label": "Q3 FY26 call, p.9 (analyst)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=91f3f29f-c5c0-49b5-b425-a22374bf08ad.pdf"
-     }
-    ]
    }
   ],
   "dropped": 0,
-  "model": "qwen/qwen3.8-27b",
+  "model": "openai/gpt-oss-120b",
   "model_note": null
  },
  "sources": [

@@ -1,7 +1,7 @@
 {
  "symbol": "TCS",
  "name": "Tata Consultancy Services Ltd",
- "generated_at": "2026-11-13T05:42",
+ "generated_at": "2026-11-14T13:47",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -27,8 +27,8 @@
  ],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "Operating margin (as reported)",
-  "source": "management's reported margin for each quarter, on that quarter's results call (transcripts)"
+  "name": "Operating margin (operating profit less depreciation, over revenue; matches what management reports)",
+  "source": "screener.in quarterly results table (from the company's exchange results filings)"
  },
  "model_note": null,
  "score": {
@@ -39,21 +39,21 @@
   "partial": 0,
   "no change": 0,
   "behind pace": 1,
-  "moved away": 1,
-  "miss": 0,
+  "moved away": 0,
+  "miss": 1,
   "not-yet-measurable": 0
  },
  "promises": [
   {
    "metric": "Operating margin",
    "target": "inch closer to our 26% to 28% band",
-   "period": "next few quarters",
+   "period": "FY26 (Apr 2025 – Mar 2026)",
    "said_in": "Dec 2025",
    "call": "Q3 FY26",
    "quote": "we want to inch closer to our 26% to 28% band and we'll make all efforts to climb towards 26%.",
    "page": 22,
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d70edbab-d5b2-47ae-8820-efacc5052d13.pdf",
-   "path": "25.2% → 25.3% → 24.0% → 24.0% (Q3 FY26 → Q2 FY27)",
+   "path": "25.2% → 25.3% (Q3 FY26 → Q4 FY26)",
    "cites": [
     {
      "label": "Q3 FY26 call, p.4: “Our Q3 operating margins stood at 25.2%, remaining stable sequentially.”",
@@ -62,14 +62,6 @@
     {
      "label": "Q4 FY26 call, p.6: “Our Q4 operating margin stood at 25.3%, a sequential increase of 10 basis points.”",
      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=07ae2d32-1050-4e80-96ff-eb2d98378d4e.pdf"
-    },
-    {
-     "label": "Q1 FY27 call, p.4: “Fifth, our operating margins stood at 24%, down 130 bps sequentially, primarily due to wage hikes.”",
-     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=27523cab-de62-4f78-939a-6d9853bbd060.pdf"
-    },
-    {
-     "label": "Q2 FY27 call, p.5: “Our operating margins remained stable sequentially at 24%.”",
-     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7dc14216-f892-46f1-bf82-5c7b387a83b9.pdf"
     }
    ],
    "chart": {
@@ -77,36 +69,28 @@
     "points": [
      [
       "Q3 FY26",
-      25.2
+      25.17
      ],
      [
       "Q4 FY26",
-      25.3
-     ],
-     [
-      "Q1 FY27",
-      24
-     ],
-     [
-      "Q2 FY27",
-      24
+      25.28
      ]
     ],
     "lo": 26,
     "hi": 28,
     "direction": "at_least",
-    "end": null
+    "end": "Q4 FY26"
    },
-   "actual_source": "management's reported margin for each quarter, on that quarter's results call (transcripts)",
+   "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
    "model": "python (computed)",
-   "verdict": "moved away",
-   "actual": "Moved away: 25.2% → 25.3% → 24.0% → 24.0% (Q3 FY26 → Q2 FY27) vs target 26–28% · Operating margin (as reported)",
-   "why": "No deadline, so judged by direction since the Q3 FY26 call; computed in Python."
+   "verdict": "miss",
+   "actual": "FY26 (Apr 2025 – Mar 2026): Operating margin (operating profit less depreciation, over revenue; matches what management reports) 25.0% vs target 26–28%",
+   "why": "25.0% against 26–28%; computed in Python. No period was stated, so it is judged on the financial year it was given in."
   },
   {
    "metric": "Operating Margin",
    "target": "exit at 25% plus",
-   "period": "later in the year",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
    "said_in": "Jun 2026",
    "call": "Q1 FY27",
    "quote": "We want to exit at 25% plus and strive to achieve it sooner rather than later.",
@@ -128,11 +112,11 @@
     "points": [
      [
       "Q1 FY27",
-      24
+      23.96
      ],
      [
       "Q2 FY27",
-      24
+      23.98
      ]
     ],
     "lo": 25,
@@ -140,11 +124,11 @@
     "direction": "at_least",
     "end": "Q4 FY27"
    },
-   "actual_source": "management's reported margin for each quarter, on that quarter's results call (transcripts)",
+   "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
    "model": "python (computed)",
    "verdict": "behind pace",
-   "actual": "FY27 so far (2 of 4 quarters: Jun 2026, Sep 2026): Operating margin (as reported) 24.0% vs target ≥25%",
-   "why": "24.0% against ≥25% with the period still running; computed in Python."
+   "actual": "FY27 (Apr 2026 – Mar 2027) so far (Q1–Q2, 2 of 4 quarters): Operating margin (operating profit less depreciation, over revenue; matches what management reports) 24.0% vs target ≥25%",
+   "why": "24.0% against ≥25% with the period still running, so no hit or miss yet; computed in Python."
   }
  ],
  "sector": "Information Technology",
@@ -395,6 +379,14 @@
    [
     "2026-11-11",
     2472.1
+   ],
+   [
+    "2026-11-12",
+    2442.4
+   ],
+   [
+    "2026-11-13",
+    2407.5
    ]
   ],
   "nifty": [
@@ -633,6 +625,14 @@
    [
     "2026-11-11",
     25255.05
+   ],
+   [
+    "2026-11-12",
+    25299.35
+   ],
+   [
+    "2026-11-13",
+    25144.3
    ]
   ]
  },
@@ -641,6 +641,8 @@
   "lender": false,
   "unit": "₹ crore",
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "pat_name": "PAT (to owners)",
+  "filing_quarters": [],
   "quarters": {
    "periods": [
     "Dec 2024",
@@ -663,20 +665,20 @@
     73188.0
    ],
    "pat": [
-    12444.0,
-    12293.0,
-    12819.0,
-    12131.0,
-    10720.0,
-    13784.0,
-    13420.0,
-    13934.0
+    12380.0,
+    12224.0,
+    12760.0,
+    12075.0,
+    10657.0,
+    13718.0,
+    13349.0,
+    13884.0
    ],
    "revenue_name": "Revenue",
-   "claim": "Revenue +11.2% YoY in the Sep 2026 quarter; PAT +14.9%."
+   "claim": "Revenue +11.2% YoY in Q2 FY27; PAT (to owners) +15.0%."
   },
   "margin": {
-   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -688,16 +690,16 @@
     "Sep 2026"
    ],
    "values": [
-    28.57,
-    27.93,
-    29.22,
-    26.92,
-    23.84,
-    28.34,
-    26.92,
-    27.53
+    26.63,
+    26.33,
+    26.6,
+    27.32,
+    27.23,
+    27.27,
+    25.67,
+    25.71
    ],
-   "claim": "EBITDA margin 27.5% in the Sep 2026 quarter, +0.6 pp YoY."
+   "claim": "EBITDA margin 25.7% in Q2 FY27, −1.6 pp YoY."
   },
   "cash": {
    "years": [
@@ -715,13 +717,13 @@
     52094.0
    ],
    "pat": [
-    38449.0,
-    42303.0,
-    46099.0,
-    48797.0,
-    49454.0
+    38327.0,
+    42147.0,
+    45908.0,
+    48553.0,
+    49210.0
    ],
-   "claim": "Operating cash flow was 1.01× PAT over FY22–FY26 (₹227,254 cr vs ₹225,102 cr)."
+   "claim": "Operating cash flow was 1.01× PAT over FY22–FY26 (Apr 2021 – Mar 2026) (₹227,254 cr vs ₹224,145 cr)."
   },
   "leverage": {
    "years": [
@@ -738,13 +740,24 @@
     0.1,
     0.11
    ],
-   "claim": "Debt/equity 0.11 at FY26 end, from 0.09 at FY22 end."
+   "claim": "Debt/equity 0.11 at FY26 end (Mar 2026), from 0.09 at FY22 end."
   }
  },
  "bull_bear": {
   "bull": [
    {
-    "point": "Annualized AI revenue hit $3.1 billion, crossing 10% of total revenue.",
+    "point": "Revenue +11.2% YoY in Q2 FY27; PAT +15%.",
+    "why": "Boosts earnings growth and cash generation.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     }
+    ]
+   },
+   {
+    "point": "Annualized AI revenue reached $3.1 billion in Q2 FY27, crossing 10% of overall revenue.",
+    "why": "Expands high‑margin AI services revenue stream.",
     "cites": [
      {
       "label": "Q2 FY27 call, p.4",
@@ -753,71 +766,50 @@
     ]
    },
    {
-    "point": "TCV reached US$9.6 billion, up from $9.5 billion in Q1 FY27.",
+    "point": "TCV for the quarter was US$9.6 billion in Q2 FY27.",
+    "why": "Strengthens future revenue pipeline.",
     "cites": [
      {
       "label": "Q2 FY27 call, p.3",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7dc14216-f892-46f1-bf82-5c7b387a83b9.pdf"
-     },
-     {
-      "label": "Q1 FY27 call, p.3",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=27523cab-de62-4f78-939a-6d9853bbd060.pdf"
-     }
-    ]
-   },
-   {
-    "point": "PAT grew 14.9% YoY, outpacing 11.2% revenue growth.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#quarters"
      }
     ]
    }
   ],
   "bear": [
    {
-    "point": "Operating margin fell to 24%, missing the 26-28% target band.",
+    "point": "Operating margin missed 26–28% band, delivering 25.0% in FY26.",
+    "why": "Limits earnings leverage and profitability.",
     "cites": [
      {
       "label": "Q3 FY26 call, p.22 (promise)",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d70edbab-d5b2-47ae-8820-efacc5052d13.pdf"
-     },
-     {
-      "label": "Q2 FY27 call, p.5",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7dc14216-f892-46f1-bf82-5c7b387a83b9.pdf"
      }
     ]
    },
    {
-    "point": "Operating margin at 24% trails the 25% exit target.",
+    "point": "Operating margin behind pace at 24.0% versus target ≥25% in FY27 so far.",
+    "why": "Erodes profit growth trajectory.",
     "cites": [
      {
       "label": "Q1 FY27 call, p.23 (promise)",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=27523cab-de62-4f78-939a-6d9853bbd060.pdf"
-     },
-     {
-      "label": "Q2 FY27 call, p.5",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7dc14216-f892-46f1-bf82-5c7b387a83b9.pdf"
      }
     ]
    },
    {
-    "point": "North America and Continental Europe grew only 0.4% sequentially.",
+    "point": "EBITDA margin fell 1.6 pp YoY to 25.7% in Q2 FY27.",
+    "why": "Reduces cash conversion efficiency.",
     "cites": [
      {
-      "label": "Q2 FY27 call, p.3",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7dc14216-f892-46f1-bf82-5c7b387a83b9.pdf"
-     },
-     {
-      "label": "Q2 FY27 call, p.3",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7dc14216-f892-46f1-bf82-5c7b387a83b9.pdf"
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
      }
     ]
    }
   ],
   "dropped": 0,
-  "model": "qwen/qwen3.8-27b",
+  "model": "openai/gpt-oss-120b",
   "model_note": null
  },
  "sources": [

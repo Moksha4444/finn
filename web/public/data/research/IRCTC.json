@@ -1,7 +1,7 @@
 {
  "symbol": "IRCTC",
  "name": "Indian Railway Catering & Tourism Corporation Ltd",
- "generated_at": "2026-11-12T18:02",
+ "generated_at": "2026-11-13T21:50",
  "latest_quarter": "Jun 2026",
  "calls": [
   {
@@ -27,8 +27,8 @@
  ],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "EBITDA margin (as reported)",
-  "source": "management's reported margin for each quarter, on that quarter's results call (transcripts)"
+  "name": "EBITDA margin (operating profit over revenue; matches what management reports)",
+  "source": "screener.in quarterly results table (from the company's exchange results filings)"
  },
  "model_note": null,
  "score": {
@@ -47,7 +47,7 @@
   {
    "metric": "sustainable growth",
    "target": "15% sustainable growth this year",
-   "period": "this year",
+   "period": "FY26 (Apr 2025 – Mar 2026)",
    "said_in": "Dec 2025",
    "call": "Q3 FY26",
    "quote": "we are targeting to achieve 15% sustainable growth this year.",
@@ -55,6 +55,7 @@
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1cfad47d-e4a8-47fe-a883-38462f3036c3.pdf",
    "path": null,
    "cites": [],
+   "chart": null,
    "verdict": "miss",
    "actual": "Q4 FY26 call, p.4: “IRCTC recorded its highest ever total revenue of Rs. 5,475 crores in FY 2025-26 compared to Rs. 4,904 crores in FY 2024-25 registering a year-on-year growth of 11.64%”; Q4 FY26 call, p.3: “During the financial year, revenue from operations of IRCTC stood at Rs. 5,215 crores, registering an increase of around 12% as compared to previous Financial Year 2024-25”",
    "actual_source": "management's statements on later calls (transcripts)",
@@ -310,6 +311,14 @@
    [
     "2026-11-11",
     472.1
+   ],
+   [
+    "2026-11-12",
+    470.95
+   ],
+   [
+    "2026-11-13",
+    457.7
    ]
   ],
   "nifty": [
@@ -548,6 +557,14 @@
    [
     "2026-11-11",
     25255.05
+   ],
+   [
+    "2026-11-12",
+    25299.35
+   ],
+   [
+    "2026-11-13",
+    25144.3
    ]
   ]
  },
@@ -556,6 +573,11 @@
   "lender": false,
   "unit": "₹ crore",
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "pat_name": "PAT (to owners)",
+  "filing_quarters": [
+   "Jun 2026",
+   "Sep 2025"
+  ],
   "quarters": {
    "periods": [
     "Sep 2024",
@@ -572,10 +594,10 @@
     1225.0,
     1269.0,
     1160.0,
-    1146.0,
+    1145.99,
     1449.0,
     1460.0,
-    1370.0
+    1369.53
    ],
    "pat": [
     308.0,
@@ -588,10 +610,10 @@
     330.0
    ],
    "revenue_name": "Revenue",
-   "claim": "Revenue +18.1% YoY in the Jun 2026 quarter; PAT −0.3%."
+   "claim": "Revenue +18.1% YoY in Q1 FY27; PAT (to owners) −0.3%."
   },
   "margin": {
-   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
    "periods": [
     "Sep 2024",
     "Dec 2024",
@@ -603,16 +625,16 @@
     "Jun 2026"
    ],
    "values": [
-    40.7,
-    38.61,
-    38.77,
-    39.48,
-    41.19,
-    37.68,
-    31.92,
-    33.43
+    35.06,
+    34.04,
+    30.34,
+    34.22,
+    35.27,
+    32.09,
+    27.33,
+    28.21
    ],
-   "claim": "EBITDA margin 33.4% in the Jun 2026 quarter, −6.1 pp YoY."
+   "claim": "EBITDA margin 28.2% in Q1 FY27, −6.0 pp YoY."
   },
   "cash": {
    "years": [
@@ -633,7 +655,7 @@
     1315.0,
     1393.0
    ],
-   "claim": "Operating cash flow was 0.79× PAT over FY23–FY26 (₹3,800 cr vs ₹4,825 cr)."
+   "claim": "Operating cash flow was 0.79× PAT over FY23–FY26 (Apr 2022 – Mar 2026) (₹3,800 cr vs ₹4,825 cr)."
   },
   "leverage": {
    "years": [
@@ -648,13 +670,14 @@
     0.02,
     0.02
    ],
-   "claim": "Debt/equity 0.02 at FY26 end, from 0.03 at FY23 end."
+   "claim": "Debt/equity 0.02 at FY26 end (Mar 2026), from 0.03 at FY23 end."
   }
  },
  "bull_bear": {
   "bull": [
    {
-    "point": "Revenue grew 18.1% YoY, demonstrating significant top-line expansion and market share gains.",
+    "point": "Revenue rose 18.1% YoY in Q1 FY27",
+    "why": "Accelerates earnings growth and shareholder returns",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -663,36 +686,30 @@
     ]
    },
    {
-    "point": "Debt/equity improved to 0.02 from 0.03, strengthening the balance sheet and financial flexibility.",
+    "point": "Total tickets booked 13.55 crores in Q2 FY26",
+    "why": "Boosts top‑line scale and market penetration",
     "cites": [
      {
-      "label": "Financial snapshot (results filings)",
-      "url": "#leverage"
+      "label": "Q2 FY26 call, p.7",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=2ce0acc5-6b05-46de-9e10-a8c90fd96325.pdf"
      }
     ]
    },
    {
-    "point": "EBITDA margin remains high at 33.4%, preserving substantial profitability despite recent compression.",
+    "point": "UPI share reached 49.81% of tickets in Q2 FY26",
+    "why": "Digital payments improve cash conversion and cost efficiency",
     "cites": [
      {
-      "label": "Financial snapshot (results filings)",
-      "url": "#margin"
+      "label": "Q2 FY26 call, p.7",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=2ce0acc5-6b05-46de-9e10-a8c90fd96325.pdf"
      }
     ]
    }
   ],
   "bear": [
    {
-    "point": "EBITDA margin fell 6.1 pp YoY to 33.4%, compressing earnings power despite revenue growth.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#margin"
-     }
-    ]
-   },
-   {
-    "point": "15% growth promise missed as FY26 revenue grew only 11.64%, indicating slower-than-targeted expansion.",
+    "point": "15% sustainable growth target for FY26 missed",
+    "why": "Undermines credibility of growth guidance",
     "cites": [
      {
       "label": "Q3 FY26 call, p.6 (promise)",
@@ -701,17 +718,28 @@
     ]
    },
    {
-    "point": "PAT declined 0.3% YoY despite 18.1% revenue growth, showing severe operating leverage failure.",
+    "point": "EBITDA margin 28.2% in Q1 FY27, down 6.0 pp YoY",
+    "why": "Margin erosion pressures profitability and cash generation",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
-      "url": "#quarters"
+      "url": "#margin"
+     }
+    ]
+   },
+   {
+    "point": "Operating cash flow was 0.79× PAT over FY23–FY26",
+    "why": "Cash generation lagging earnings raises liquidity concerns",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#cash"
      }
     ]
    }
   ],
   "dropped": 0,
-  "model": "qwen/qwen3.8-27b",
+  "model": "openai/gpt-oss-120b",
   "model_note": null
  },
  "sources": [

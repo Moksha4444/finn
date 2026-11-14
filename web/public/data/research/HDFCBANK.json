@@ -1,7 +1,7 @@
 {
  "symbol": "HDFCBANK",
  "name": "HDFC Bank Ltd",
- "generated_at": "2026-11-13T05:41",
+ "generated_at": "2026-11-13T21:49",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -44,13 +44,13 @@
   {
    "metric": "loan-to-deposit ratio",
    "target": "90% to 96% in the year FY '26",
-   "period": "FY26",
+   "period": "FY26 (Apr 2025 – Mar 2026)",
    "said_in": "Dec 2025",
    "call": "Q3 FY26",
    "quote": "We said we will try and be in a range of somewhere between 90% to 96% in the year FY '26, which is what we will be is what we are very confident about.",
    "page": 6,
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e45f8a0-0fe6-40a3-8e5a-51c53713e6f0.pdf",
-   "path": "98.7% → 94.6% → 95.8% → 96.0% (Q3 FY26 → Q2 FY27)",
+   "path": "98.7% → 94.6% (Q3 FY26 → Q4 FY26)",
    "cites": [
     {
      "label": "Q3 FY26 results filing, p.5 (standalone balance sheet): advances 2,821,446.50 / deposits 2,860,054.60 (in crore)",
@@ -59,14 +59,6 @@
     {
      "label": "Q4 FY26 results filing, p.6 (standalone balance sheet): advances 2,937,166.26 / deposits 3,105,250.48 (in crore)",
      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ea66a60f-a54e-4aac-bbcc-789303bf74cc.pdf"
-    },
-    {
-     "label": "Q1 FY27 results filing, p.4 (standalone balance sheet): advances 3,037,303.31 / deposits 3,170,830.09 (in crore)",
-     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7abdb29f-c7a2-4f32-a37f-5273fded5000.pdf"
-    },
-    {
-     "label": "Q2 FY27 results filing, p.4 (standalone balance sheet): advances 3,195,566.06 / deposits 3,327,448.93 (in crore)",
-     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f5d5fb37-aa66-401c-85d6-58ccd3982828.pdf"
     }
    ],
    "chart": {
@@ -79,14 +71,6 @@
      [
       "Q4 FY26",
       94.6
-     ],
-     [
-      "Q1 FY27",
-      95.8
-     ],
-     [
-      "Q2 FY27",
-      96.0
      ]
     ],
     "lo": 90,
@@ -97,13 +81,13 @@
    "actual_source": "the bank's results filings on BSE: statement of assets and liabilities; ratio computed in Python",
    "model": "python (computed)",
    "verdict": "hit",
-   "actual": "FY26 end (Mar 2026): CD ratio (advances / deposits) 94.6% vs target 90–96%",
+   "actual": "FY26 (Apr 2025 – Mar 2026), at period end: CD ratio (advances / deposits) 94.6% vs target 90–96%",
    "why": "94.6% against 90–96%; computed in Python."
   },
   {
    "metric": "loan-to-deposit ratio",
    "target": "85% to 90% for FY '27",
-   "period": "FY27",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
    "said_in": "Dec 2025",
    "call": "Q3 FY26",
    "quote": "And then maybe by FY '27, by the natural growth and even with the growth in the way we are expecting in terms of faster growth rate, I think we should land somewhere around the 85% to 90% for FY '27.",
@@ -156,13 +140,13 @@
    "actual_source": "the bank's results filings on BSE: statement of assets and liabilities; ratio computed in Python",
    "model": "python (computed)",
    "verdict": "behind pace",
-   "actual": "FY27 running, latest (Sep 2026): CD ratio (advances / deposits) 96.0% vs target 85–90%",
-   "why": "96.0% against 85–90% with the period still running; computed in Python."
+   "actual": "FY27 (Apr 2026 – Mar 2027) so far, latest Q2 FY27: CD ratio (advances / deposits) 96.0% vs target 85–90%",
+   "why": "96.0% against 85–90% with the period still running, so no hit or miss yet; computed in Python."
   },
   {
    "metric": "loan growth",
    "target": "outpacing loan growth in the coming year in FY '27",
-   "period": "FY27",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
    "said_in": "Dec 2025",
    "call": "Q3 FY26",
    "quote": "we believe and we are very optimistic about outpacing loan growth in the coming year in FY '27, as we had sort of mentioned to you all along for the last 18 months.",
@@ -175,7 +159,7 @@
    "actual": "Q2 FY27 call, p.4: “On the MSME and mid-market business, growth momentum is also improving rapidly. September'26 EOP loan growth has grown 23.5% year-on-year compared to 17% to 18% year-on-year growth levels seen in the last few quarters.”; Q2 FY27 call, p.4: “This is also reflected in the rising growth trend in EOP loan book, especially for retail assets ex agri, September'26 annual growth is about 11.2% compared to 9.1% as of June'26 and 7.4% as of March'26.”",
    "actual_source": "management's statements on later calls (transcripts)",
    "model": "openai/gpt-oss-120b",
-   "why": "Target qualitative; FY27 ongoing; loan growth evidence R7 23.5% YoY, R6 11.2% YoY not comparable to target."
+   "why": "No numeric target; loan growth evidence (R7 23.5%, R6 11.2%) cannot be compared."
   }
  ],
  "sector": "Financial Services",
@@ -426,6 +410,14 @@
    [
     "2026-11-11",
     806.6
+   ],
+   [
+    "2026-11-12",
+    812.3
+   ],
+   [
+    "2026-11-13",
+    804.0
    ]
   ],
   "nifty": [
@@ -664,6 +656,14 @@
    [
     "2026-11-11",
     25255.05
+   ],
+   [
+    "2026-11-12",
+    25299.35
+   ],
+   [
+    "2026-11-13",
+    25144.3
    ]
   ]
  },
@@ -672,6 +672,12 @@
   "lender": true,
   "unit": "₹ crore",
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "pat_name": "PAT (to owners)",
+  "filing_quarters": [
+   "Sep 2026",
+   "Jun 2026",
+   "Sep 2025"
+  ],
   "quarters": {
    "periods": [
     "Dec 2024",
@@ -687,24 +693,24 @@
     112194.0,
     120268.0,
     133055.0,
-    118561.0,
+    118560.63,
     126927.0,
     116919.0,
-    133110.0,
-    129359.0
+    133110.36,
+    129358.69
    ],
    "pat": [
-    18340.0,
-    19285.0,
-    17090.0,
-    20364.0,
-    20691.0,
-    21074.0,
-    20383.0,
-    21537.0
+    17657.0,
+    18835.0,
+    16258.0,
+    19610.67,
+    19807.0,
+    20351.0,
+    19244.71,
+    20700.03
    ],
    "revenue_name": "Total income",
-   "claim": "Total income +9.1% YoY in the Sep 2026 quarter; PAT +5.8%."
+   "claim": "Total income +9.1% YoY in Q2 FY27; PAT (to owners) +5.6%."
   },
   "margin": {
    "name": "Net margin (PAT / total income)",
@@ -719,16 +725,16 @@
     "Sep 2026"
    ],
    "values": [
-    16.35,
-    16.04,
-    12.84,
-    17.18,
-    16.3,
-    18.02,
-    15.31,
-    16.65
+    15.74,
+    15.66,
+    12.22,
+    16.54,
+    15.61,
+    17.41,
+    14.46,
+    16.0
    ],
-   "claim": "Net margin 16.6% in the Sep 2026 quarter, −0.5 pp YoY."
+   "claim": "Net margin 16.0% in Q2 FY27, −0.5 pp YoY."
   },
   "cash": {
    "note": "Not shown for lenders: deposits and loans run through operating cash flow, and borrowing is the business."
@@ -740,45 +746,40 @@
  "bull_bear": {
   "bull": [
    {
-    "point": "Deposits grew 18.8% YoY, outpacing credit growth, supporting funding stability.",
+    "point": "Total income +9.1% YoY in Q2 FY27",
+    "why": "drives earnings expansion",
     "cites": [
      {
-      "label": "Q2 FY27 call, p.3",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d7e45614-ae12-4bb9-b92d-623b3a63f166.pdf"
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
      }
     ]
    },
    {
-    "point": "Retail CASA rose 11.2% YoY, enhancing low-cost funding mix.",
-    "cites": [
-     {
-      "label": "Q2 FY27 call, p.3",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d7e45614-ae12-4bb9-b92d-623b3a63f166.pdf"
-     }
-    ]
-   },
-   {
-    "point": "MSME loan growth accelerated to 23.5% YoY, driving higher loan book expansion.",
+    "point": "ROA 1.8% in Q2 FY27",
+    "why": "supports profitability per asset",
     "cites": [
      {
       "label": "Q2 FY27 call, p.4",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d7e45614-ae12-4bb9-b92d-623b3a63f166.pdf"
      }
     ]
-   }
-  ],
-  "bear": [
+   },
    {
-    "point": "Loan-to-deposit ratio at 96.0% exceeds 85–90% target, indicating rising funding pressure.",
+    "point": "Loan-to-deposit ratio 94.6% FY26 hit target 90‑96%",
+    "why": "indicates balanced funding structure",
     "cites": [
      {
       "label": "Q3 FY26 call, p.6 (promise)",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e45f8a0-0fe6-40a3-8e5a-51c53713e6f0.pdf"
      }
     ]
-   },
+   }
+  ],
+  "bear": [
    {
-    "point": "Net margin slipped to 16.6%, down 0.5 pp YoY, compressing profitability.",
+    "point": "Net margin 16.0% in Q2 FY27, down 0.5 pp YoY",
+    "why": "compresses earnings profitability",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -787,16 +788,27 @@
     ]
    },
    {
-    "point": "Analyst flagged margin pressure amid competitive environment, questioning future margin trajectory.",
+    "point": "Credit costs 44 basis points in Q2 FY27",
+    "why": "eats into net interest margin",
     "cites": [
      {
-      "label": "Q1 FY27 call, p.7 (analyst)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=509cc499-6cb1-4d9f-8de9-9c7de6c70eef.pdf"
+      "label": "Q2 FY27 call, p.4",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d7e45614-ae12-4bb9-b92d-623b3a63f166.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Analyst asked if operating leverage and digitization gains will continue",
+    "why": "uncertainty over future earnings drivers",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.14 (analyst)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d7e45614-ae12-4bb9-b92d-623b3a63f166.pdf"
      }
     ]
    }
   ],
-  "dropped": 0,
+  "dropped": 2,
   "model": "openai/gpt-oss-120b",
   "model_note": null
  },

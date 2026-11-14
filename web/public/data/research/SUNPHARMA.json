@@ -1,7 +1,7 @@
 {
  "symbol": "SUNPHARMA",
  "name": "Sun Pharmaceutical Industries Ltd",
- "generated_at": "2026-11-13T05:41",
+ "generated_at": "2026-11-14T13:47",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -27,23 +27,59 @@
  ],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "EBITDA margin (as reported)",
-  "source": "management's reported margin for each quarter, on that quarter's results call (transcripts)"
+  "name": "EBITDA margin (operating profit over revenue; matches what management reports)",
+  "source": "screener.in quarterly results table (from the company's exchange results filings)"
  },
  "model_note": null,
  "score": {
-  "hit": 1,
-  "ahead": 0,
+  "hit": 0,
+  "ahead": 1,
   "on track": 1,
   "moved closer": 0,
   "partial": 0,
   "no change": 0,
-  "behind pace": 0,
+  "behind pace": 2,
   "moved away": 0,
   "miss": 0,
-  "not-yet-measurable": 2
+  "not-yet-measurable": 0
  },
  "promises": [
+  {
+   "metric": "consolidated top line growth",
+   "target": "high single-digit consolidated top line growth for FY27",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "On the guidance, we expect high single-digit consolidated top line growth for FY27 based on our current understanding of the regulatory and macro environment.",
+   "page": 6,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=287022b2-8de5-487d-8d0d-77b819ee3eb4.pdf",
+   "path": null,
+   "cites": [],
+   "chart": null,
+   "verdict": "behind pace",
+   "actual": "Q2 FY27 call, p.3: “During the second quarter of FY27, sales were at INR1,61,000 million, registering a growth of 11.8% vis-a-vis Q2 FY26.”; Q2 FY27 call, p.3: “During the second quarter of FY27, sales were at INR1,61,000 million, registering a growth of 11.8% vis-a-vis Q2 FY26.”; Q1 FY27 call, p.3: “During the first quarter of FY27, sales were at INR1,51,836 million, registering a growth of 10.1% versus Q1 financial year FY26.”; Q1 FY27 call, p.3: “During the first quarter of FY27, sales were at INR1,51,836 million, registering a growth of 10.1% versus Q1 financial year FY26.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b",
+   "why": "Q2 FY27 sales grew 11.8% (R2), exceeding the high single‑digit target (direction at_most expects lower)."
+  },
+  {
+   "metric": "R&D spend",
+   "target": "6% to 7% of the sales for the next year",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "We expect our FY27 R&D spend to be 6% to 7% of the sales for the next year.",
+   "page": 6,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=287022b2-8de5-487d-8d0d-77b819ee3eb4.pdf",
+   "path": null,
+   "cites": [],
+   "chart": null,
+   "verdict": "behind pace",
+   "actual": "Q2 FY27 call, p.6: “Consolidated investments towards R&D for Q2 '27 stands at INR7,784 million or 4.8% of sales.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b",
+   "why": "R&D spend was 4.8% of sales (R14), below the 6‑7% range."
+  },
   {
    "metric": "effective tax rate",
    "target": "range of 25%",
@@ -72,12 +108,12 @@
    "actual": "Q1 FY27 call, p.4: “Effective tax rate for the quarter was at 27.8% versus 24.3% in Q1 FY26.”",
    "actual_source": "management's statements on later calls (transcripts)",
    "model": "openai/gpt-oss-120b picked the evidence; python (computed)",
-   "why": "Reported 27.8% (Q1 FY27 call) against ≥25%; compared in Python."
+   "why": "Reported 27.8% (Q1 FY27 call) against ≥25%, with the period still running, so no hit or miss yet; compared in Python."
   },
   {
    "metric": "sales",
    "target": "high single-digit growth",
-   "period": "full year",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
    "said_in": "Jun 2026",
    "call": "Q1 FY27",
    "quote": "Think we should stick on to the high single-digit growth for the full year.",
@@ -94,67 +130,31 @@
      ],
      [
       "Q2 FY27",
-      11.89
+      11.88
      ]
     ],
     "lo": 7.0,
     "hi": 9.0,
     "direction": "at_least",
-    "end": null
+    "end": "Q4 FY27"
    },
    "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
    "model": "python (computed)",
-   "verdict": "hit",
-   "actual": "At target: +10.5% → +11.9% (Q1 FY27 → Q2 FY27) vs target 7–9% · Revenue growth YoY",
-   "why": "No deadline, so judged by direction since the Q1 FY27 call; computed in Python."
-  },
-  {
-   "metric": "consolidated top line growth",
-   "target": "high single-digit consolidated top line growth for FY27",
-   "period": "FY27",
-   "said_in": "Mar 2026",
-   "call": "Q4 FY26",
-   "quote": "On the guidance, we expect high single-digit consolidated top line growth for FY27 based on our current understanding of the regulatory and macro environment.",
-   "page": 6,
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=287022b2-8de5-487d-8d0d-77b819ee3eb4.pdf",
-   "path": null,
-   "cites": [],
-   "chart": null,
-   "verdict": "not-yet-measurable",
-   "actual": "not disclosed",
-   "actual_source": null,
-   "model": "openai/gpt-oss-120b",
-   "why": "Not measured yet: no later filing or call statement measures this promise."
-  },
-  {
-   "metric": "R&D spend",
-   "target": "6% to 7% of the sales for the next year",
-   "period": "next year",
-   "said_in": "Mar 2026",
-   "call": "Q4 FY26",
-   "quote": "We expect our FY27 R&D spend to be 6% to 7% of the sales for the next year.",
-   "page": 6,
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=287022b2-8de5-487d-8d0d-77b819ee3eb4.pdf",
-   "path": null,
-   "cites": [],
-   "chart": null,
-   "verdict": "not-yet-measurable",
-   "actual": "Q2 FY27 call, p.6: “Consolidated investments towards R&D for Q2 '27 stands at INR7,784 million or 4.8% of sales.”",
-   "actual_source": "management's statements on later calls (transcripts)",
-   "model": "openai/gpt-oss-120b",
-   "why": "The period runs to Mar 2027; a part-period number can't be a miss yet."
+   "verdict": "ahead",
+   "actual": "FY27 (Apr 2026 – Mar 2027) so far (Q1–Q2, 2 of 4 quarters): Revenue growth YoY +11.2% vs target 7–9%",
+   "why": "+11.2% against 7–9% with the period still running, so no hit or miss yet; computed in Python. No period was stated, so it is judged on the financial year it was given in."
   }
  ],
  "sector": "Healthcare",
  "summary": {
   "kept": 1,
-  "missed": 0,
+  "missed": 2,
   "open": 1,
   "partial": 0,
-  "unmeasured": 2,
+  "unmeasured": 0,
   "total": 4,
-  "measured": 2,
-  "sentence": "Kept 1 of 2 measured promises from the last 4 calls; 1 on track; none missed."
+  "measured": 4,
+  "sentence": "Kept 1 of 4 measured promises from the last 4 calls; missed 2, the latest on consolidated top line growth (Q4 FY26 call); 1 on track."
  },
  "prices": {
   "closes": [
@@ -393,6 +393,14 @@
    [
     "2026-11-11",
     1902.3
+   ],
+   [
+    "2026-11-12",
+    1885.0
+   ],
+   [
+    "2026-11-13",
+    1880.0
    ]
   ],
   "nifty": [
@@ -631,6 +639,14 @@
    [
     "2026-11-11",
     25255.05
+   ],
+   [
+    "2026-11-12",
+    25299.35
+   ],
+   [
+    "2026-11-13",
+    25144.3
    ]
   ]
  },
@@ -639,6 +655,12 @@
   "lender": false,
   "unit": "₹ crore",
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "pat_name": "PAT (to owners)",
+  "filing_quarters": [
+   "Sep 2026",
+   "Jun 2026",
+   "Sep 2025"
+  ],
   "quarters": {
    "periods": [
     "Dec 2024",
@@ -654,27 +676,27 @@
     13675.0,
     12959.0,
     13851.0,
-    14478.0,
+    14478.31,
     15521.0,
     14612.0,
-    15300.0,
-    16199.0
+    15299.88,
+    16198.71
    ],
    "pat": [
-    2913.0,
-    2154.0,
-    2293.0,
-    3125.0,
-    3381.0,
-    2710.0,
-    2901.0,
-    1995.0
+    2903.0,
+    2150.0,
+    2279.0,
+    4525.4,
+    3369.0,
+    2714.0,
+    4408.32,
+    2501.13
    ],
    "revenue_name": "Revenue",
-   "claim": "Revenue +11.9% YoY in the Sep 2026 quarter; PAT −36.2%."
+   "claim": "Revenue +11.9% YoY in Q2 FY27; PAT (to owners) −44.7%."
   },
   "margin": {
-   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -686,16 +708,16 @@
     "Sep 2026"
    ],
    "values": [
-    30.41,
-    30.61,
-    28.51,
-    34.52,
-    32.45,
-    30.19,
-    32.27,
-    24.64
+    29.32,
+    28.68,
+    31.06,
+    31.27,
+    31.88,
+    27.06,
+    28.87,
+    29.29
    ],
-   "claim": "EBITDA margin 24.6% in the Sep 2026 quarter, −9.9 pp YoY."
+   "claim": "EBITDA margin 29.3% in Q2 FY27, −2.0 pp YoY."
   },
   "cash": {
    "years": [
@@ -713,13 +735,13 @@
     12419.0
    ],
    "pat": [
-    3389.0,
-    8513.0,
-    9610.0,
-    10965.0,
-    11509.0
+    3273.0,
+    8474.0,
+    9576.0,
+    10929.0,
+    11479.0
    ],
-   "claim": "Operating cash flow was 1.20× PAT over FY22–FY26 (₹52,570 cr vs ₹43,986 cr)."
+   "claim": "Operating cash flow was 1.20× PAT over FY22–FY26 (Apr 2021 – Mar 2026) (₹52,570 cr vs ₹43,731 cr)."
   },
   "leverage": {
    "years": [
@@ -736,55 +758,56 @@
     0.03,
     0.06
    ],
-   "claim": "Debt/equity 0.06 at FY26 end, from 0.03 at FY22 end."
+   "claim": "Debt/equity 0.06 at FY26 end (Mar 2026), from 0.03 at FY22 end."
   }
  },
  "bull_bear": {
   "bull": [
    {
-    "point": "Sales grew 11.8% YoY to INR1,61,000 million, exceeding high single-digit targets.",
+    "point": "EBITDA INR47,439 million in Q2 FY27, up 4.8% YoY",
+    "why": "Boosts operating earnings and cash generation",
     "cites": [
      {
-      "label": "Q2 FY27 call, p.3",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf"
-     },
-     {
-      "label": "Q2 FY27 call, p.3",
+      "label": "Q2 FY27 call, p.4",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf"
      }
     ]
    },
    {
-    "point": "Gross margin reached 80.8%, higher than last year due to better product mix.",
+    "point": "Revenue growth YoY +11.2% in FY27 so far, ahead of 7–9% target",
+    "why": "Accelerates top‑line expansion and earnings potential",
     "cites": [
      {
-      "label": "Q2 FY27 call, p.3",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf"
+      "label": "Q1 FY27 call, p.10 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=34be7c92-1d9f-4010-ba30-2344c959bc5e.pdf"
      }
     ]
    },
    {
-    "point": "India formulations sales grew 17.3% to INR55,523 million, outpacing overall company growth.",
+    "point": "Operating cash flow 1.20× PAT over FY22‑FY26, indicating strong cash conversion",
+    "why": "Supports dividend sustainability and balance‑sheet flexibility",
     "cites": [
      {
-      "label": "Q2 FY27 call, p.5",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf"
+      "label": "Financial snapshot (results filings)",
+      "url": "#cash"
      }
     ]
    }
   ],
   "bear": [
    {
-    "point": "PAT fell 36.2% YoY despite 11.9% revenue growth, indicating severe bottom-line erosion.",
+    "point": "R&D spend 4.8% of sales in Q2 FY27, behind promised 6‑7% range",
+    "why": "May limit pipeline development and long‑term growth",
     "cites": [
      {
-      "label": "Financial snapshot (results filings)",
-      "url": "#quarters"
+      "label": "Q4 FY26 call, p.6 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=287022b2-8de5-487d-8d0d-77b819ee3eb4.pdf"
      }
     ]
    },
    {
-    "point": "EBITDA margin dropped 9.9 pp YoY to 24.6%, showing significant operating leverage loss.",
+    "point": "EBITDA margin 29.3% in Q2 FY27, down 2.0 pp YoY",
+    "why": "Erodes profitability and cash generation capacity",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -793,21 +816,18 @@
     ]
    },
    {
-    "point": "US sales declined 8.2% to USD455 million, driven by Ilumya growth slowdown.",
+    "point": "Debt/equity rose to 0.06 at FY26 end, up from 0.03",
+    "why": "Increases financial leverage and balance‑sheet risk",
     "cites": [
      {
-      "label": "Q2 FY27 call, p.5",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf"
-     },
-     {
-      "label": "Q2 FY27 call, p.7 (analyst)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf"
+      "label": "Financial snapshot (results filings)",
+      "url": "#leverage"
      }
     ]
    }
   ],
-  "dropped": 0,
-  "model": "qwen/qwen3.8-27b",
+  "dropped": 2,
+  "model": "openai/gpt-oss-120b",
   "model_note": null
  },
  "sources": [

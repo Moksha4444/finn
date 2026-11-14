@@ -1,7 +1,7 @@
 {
  "symbol": "RELIANCE",
  "name": "Reliance Industries Ltd",
- "generated_at": "2026-11-13T05:41",
+ "generated_at": "2026-11-14T13:47",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -27,7 +27,7 @@
  ],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "EBITDA margin (computed: operating profit over sales)",
+  "name": "EBITDA margin (computed: operating profit over sales, other income excluded)",
   "source": "screener.in quarterly results table (from the company's exchange results filings)"
  },
  "model_note": null,
@@ -65,7 +65,7 @@
   {
    "metric": "O2C annualized EBITDA",
    "target": "well over Rs.80,000 Crores",
-   "period": "first half of FY 2027",
+   "period": "H1 FY27 (Apr – Sep 2026)",
    "said_in": "Sep 2026",
    "call": "Q2 FY27",
    "quote": "when you look at the first half of FY 2027 performance, it is in our minds tracking annualized EBITDA well over Rs.80,000 Crores",
@@ -329,6 +329,14 @@
    [
     "2026-11-11",
     1335.4
+   ],
+   [
+    "2026-11-12",
+    1339.7
+   ],
+   [
+    "2026-11-13",
+    1339.7
    ]
   ],
   "nifty": [
@@ -567,6 +575,14 @@
    [
     "2026-11-11",
     25255.05
+   ],
+   [
+    "2026-11-12",
+    25299.35
+   ],
+   [
+    "2026-11-13",
+    25144.3
    ]
   ]
  },
@@ -575,6 +591,12 @@
   "lender": false,
   "unit": "₹ crore",
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "pat_name": "PAT (to owners)",
+  "filing_quarters": [
+   "Sep 2026",
+   "Jun 2026",
+   "Sep 2025"
+  ],
   "quarters": {
    "periods": [
     "Dec 2024",
@@ -590,27 +612,27 @@
     239986.0,
     261388.0,
     243632.0,
-    254623.0,
+    254623,
     264905.0,
     294059.0,
-    309468.0,
-    330601.0
+    309468,
+    330601
    ],
    "pat": [
-    21930.0,
-    22611.0,
-    30783.0,
-    22092.0,
-    22290.0,
-    20589.0,
-    23196.0,
-    29550.0
+    18540.0,
+    19407.0,
+    26994.0,
+    18165,
+    18645.0,
+    16971.0,
+    20946,
+    25548
    ],
    "revenue_name": "Revenue",
-   "claim": "Revenue +29.8% YoY in the Sep 2026 quarter; PAT +33.8%."
+   "claim": "Revenue +29.8% YoY in Q2 FY27; PAT (to owners) +40.6%."
   },
   "margin": {
-   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -622,16 +644,16 @@
     "Sep 2026"
    ],
    "values": [
-    20.0,
-    18.65,
-    23.82,
-    19.78,
-    19.23,
-    16.52,
-    17.47,
-    18.88
+    18.25,
+    16.77,
+    17.61,
+    18.02,
+    17.37,
+    15.01,
+    15.35,
+    17.13
    ],
-   "claim": "EBITDA margin 18.9% in the Sep 2026 quarter, −0.9 pp YoY."
+   "claim": "EBITDA margin 17.1% in Q2 FY27, −0.9 pp YoY."
   },
   "cash": {
    "years": [
@@ -649,13 +671,13 @@
     192113.0
    ],
    "pat": [
-    67845.0,
-    74088.0,
-    79020.0,
-    81309.0,
-    95754.0
+    60705.0,
+    66702.0,
+    69621.0,
+    69648.0,
+    80775.0
    ],
-   "claim": "Operating cash flow was 1.90× PAT over FY22–FY26 (₹755,290 cr vs ₹398,016 cr)."
+   "claim": "Operating cash flow was 2.17× PAT over FY22–FY26 (Apr 2021 – Mar 2026) (₹755,290 cr vs ₹347,451 cr)."
   },
   "leverage": {
    "years": [
@@ -672,39 +694,34 @@
     0.44,
     0.45
    ],
-   "claim": "Debt/equity 0.45 at FY26 end, from 0.41 at FY22 end."
+   "claim": "Debt/equity 0.45 at FY26 end (Mar 2026), from 0.41 at FY22 end."
   }
  },
  "bull_bear": {
   "bull": [
    {
-    "point": "PAT reached Rs.30,000 Crores, up 34% YoY, demonstrating significant bottom-line acceleration.",
+    "point": "542 million subscriber base (Q2 FY27)",
+    "why": "Expands market reach, drives future revenue growth",
     "cites": [
      {
-      "label": "Q2 FY27 call, p.3",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=8e997741-4d35-4188-933a-cf020fb9c816.pdf"
-     },
-     {
-      "label": "Q2 FY27 call, p.4",
+      "label": "Q2 FY27 call, p.5",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=8e997741-4d35-4188-933a-cf020fb9c816.pdf"
      }
     ]
    },
    {
-    "point": "EBITDA hit Rs.62,409 Crores, up 24% YoY, showing strong operational profitability growth.",
+    "point": "300 million 5G subscriber base (Q2 FY27)",
+    "why": "High‑value data users enhance average revenue per user",
     "cites": [
      {
-      "label": "Q2 FY27 call, p.3",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=8e997741-4d35-4188-933a-cf020fb9c816.pdf"
-     },
-     {
-      "label": "Q2 FY27 call, p.4",
+      "label": "Q2 FY27 call, p.5",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=8e997741-4d35-4188-933a-cf020fb9c816.pdf"
      }
     ]
    },
    {
-    "point": "5G subscribers reached 300 million, securing a dominant market position in next-gen connectivity.",
+    "point": "Rs.218.8 ARPU (Q2 FY27)",
+    "why": "Higher per‑user earnings improve top‑line scalability",
     "cites": [
      {
       "label": "Q2 FY27 call, p.5",
@@ -715,7 +732,8 @@
   ],
   "bear": [
    {
-    "point": "EBITDA margin fell 0.9 pp YoY to 18.9%, indicating rising costs erode profit growth.",
+    "point": "17.1% EBITDA margin (Q2 FY27), −0.9 pp YoY",
+    "why": "Margin compression pressures earnings despite revenue growth",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -724,7 +742,8 @@
     ]
    },
    {
-    "point": "Debt/equity rose to 0.45 from 0.41, increasing leverage and financial risk.",
+    "point": "0.45 debt/equity ratio (FY26 end), up from 0.41",
+    "why": "Higher leverage raises balance‑sheet risk",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -733,17 +752,18 @@
     ]
    },
    {
-    "point": "Analysts flagged underlying ARPU pressure, suggesting connectivity revenue quality is weakening.",
+    "point": "9 million customer addition (Q3 FY26)",
+    "why": "Slower base expansion may limit future growth",
     "cites": [
      {
-      "label": "Q1 FY27 call, p.22 (analyst)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c9d3d96a-8b04-4b41-b454-3f98d1f90702.pdf"
+      "label": "Q3 FY26 call, p.3",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=26290395-526a-441f-a347-c8ac12e4adf3.pdf"
      }
     ]
    }
   ],
   "dropped": 0,
-  "model": "qwen/qwen3.8-27b",
+  "model": "openai/gpt-oss-120b",
   "model_note": null
  },
  "sources": [

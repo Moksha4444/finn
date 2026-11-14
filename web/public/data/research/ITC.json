@@ -1,12 +1,12 @@
 {
  "symbol": "ITC",
  "name": "ITC Ltd",
- "generated_at": "2026-11-13T05:43",
+ "generated_at": "2026-11-14T03:38",
  "latest_quarter": "Sep 2026",
  "calls": [],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "EBITDA margin (computed: operating profit over sales)",
+  "name": "EBITDA margin (computed: operating profit over sales, other income excluded)",
   "source": "screener.in quarterly results table (from the company's exchange results filings)"
  },
  "model_note": null,
@@ -271,6 +271,14 @@
    [
     "2026-11-11",
     285.0
+   ],
+   [
+    "2026-11-12",
+    284.05
+   ],
+   [
+    "2026-11-13",
+    285.0
    ]
   ],
   "nifty": [
@@ -509,6 +517,14 @@
    [
     "2026-11-11",
     25255.05
+   ],
+   [
+    "2026-11-12",
+    25299.35
+   ],
+   [
+    "2026-11-13",
+    25144.3
    ]
   ]
  },
@@ -517,6 +533,12 @@
   "lender": false,
   "unit": "₹ crore",
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "pat_name": "PAT (to owners)",
+  "filing_quarters": [
+   "Sep 2026",
+   "Jun 2026",
+   "Sep 2025"
+  ],
   "quarters": {
    "periods": [
     "Dec 2024",
@@ -532,27 +554,27 @@
     18790.0,
     18765.0,
     21495.0,
-    19502.0,
+    19501.63,
     20047.0,
     17825.0,
-    19114.0,
-    20269.0
+    19114.37,
+    20268.63
    ],
    "pat": [
-    5013.0,
-    19808.0,
-    5343.0,
-    5187.0,
-    5018.0,
-    5470.0,
-    4509.0,
-    4229.0
+    4935.0,
+    19727.0,
+    5244.0,
+    5126.11,
+    4931.0,
+    5388.0,
+    4394.13,
+    4168.4
    ],
    "revenue_name": "Revenue",
-   "claim": "Revenue +3.9% YoY in the Sep 2026 quarter; PAT −18.5%."
+   "claim": "Revenue +3.9% YoY in Q2 FY27; PAT (to owners) −18.7%."
   },
   "margin": {
-   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -564,16 +586,16 @@
     "Sep 2026"
    ],
    "values": [
-    38.14,
-    116.77,
-    35.2,
-    38.12,
-    35.94,
-    42.77,
-    33.11,
-    30.71
+    33.86,
+    34.74,
+    31.71,
+    34.33,
+    34.33,
+    38.84,
+    27.1,
+    27.85
    ],
-   "claim": "EBITDA margin 30.7% in the Sep 2026 quarter, −7.4 pp YoY."
+   "claim": "EBITDA margin 27.9% in Q2 FY27, −6.5 pp YoY."
   },
   "cash": {
    "years": [
@@ -591,13 +613,13 @@
     18464.0
    ],
    "pat": [
-    15503.0,
-    19477.0,
-    20751.0,
-    35052.0,
-    21018.0
+    15243.0,
+    19192.0,
+    20459.0,
+    34747.0,
+    20689.0
    ],
-   "claim": "Operating cash flow was 0.79× PAT over FY22–FY26 (₹87,924 cr vs ₹111,801 cr)."
+   "claim": "Operating cash flow was 0.80× PAT over FY22–FY26 (Apr 2021 – Mar 2026) (₹87,924 cr vs ₹110,330 cr)."
   },
   "leverage": {
    "years": [
@@ -614,10 +636,48 @@
     0.0,
     0.03
    ],
-   "claim": "Debt/equity 0.03 at FY26 end, from 0.00 at FY22 end."
+   "claim": "Debt/equity 0.03 at FY26 end (Mar 2026), from 0.00 at FY22 end."
   }
  },
- "bull_bear": null,
+ "bull_bear": {
+  "bull": [
+   {
+    "point": "Revenue +3.9% YoY in Q2 FY27.",
+    "why": "Boosts top‑line growth, supporting earnings expansion.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     }
+    ]
+   }
+  ],
+  "bear": [
+   {
+    "point": "Debt/equity 0.03 at FY26 end, from 0.00 at FY22 end.",
+    "why": "Rising leverage increases balance‑sheet risk, limiting financial flexibility.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#leverage"
+     }
+    ]
+   },
+   {
+    "point": "EBITDA margin 27.9% in Q2 FY27, −6.5 pp YoY.",
+    "why": "Margin compression hurts profitability, pressuring earnings quality.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
+     }
+    ]
+   }
+  ],
+  "dropped": 1,
+  "model": "openai/gpt-oss-120b",
+  "model_note": null
+ },
  "sources": [
   {
    "label": "Quarterly and annual tables (consolidated), screener.in, from the exchange filings",

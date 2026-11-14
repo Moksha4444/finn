@@ -1,7 +1,7 @@
 {
  "symbol": "TITAN",
  "name": "Titan Company Ltd",
- "generated_at": "2026-11-13T05:42",
+ "generated_at": "2026-11-14T13:48",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -34,20 +34,55 @@
  "score": {
   "hit": 0,
   "ahead": 0,
-  "on track": 1,
+  "on track": 2,
   "moved closer": 0,
   "partial": 0,
   "no change": 0,
   "behind pace": 0,
   "moved away": 0,
   "miss": 0,
-  "not-yet-measurable": 5
+  "not-yet-measurable": 4
  },
  "promises": [
   {
+   "metric": "jewellery business margin center of gravity",
+   "target": "11%",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
+   "said_in": "Jun 2026",
+   "call": "Q1 FY27",
+   "quote": "In the Investor Day and prior, we have said that more of 11% being the center of gravity for jewellery business margin, we would be around that plus/minus something can happen.",
+   "page": 5,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f70a0a33-43cf-40b6-a753-67b06123e8de.pdf",
+   "path": null,
+   "cites": [
+    {
+     "label": "Q2 FY27 results filing, p.14 (consolidated segment table, in crores): Jewellery revenue 17,721.00 (year earlier 16,522.00), result 2,300.00",
+     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=86009cba-ca03-4d35-bad8-b1988cfcff13.pdf"
+    }
+   ],
+   "chart": {
+    "kind": "margin",
+    "points": [
+     [
+      "Q2 FY27",
+      12.98
+     ]
+    ],
+    "lo": 11,
+    "hi": null,
+    "direction": "at_least",
+    "end": "Q4 FY27"
+   },
+   "actual_source": "the company's results filings on BSE: segment information; growth and margins computed in Python",
+   "model": "python (computed)",
+   "verdict": "on track",
+   "actual": "FY27 (Apr 2026 – Mar 2027) so far (Q2, 1 of 4 quarters): Jewellery segment result margin (before interest and tax, after depreciation) 13.0% vs target ≥11%",
+   "why": "13.0% against ≥11% with the period still running, so no hit or miss yet; computed in Python. No period was stated, so it is judged on the financial year it was given in."
+  },
+  {
    "metric": "Titan Jewellery business margin",
    "target": "around 11%",
-   "period": "FY27",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
    "said_in": "Sep 2026",
    "call": "Q2 FY27",
    "quote": "I think we still, Mihir, would like to anchor our margin target at around 11%... As far as FY27 is concerned, change our stance on margins.",
@@ -76,8 +111,8 @@
    "actual_source": "the company's results filings on BSE: segment information; growth and margins computed in Python",
    "model": "python (computed)",
    "verdict": "on track",
-   "actual": "FY27 so far (1 of 4 quarters: Sep 2026): Jewellery segment result margin (before interest and tax, after depreciation) 13.0% vs target ≥11%",
-   "why": "13.0% against ≥11% with the period still running; computed in Python."
+   "actual": "FY27 (Apr 2026 – Mar 2027) so far (Q2, 1 of 4 quarters): Jewellery segment result margin (before interest and tax, after depreciation) 13.0% vs target ≥11%",
+   "why": "13.0% against ≥11% with the period still running, so no hit or miss yet; computed in Python."
   },
   {
    "metric": "watch business margins",
@@ -105,24 +140,6 @@
    "call": "Q1 FY27",
    "quote": "I think overall, we are committed to -- I'm just reiterating, we are committed to a double-digit healthy growth in value in the jewellery business. So that's the only way we'll get to our committed FY 30 goals that we've said.",
    "page": 17,
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f70a0a33-43cf-40b6-a753-67b06123e8de.pdf",
-   "path": null,
-   "cites": [],
-   "chart": null,
-   "verdict": "not-yet-measurable",
-   "actual": "not disclosed",
-   "actual_source": null,
-   "model": "openai/gpt-oss-120b",
-   "why": "Not measured yet: no later filing or call statement measures this promise."
-  },
-  {
-   "metric": "jewellery business margin center of gravity",
-   "target": "11%",
-   "period": "full year basis",
-   "said_in": "Jun 2026",
-   "call": "Q1 FY27",
-   "quote": "In the Investor Day and prior, we have said that more of 11% being the center of gravity for jewellery business margin, we would be around that plus/minus something can happen.",
-   "page": 5,
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f70a0a33-43cf-40b6-a753-67b06123e8de.pdf",
    "path": null,
    "cites": [],
@@ -166,7 +183,7 @@
    "verdict": "not-yet-measurable",
    "actual": "not disclosed",
    "actual_source": null,
-   "model": "openai/gpt-oss-120b",
+   "model": null,
    "why": "Not measurable yet: promised on the latest call (Q2 FY27), and no results have come out since."
   }
  ],
@@ -174,12 +191,12 @@
  "summary": {
   "kept": 0,
   "missed": 0,
-  "open": 1,
+  "open": 2,
   "partial": 0,
-  "unmeasured": 5,
+  "unmeasured": 4,
   "total": 6,
-  "measured": 1,
-  "sentence": "Kept 0 of 1 measured promise from the last 4 calls; 1 on track; none missed."
+  "measured": 2,
+  "sentence": "Kept 0 of 2 measured promises from the last 4 calls; 2 on track; none missed."
  },
  "prices": {
   "closes": [
@@ -418,6 +435,14 @@
    [
     "2026-11-11",
     4970.0
+   ],
+   [
+    "2026-11-12",
+    4921.9
+   ],
+   [
+    "2026-11-13",
+    4844.9
    ]
   ],
   "nifty": [
@@ -656,6 +681,14 @@
    [
     "2026-11-11",
     25255.05
+   ],
+   [
+    "2026-11-12",
+    25299.35
+   ],
+   [
+    "2026-11-13",
+    25144.3
    ]
   ]
  },
@@ -664,6 +697,8 @@
   "lender": false,
   "unit": "₹ crore",
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "pat_name": "PAT (to owners)",
+  "filing_quarters": [],
   "quarters": {
    "periods": [
     "Dec 2024",
@@ -696,10 +731,10 @@
     2393.0
    ],
    "revenue_name": "Revenue",
-   "claim": "Revenue +10.1% YoY in the Sep 2026 quarter; PAT +113.7%."
+   "claim": "Revenue +10.1% YoY in Q2 FY27; PAT (to owners) +113.7%."
   },
   "margin": {
-   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -711,16 +746,16 @@
     "Sep 2026"
    ],
    "values": [
-    10.16,
+    9.44,
+    10.3,
     11.08,
-    11.71,
-    10.62,
+    10.01,
     10.67,
-    8.07,
-    14.23,
-    18.43
+    7.2,
+    13.53,
+    14.47
    ],
-   "claim": "EBITDA margin 18.4% in the Sep 2026 quarter, +7.8 pp YoY."
+   "claim": "EBITDA margin 14.5% in Q2 FY27, +4.5 pp YoY."
   },
   "cash": {
    "years": [
@@ -738,13 +773,13 @@
     5590.0
    ],
    "pat": [
-    2198.0,
-    3274.0,
+    2173.0,
+    3250.0,
     3496.0,
     3337.0,
     5073.0
    ],
-   "claim": "Operating cash flow was 0.43× PAT over FY22–FY26 (₹7,390 cr vs ₹17,378 cr)."
+   "claim": "Operating cash flow was 0.43× PAT over FY22–FY26 (Apr 2021 – Mar 2026) (₹7,390 cr vs ₹17,329 cr)."
   },
   "leverage": {
    "years": [
@@ -761,26 +796,24 @@
     1.79,
     1.95
    ],
-   "claim": "Debt/equity 1.95 at FY26 end, from 0.78 at FY22 end."
+   "claim": "Debt/equity 1.95 at FY26 end (Mar 2026), from 0.78 at FY22 end."
   }
  },
  "bull_bear": {
   "bull": [
    {
-    "point": "PAT +113.7% YoY in Sep 2026 quarter, driven by ₹490 crores customs duty gain.",
+    "point": "Jewellery segment margin 13.0% vs target ≥11% in FY27 so far (Q2).",
+    "why": "Boosts earnings per share and validates margin guidance",
     "cites": [
      {
-      "label": "Financial snapshot (results filings)",
-      "url": "#quarters"
-     },
-     {
-      "label": "Q2 FY27 call, p.3",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=daa6c172-771a-4af5-b4b3-9813fdf7536a.pdf"
+      "label": "Q1 FY27 call, p.5 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f70a0a33-43cf-40b6-a753-67b06123e8de.pdf"
      }
     ]
    },
    {
-    "point": "EBITDA margin 18.4% in Sep 2026, up 7.8 pp YoY, indicating improved profitability.",
+    "point": "EBITDA margin 14.5% in Q2 FY27, +4.5 pp YoY.",
+    "why": "Improves operating profitability and cash generation",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -789,18 +822,20 @@
     ]
    },
    {
-    "point": "Jewellery margin 13.0% vs 11% target, confirming on-track performance for FY27.",
+    "point": "Revenue +10.1% YoY in Q2 FY27; PAT +113.7%.",
+    "why": "Drives top‑line growth and strengthens earnings",
     "cites": [
      {
-      "label": "Q2 FY27 call, p.7 (promise)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=daa6c172-771a-4af5-b4b3-9813fdf7536a.pdf"
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
      }
     ]
    }
   ],
   "bear": [
    {
-    "point": "Debt/equity 1.95 at FY26 end, up from 0.78 at FY22 end, increasing leverage.",
+    "point": "Debt/equity 1.95 at FY26 end (Mar 2026).",
+    "why": "Elevates leverage and balance‑sheet risk",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -809,30 +844,18 @@
     ]
    },
    {
-    "point": "Operating cash flow 0.43× PAT over FY22–FY26, signaling weak cash conversion.",
+    "point": "Analyst questioned near‑term sustainability of watch margins.",
+    "why": "Uncertainty could depress future earnings",
     "cites": [
      {
-      "label": "Financial snapshot (results filings)",
-      "url": "#cash"
-     }
-    ]
-   },
-   {
-    "point": "CaratLane EBIT margin fell to 6.5% from 10.2% base period, missing double-digit promise.",
-    "cites": [
-     {
-      "label": "Q2 FY27 call, p.4",
+      "label": "Q2 FY27 call, p.8 (analyst)",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=daa6c172-771a-4af5-b4b3-9813fdf7536a.pdf"
-     },
-     {
-      "label": "Q1 FY27 call, p.14 (promise)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f70a0a33-43cf-40b6-a753-67b06123e8de.pdf"
      }
     ]
    }
   ],
-  "dropped": 0,
-  "model": "qwen/qwen3.8-27b",
+  "dropped": 2,
+  "model": "openai/gpt-oss-120b",
   "model_note": null
  },
  "sources": [

@@ -1,7 +1,7 @@
 {
  "symbol": "CDSL",
  "name": "Central Depository Services (India) Ltd",
- "generated_at": "2026-11-13T05:40",
+ "generated_at": "2026-11-13T21:44",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -27,7 +27,7 @@
  ],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "EBITDA margin (computed: operating profit over sales)",
+  "name": "EBITDA margin (computed: operating profit over sales, other income excluded)",
   "source": "screener.in quarterly results table (from the company's exchange results filings)"
  },
  "model_note": null,
@@ -292,6 +292,14 @@
    [
     "2026-11-11",
     1407.0
+   ],
+   [
+    "2026-11-12",
+    1455.0
+   ],
+   [
+    "2026-11-13",
+    1447.0
    ]
   ],
   "nifty": [
@@ -530,6 +538,14 @@
    [
     "2026-11-11",
     25255.05
+   ],
+   [
+    "2026-11-12",
+    25299.35
+   ],
+   [
+    "2026-11-13",
+    25144.3
    ]
   ]
  },
@@ -538,6 +554,12 @@
   "lender": false,
   "unit": "₹ crore",
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "pat_name": "PAT (to owners)",
+  "filing_quarters": [
+   "Sep 2026",
+   "Jun 2026",
+   "Sep 2025"
+  ],
   "quarters": {
    "periods": [
     "Dec 2024",
@@ -553,27 +575,27 @@
     278.0,
     224.0,
     259.0,
-    319.0,
+    318.88,
     304.0,
     263.0,
-    293.0,
-    394.0
+    292.76,
+    394.48
    ],
    "pat": [
     130.0,
     100.0,
     102.0,
-    140.0,
+    140.21,
     133.0,
     80.0,
-    118.0,
-    173.0
+    117.51,
+    173.85
    ],
    "revenue_name": "Revenue",
-   "claim": "Revenue +23.5% YoY in the Sep 2026 quarter; PAT +23.6%."
+   "claim": "Revenue +23.7% YoY in Q2 FY27; PAT (to owners) +24.0%."
   },
   "margin": {
-   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -585,16 +607,16 @@
     "Sep 2026"
    ],
    "values": [
-    65.11,
-    62.95,
-    64.09,
-    62.38,
-    62.17,
-    46.01,
-    63.48,
-    63.45
+    57.91,
+    48.66,
+    50.19,
+    55.7,
+    52.63,
+    44.11,
+    47.1,
+    57.92
    ],
-   "claim": "EBITDA margin 63.5% in the Sep 2026 quarter, +1.1 pp YoY."
+   "claim": "EBITDA margin 57.9% in Q2 FY27, +2.2 pp YoY."
   },
   "cash": {
    "years": [
@@ -612,13 +634,13 @@
     467.0
    ],
    "pat": [
-    312.0,
+    311.0,
     276.0,
-    420.0,
-    526.0,
-    455.0
+    419.0,
+    527.0,
+    456.0
    ],
-   "claim": "Operating cash flow was 0.97× PAT over FY22–FY26 (₹1,928 cr vs ₹1,989 cr)."
+   "claim": "Operating cash flow was 0.97× PAT over FY22–FY26 (Apr 2021 – Mar 2026) (₹1,928 cr vs ₹1,989 cr)."
   },
   "leverage": {
    "years": [
@@ -635,13 +657,24 @@
     0.0,
     0.0
    ],
-   "claim": "Debt/equity 0.00 at FY26 end, from 0.00 at FY22 end."
+   "claim": "Debt/equity 0.00 at FY26 end (Mar 2026), from 0.00 at FY22 end."
   }
  },
  "bull_bear": {
   "bull": [
    {
-    "point": "EBITDA margin expanded 1.1 pp to 63.5%, reflecting improved operational efficiency.",
+    "point": "Revenue +23.7% YoY in Q2 FY27.",
+    "why": "Boosts top-line growth and earnings momentum.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     }
+    ]
+   },
+   {
+    "point": "EBITDA margin 57.9% in Q2 FY27, +2.2 pp YoY.",
+    "why": "Improves profitability and cash conversion.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -650,59 +683,50 @@
     ]
    },
    {
-    "point": "18.59 crore demat accounts with 80% market share secure dominant market position.",
+    "point": "Margin pledge income INR6.19 crores in Q2 FY27.",
+    "why": "Adds fee revenue diversifying income.",
     "cites": [
      {
-      "label": "Q1 FY27 call, p.3",
-      "url": "https://nsearchives.nseindia.com/corporate/CDSL_07082026155803_NSEintimationtranscript.pdf"
-     },
-     {
-      "label": "Q1 FY27 call, p.3",
-      "url": "https://nsearchives.nseindia.com/corporate/CDSL_07082026155803_NSEintimationtranscript.pdf"
-     }
-    ]
-   },
-   {
-    "point": "Debt/equity of 0.00 ensures a pristine balance sheet with zero leverage risk.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#leverage"
+      "label": "Q2 FY27 call, p.7",
+      "url": "https://nsearchives.nseindia.com/corporate/CDSL_05112026164633_NSEIntimationTranscript02112026Sd.pdf"
      }
     ]
    }
   ],
   "bear": [
    {
-    "point": "CVL profit fell 12% to INR23.74 crores, dragging consolidated earnings despite revenue growth.",
+    "point": "Analyst asked about competitive intensity shaping up in KYC segment.",
+    "why": "Raises risk of fee pressure from rivals.",
     "cites": [
      {
-      "label": "Q2 FY27 call, p.6",
+      "label": "Q2 FY27 call, p.10 (analyst)",
       "url": "https://nsearchives.nseindia.com/corporate/CDSL_05112026164633_NSEIntimationTranscript02112026Sd.pdf"
      }
     ]
    },
    {
-    "point": "Analysts questioned if e-voting adoption declined YoY, indicating potential market share loss.",
+    "point": "Analyst questioned progress on unlisted revenue growth.",
+    "why": "Suggests uncertainty over expanding non‑core income.",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.10 (analyst)",
+      "url": "https://nsearchives.nseindia.com/corporate/CDSL_05112026164633_NSEIntimationTranscript02112026Sd.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Analyst inquired about e‑voting adoption decline Y‑Y.",
+    "why": "Indicates potential loss of market share.",
     "cites": [
      {
       "label": "Q3 FY26 call, p.7 (analyst)",
       "url": "https://nsearchives.nseindia.com/corporate/CDSL_06022026152040_NSEintimationtranscriptSigned.pdf"
      }
     ]
-   },
-   {
-    "point": "Government CKYC data improvements threaten pricing power in the KYC registration business.",
-    "cites": [
-     {
-      "label": "Q3 FY26 call, p.5 (analyst)",
-      "url": "https://nsearchives.nseindia.com/corporate/CDSL_06022026152040_NSEintimationtranscriptSigned.pdf"
-     }
-    ]
    }
   ],
-  "dropped": 1,
-  "model": "qwen/qwen3.8-27b",
+  "dropped": 0,
+  "model": "openai/gpt-oss-120b",
   "model_note": null
  },
  "sources": [

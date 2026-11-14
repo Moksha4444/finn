@@ -1,9 +1,14 @@
 {
  "symbol": "BHARTIARTL",
  "name": "Bharti Airtel Ltd",
- "generated_at": "2026-11-13T03:04",
+ "generated_at": "2026-11-13T21:43",
  "latest_quarter": "Sep 2026",
  "calls": [
+  {
+   "quarter": "Sep 2026",
+   "call": "Q2 FY27",
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1ff3e14f-7e97-4074-89c7-049408721c5e.pdf"
+  },
   {
    "quarter": "Jun 2026",
    "call": "Q1 FY27",
@@ -18,11 +23,6 @@
    "quarter": "Dec 2025",
    "call": "Q3 FY26",
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1fbe1f35-07ac-4458-9799-d075511bcd53.pdf"
-  },
-  {
-   "quarter": "Sep 2025",
-   "call": "Q2 FY26",
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b8f70dc5-c46b-481a-961c-ecbd39a6f45d.pdf"
   }
  ],
  "skipped_calls": [],
@@ -292,6 +292,14 @@
    [
     "2026-11-11",
     2109.0
+   ],
+   [
+    "2026-11-12",
+    2096.0
+   ],
+   [
+    "2026-11-13",
+    2106.0
    ]
   ],
   "nifty": [
@@ -530,6 +538,14 @@
    [
     "2026-11-11",
     25255.05
+   ],
+   [
+    "2026-11-12",
+    25299.35
+   ],
+   [
+    "2026-11-13",
+    25144.3
    ]
   ]
  },
@@ -538,6 +554,12 @@
   "lender": false,
   "unit": "₹ crore",
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "pat_name": "PAT (to owners)",
+  "filing_quarters": [
+   "Sep 2026",
+   "Jun 2026",
+   "Sep 2025"
+  ],
   "quarters": {
    "periods": [
     "Dec 2024",
@@ -553,27 +575,27 @@
     45129.0,
     47876.0,
     49463.0,
-    52145.0,
+    52145.4,
     53982.0,
     55383.0,
-    58539.0,
-    60878.0
+    58539.1,
+    60877.5
    ],
    "pat": [
-    16135.0,
-    12476.0,
-    7422.0,
-    8651.0,
-    8503.0,
-    9247.0,
-    10012.0,
-    10710.0
+    14781.0,
+    11022.0,
+    5948.0,
+    6791.7,
+    6630.0,
+    7325.0,
+    8167.4,
+    8887.5
    ],
    "revenue_name": "Revenue",
-   "claim": "Revenue +16.7% YoY in the Sep 2026 quarter; PAT +23.8%."
+   "claim": "Revenue +16.7% YoY in Q2 FY27; PAT (to owners) +30.9%."
   },
   "margin": {
-   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -585,16 +607,16 @@
     "Sep 2026"
    ],
    "values": [
-    75.94,
-    57.26,
-    57.48,
-    58.24,
-    58.06,
-    52.9,
-    58.02,
-    58.73
+    54.5,
+    56.41,
+    56.28,
+    56.69,
+    57.02,
+    56.86,
+    56.89,
+    57.4
    ],
-   "claim": "EBITDA margin 58.7% in the Sep 2026 quarter, +0.5 pp YoY."
+   "claim": "EBITDA margin 57.4% in Q2 FY27, +0.7 pp YoY."
   },
   "cash": {
    "years": [
@@ -612,13 +634,13 @@
     122230.0
    ],
    "pat": [
-    8305.0,
-    12287.0,
-    8558.0,
-    37481.0,
-    33823.0
+    4255.0,
+    8346.0,
+    7467.0,
+    33556.0,
+    26695.0
    ],
-   "claim": "Operating cash flow was 4.18× PAT over FY22–FY26 (₹419,802 cr vs ₹100,454 cr)."
+   "claim": "Operating cash flow was 5.23× PAT over FY22–FY26 (Apr 2021 – Mar 2026) (₹419,802 cr vs ₹80,319 cr)."
   },
   "leverage": {
    "years": [
@@ -635,13 +657,14 @@
     1.88,
     1.31
    ],
-   "claim": "Debt/equity 1.31 at FY26 end, from 2.55 at FY22 end."
+   "claim": "Debt/equity 1.31 at FY26 end (Mar 2026), from 2.55 at FY22 end."
   }
  },
  "bull_bear": {
   "bull": [
    {
-    "point": "Revenue +16.7% YoY in Sep 2026 quarter, driving PAT +23.8% growth.",
+    "point": "Revenue +16.7% YoY in Q2 FY27; PAT +30.9%.",
+    "why": "Boosts earnings growth and cash generation.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -650,58 +673,51 @@
     ]
    },
    {
-    "point": "EBITDA margin 58.7% in Sep 2026 quarter, up +0.5 pp YoY, indicating operating leverage.",
+    "point": "EBITDA margin 57.4% in Q2 FY27, +0.7 pp YoY.",
+    "why": "Improves profitability per revenue unit.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
       "url": "#margin"
      }
     ]
-   },
-   {
-    "point": "Operating cash flow 4.18× PAT over FY22–FY26, showing strong cash conversion.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#cash"
-     }
-    ]
    }
   ],
   "bear": [
    {
-    "point": "Two‑times leverage target questioned by analysts, risk of prolonged debt burden.",
+    "point": "Debt/equity 1.31 at FY26 end (Mar 2026).",
+    "why": "Elevates balance‑sheet risk if earnings falter.",
     "cites": [
      {
-      "label": "Q3 FY26 call, p.12 (analyst)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1fbe1f35-07ac-4458-9799-d075511bcd53.pdf"
+      "label": "Financial snapshot (results filings)",
+      "url": "#leverage"
      }
     ]
    },
    {
-    "point": "Three‑year capex moderation query raises concerns on growth funding.",
+    "point": "ARPU Rs 257 in Q4 FY2026, down from Rs 271 in Q2 FY27.",
+    "why": "Erodes revenue per user and pricing power.",
     "cites": [
      {
-      "label": "Q3 FY26 call, p.11 (analyst)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1fbe1f35-07ac-4458-9799-d075511bcd53.pdf"
-     }
-    ]
-   },
-   {
-    "point": "FY2027 ARPU expansion risk flagged due to smartphone shipment drops.",
-    "cites": [
-     {
-      "label": "Q4 FY26 call, p.8 (analyst)",
+      "label": "Q4 FY26 call, p.4",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=e76d0ca2-740a-4e0f-986a-2ad0ad39d515.pdf"
+     },
+     {
+      "label": "Q2 FY27 call, p.4",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1ff3e14f-7e97-4074-89c7-049408721c5e.pdf"
      }
     ]
    }
   ],
-  "dropped": 0,
+  "dropped": 4,
   "model": "openai/gpt-oss-120b",
   "model_note": null
  },
  "sources": [
+  {
+   "label": "Q2 FY27 earnings call transcript",
+   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1ff3e14f-7e97-4074-89c7-049408721c5e.pdf"
+  },
   {
    "label": "Q1 FY27 earnings call transcript",
    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ca87613b-39c3-4571-8ea9-8f77df1b6428.pdf"
@@ -713,10 +729,6 @@
   {
    "label": "Q3 FY26 earnings call transcript",
    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1fbe1f35-07ac-4458-9799-d075511bcd53.pdf"
-  },
-  {
-   "label": "Q2 FY26 earnings call transcript",
-   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b8f70dc5-c46b-481a-961c-ecbd39a6f45d.pdf"
   },
   {
    "label": "Quarterly and annual tables (consolidated), screener.in, from the exchange filings",

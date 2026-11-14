@@ -1,7 +1,7 @@
 {
  "symbol": "MARUTI",
  "name": "Maruti Suzuki India Ltd",
- "generated_at": "2026-11-13T05:41",
+ "generated_at": "2026-11-13T21:54",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -47,7 +47,7 @@
   {
    "metric": "sales volume growth",
    "target": "growth of over 10% this year as compared to the last year",
-   "period": "this year",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
    "said_in": "Mar 2026",
    "call": "Q4 FY26",
    "quote": "The broad expectation, which our Chairman also conveyed, is growth of over 10% this year as compared to the last year.",
@@ -311,6 +311,14 @@
    [
     "2026-11-11",
     13185.0
+   ],
+   [
+    "2026-11-12",
+    13024.0
+   ],
+   [
+    "2026-11-13",
+    12854.0
    ]
   ],
   "nifty": [
@@ -549,6 +557,14 @@
    [
     "2026-11-11",
     25255.05
+   ],
+   [
+    "2026-11-12",
+    25299.35
+   ],
+   [
+    "2026-11-13",
+    25144.3
    ]
   ]
  },
@@ -557,6 +573,8 @@
   "lender": false,
   "unit": "₹ crore",
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
+  "pat_name": "PAT (to owners)",
+  "filing_quarters": [],
   "quarters": {
    "periods": [
     "Dec 2024",
@@ -589,10 +607,10 @@
     2466.0
    ],
    "revenue_name": "Revenue",
-   "claim": "Revenue +26.0% YoY in the Sep 2026 quarter; PAT −26.4%."
+   "claim": "Revenue +26.0% YoY in Q2 FY27; PAT (to owners) −26.4%."
   },
   "margin": {
-   "name": "EBITDA margin (PBT + finance costs + D&A, other income included)",
+   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -604,16 +622,16 @@
     "Sep 2026"
    ],
    "values": [
-    16.0,
-    15.71,
-    16.96,
-    14.4,
-    13.45,
-    12.85,
+    13.09,
+    11.84,
     11.98,
-    9.83
+    12.01,
+    11.17,
+    11.74,
+    8.22,
+    8.93
    ],
-   "claim": "EBITDA margin 9.8% in the Sep 2026 quarter, −4.6 pp YoY."
+   "claim": "EBITDA margin 8.9% in Q2 FY27, −3.1 pp YoY."
   },
   "cash": {
    "years": [
@@ -637,7 +655,7 @@
     14500.0,
     14680.0
    ],
-   "claim": "Operating cash flow was 1.18× PAT over FY22–FY26 (₹64,736 cr vs ₹54,812 cr)."
+   "claim": "Operating cash flow was 1.18× PAT over FY22–FY26 (Apr 2021 – Mar 2026) (₹64,736 cr vs ₹54,812 cr)."
   },
   "leverage": {
    "years": [
@@ -654,31 +672,34 @@
     0.0,
     0.0
    ],
-   "claim": "Debt/equity 0.00 at FY26 end, from 0.01 at FY22 end."
+   "claim": "Debt/equity 0.00 at FY26 end (Mar 2026), from 0.01 at FY22 end."
   }
  },
  "bull_bear": {
   "bull": [
    {
-    "point": "Record FY26 net sales of INR1.74 trillion, up 20.2%, confirm top-line expansion.",
+    "point": "Revenue +26.0% YoY in Q2 FY27",
+    "why": "drives top-line growth, expanding market share",
     "cites": [
      {
-      "label": "Q4 FY26 call, p.6",
-      "url": "https://az-ci-afde-prd-arena-03-efddeyfchzf9akbb.z01.azurefd.net/msilintiwebpdfcopyfromdefault/Transcript_earnings_call_Maruti_Suzuki_Q4_FY_26.pdf"
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
      }
     ]
    },
    {
-    "point": "Q4 EBIT hit all-time high of INR44 billion, up 30.4% YoY.",
+    "point": "Operating cash flow 1.18× PAT over FY22–FY26",
+    "why": "supports earnings coverage and financial flexibility",
     "cites": [
      {
-      "label": "Q4 FY26 call, p.5",
-      "url": "https://az-ci-afde-prd-arena-03-efddeyfchzf9akbb.z01.azurefd.net/msilintiwebpdfcopyfromdefault/Transcript_earnings_call_Maruti_Suzuki_Q4_FY_26.pdf"
+      "label": "Financial snapshot (results filings)",
+      "url": "#cash"
      }
     ]
    },
    {
-    "point": "Debt/equity at 0.00, down from 0.01, indicates zero leverage.",
+    "point": "Debt/equity 0.00 at FY26 end",
+    "why": "eliminates leverage risk, strengthens balance sheet",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -689,7 +710,8 @@
   ],
   "bear": [
    {
-    "point": "PAT fell 26.4% YoY in Sep 2026 quarter despite revenue growth.",
+    "point": "PAT −26.4% in Q2 FY27",
+    "why": "pressures earnings and cash generation",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -698,7 +720,8 @@
     ]
    },
    {
-    "point": "EBITDA margin compressed 4.6 pp YoY to 9.8% in Sep 2026.",
+    "point": "EBITDA margin 8.9% in Q2 FY27, down −3.1 pp YoY",
+    "why": "reduces profitability amid competitive pressures",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -707,7 +730,8 @@
     ]
    },
    {
-    "point": "Analysts pressed on steel repricing and incremental cost headwinds for next two quarters.",
+    "point": "Analysts raise concerns on incremental cost headwinds",
+    "why": "increases cost pressure on profitability",
     "cites": [
      {
       "label": "Q4 FY26 call, p.6 (analyst)",
@@ -716,8 +740,8 @@
     ]
    }
   ],
-  "dropped": 0,
-  "model": "qwen/qwen3.8-27b",
+  "dropped": 1,
+  "model": "openai/gpt-oss-120b",
   "model_note": null
  },
  "sources": [
