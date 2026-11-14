@@ -1,0 +1,1 @@
+{"data": {"verdicts": [{"id": 0, "used_reported": ["R8"], "verdict": "hit", "why": "R8 reports 19% net margin; actuals show 26% exceeding the 25% target."}]}, "model": "openai/gpt-oss-120b", "model_note": null, "tokens_in": 1597, "tokens_out": 442}

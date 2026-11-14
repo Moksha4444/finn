@@ -1,0 +1,1 @@
+{"data": {"verdicts": [{"id": 1, "verdict": "not-yet-measurable", "used_reported": [], "why": "No reported evidence on wage increment margin impact."}, {"id": 2, "verdict": "not-yet-measurable", "used_reported": [], "why": "No reported evidence on HyperVault capacity."}]}, "model": "openai/gpt-oss-120b", "model_note": null, "tokens_in": 2935, "tokens_out": 347}

@@ -1,0 +1,1 @@
+{"data": {"verdicts": [{"id": 2, "verdict": "not-yet-measurable", "used_reported": [], "why": "No reported data on HyperVault capacity."}]}, "model": "openai/gpt-oss-120b", "model_note": null, "tokens_in": 2654, "tokens_out": 217}

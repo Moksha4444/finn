@@ -1,0 +1,1 @@
+{"data": {"verdicts": [{"id": 7, "verdict": "not-yet-measurable", "used_reported": [], "why": "No reported evidence available."}]}, "model": "openai/gpt-oss-120b", "model_note": null, "tokens_in": 1006, "tokens_out": 317}

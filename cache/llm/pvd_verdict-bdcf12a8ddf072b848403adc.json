@@ -1,0 +1,1 @@
+{"data": {"verdicts": [{"id": 0, "used_reported": ["R7", "R6"], "verdict": "not-yet-measurable", "why": "No numeric target; loan growth evidence (R7 23.5%, R6 11.2%) cannot be compared."}]}, "model": "openai/gpt-oss-120b", "model_note": null, "tokens_in": 2798, "tokens_out": 736}

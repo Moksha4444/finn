@@ -1,0 +1,1 @@
+{"data": {"verdicts": [{"id": 8, "verdict": "hit", "used_reported": [], "why": "Yoy growth 26.1% exceeds 10% target."}, {"id": 9, "verdict": "miss", "used_reported": [], "why": "EBITDA margin 13% below 16% lower bound."}]}, "model": "openai/gpt-oss-120b", "model_note": null, "tokens_in": 1124, "tokens_out": 517}

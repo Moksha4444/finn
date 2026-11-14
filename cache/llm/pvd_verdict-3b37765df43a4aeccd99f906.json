@@ -1,0 +1,1 @@
+{"data": {"verdicts": [{"id": 11, "used_reported": [], "verdict": "not-yet-measurable", "why": "No reported data on five-year CAGR."}, {"id": 12, "used_reported": [], "verdict": "hit", "why": "Actual margin 11.0% exceeds 7.8% target."}]}, "model": "openai/gpt-oss-120b", "model_note": null, "tokens_in": 2340, "tokens_out": 497}

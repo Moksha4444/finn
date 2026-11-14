@@ -1,0 +1,1 @@
+{"data": {"verdicts": [{"id": 12, "verdict": "hit", "used_reported": [], "why": "Actual margin 11.0% exceeds target 7.8%."}]}, "model": "openai/gpt-oss-120b", "model_note": null, "tokens_in": 1002, "tokens_out": 610}

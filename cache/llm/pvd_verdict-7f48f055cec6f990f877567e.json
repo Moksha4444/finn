@@ -1,0 +1,1 @@
+{"data": {"verdicts": [{"id": 0, "verdict": "miss", "used_reported": ["R15", "R11"], "why": "Revenue grew 11.64% (R15) and ~12% (R11), both below the 15% target."}, {"id": 1, "verdict": "not-yet-measurable", "used_reported": [], "why": "No reported data on Vande Bharat sleeper trains."}]}, "model": "openai/gpt-oss-120b", "model_note": null, "tokens_in": 3439, "tokens_out": 642}

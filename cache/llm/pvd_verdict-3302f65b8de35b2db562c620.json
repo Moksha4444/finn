@@ -1,0 +1,1 @@
+{"data": {"verdicts": [{"id": 8, "used_reported": [], "verdict": "hit", "why": "Yoy growth 26.1% exceeds 10% minimum target."}, {"id": 9, "used_reported": [], "verdict": "miss", "why": "Margin 13% is below the 16‑18% target range."}]}, "model": "openai/gpt-oss-120b", "model_note": null, "tokens_in": 1122, "tokens_out": 435}

@@ -1,0 +1,1 @@
+{"data": {"verdicts": [{"id": 0, "used_reported": ["R9"], "verdict": "miss", "why": "Operating margin 24% (R9) below 25% target."}, {"id": 1, "used_reported": [], "verdict": "not-yet-measurable", "why": "No reported data on new operating model employee share."}]}, "model": "openai/gpt-oss-120b", "model_note": null, "tokens_in": 2116, "tokens_out": 666}

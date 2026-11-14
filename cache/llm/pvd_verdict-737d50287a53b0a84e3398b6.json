@@ -1,0 +1,1 @@
+{"data": {"verdicts": [{"id": 0, "verdict": "not-yet-measurable", "used_reported": [], "why": "No reported data on data center capacity."}]}, "model": "openai/gpt-oss-120b", "model_note": null, "tokens_in": 3080, "tokens_out": 287}
