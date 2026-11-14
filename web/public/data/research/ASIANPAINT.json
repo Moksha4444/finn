@@ -1,7 +1,7 @@
 {
  "symbol": "ASIANPAINT",
  "name": "Asian Paints Ltd",
- "generated_at": "2026-11-13T21:39",
+ "generated_at": "2026-11-14T14:32",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -27,7 +27,7 @@
  ],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "PBDIT margin (operating profit over revenue; matches what management reports)",
+  "name": "PBDIT margin (revenue minus operating expenses, over revenue; other income excluded; matches what management reports)",
   "source": "screener.in quarterly results table (from the company's exchange results filings)"
  },
  "model_note": null,
@@ -88,7 +88,7 @@
    "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
    "model": "python (computed)",
    "verdict": "hit",
-   "actual": "FY26 (Apr 2025 – Mar 2026): PBDIT margin (operating profit over revenue; matches what management reports) 18.8% vs target 18–20%",
+   "actual": "FY26 (Apr 2025 – Mar 2026): PBDIT margin (revenue minus operating expenses, over revenue; other income excluded; matches what management reports) 18.8% vs target 18–20%",
    "why": "18.8% against 18–20%; computed in Python. No period was stated, so it is judged on the financial year it was given in."
   },
   {
@@ -153,7 +153,7 @@
    "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
    "model": "python (computed)",
    "verdict": "on track",
-   "actual": "FY27 (Apr 2026 – Mar 2027) so far (Q1–Q2, 2 of 4 quarters): PBDIT margin (operating profit over revenue; matches what management reports) 18.2% vs target 18–20%",
+   "actual": "FY27 (Apr 2026 – Mar 2027) so far (Q1–Q2, 2 of 4 quarters): PBDIT margin (revenue minus operating expenses, over revenue; other income excluded; matches what management reports) 18.2% vs target 18–20%",
    "why": "18.2% against 18–20% with the period still running, so no hit or miss yet; computed in Python."
   },
   {
@@ -762,7 +762,7 @@
    "claim": "Revenue +16.9% YoY in Q2 FY27; PAT (to owners) +7.5%."
   },
   "margin": {
-   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
+   "name": "EBITDA margin (revenue minus operating expenses, over revenue; other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -831,7 +831,7 @@
   "bull": [
    {
     "point": "PBDIT margin 18.8% in FY26, within 18‑20% target.",
-    "why": "Supports profitability and validates management guidance.",
+    "why": "supports earnings stability and profitability.",
     "cites": [
      {
       "label": "Q2 FY26 call, p.27 (promise)",
@@ -840,8 +840,8 @@
     ]
    },
    {
-    "point": "EBITDA margin 18.2% so far in FY27, within 18‑20% target.",
-    "why": "Sustains earnings margin trajectory.",
+    "point": "EBITDA margin 18.2% so far in FY27, on track for 18‑20% target.",
+    "why": "indicates strong operating leverage.",
     "cites": [
      {
       "label": "Q2 FY27 call, p.28 (promise)",
@@ -850,8 +850,8 @@
     ]
    },
    {
-    "point": "Revenue +16.9% YoY in Q2 FY27.",
-    "why": "Drives top‑line growth and earnings expansion.",
+    "point": "Revenue up 16.9% YoY in Q2 FY27, PAT up 7.5%.",
+    "why": "drives top‑line growth and profit expansion.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -862,22 +862,18 @@
   ],
   "bear": [
    {
-    "point": "Volume growth 6.4% in Q2 FY27, below 8‑10% FY27 target.",
-    "why": "May limit top‑line expansion.",
+    "point": "Volume growth 6.4% in Q2 FY27, behind 8‑10% FY27 target.",
+    "why": "limits top‑line expansion and market‑share gains.",
     "cites": [
      {
       "label": "Q1 FY27 call, p.20 (promise)",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e0d5627-2b8b-4bf1-a7ce-9d0160833a0f.pdf"
-     },
-     {
-      "label": "Q2 FY27 call, p.14",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ee7e6efe-1f9b-4b5e-bff7-1da18902ffeb.pdf"
      }
     ]
    },
    {
     "point": "EBITDA margin 15.6% in Q2 FY27, down 2.0 pp YoY.",
-    "why": "Erodes profitability momentum.",
+    "why": "compresses earnings and cash generation.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -886,17 +882,17 @@
     ]
    },
    {
-    "point": "Debt/equity 0.18 at FY26 end, up from 0.11.",
-    "why": "Increases leverage risk.",
+    "point": "Analyst raised risk to 18‑20% EBITDA margin band on Q2 FY27.",
+    "why": "could erode profitability if margin pressure persists.",
     "cites": [
      {
-      "label": "Financial snapshot (results filings)",
-      "url": "#leverage"
+      "label": "Q2 FY27 call, p.28 (analyst)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ee7e6efe-1f9b-4b5e-bff7-1da18902ffeb.pdf"
      }
     ]
    }
   ],
-  "dropped": 1,
+  "dropped": 0,
   "model": "openai/gpt-oss-120b",
   "model_note": null
  },

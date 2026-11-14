@@ -1,7 +1,7 @@
 {
  "symbol": "TITAN",
  "name": "Titan Company Ltd",
- "generated_at": "2026-11-14T13:48",
+ "generated_at": "2026-11-14T19:27",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -27,7 +27,7 @@
  ],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "EBIT margin (computed: operating profit less depreciation, over sales)",
+  "name": "EBIT margin (computed: revenue minus operating expenses and depreciation, over revenue; other income excluded)",
   "source": "screener.in quarterly results table (from the company's exchange results filings)"
  },
  "model_note": null,
@@ -734,7 +734,7 @@
    "claim": "Revenue +10.1% YoY in Q2 FY27; PAT (to owners) +113.7%."
   },
   "margin": {
-   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
+   "name": "EBITDA margin (revenue minus operating expenses, over revenue; other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",

@@ -1,7 +1,7 @@
 {
  "symbol": "BHARTIARTL",
  "name": "Bharti Airtel Ltd",
- "generated_at": "2026-11-13T21:43",
+ "generated_at": "2026-11-14T16:19",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -27,7 +27,7 @@
  ],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "EBITDAaL margin (as reported)",
+  "name": "EBITDAaL margin (as management reported it on each call)",
   "source": "management's reported margin for each quarter, on that quarter's results call (transcripts)"
  },
  "model_note": null,
@@ -595,7 +595,7 @@
    "claim": "Revenue +16.7% YoY in Q2 FY27; PAT (to owners) +30.9%."
   },
   "margin": {
-   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
+   "name": "EBITDA margin (revenue minus operating expenses, over revenue; other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -663,8 +663,8 @@
  "bull_bear": {
   "bull": [
    {
-    "point": "Revenue +16.7% YoY in Q2 FY27; PAT +30.9%.",
-    "why": "Boosts earnings growth and cash generation.",
+    "point": "Revenue +16.7% YoY in Q2 FY27.",
+    "why": "Boosts earnings growth trajectory.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -674,36 +674,32 @@
    },
    {
     "point": "EBITDA margin 57.4% in Q2 FY27, +0.7 pp YoY.",
-    "why": "Improves profitability per revenue unit.",
+    "why": "Improves profitability per rupee of sales.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
       "url": "#margin"
      }
     ]
-   }
-  ],
-  "bear": [
+   },
    {
-    "point": "Debt/equity 1.31 at FY26 end (Mar 2026).",
-    "why": "Elevates balance‑sheet risk if earnings falter.",
+    "point": "Debt/equity 1.31 at FY26 end, down from 2.55.",
+    "why": "Reduces financial risk and interest burden.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
       "url": "#leverage"
      }
     ]
-   },
+   }
+  ],
+  "bear": [
    {
-    "point": "ARPU Rs 257 in Q4 FY2026, down from Rs 271 in Q2 FY27.",
-    "why": "Erodes revenue per user and pricing power.",
+    "point": "Capex Rs12,500 Crores in Q2 FY27.",
+    "why": "Strains cash generation and may limit returns.",
     "cites": [
      {
-      "label": "Q4 FY26 call, p.4",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=e76d0ca2-740a-4e0f-986a-2ad0ad39d515.pdf"
-     },
-     {
-      "label": "Q2 FY27 call, p.4",
+      "label": "Q2 FY27 call, p.3",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1ff3e14f-7e97-4074-89c7-049408721c5e.pdf"
      }
     ]

@@ -1,7 +1,7 @@
 {
  "symbol": "LT",
  "name": "Larsen & Toubro Ltd",
- "generated_at": "2026-11-14T13:45",
+ "generated_at": "2026-11-14T18:35",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -27,7 +27,7 @@
  ],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "EBITDA margin (as reported)",
+  "name": "EBITDA margin (as management reported it on each call)",
   "source": "management's reported margin for each quarter, on that quarter's results call (transcripts)"
  },
  "model_note": null,
@@ -113,36 +113,6 @@
    "why": "Reported 4.1% (Q4 FY26 call) against ≤12%; compared in Python."
   },
   {
-   "metric": "order inflows growth",
-   "target": "10% to 12%",
-   "period": "FY27 (Apr 2026 – Mar 2027)",
-   "said_in": "Mar 2026",
-   "call": "Q4 FY26",
-   "quote": "we expect the group order inflows to grow in the range of 10% to 12% in FY27.",
-   "page": 13,
-   "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf",
-   "path": null,
-   "cites": [],
-   "chart": {
-    "kind": "level",
-    "points": [
-     [
-      "Q1 FY27",
-      14.0
-     ]
-    ],
-    "lo": 10,
-    "hi": 12,
-    "direction": "at_least",
-    "end": "Q4 FY27"
-   },
-   "verdict": "ahead",
-   "actual": "Q1 FY27 call, p.4: “Reflecting this momentum, the group order inflows at Rs. 1,080 billion, registered a 14% Y-on-Y growth.”",
-   "actual_source": "management's statements on later calls (transcripts)",
-   "model": "qwen/qwen3.8-27b picked the evidence; python (computed)",
-   "why": "Reported 14% (Q1 FY27 call) against 10–12%, with the period still running, so no hit or miss yet; compared in Python."
-  },
-  {
    "metric": "revenue growth",
    "target": "10% to 12%",
    "period": "FY27 (Apr 2026 – Mar 2027)",
@@ -181,6 +151,36 @@
    "why": "+11.4% against 10–12% with the period still running, so no hit or miss yet; computed in Python."
   },
   {
+   "metric": "order inflows growth",
+   "target": "10% to 12%",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "we expect the group order inflows to grow in the range of 10% to 12% in FY27.",
+   "page": 13,
+   "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf",
+   "path": null,
+   "cites": [],
+   "chart": {
+    "kind": "level",
+    "points": [
+     [
+      "Q1 FY27",
+      14.0
+     ]
+    ],
+    "lo": 10,
+    "hi": 12,
+    "direction": "at_least",
+    "end": "Q4 FY27"
+   },
+   "verdict": "ahead",
+   "actual": "Q1 FY27 call, p.4: “Reflecting this momentum, the group order inflows at Rs. 1,080 billion, registered a 14% Y-on-Y growth.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "qwen/qwen3.8-27b picked the evidence; python (computed)",
+   "why": "Reported 14% (Q1 FY27 call) against 10–12%, with the period still running, so no hit or miss yet; compared in Python."
+  },
+  {
    "metric": "working capital to sales ratio",
    "target": "around 10%",
    "period": "FY27 (Apr 2026 – Mar 2027)",
@@ -211,22 +211,22 @@
    "why": "Reported 4.9% (Q1 FY27 call) against ≤10%, with the period still running, so no hit or miss yet; compared in Python."
   },
   {
-   "metric": "group order inflows growth",
-   "target": "exceeding our full year FY '26 guidance of 10% growth in group order inflows for the current year",
+   "metric": "EBITDA margin",
+   "target": "full year EBITDA margin target of 8.5%",
    "period": "FY26 (Apr 2025 – Mar 2026)",
    "said_in": "Sep 2025",
    "call": "Q2 FY26",
-   "quote": "We are confident of exceeding our full year FY '26 guidance of 10% growth in group order inflows for the current year.",
-   "page": 9,
+   "quote": "With the execution momentum expected to pick up in H2, we are reasonably confident to achieve our full year EBITDA margin target of 8.5%.",
+   "page": 10,
    "transcript": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q2FY26%20Earnings%20Call%20Transcript%20.pdf",
    "path": null,
    "cites": [],
    "chart": null,
    "verdict": "not-yet-measurable",
-   "actual": "not disclosed",
-   "actual_source": null,
-   "model": "openai/gpt-oss-120b",
-   "why": "Not measurable: results filings don't report this figure (volumes, NOV/GMV, orders, AUM, mix or payout)."
+   "actual": "Q4 FY26 call, p.7: “our group-level EBITDA margin, excluding other income, for Q4 FY '26 is 10.4%”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b picked the evidence; python (computed)",
+   "why": "Not measurable: the latest statement (Q4 FY26 call) gives one quarter's 10.4%, not the figure for the whole period, so it can't settle a ≥8.5% target for FY26 (Apr 2025 – Mar 2026)."
   }
  ],
  "sector": "Industrials",
@@ -780,24 +780,14 @@
    "claim": "Revenue +15.8% YoY in Q2 FY27; PAT (to owners) +32.5%."
   },
   "margin": {
-   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
+   "name": "EBITDA margin (revenue minus operating expenses, over revenue; other income excluded; only the quarters read from the results filings, as screener.in counts some costs differently)",
    "periods": [
-    "Dec 2024",
-    "Mar 2025",
-    "Jun 2025",
     "Sep 2025",
-    "Dec 2025",
-    "Mar 2026",
     "Jun 2026",
     "Sep 2026"
    ],
    "values": [
-    12.21,
-    13.28,
-    12.6,
     10.01,
-    12.86,
-    12.59,
     9.0,
     8.69
    ],
@@ -848,52 +838,40 @@
  "bull_bear": {
   "bull": [
    {
-    "point": "Group order inflows reached Rs. 1,080 billion, up 14% YoY in Q1 FY27.",
-    "why": "Boosts top‑line growth and future revenue visibility.",
-    "cites": [
-     {
-      "label": "Q4 FY26 call, p.13 (promise)",
-      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf"
-     },
-     {
-      "label": "Q1 FY27 call, p.4",
-      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2027AnalysttransL&T-Earnings-Jul28-2026.pdf"
-     },
-     {
-      "label": "Q1 FY27 call, p.4",
-      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2027AnalysttransL&T-Earnings-Jul28-2026.pdf"
-     }
-    ]
-   },
-   {
-    "point": "Revenue grew 11.4% YoY in FY27 so far.",
-    "why": "Supports earnings expansion and cash generation.",
-    "cites": [
-     {
-      "label": "Q4 FY26 call, p.13 (promise)",
-      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf"
-     }
-    ]
-   },
-   {
-    "point": "Net Working Capital to Revenue ratio improved to 4.1% in March 2026.",
-    "why": "Reduces balance‑sheet risk and frees cash for projects.",
+    "point": "4.1% Net Working Capital to Revenue ratio as of March 2026 beat around 12% target.",
+    "why": "Working capital reduction releases balance sheet cash and strengthens management execution credibility.",
     "cites": [
      {
       "label": "Q2 FY26 call, p.10 (promise)",
       "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q2FY26%20Earnings%20Call%20Transcript%20.pdf"
-     },
+     }
+    ]
+   },
+   {
+    "point": "+15.8% YoY Revenue and +32.5% PAT (to owners) in Q2 FY27.",
+    "why": "Accelerating revenue expansion and earnings growth enhance shareholder value and cash generation.",
+    "cites": [
      {
-      "label": "Q4 FY26 call, p.6",
-      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf"
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     }
+    ]
+   },
+   {
+    "point": "1.15 Debt/equity at FY26 end (Mar 2026) improved from 1.52 at FY22 end.",
+    "why": "Lower leverage strengthens balance sheet solvency and creates financial flexibility for capital expenditure.",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#leverage"
      }
     ]
    }
   ],
   "bear": [
    {
-    "point": "Revenue growth was +11.8% YoY in FY26, missing the 15% target.",
-    "why": "Weakens earnings outlook and credibility of guidance.",
+    "point": "+11.8% YoY Revenue growth missed 15% guidance for FY26 (Apr 2025 – Mar 2026).",
+    "why": "Missing guidance damages management execution credibility and reveals project execution vulnerabilities.",
     "cites": [
      {
       "label": "Q2 FY26 call, p.10 (promise)",
@@ -902,8 +880,8 @@
     ]
    },
    {
-    "point": "EBITDA margin slipped to 8.7% in Q2 FY27, down 1.3 pp YoY.",
-    "why": "Erodes profitability and cash conversion efficiency.",
+    "point": "8.7% EBITDA margin in Q2 FY27 was down −1.3 pp YoY.",
+    "why": "Margin contraction compresses operating profitability and diminishes cash flow generation from contracts.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -912,19 +890,23 @@
     ]
    },
    {
-    "point": "Analysts flagged inflation and supply‑chain constraints as key risks.",
-    "why": "Could compress margins and delay project execution.",
+    "point": "15 trillion prospect pie faces unrecovered input cost pressures and deferral risk in Q1 FY27.",
+    "why": "Input price inflation without pricing power impairs future contract margins and cash realization.",
     "cites": [
      {
-      "label": "Q4 FY26 call, p.15 (analyst)",
-      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20Transcript.pdf"
+      "label": "Q1 FY27 call, p.12 (analyst)",
+      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2027AnalysttransL&T-Earnings-Jul28-2026.pdf"
+     },
+     {
+      "label": "Q1 FY27 call, p.13 (analyst)",
+      "url": "https://investors.larsentoubro.com/upload/Analysttrans/FY2027AnalysttransL&T-Earnings-Jul28-2026.pdf"
      }
     ]
    }
   ],
-  "dropped": 0,
-  "model": "openai/gpt-oss-120b",
-  "model_note": null
+  "dropped": 2,
+  "model": "gemini-3.8-flash",
+  "model_note": "Generated by gemini-3.8-flash (openai/gpt-oss-120b unavailable)"
  },
  "sources": [
   {

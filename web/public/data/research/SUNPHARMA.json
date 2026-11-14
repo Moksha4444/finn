@@ -1,7 +1,7 @@
 {
  "symbol": "SUNPHARMA",
  "name": "Sun Pharmaceutical Industries Ltd",
- "generated_at": "2026-11-14T13:47",
+ "generated_at": "2026-11-14T19:17",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -27,7 +27,7 @@
  ],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "EBITDA margin (operating profit over revenue; matches what management reports)",
+  "name": "EBITDA margin (revenue minus operating expenses, over revenue; other income excluded; matches what management reports)",
   "source": "screener.in quarterly results table (from the company's exchange results filings)"
  },
  "model_note": null,
@@ -696,7 +696,7 @@
    "claim": "Revenue +11.9% YoY in Q2 FY27; PAT (to owners) −44.7%."
   },
   "margin": {
-   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
+   "name": "EBITDA margin (revenue minus operating expenses, over revenue; other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",

@@ -3,7 +3,7 @@
   "symbol": "ASIANPAINT",
   "name": "Asian Paints Ltd",
   "sector": "Consumer Discretionary",
-  "generated_at": "2026-11-13T21:39",
+  "generated_at": "2026-11-14T14:32",
   "summary": {
    "kept": 1,
    "missed": 1,
@@ -17,7 +17,7 @@
   "symbol": "ASTRAL",
   "name": "Astral Ltd",
   "sector": "Industrials",
-  "generated_at": "2026-11-13T21:40",
+  "generated_at": "2026-11-14T14:32",
   "summary": {
    "kept": 2,
    "missed": 1,
@@ -31,13 +31,13 @@
   "symbol": "BAJFINANCE",
   "name": "Bajaj Finance Ltd",
   "sector": "Financial Services",
-  "generated_at": "2026-11-13T21:42",
+  "generated_at": "2026-11-14T16:18",
   "summary": {
    "kept": 1,
-   "missed": 2,
+   "missed": 3,
    "open": 0,
    "partial": 0,
-   "measured": 3,
+   "measured": 4,
    "total": 6
   }
  },
@@ -45,7 +45,7 @@
   "symbol": "BHARTIARTL",
   "name": "Bharti Airtel Ltd",
   "sector": "Telecommunication",
-  "generated_at": "2026-11-13T21:43",
+  "generated_at": "2026-11-14T16:19",
   "summary": {
    "kept": 0,
    "missed": 0,
@@ -59,7 +59,7 @@
   "symbol": "CDSL",
   "name": "Central Depository Services (India) Ltd",
   "sector": "Financial Services",
-  "generated_at": "2026-11-13T21:44",
+  "generated_at": "2026-11-14T16:19",
   "summary": {
    "kept": 0,
    "missed": 0,
@@ -73,7 +73,7 @@
   "symbol": "DEEPAKNTR",
   "name": "Deepak Nitrite Ltd",
   "sector": "Commodities",
-  "generated_at": "2026-11-13T21:45",
+  "generated_at": "2026-11-14T16:34",
   "summary": {
    "kept": 0,
    "missed": 0,
@@ -87,7 +87,7 @@
   "symbol": "DIXON",
   "name": "Dixon Technologies (India) Ltd",
   "sector": "Consumer Discretionary",
-  "generated_at": "2026-11-13T21:47",
+  "generated_at": "2026-11-14T17:03",
   "summary": {
    "kept": 0,
    "missed": 0,
@@ -101,7 +101,7 @@
   "symbol": "ETERNAL",
   "name": "Eternal Ltd",
   "sector": "Consumer Discretionary",
-  "generated_at": "2026-11-13T21:49",
+  "generated_at": "2026-11-14T17:03",
   "summary": {
    "kept": 0,
    "missed": 0,
@@ -115,7 +115,7 @@
   "symbol": "HDFCBANK",
   "name": "HDFC Bank Ltd",
   "sector": "Financial Services",
-  "generated_at": "2026-11-13T21:49",
+  "generated_at": "2026-11-14T17:08",
   "summary": {
    "kept": 1,
    "missed": 1,
@@ -129,7 +129,7 @@
   "symbol": "IRCTC",
   "name": "Indian Railway Catering & Tourism Corporation Ltd",
   "sector": "Consumer Discretionary",
-  "generated_at": "2026-11-13T21:50",
+  "generated_at": "2026-11-14T18:34",
   "summary": {
    "kept": 0,
    "missed": 1,
@@ -143,7 +143,7 @@
   "symbol": "ITC",
   "name": "ITC Ltd",
   "sector": "Fast Moving Consumer Goods",
-  "generated_at": "2026-11-14T03:38",
+  "generated_at": "2026-11-14T18:34",
   "summary": {
    "kept": 0,
    "missed": 0,
@@ -154,15 +154,29 @@
   }
  },
  {
+  "symbol": "KEI",
+  "name": "KEI Industries Ltd",
+  "sector": "Industrials",
+  "generated_at": "2026-11-14T19:26",
+  "summary": {
+   "kept": 2,
+   "missed": 3,
+   "open": 1,
+   "partial": 0,
+   "measured": 6,
+   "total": 6
+  }
+ },
+ {
   "symbol": "KPITTECH",
   "name": "KPIT Technologies Ltd",
   "sector": "Information Technology",
-  "generated_at": "2026-11-14T13:47",
+  "generated_at": "2026-11-14T18:34",
   "summary": {
    "kept": 0,
-   "missed": 4,
+   "missed": 3,
    "open": 0,
-   "partial": 0,
+   "partial": 1,
    "measured": 4,
    "total": 5
   }
@@ -171,7 +185,7 @@
   "symbol": "LT",
   "name": "Larsen & Toubro Ltd",
   "sector": "Industrials",
-  "generated_at": "2026-11-14T13:45",
+  "generated_at": "2026-11-14T18:35",
   "summary": {
    "kept": 2,
    "missed": 1,
@@ -185,7 +199,7 @@
   "symbol": "MARUTI",
   "name": "Maruti Suzuki India Ltd",
   "sector": "Consumer Discretionary",
-  "generated_at": "2026-11-13T21:54",
+  "generated_at": "2026-11-14T19:16",
   "summary": {
    "kept": 0,
    "missed": 0,
@@ -199,7 +213,7 @@
   "symbol": "PERSISTENT",
   "name": "Persistent Systems Ltd",
   "sector": "Information Technology",
-  "generated_at": "2026-11-14T13:47",
+  "generated_at": "2026-11-14T19:16",
   "summary": {
    "kept": 0,
    "missed": 0,
@@ -213,7 +227,7 @@
   "symbol": "POLYCAB",
   "name": "Polycab India Ltd",
   "sector": "Industrials",
-  "generated_at": "2026-11-14T13:44",
+  "generated_at": "2026-11-14T19:17",
   "summary": {
    "kept": 3,
    "missed": 0,
@@ -227,7 +241,7 @@
   "symbol": "RELIANCE",
   "name": "Reliance Industries Ltd",
   "sector": "Energy",
-  "generated_at": "2026-11-14T13:47",
+  "generated_at": "2026-11-14T19:17",
   "summary": {
    "kept": 0,
    "missed": 0,
@@ -241,7 +255,7 @@
   "symbol": "SUNPHARMA",
   "name": "Sun Pharmaceutical Industries Ltd",
   "sector": "Healthcare",
-  "generated_at": "2026-11-14T13:47",
+  "generated_at": "2026-11-14T19:17",
   "summary": {
    "kept": 1,
    "missed": 2,
@@ -255,7 +269,7 @@
   "symbol": "TATAPOWER",
   "name": "Tata Power Company Ltd",
   "sector": "Utilities",
-  "generated_at": "2026-11-14T13:47",
+  "generated_at": "2026-11-14T19:17",
   "summary": {
    "kept": 1,
    "missed": 1,
@@ -269,7 +283,7 @@
   "symbol": "TCS",
   "name": "Tata Consultancy Services Ltd",
   "sector": "Information Technology",
-  "generated_at": "2026-11-14T13:47",
+  "generated_at": "2026-11-14T19:17",
   "summary": {
    "kept": 0,
    "missed": 2,
@@ -283,7 +297,7 @@
   "symbol": "TITAN",
   "name": "Titan Company Ltd",
   "sector": "Consumer Discretionary",
-  "generated_at": "2026-11-14T13:48",
+  "generated_at": "2026-11-14T19:27",
   "summary": {
    "kept": 0,
    "missed": 0,
@@ -297,7 +311,7 @@
   "symbol": "TRENT",
   "name": "Trent Ltd",
   "sector": "Consumer Discretionary",
-  "generated_at": "2026-11-13T22:49",
+  "generated_at": "2026-11-14T19:27",
   "summary": {
    "kept": 0,
    "missed": 0,

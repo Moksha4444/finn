@@ -1,7 +1,7 @@
 {
  "symbol": "BAJFINANCE",
  "name": "Bajaj Finance Ltd",
- "generated_at": "2026-11-13T21:42",
+ "generated_at": "2026-11-14T16:18",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -35,10 +35,10 @@
   "moved closer": 0,
   "partial": 0,
   "no change": 0,
-  "behind pace": 2,
+  "behind pace": 3,
   "moved away": 0,
   "miss": 0,
-  "not-yet-measurable": 3
+  "not-yet-measurable": 2
  },
  "promises": [
   {
@@ -120,6 +120,24 @@
    "why": "AUM 5,84,624 crores exceeds upper target 31,000 crores."
   },
   {
+   "metric": "branches",
+   "target": "2,700 to 2,800 branches",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
+   "said_in": "Jun 2026",
+   "call": "Q1 FY27",
+   "quote": "By year-end we foresee 2,700 to 2,800 branches, all goes well, maybe 3,000 branches and AUM of between INR29,000 crores and INR31,000 crores, all organic.",
+   "page": 4,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b101e24e-b807-4c74-9025-90009f4b47a5.pdf",
+   "path": null,
+   "cites": [],
+   "chart": null,
+   "verdict": "behind pace",
+   "actual": "Q2 FY27 call, p.3: “AUM, as you can see, grew by 26.5% to INR 5,84,624 crores, delivering net AUM addition of close to INR 38,000 crores in the quarter.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b",
+   "why": "AUM 5,84,624 crores exceeds upper target 31,000 crores."
+  },
+  {
    "metric": "AUM growth",
    "target": "22% to 23%",
    "period": "FY26 (Apr 2025 – Mar 2026)",
@@ -138,52 +156,34 @@
    "why": "Not measurable: results filings don't report this figure (volumes, NOV/GMV, orders, AUM, mix or payout)."
   },
   {
-   "metric": "cost of funds",
-   "target": "7.55% to 7.60%",
-   "period": "FY26 (Apr 2025 – Mar 2026)",
-   "said_in": "Dec 2025",
-   "call": "Q3 FY26",
-   "quote": "We're likely to be between 7.55% to 7.60% in terms of cost of funds as we exit the year.",
-   "page": 4,
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6eb34dc2-bde9-4df5-8b93-aad3d461140e.pdf",
-   "path": null,
-   "cites": [],
-   "chart": null,
-   "verdict": "not-yet-measurable",
-   "actual": "Q4 FY26 call, p.4: “Cost of funds improved by 4 basis points in Q4 and came in at 7.41%.”",
-   "actual_source": "management's statements on later calls (transcripts)",
-   "model": "openai/gpt-oss-120b picked the evidence; python (computed)",
-   "why": "Not measurable: the latest statement (Q4 FY26 call) gives one quarter's 7.41%, not the figure for the whole period, so it can't settle a ≤7.6% target for FY26 (Apr 2025 – Mar 2026)."
-  },
-  {
-   "metric": "credit cost",
-   "target": "165 to 175 basis points",
+   "metric": "opex-to-NTI improvement",
+   "target": "25 to 40 basis point improvement in FY27 on opex-to-NTI",
    "period": "FY27 (Apr 2026 – Mar 2027)",
-   "said_in": "Dec 2025",
-   "call": "Q3 FY26",
-   "quote": "We foresee that the number next year as we enter could be anywhere between 165 to 175 basis points",
-   "page": 7,
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6eb34dc2-bde9-4df5-8b93-aad3d461140e.pdf",
+   "said_in": "Sep 2026",
+   "call": "Q2 FY27",
+   "quote": "We remain pretty comfortable place to deliver a 25 to 40 basis point improvement in FY27 on opex-to-NTI.",
+   "page": 4,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf",
    "path": null,
    "cites": [],
    "chart": null,
    "verdict": "not-yet-measurable",
-   "actual": "Q2 FY27 call, p.4: “Cost of funds came down sequentially by 9 basis points and came in at 7.31%.”; Q4 FY26 call, p.4: “Cost of funds improved by 4 basis points in Q4 and came in at 7.41%.”",
-   "actual_source": "management's statements on later calls (transcripts)",
-   "model": "openai/gpt-oss-120b",
-   "why": "The model's reason used a number that is not in the evidence."
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": null,
+   "why": "Not measurable yet: promised on the latest call (Q2 FY27), and no results have come out since."
   }
  ],
  "sector": "Financial Services",
  "summary": {
   "kept": 1,
-  "missed": 2,
+  "missed": 3,
   "open": 0,
   "partial": 0,
-  "unmeasured": 3,
+  "unmeasured": 2,
   "total": 6,
-  "measured": 3,
-  "sentence": "Kept 1 of 3 measured promises from the last 4 calls; missed 2, the latest on AUM (Q1 FY27 call)."
+  "measured": 4,
+  "sentence": "Kept 1 of 4 measured promises from the last 4 calls; missed 3, the latest on AUM (Q1 FY27 call)."
  },
  "prices": {
   "closes": [
@@ -758,8 +758,8 @@
  "bull_bear": {
   "bull": [
    {
-    "point": "AUM grew 26.5% to INR 5,84,624 crores in Q2 FY27, ahead of FY27 target 20‑24%",
-    "why": "Boosts fee income and market share",
+    "point": "AUM grew 26.5% in Q2 FY27",
+    "why": "Boosts earnings growth and expands market share",
     "cites": [
      {
       "label": "Q2 FY27 call, p.3",
@@ -772,8 +772,8 @@
     ]
    },
    {
-    "point": "Net margin 25.5% in Q2 FY27, up 1.1 pp YoY",
-    "why": "Expands earnings per share",
+    "point": "Net margin 25.5% in Q2 FY27",
+    "why": "Improves profitability and cash generation",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -782,20 +782,20 @@
     ]
    },
    {
-    "point": "Cost of funds fell to 7.31% in Q2 FY27, down 9 bps sequentially",
-    "why": "Improves net interest margin",
+    "point": "Total income +22.9% YoY in Q2 FY27",
+    "why": "Drives top‑line expansion and earnings momentum",
     "cites": [
      {
-      "label": "Q2 FY27 call, p.4",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf"
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
      }
     ]
    }
   ],
   "bear": [
    {
-    "point": "ROA 4.6% in Q2 FY27, behind pace for FY27 target 4.4‑4.6%",
-    "why": "Limits earnings growth potential",
+    "point": "ROA 4.6% in Q2 FY27",
+    "why": "Limits earnings upside and pressures margins",
     "cites": [
      {
       "label": "Q4 FY26 call, p.8 (promise)",
@@ -804,8 +804,8 @@
     ]
    },
    {
-    "point": "GNPA rose to 1.06% in Q2 FY27, raising analyst stress concerns",
-    "why": "Signals deteriorating asset quality",
+    "point": "GNPA 1.06% in Q2 FY27",
+    "why": "Signals deteriorating asset quality risk",
     "cites": [
      {
       "label": "Q2 FY27 call, p.5",
@@ -818,17 +818,17 @@
     ]
    },
    {
-    "point": "Analyst warned of near‑term customer acquisition challenge from competitors",
-    "why": "May curb future loan growth",
+    "point": "Net NPA 42 basis points in Q2 FY27",
+    "why": "Elevates credit loss risk and provisioning",
     "cites": [
      {
-      "label": "Q2 FY27 call, p.14 (analyst)",
+      "label": "Q2 FY27 call, p.3",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf"
      }
     ]
    }
   ],
-  "dropped": 0,
+  "dropped": 1,
   "model": "openai/gpt-oss-120b",
   "model_note": null
  },

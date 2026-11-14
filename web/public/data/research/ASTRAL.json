@@ -1,7 +1,7 @@
 {
  "symbol": "ASTRAL",
  "name": "Astral Ltd",
- "generated_at": "2026-11-13T21:40",
+ "generated_at": "2026-11-14T14:32",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -27,7 +27,7 @@
  ],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "EBITDA margin (computed: operating profit over sales, other income excluded)",
+  "name": "EBITDA margin (computed: revenue minus operating expenses, over revenue; other income excluded)",
   "source": "screener.in quarterly results table (from the company's exchange results filings)"
  },
  "model_note": null,
@@ -233,24 +233,6 @@
    "why": "+29.0% against 15–20% with the period still running, so no hit or miss yet; computed in Python."
   },
   {
-   "metric": "Bathware business growth",
-   "target": "20%-25% for the next 5 years",
-   "period": "next 5 years",
-   "said_in": "Sep 2025",
-   "call": "Q2 FY26",
-   "quote": "Bathware we will aim to grow at about 20%-25% for the next 5 years.",
-   "page": 13,
-   "transcript": "https://www.astralltd.com/wp-content/uploads/2025/11/Transcript.pdf",
-   "path": null,
-   "cites": [],
-   "chart": null,
-   "verdict": "not-yet-measurable",
-   "actual": "not disclosed",
-   "actual_source": null,
-   "model": "openai/gpt-oss-120b",
-   "why": "Not measurable (segment not reported): the results filings report Plumbing, Paints and Adhesives, not this business."
-  },
-  {
    "metric": "paints revenue target",
    "target": "reaching 1,000 crores in next 3 to four years",
    "period": "next 3 to 4 years",
@@ -267,6 +249,24 @@
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
    "why": "Not measured: the Paints and Adhesives segment is reported, but only growth and margin targets are checked, not a amount target."
+  },
+  {
+   "metric": "UK business EBITDA margin",
+   "target": "8 to 10% plus EBITDA",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "So this year UK business will be growing giving 8 to 10% plus EBITDA",
+   "page": 3,
+   "transcript": "https://www.astralltd.com/wp-content/uploads/2026/05/Analysts-Meet-2026-Transcript.pdf",
+   "path": null,
+   "cites": [],
+   "chart": null,
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "Not measurable (segment not reported): the results filings report Plumbing, Paints and Adhesives, not this business."
   }
  ],
  "sector": "Industrials",
@@ -816,7 +816,7 @@
    "claim": "Revenue +26.1% YoY in Q2 FY27; PAT (to owners) −5.9%."
   },
   "margin": {
-   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
+   "name": "EBITDA margin (revenue minus operating expenses, over revenue; other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",

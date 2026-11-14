@@ -1,7 +1,7 @@
 {
  "symbol": "TCS",
  "name": "Tata Consultancy Services Ltd",
- "generated_at": "2026-11-14T13:47",
+ "generated_at": "2026-11-14T19:17",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -27,7 +27,7 @@
  ],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "Operating margin (operating profit less depreciation, over revenue; matches what management reports)",
+  "name": "Operating margin (revenue minus operating expenses and depreciation, over revenue; other income excluded; matches what management reports)",
   "source": "screener.in quarterly results table (from the company's exchange results filings)"
  },
  "model_note": null,
@@ -84,7 +84,7 @@
    "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
    "model": "python (computed)",
    "verdict": "miss",
-   "actual": "FY26 (Apr 2025 – Mar 2026): Operating margin (operating profit less depreciation, over revenue; matches what management reports) 25.0% vs target 26–28%",
+   "actual": "FY26 (Apr 2025 – Mar 2026): Operating margin (revenue minus operating expenses and depreciation, over revenue; other income excluded; matches what management reports) 25.0% vs target 26–28%",
    "why": "25.0% against 26–28%; computed in Python. No period was stated, so it is judged on the financial year it was given in."
   },
   {
@@ -127,7 +127,7 @@
    "actual_source": "screener.in quarterly results table (from the company's exchange results filings)",
    "model": "python (computed)",
    "verdict": "behind pace",
-   "actual": "FY27 (Apr 2026 – Mar 2027) so far (Q1–Q2, 2 of 4 quarters): Operating margin (operating profit less depreciation, over revenue; matches what management reports) 24.0% vs target ≥25%",
+   "actual": "FY27 (Apr 2026 – Mar 2027) so far (Q1–Q2, 2 of 4 quarters): Operating margin (revenue minus operating expenses and depreciation, over revenue; other income excluded; matches what management reports) 24.0% vs target ≥25%",
    "why": "24.0% against ≥25% with the period still running, so no hit or miss yet; computed in Python."
   }
  ],
@@ -678,7 +678,7 @@
    "claim": "Revenue +11.2% YoY in Q2 FY27; PAT (to owners) +15.0%."
   },
   "margin": {
-   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
+   "name": "EBITDA margin (revenue minus operating expenses, over revenue; other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -746,18 +746,18 @@
  "bull_bear": {
   "bull": [
    {
-    "point": "Revenue +11.2% YoY in Q2 FY27; PAT +15%.",
-    "why": "Boosts earnings growth and cash generation.",
+    "point": "1.01× PAT operating cash flow conversion was generated over FY22–FY26 (Apr 2021 – Mar 2026).",
+    "why": "Strong cash conversion enhances liquidity reserves and supports self-funded business investments.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
-      "url": "#quarters"
+      "url": "#cash"
      }
     ]
    },
    {
-    "point": "Annualized AI revenue reached $3.1 billion in Q2 FY27, crossing 10% of overall revenue.",
-    "why": "Expands high‑margin AI services revenue stream.",
+    "point": "$3.1 billion annualized AI revenue crossed 10% of overall revenue in Q2 FY27.",
+    "why": "Expanding cutting-edge tech adoption drives pricing power and broadens commercial deal pipelines.",
     "cites": [
      {
       "label": "Q2 FY27 call, p.4",
@@ -766,11 +766,15 @@
     ]
    },
    {
-    "point": "TCV for the quarter was US$9.6 billion in Q2 FY27.",
-    "why": "Strengthens future revenue pipeline.",
+    "point": "US$9.6 billion TCV and 598,056 associates were reached in Q2 FY27.",
+    "why": "Growing deal bookings and capacity expansion protect future revenue delivery and earnings visibility.",
     "cites": [
      {
       "label": "Q2 FY27 call, p.3",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7dc14216-f892-46f1-bf82-5c7b387a83b9.pdf"
+     },
+     {
+      "label": "Q2 FY27 call, p.8",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7dc14216-f892-46f1-bf82-5c7b387a83b9.pdf"
      }
     ]
@@ -778,18 +782,8 @@
   ],
   "bear": [
    {
-    "point": "Operating margin missed 26–28% band, delivering 25.0% in FY26.",
-    "why": "Limits earnings leverage and profitability.",
-    "cites": [
-     {
-      "label": "Q3 FY26 call, p.22 (promise)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d70edbab-d5b2-47ae-8820-efacc5052d13.pdf"
-     }
-    ]
-   },
-   {
-    "point": "Operating margin behind pace at 24.0% versus target ≥25% in FY27 so far.",
-    "why": "Erodes profit growth trajectory.",
+    "point": "24.0% operating margin in FY27 (Apr 2026 – Mar 2027) so far is behind pace for ≥25%.",
+    "why": "Trailing operational efficiency targets damages management credibility and caps earnings growth.",
     "cites": [
      {
       "label": "Q1 FY27 call, p.23 (promise)",
@@ -798,8 +792,18 @@
     ]
    },
    {
-    "point": "EBITDA margin fell 1.6 pp YoY to 25.7% in Q2 FY27.",
-    "why": "Reduces cash conversion efficiency.",
+    "point": "25.0% operating margin missed the 26–28% target band for FY26 (Apr 2025 – Mar 2026).",
+    "why": "Falling short of margin commitments undermines management credibility and constrains profitability.",
+    "cites": [
+     {
+      "label": "Q3 FY26 call, p.22 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=d70edbab-d5b2-47ae-8820-efacc5052d13.pdf"
+     }
+    ]
+   },
+   {
+    "point": "−1.6 pp YoY drop reduced EBITDA margin to 25.7% in Q2 FY27.",
+    "why": "Compressing operational margins threatens cash flow generation and weakens underlying pricing power.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -808,9 +812,9 @@
     ]
    }
   ],
-  "dropped": 0,
-  "model": "openai/gpt-oss-120b",
-  "model_note": null
+  "dropped": 1,
+  "model": "gemini-3.8-flash",
+  "model_note": "Generated by gemini-3.8-flash (openai/gpt-oss-120b unavailable)"
  },
  "sources": [
   {

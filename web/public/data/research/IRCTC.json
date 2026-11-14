@@ -1,8 +1,8 @@
 {
  "symbol": "IRCTC",
  "name": "Indian Railway Catering & Tourism Corporation Ltd",
- "generated_at": "2026-11-13T21:50",
- "latest_quarter": "Jun 2026",
+ "generated_at": "2026-11-14T18:34",
+ "latest_quarter": "Sep 2026",
  "calls": [
   {
    "quarter": "Jun 2026",
@@ -27,7 +27,7 @@
  ],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "EBITDA margin (operating profit over revenue; matches what management reports)",
+  "name": "EBITDA margin (revenue minus operating expenses, over revenue; other income excluded; matches what management reports)",
   "source": "screener.in quarterly results table (from the company's exchange results filings)"
  },
  "model_note": null,
@@ -575,66 +575,67 @@
   "source": "screener.in quarterly and annual tables (from the company's exchange results filings and annual reports)",
   "pat_name": "PAT (to owners)",
   "filing_quarters": [
+   "Sep 2026",
    "Jun 2026",
    "Sep 2025"
   ],
   "quarters": {
    "periods": [
-    "Sep 2024",
     "Dec 2024",
     "Mar 2025",
     "Jun 2025",
     "Sep 2025",
     "Dec 2025",
     "Mar 2026",
-    "Jun 2026"
+    "Jun 2026",
+    "Sep 2026"
    ],
    "revenue": [
-    1064.0,
     1225.0,
     1269.0,
     1160.0,
     1145.99,
     1449.0,
     1460.0,
-    1369.53
+    1369.53,
+    1333.07
    ],
    "pat": [
-    308.0,
     341.0,
     358.0,
     331.0,
-    342.0,
+    342.02,
     394.0,
     326.0,
-    330.0
+    330.16,
+    263.56
    ],
    "revenue_name": "Revenue",
-   "claim": "Revenue +18.1% YoY in Q1 FY27; PAT (to owners) −0.3%."
+   "claim": "Revenue +16.3% YoY in Q2 FY27; PAT (to owners) −22.9%."
   },
   "margin": {
-   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
+   "name": "EBITDA margin (revenue minus operating expenses, over revenue; other income excluded)",
    "periods": [
-    "Sep 2024",
     "Dec 2024",
     "Mar 2025",
     "Jun 2025",
     "Sep 2025",
     "Dec 2025",
     "Mar 2026",
-    "Jun 2026"
+    "Jun 2026",
+    "Sep 2026"
    ],
    "values": [
-    35.06,
     34.04,
     30.34,
     34.22,
     35.27,
     32.09,
     27.33,
-    28.21
+    28.21,
+    30.63
    ],
-   "claim": "EBITDA margin 28.2% in Q1 FY27, −6.0 pp YoY."
+   "claim": "EBITDA margin 30.6% in Q2 FY27, −4.6 pp YoY."
   },
   "cash": {
    "years": [
@@ -676,40 +677,20 @@
  "bull_bear": {
   "bull": [
    {
-    "point": "Revenue rose 18.1% YoY in Q1 FY27",
-    "why": "Accelerates earnings growth and shareholder returns",
+    "point": "Revenue grew +16.3% YoY in Q2 FY27",
+    "why": "Boosts top‑line growth and cash generation",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
       "url": "#quarters"
      }
     ]
-   },
-   {
-    "point": "Total tickets booked 13.55 crores in Q2 FY26",
-    "why": "Boosts top‑line scale and market penetration",
-    "cites": [
-     {
-      "label": "Q2 FY26 call, p.7",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=2ce0acc5-6b05-46de-9e10-a8c90fd96325.pdf"
-     }
-    ]
-   },
-   {
-    "point": "UPI share reached 49.81% of tickets in Q2 FY26",
-    "why": "Digital payments improve cash conversion and cost efficiency",
-    "cites": [
-     {
-      "label": "Q2 FY26 call, p.7",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=2ce0acc5-6b05-46de-9e10-a8c90fd96325.pdf"
-     }
-    ]
    }
   ],
   "bear": [
    {
-    "point": "15% sustainable growth target for FY26 missed",
-    "why": "Undermines credibility of growth guidance",
+    "point": "Sustainable growth target 15% FY26 missed",
+    "why": "Undermines credibility of management guidance",
     "cites": [
      {
       "label": "Q3 FY26 call, p.6 (promise)",
@@ -718,8 +699,8 @@
     ]
    },
    {
-    "point": "EBITDA margin 28.2% in Q1 FY27, down 6.0 pp YoY",
-    "why": "Margin erosion pressures profitability and cash generation",
+    "point": "EBITDA margin 30.6% in Q2 FY27 down 4.6 pp YoY",
+    "why": "Reduces earnings quality and pricing power",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -728,12 +709,12 @@
     ]
    },
    {
-    "point": "Operating cash flow was 0.79× PAT over FY23–FY26",
-    "why": "Cash generation lagging earnings raises liquidity concerns",
+    "point": "Lower non‑convenience fee cited as margin pressure in Q1 FY27",
+    "why": "Signals potential earnings compression",
     "cites": [
      {
-      "label": "Financial snapshot (results filings)",
-      "url": "#cash"
+      "label": "Q1 FY27 call, p.14 (analyst)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=87a3947a-975c-43aa-b153-218d6518615c.pdf"
      }
     ]
    }

@@ -1,12 +1,12 @@
 {
  "symbol": "ITC",
  "name": "ITC Ltd",
- "generated_at": "2026-11-14T03:38",
+ "generated_at": "2026-11-14T18:34",
  "latest_quarter": "Sep 2026",
  "calls": [],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "EBITDA margin (computed: operating profit over sales, other income excluded)",
+  "name": "EBITDA margin (computed: revenue minus operating expenses, over revenue; other income excluded)",
   "source": "screener.in quarterly results table (from the company's exchange results filings)"
  },
  "model_note": null,
@@ -574,7 +574,7 @@
    "claim": "Revenue +3.9% YoY in Q2 FY27; PAT (to owners) −18.7%."
   },
   "margin": {
-   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
+   "name": "EBITDA margin (revenue minus operating expenses, over revenue; other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -642,39 +642,69 @@
  "bull_bear": {
   "bull": [
    {
-    "point": "Revenue +3.9% YoY in Q2 FY27.",
-    "why": "Boosts top‑line growth, supporting earnings expansion.",
+    "point": "Revenue +3.9% YoY in Q2 FY27",
+    "why": "Boosts top-line growth, supporting earnings expansion",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
       "url": "#quarters"
      }
     ]
-   }
-  ],
-  "bear": [
-   {
-    "point": "Debt/equity 0.03 at FY26 end, from 0.00 at FY22 end.",
-    "why": "Rising leverage increases balance‑sheet risk, limiting financial flexibility.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#leverage"
-     }
-    ]
    },
    {
-    "point": "EBITDA margin 27.9% in Q2 FY27, −6.5 pp YoY.",
-    "why": "Margin compression hurts profitability, pressuring earnings quality.",
+    "point": "EBITDA margin 27.9% in Q2 FY27",
+    "why": "High margin sustains cash generation and pricing power",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
       "url": "#margin"
      }
     ]
+   },
+   {
+    "point": "Debt/equity 0.03 at FY26 end",
+    "why": "Low leverage limits balance-sheet risk",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#leverage"
+     }
+    ]
    }
   ],
-  "dropped": 1,
+  "bear": [
+   {
+    "point": "PAT (to owners) −18.7% in Q2 FY27",
+    "why": "Erodes net earnings, pressuring cash distribution",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     }
+    ]
+   },
+   {
+    "point": "EBITDA margin −6.5 pp YoY in Q2 FY27",
+    "why": "Margin compression reduces operating profitability",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
+     }
+    ]
+   },
+   {
+    "point": "Operating cash flow was 0.80× PAT over FY22–FY26",
+    "why": "Cash generation lagging profit, heightening liquidity risk",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#cash"
+     }
+    ]
+   }
+  ],
+  "dropped": 0,
   "model": "openai/gpt-oss-120b",
   "model_note": null
  },

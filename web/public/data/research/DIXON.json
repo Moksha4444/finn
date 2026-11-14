@@ -1,7 +1,7 @@
 {
  "symbol": "DIXON",
  "name": "Dixon Technologies (India) Ltd",
- "generated_at": "2026-11-13T21:47",
+ "generated_at": "2026-11-14T17:03",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -27,7 +27,7 @@
  ],
  "skipped_calls": [],
  "margin_definition": {
-  "name": "EBITDA margin (computed: operating profit over sales, other income excluded)",
+  "name": "EBITDA margin (computed: revenue minus operating expenses, over revenue; other income excluded)",
   "source": "screener.in quarterly results table (from the company's exchange results filings)"
  },
  "model_note": null,
@@ -81,24 +81,6 @@
    "why": "Not measurable (segment not reported): the results filings report no separate segments (Ind AS 108), so one business line can't be told apart from the company total."
   },
   {
-   "metric": "smartphone volumes and selling prices",
-   "target": "we expect a high-double-digit growth quarter-on-quarter in the smartphones volume along with growth in selling prices by 12% to 15%",
-   "period": "next quarter",
-   "said_in": "Mar 2026",
-   "call": "Q4 FY26",
-   "quote": "we expect a high-double-digit growth quarter-on-quarter in the smartphones volume along with growth in selling prices by 12% to 15%.",
-   "page": 4,
-   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=38b72f07-55a6-4503-91fd-ed3b2c209e96.pdf",
-   "path": null,
-   "cites": [],
-   "chart": null,
-   "verdict": "not-yet-measurable",
-   "actual": "not disclosed",
-   "actual_source": null,
-   "model": "openai/gpt-oss-120b",
-   "why": "Not measurable: results filings don't report this figure (volumes, NOV/GMV, orders, AUM, mix or payout)."
-  },
-  {
    "metric": "telecom and networking products revenue growth",
    "target": "We expect this vertical to deliver high double-digit revenue growth in the current fiscal.",
    "period": "FY27 (Apr 2026 – Mar 2027)",
@@ -143,6 +125,24 @@
    "quote": "we expect the revenues to grow almost to 2x in the current fiscal.",
    "page": 6,
    "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=38b72f07-55a6-4503-91fd-ed3b2c209e96.pdf",
+   "path": null,
+   "cites": [],
+   "chart": null,
+   "verdict": "not-yet-measurable",
+   "actual": "not disclosed",
+   "actual_source": null,
+   "model": "openai/gpt-oss-120b",
+   "why": "Not measurable (segment not reported): the results filings report no separate segments (Ind AS 108), so one business line can't be told apart from the company total."
+  },
+  {
+   "metric": "telecom revenues",
+   "target": "INR6,700 crores to INR7,000 crores",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
+   "said_in": "Jun 2026",
+   "call": "Q1 FY27",
+   "quote": "we're going to be somewhere between INR6,700 crores to INR7,000 crores in this fiscal.",
+   "page": 20,
+   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7ce2ca16-3043-48f4-97f9-a62a6a086c2f.pdf",
    "path": null,
    "cites": [],
    "chart": null,
@@ -704,7 +704,7 @@
    "claim": "Revenue +46.7% YoY in Q2 FY27; PAT (to owners) −48.7%."
   },
   "margin": {
-   "name": "EBITDA margin (operating profit over revenue, other income excluded)",
+   "name": "EBITDA margin (revenue minus operating expenses, over revenue; other income excluded)",
    "periods": [
     "Dec 2024",
     "Mar 2025",
@@ -772,18 +772,8 @@
  "bull_bear": {
   "bull": [
    {
-    "point": "Q2 FY27 revenue grew 46.7% YoY.",
-    "why": "drives top‑line expansion and earnings potential.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#quarters"
-     }
-    ]
-   },
-   {
-    "point": "Q2 FY27 EBITDA reached INR 609 crores.",
-    "why": "supports higher operating cash generation.",
+    "point": "EBITDA of INR 609 crores in Q2 FY27.",
+    "why": "Boosts earnings generation and cash flow.",
     "cites": [
      {
       "label": "Q2 FY27 call, p.3",
@@ -792,20 +782,34 @@
     ]
    },
    {
-    "point": "FY26 ROCE was 44.8%.",
-    "why": "indicates efficient capital utilization.",
+    "point": "Semi‑automatic washing machine volume grew 27% to 6.3 lakh units in Q2 FY27.",
+    "why": "Expands top‑line growth in consumer appliances.",
     "cites": [
      {
-      "label": "Q4 FY26 call, p.4",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=38b72f07-55a6-4503-91fd-ed3b2c209e96.pdf"
+      "label": "Q2 FY27 call, p.7",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=995a3a71-4a1e-4c1f-a29a-6c6747e4ca10.pdf"
+     },
+     {
+      "label": "Q2 FY27 call, p.7",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=995a3a71-4a1e-4c1f-a29a-6c6747e4ca10.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Return on capital employed 34.1% in Q1 FY27.",
+    "why": "Enhances asset efficiency and profitability.",
+    "cites": [
+     {
+      "label": "Q1 FY27 call, p.4",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7ce2ca16-3043-48f4-97f9-a62a6a086c2f.pdf"
      }
     ]
    }
   ],
   "bear": [
    {
-    "point": "Q2 FY27 EBITDA margin slipped to 2.7%, down 1.0 pp YoY.",
-    "why": "compresses profitability and cash conversion.",
+    "point": "EBITDA margin 2.7% in Q2 FY27, down 1.0 pp YoY.",
+    "why": "Compresses profitability and limits earnings upside.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -814,8 +818,8 @@
     ]
    },
    {
-    "point": "Q2 FY27 PAT fell 48.7%.",
-    "why": "erodes net earnings and investor returns.",
+    "point": "PAT declined 48.7% YoY in Q2 FY27.",
+    "why": "Erodes net income and cash generation.",
     "cites": [
      {
       "label": "Financial snapshot (results filings)",
@@ -824,17 +828,17 @@
     ]
    },
    {
-    "point": "Q2 FY27 analyst warned of consumer demand weakness for the second half.",
-    "why": "raises revenue risk in upcoming quarters.",
+    "point": "Working capital cycle negative 8 days in FY26.",
+    "why": "May mask cash flow volatility despite short cycle.",
     "cites": [
      {
-      "label": "Q2 FY27 call, p.9 (analyst)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=995a3a71-4a1e-4c1f-a29a-6c6747e4ca10.pdf"
+      "label": "Q4 FY26 call, p.4",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=38b72f07-55a6-4503-91fd-ed3b2c209e96.pdf"
      }
     ]
    }
   ],
-  "dropped": 0,
+  "dropped": 1,
   "model": "openai/gpt-oss-120b",
   "model_note": null
  },
