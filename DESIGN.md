@@ -230,6 +230,18 @@ Full-round, hairline border, 0.75rem. Quiet (ink-2) by default; when the reactio
 ### Window control
 Three-segment control on a shaded paper track; selected segment is card stock, ink-blue, 600, with the one lift shadow. 44px tall.
 
+### Alerts inbox row
+One row per company per day: avatar, short name (+ "New" in ink-blue), one facts line ("−3.3% vs Nifty · 2.3× vol · Results"; signed figures coloured, extreme values 600 weight), then the filing's key fact in ink-2, clamped to 2 lines. The headline above names who needs a look, like the Brief's verdict. Rows with a filing open it in the Brief; market-only rows open the company page.
+
+### How FINN works
+Card stock, hairline, 12px radius, at the top of the Brief on first visit: serif title, a two-column list (Filter / Rank / Verify in 600, the line in ink-2), "Got it" bottom right. Mounts open; dismissal collapses (200ms). The list repeats under Settings.
+
+### Live research checklist
+Serif "Researching SYMBOL", elapsed time, then the backend's stages as hairline rows: done = filled ink circle with a paper tick drawn in (clip reveal), current = ring with an ink dot, label 600 and a quiet detail line ("Q1 FY27 call, 2 of 4"), pending = faint ring, ink-2 label. Weight, not colour.
+
+### Desktop note
+At ≥1024px with a fine pointer only: beside the column, a serif "FINN is built for your phone.", one ink-2 line and a QR code on card stock. The column itself never widens.
+
 ### Buttons
 - **Secondary** ("Try again", "Reset to defaults"): 40px, 6px radius, ink border at 70%, paper-2 on hover; disabled falls back to hairline and ink-2.
 - **Text toggles** ("Show", "+2 more filings", "Show 4 more companies"): ink-blue medium text, at least 44px tall; the "show more companies" toggle is full width inside a hairline 12px box.
