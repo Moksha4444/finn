@@ -13,7 +13,11 @@ from finn.sources import bse
 # instance (0.1 CPU) importing it took minutes and the port scan timed out before uvicorn bound (14 Nov).
 
 app = FastAPI(title="FINN")
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET", "POST"], allow_headers=["*"])
+# The Vercel app (production + preview deploys) and local dev only. shortcut: previews are matched as finn-*.vercel.app
+# because the team slug isn't known here; add it to the pattern to exclude other people's "finn-" projects.
+app.add_middleware(CORSMiddleware, allow_origins=["https://finn-coral-eta.vercel.app"],
+                   allow_origin_regex=r"https://finn-[a-z0-9-]+\.vercel\.app|http://(localhost|127\.0\.0\.1)(:\d+)?",
+                   allow_methods=["GET", "POST"], allow_headers=["*"])
 
 SYMBOL = re.compile(r"[A-Z0-9&-]{1,20}")
 DAILY_JOBS = int(os.getenv("FINN_DAILY_JOBS", "8"))  # ~20k strong-model tokens a company; Groq's free day is 200k

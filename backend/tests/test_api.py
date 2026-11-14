@@ -102,3 +102,9 @@ def test_slow_model_hands_over(monkeypatch):
     monkeypatch.setattr(httpx, "post", slow)
     with pytest.raises(api.llm.Exhausted):
         api.llm._groq("m", ["hi"], {"type": "object"})
+
+
+def test_cors_allows_only_the_vercel_app_and_localhost(client):
+    allowed = lambda o: client.get("/health", headers={"Origin": o}).headers.get("access-control-allow-origin") == o
+    assert allowed("https://finn-coral-eta.vercel.app") and allowed("https://finn-git-main-abc.vercel.app") and allowed("http://localhost:3000")
+    assert not allowed("https://evil.example.com") and not allowed("https://finn-coral-eta.vercel.app.evil.com")
