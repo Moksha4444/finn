@@ -143,7 +143,7 @@ function readSaved(sym: string): Research | null {
 }
 
 function LiveResearch({ symbol, auto, onDone }: { symbol: string; auto: boolean; onDone: (d: Research) => void }) {
-  const [st, setSt] = useState<{ stage?: string; error?: string }>({});
+  const [st, setSt] = useState<{ stage?: string; error?: string; seconds?: number }>({});
   const alive = useRef(true);
   useEffect(() => () => { alive.current = false; }, []);
   const call = async (path: string, init?: RequestInit) => {
@@ -158,7 +158,7 @@ function LiveResearch({ symbol, auto, onDone }: { symbol: string; auto: boolean;
     try {
       let job = await call(`/research/${symbol}`, { method: "POST" });
       while (job.status === "running" && alive.current) {
-        setSt({ stage: job.stage });
+        setSt({ stage: job.stage, seconds: job.seconds });
         await new Promise((ok) => setTimeout(ok, 2500));
         job = await call(`/jobs/${job.id}`);
       }
@@ -180,6 +180,7 @@ function LiveResearch({ symbol, auto, onDone }: { symbol: string; auto: boolean;
       {busy ? (
         <>
           <p className="mt-3 text-[1rem] font-medium" role="status" aria-live="polite">{st.stage}</p>
+          {st.seconds != null && <p className="text-[0.8125rem] text-ink-2 tabular-nums" aria-hidden="true">{Math.floor(st.seconds / 60)}:{String(st.seconds % 60).padStart(2, "0")} elapsed</p>}
           <p className="mt-1 text-[0.875rem] leading-snug text-ink-2">Reading the last four call transcripts and the results filings. This takes a few minutes; keep this page open.</p>
         </>
       ) : (
