@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { DEFAULTS, P1_CATS, sentence, useSettings, type Settings } from "@/lib/feed";
 import { label } from "@/lib/rank";
+import { HowItWorksList } from "@/components/HowItWorks";
 
 export default function SettingsPage() {
   const [s, update] = useSettings();
@@ -25,6 +26,9 @@ export default function SettingsPage() {
       <h2 className="mt-8 border-b border-ink/80 pb-1.5 text-[0.8125rem] font-semibold">Alert me on filings about</h2>
       <CatGroup title="Material filings" cats={P1_CATS} s={s} toggle={toggle} />
       <p className="pt-2 text-[0.8125rem] text-ink-2">Only material filings alert. Dividends, calls, press releases and routine paperwork still show in the brief.</p>
+
+      <h2 className="mt-8 border-b border-ink/80 pb-1.5 text-[0.8125rem] font-semibold">How FINN works</h2>
+      <div className="pt-3"><HowItWorksList /></div>
 
       <button
         type="button"

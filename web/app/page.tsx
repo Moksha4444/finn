@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CompanyCard, CompanyRow, shortName } from "@/components/Company";
 import { Collapse } from "@/components/Collapse";
 import { FeedRow } from "@/components/FeedRow";
+import { HowItWorksCard } from "@/components/HowItWorks";
 import { FeedSkeleton, LoadFailed } from "@/components/States";
 import { WIN_HOURS, WIN_PERIOD, filedAt, inWindow, istTime, longDate, ranked, shortDate, useFeed, useSettings, type Feed, type RankedItem, type Win } from "@/lib/feed";
 import { group, type Group } from "@/lib/group";
@@ -76,6 +77,7 @@ export default function Brief() {
 
   return (
     <>
+      <HowItWorksCard />
       <section className="pt-5">
         <p className="text-[0.8125rem] text-ink-2">
           {longDate(feed.generated_at)} · Last checked {istTime(feed.generated_at)} IST

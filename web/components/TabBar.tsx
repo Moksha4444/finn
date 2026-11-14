@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
+import { alertRows, needsLook } from "@/lib/alerts";
 import { buildAlerts, useFeed, useSettings, useUnseen } from "@/lib/feed";
 import { Wordmark } from "./Logo";
 
@@ -35,13 +36,18 @@ export function TabBar() {
   const [s] = useSettings();
   const alerts = useMemo(() => (feed ? buildAlerts(feed, s) : undefined), [feed, s]);
   const { unseen } = useUnseen(alerts);
+  // one per inbox row that needs a look, as the inbox headline counts them
+  const fresh = useMemo(() => {
+    const keys = new Set(unseen.map((a) => a.key));
+    return alerts ? alertRows(alerts).filter((r) => needsLook(r) && r.keys.some((k) => keys.has(k))).length : 0;
+  }, [alerts, unseen]);
 
   return (
     <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-20 border-t border-rule bg-paper pb-[env(safe-area-inset-bottom)]">
       <ul className="mx-auto grid h-14 max-w-[36rem] grid-cols-4">
         {TABS.map((t) => {
           const active = t.href === "/" ? path === "/" : path.startsWith(t.href);
-          const count = t.href === "/alerts" && !active ? new Set(unseen.map((a) => `${a.symbol}|${a.date}`)).size : 0; // one per inbox row
+          const count = t.href === "/alerts" && !active ? fresh : 0;
           return (
             <li key={t.href}>
               <Link

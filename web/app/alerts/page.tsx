@@ -6,7 +6,7 @@ import { Avatar, shortName } from "@/components/Company";
 import { eventLabel, keyFact } from "@/components/FeedRow";
 import { Signed } from "@/components/Signed";
 import { FeedSkeleton, LoadFailed } from "@/components/States";
-import { alertRows, type AlertRow } from "@/lib/alerts";
+import { alertRows, needsLook, type AlertRow } from "@/lib/alerts";
 import { ALERT_DAYS, buildAlerts, MINOR_VOL, shortDate, useFeed, useSettings, useUnseen, type Feed } from "@/lib/feed";
 
 export default function Alerts() {
@@ -33,8 +33,8 @@ export default function Alerts() {
   const older = rows.length - shown.length;
   const days = [...new Set(shown.map((r) => r.date))];
   const name = (sym: string) => { const n = shortName(feed.companies?.[sym]?.name ?? sym); return n.length > 24 ? sym : n; };
-  const news = [...new Set(rows.filter((r) => isNew(r) && !r.minor && !r.errors.length).map((r) => r.symbol))];
-  const head = news.length === 0 ? "Nothing new since your last visit."
+  const news = [...new Set(rows.filter((r) => isNew(r) && needsLook(r)).map((r) => r.symbol))];
+  const head = news.length === 0 ? "No new alerts."
     : news.length <= 2 ? `${news.map(name).join(" and ")} ${news.length === 1 ? "needs" : "need"} a look.`
     : `${news.length} companies need a look.`;
   return (

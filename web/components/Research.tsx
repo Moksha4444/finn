@@ -119,7 +119,7 @@ function NotResearched({ symbol, inline = false }: { symbol: string; inline?: bo
     <>
       <p className={inline ? "font-serif text-[1.1875rem] font-semibold" : H1}>{symbol || "This company"} isn&rsquo;t researched yet.</p>
       <p className="mt-2 text-[0.9375rem] leading-snug text-ink-2">
-        {ok ? "FINN can research it now from its last four call transcripts and its results filings. It takes a few minutes."
+        {ok ? "FINN can research it now from its last four call transcripts and its results filings, in about 1 to 2 minutes."
           : "Research on request isn't available right now. The companies listed under Research are ready."}
       </p>
       {ok && inline && <Link href={`/research?symbol=${encodeURIComponent(symbol)}&run=1`} className={BTN}>Research this company</Link>}
@@ -145,55 +145,128 @@ function save(d: Research) { // only a finished page: a failed promise check or 
   if (!d.pvd_error && !d.bull_bear_pending) try { localStorage.setItem(saved(d.symbol), JSON.stringify(d)); } catch { /* storage full: the server cache still has it */ }
 }
 
+// The backend's stages (pvd.stage / research.py), in order; the job's stage line says which one is running.
+const STEPS: [RegExp, string][] = [
+  [/waking/i, "Wake the research server"],
+  [/starting|finding/i, "Find the call transcripts and results"],
+  [/reading/i, "Read the last four call transcripts"],
+  [/checking/i, "Check each promise against the results"],
+  [/snapshot/i, "Build the financial snapshot"],
+  [/bull/i, "Write bull & bear (shown on the page when ready)"],
+];
+const clock = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+type Fail = { message: string; code?: string };
+
 function LiveResearch({ symbol, auto, onDone }: { symbol: string; auto: boolean; onDone: (d: Research) => void }) {
-  const [st, setSt] = useState<{ stage?: string; error?: string; seconds?: number }>({});
+  const [st, setSt] = useState<{ stage?: string; fail?: Fail; t0?: number }>({});
+  const [now, setNow] = useState(0);
   const alive = useRef(true);
   useEffect(() => () => { alive.current = false; }, []);
+  useEffect(() => { // elapsed time, counted here so it includes the server waking up
+    if (!st.t0 || st.fail) return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [st.t0, st.fail]);
   const call = async (path: string, init?: RequestInit) => {
     let r: Response;
-    try { r = await fetch(`${API}${path}`, init); } catch { throw new Error("Couldn't reach the research server. Check your connection, then try again."); }
+    try { r = await fetch(`${API}${path}`, init); } catch { throw { message: "Couldn't reach the research server. Check your connection, then try again." }; }
     const j = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(j.detail?.message ?? `The research server answered ${r.status}. Try again in a minute.`);
+    if (!r.ok) throw { message: j.detail?.message ?? `The research server answered ${r.status}. Try again in a minute.`, code: j.detail?.error };
     return j;
   };
   const run = async () => {
-    setSt({ stage: "Waking up the research server…" }); // Render's free tier sleeps: the first answer can take a minute
+    const t0 = Date.now();
+    setNow(t0);
+    setSt({ stage: "Waking up the research server…", t0 }); // Render's free tier sleeps: the first answer can take a minute
     try {
       let job = await call(`/research/${symbol}`, { method: "POST" });
       while (job.status === "running" && !job.page && alive.current) { // page: promises + snapshot are in; bull/bear follows on the page
-        setSt({ stage: job.stage, seconds: job.seconds });
+        setSt({ stage: job.stage, t0 });
         await new Promise((ok) => setTimeout(ok, 2500));
         job = await call(`/jobs/${job.id}`);
       }
       if (!alive.current) return;
-      if (job.status !== "done" && !job.page) throw new Error(job.message ?? "Research didn't finish. Try again in a few minutes.");
+      if (job.status !== "done" && !job.page) throw { message: job.message ?? "Research didn't finish. Try again in a few minutes.", code: job.error ?? job.status };
       const d: Research = await call(`/research/${symbol}`);
       save(d);
       if (alive.current) onDone(d);
     } catch (e) {
-      if (alive.current) setSt({ error: e instanceof Error ? e.message : String(e) });
+      const f = e as Fail;
+      if (alive.current) setSt({ fail: { message: f?.message ?? String(e), code: f?.code } });
     }
   };
   const started = useRef(false);
   useEffect(() => { if (auto && !started.current) { started.current = true; run(); } }); // eslint-disable-line react-hooks/exhaustive-deps
-  const busy = !!st.stage && !st.error;
-  return (
+
+  if (st.fail) return <ResearchFailed symbol={symbol} fail={st.fail} retry={run} />;
+  if (!st.stage) return (
     <section className="pt-5">
-      <p className={H1}>{symbol}</p>
-      {busy ? (
-        <>
-          <p className="mt-3 text-[1rem] font-medium" role="status" aria-live="polite">{st.stage}</p>
-          {st.seconds != null && <p className="text-[0.8125rem] text-ink-2 tabular-nums" aria-hidden="true">{Math.floor(st.seconds / 60)}:{String(st.seconds % 60).padStart(2, "0")} elapsed</p>}
-          <p className="mt-1 text-[0.875rem] leading-snug text-ink-2">Reading the last four call transcripts and the results filings. This takes a few minutes; keep this page open.</p>
-        </>
-      ) : (
-        <>
-          <p className="mt-2 text-[0.9375rem] leading-snug text-ink-2" role={st.error ? "alert" : undefined}>
-            {st.error ?? "Not researched yet. FINN can research it now from its last four call transcripts and its results filings. It takes a few minutes."}
-          </p>
-          <button type="button" onClick={run} className={BTN}>{st.error ? "Try again" : "Research this company"}</button>
-        </>
-      )}
+      <p className={H1}>{symbol} isn&rsquo;t researched yet.</p>
+      <p className="mt-2 text-[0.9375rem] leading-snug text-ink-2">
+        FINN reads its last four earnings-call transcripts, checks each promise against the results filings, and builds the page.
+        About 1 to 2 minutes; a minute more if the research server is asleep.
+      </p>
+      <button type="button" onClick={run} className={BTN}>Research this company</button>
+    </section>
+  );
+  const at = Math.max(0, STEPS.findIndex(([rx]) => rx.test(st.stage!)));
+  const reading = st.stage.match(/Reading (.+) transcript \((\d)\/(\d)\)/);
+  return (
+    <section className="pt-5" aria-busy="true">
+      <p className={H1}>Researching {symbol}</p>
+      <p className="mt-1 text-[0.8125rem] text-ink-2 tabular-nums">{clock(Math.round((now - st.t0!) / 1000))} elapsed · keep this page open</p>
+      <ol className="mt-4 border-t border-rule">
+        {STEPS.map(([, label], k) => {
+          const state = k < at ? "done" : k === at ? "current" : "pending";
+          return (
+            <li key={label} aria-current={state === "current" ? "step" : undefined}
+              className={`flex min-h-11 items-start gap-3 border-b border-rule py-2.5 text-[0.9375rem] leading-snug transition-colors duration-200 ease-out ${state === "pending" ? "text-ink-2" : "text-ink"}`}>
+              <StepMark state={state} />
+              <span>
+                <span className={state === "current" ? "font-semibold" : ""}>{label}</span>
+                {state === "current" && (
+                  <span className="block text-[0.8125rem] text-ink-2" role="status" aria-live="polite">
+                    {reading ? `${reading[1]} call, ${reading[2]} of ${reading[3]}` : k === 0 ? "Free hosting sleeps when idle; this takes up to a minute." : st.stage}
+                  </span>
+                )}
+                <span className="sr-only">{state === "done" ? " (done)" : state === "pending" ? " (to do)" : ""}</span>
+              </span>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  );
+}
+
+// done: a tick drawn in (clip reveal); current: a filled ink dot; pending: an empty ring. Weight, not colour.
+function StepMark({ state }: { state: "done" | "current" | "pending" }) {
+  return (
+    <svg viewBox="0 0 20 20" className="mt-0.5 size-5 shrink-0" aria-hidden="true">
+      <circle cx="10" cy="10" r="8.25" fill={state === "done" ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5"
+        className={`transition-opacity duration-200 ease-out ${state === "pending" ? "opacity-40" : "opacity-100"}`} />
+      {state === "current" && <circle cx="10" cy="10" r="3.5" fill="currentColor" />}
+      {state === "done" && <path d="M6.5 10.5l2.3 2.3 4.7-5" fill="none" stroke="var(--color-paper)" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="animate-draw" />}
+    </svg>
+  );
+}
+
+// Each failure says what happened and what the reader can still do.
+function ResearchFailed({ symbol, fail, retry }: { symbol: string; fail: Fail; retry: () => void }) {
+  const head = fail.code === "unknown_symbol" ? `FINN can’t find ${symbol}.`
+    : fail.code === "daily_cap" || fail.code === "quota" ? "Today’s research runs are used up."
+    : fail.code === "busy" ? "The research server is busy."
+    : fail.code === "timeout" ? `${symbol} is taking longer than usual.`
+    : `${symbol} couldn’t be researched just now.`;
+  const again = !["unknown_symbol", "daily_cap", "quota"].includes(fail.code ?? "");
+  return (
+    <section className="pt-5" role="alert">
+      <p className={H1}>{head}</p>
+      <p className="mt-2 text-[0.9375rem] leading-snug text-ink-2">{fail.message}</p>
+      <div className="mt-4 flex flex-wrap gap-3">
+        {again && <button type="button" onClick={retry} className={BTN.replace("mt-4 ", "")}>Try again</button>}
+        <Link href="/research" className={BTN.replace("mt-4 ", "")}>{fail.code === "unknown_symbol" ? "Search again" : "Researched companies"}</Link>
+      </div>
     </section>
   );
 }
@@ -417,7 +490,11 @@ function Snapshot({ d }: { d: Research }) {
   const cash = s.cash && "years" in s.cash ? s.cash : null;
   const lev = s.leverage && "years" in s.leverage ? s.leverage : null;
   const note = (s.cash && "note" in s.cash && s.cash.note) || null;
-  if (!q && !m && !cash && !lev) return null;
+  if (!q && !m && !cash && !lev) return (
+    <section className="mt-9 border-t border-rule pt-3">
+      <p className="text-[0.8125rem] text-ink-2">No financial snapshot: screener.in has no results tables for this company yet.</p>
+    </section>
+  );
   return (
     <section aria-labelledby="snap-h" className="mt-9">
       <h2 id="snap-h" className={H2}>Financial snapshot</h2>
@@ -466,7 +543,7 @@ function BullBear({ d }: { d: Research }) {
   if (!b) return (
     <section className="mt-9 border-t border-rule pt-3">
       <p className="text-[0.8125rem] text-ink-2" role="status" aria-live="polite">
-        {d.bull_bear_pending ? "Writing bull & bear…" : "Bull/bear couldn’t be generated right now."}
+        {d.bull_bear_pending ? "Writing bull & bear…" : "No bull & bear: the AI models were unavailable when this page was built. Everything above comes straight from the filings."}
       </p>
     </section>
   );
@@ -490,7 +567,7 @@ function BullBear({ d }: { d: Research }) {
       {side("Bear", b.bear)}
       <p className="mt-2 text-[0.75rem] leading-snug text-ink-2">
         Written by {b.model.split("/").pop()} from the cited statements, questions and figures only.
-        {b.dropped > 0 && ` ${b.dropped} ${b.dropped === 1 ? "point was" : "points were"} dropped because ${b.dropped === 1 ? "its" : "their"} numbers weren't in the cited source.`}
+        {b.dropped > 0 && ` ${b.dropped} ${b.dropped === 1 ? "point" : "points"} failed FINN's checks (numbers not in the source, a generic reason, or a clash with a promise verdict) and ${b.dropped === 1 ? "was" : "were"} dropped.`}
         {b.model_note && ` ${b.model_note}.`}
       </p>
     </section>

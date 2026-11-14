@@ -31,3 +31,6 @@ export function alertRows(alerts: Alert[]): AlertRow[] {
   }
   return [...by.values()].sort((a, b) => b.date.localeCompare(a.date) || b.sev - a.sev || a.symbol.localeCompare(b.symbol));
 }
+
+// What the badge counts and the inbox headline names: a move or a filing, not a small volume spike or a data note.
+export const needsLook = (r: AlertRow) => !r.minor && (!!r.market || r.filings.length > 0);

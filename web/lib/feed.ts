@@ -41,7 +41,7 @@ export const P1_CATS = ["results", "m_and_a", "management_change", "fund_raise",
 export type Settings = { volN: number; moveX: number; cats: string[] };
 export const DEFAULTS: Settings = { volN: 2, moveX: 3, cats: P1_CATS };
 
-function localStore(key: string) {
+export function localStore(key: string) {
   const subscribe = (cb: () => void) => {
     const on = (e: Event) => (!(e instanceof StorageEvent) || e.key === key) && cb();
     window.addEventListener("storage", on);
