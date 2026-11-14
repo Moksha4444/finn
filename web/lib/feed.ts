@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
-import { hits, label, rank, type Ranked, type Reaction, type Tier } from "./rank";
+import { sameEvent } from "./alerts";
+import { hits, label, pct, rank, type Ranked, type Reaction, type Tier } from "./rank";
 
 // ---- shape of web/public/data/feed.json (written by backend/finn/ingest.py) ----
 export type ResultsLine = { name: string; value: number | null; qoq_pct: number | null; yoy_pct: number | null };
@@ -37,7 +38,6 @@ export type RankedItem = Item & Ranked;
 // ---- settings (localStorage) ----
 // Defaults mirror backend/finn/config.py (VOLUME_MULTIPLE, EXCESS_MOVE_PCT, TIERS["P1"]).
 export const P1_CATS = ["results", "m_and_a", "management_change", "fund_raise", "litigation", "credit_rating_downgrade", "pledging"];
-export const P2_CATS = ["internal_restructuring", "earnings_call", "dividend", "bonus_split", "capex", "press_release", "credit_rating"];
 export type Settings = { volN: number; moveX: number; cats: string[] };
 export const DEFAULTS: Settings = { volN: 2, moveX: 3, cats: P1_CATS };
 
@@ -114,9 +114,14 @@ export function ranked(items: Item[], s: Settings): RankedItem[] {
 // ---- alerts (recomputed here so threshold/category changes apply immediately) ----
 // sev orders a day's alerts (material filing > price move by size > volume by multiple > data problem);
 // minor = a volume-only spike under MINOR_VOL, folded behind "+N smaller volume spikes" (user, 13 Nov)
-export type Alert = { key: string; symbol: string; date: string; kind: "price" | "filing" | "error"; text: string; url?: string | null; item?: Item; sev: number; minor?: boolean };
+// parts: the crossings as short facts ("−3.3% vs Nifty", "2.3× vol"); strong = extreme (≥5× volume or twice the move threshold)
+export type Alert = {
+  key: string; symbol: string; date: string; kind: "price" | "filing" | "error"; text: string; url?: string | null; item?: Item;
+  sev: number; minor?: boolean; parts?: { t: string; strong: boolean }[];
+};
 export const MINOR_VOL = 3;
 export const ALERT_DAYS = 7;
+const EXTREME_VOL = 5;
 
 export function buildAlerts(feed: Feed, s: Settings): Alert[] {
   const out: Alert[] = [];
@@ -125,16 +130,25 @@ export function buildAlerts(feed: Feed, s: Settings): Alert[] {
     if (!h.length) continue;
     const move = Math.abs(d.excess_pct ?? d.move_pct);
     const moved = move >= s.moveX, vol = d.vol_ratio ?? 0;
-    out.push({ key: `price|${d.symbol}|${d.date}`, symbol: d.symbol, date: d.date, kind: "price", text: h.join(" · "),
+    const parts = [];
+    if (moved) parts.push({ t: d.excess_pct != null ? `${pct(d.excess_pct)} vs Nifty` : pct(d.move_pct), strong: move >= 2 * s.moveX });
+    if (vol >= s.volN) parts.push({ t: `${vol.toFixed(1)}× vol`, strong: vol >= EXTREME_VOL });
+    out.push({ key: `price|${d.symbol}|${d.date}`, symbol: d.symbol, date: d.date, kind: "price", text: h.join(" · "), parts,
       sev: moved ? 200 + move : 100 + vol, minor: !moved && vol < MINOR_VOL });
   }
-  const seen = new Set<string>(); // one alert per (symbol, day, category): results are often filed twice
-  for (const i of [...feed.items].sort((a, b) => a.tier.localeCompare(b.tier))) {
+  // Material (P1) filings in the chosen categories only (user, 14 Nov). One per (symbol, day, category): results are
+  // often filed twice; and a repeat of the same event within a week (approval, then the appointment) keeps the first.
+  const seen = new Set<string>();
+  const kept: Item[] = [];
+  for (const i of [...feed.items].sort((a, b) => a.filed.localeCompare(b.filed))) {
     const key = `filing|${i.symbol}|${i.filed.slice(0, 10)}|${i.category}`;
-    if (i.tier === "P3" || !s.cats.includes(i.category) || seen.has(key)) continue;
+    if (i.tier !== "P1" || !s.cats.includes(i.category) || seen.has(key)) continue;
+    const text = i.headline || i.subject || "";
+    if (kept.some((k) => k.symbol === i.symbol && k.category === i.category && Date.parse(i.filed) - Date.parse(k.filed) <= 7 * 864e5
+      && sameEvent(k.headline || k.subject || "", text))) continue;
     seen.add(key);
-    out.push({ key, symbol: i.symbol, date: i.filed.slice(0, 10), kind: "filing", text: `${sentence(label(i.category))}: ${i.headline || i.subject}`, url: i.url, item: i,
-      sev: i.tier === "P1" ? 300 : 250 });
+    kept.push(i);
+    out.push({ key, symbol: i.symbol, date: i.filed.slice(0, 10), kind: "filing", text: `${sentence(label(i.category))}: ${text}`, url: i.url, item: i, sev: 300 });
   }
   for (const a of feed.alerts.filter((a) => a.kind === "error"))
     out.push({ key: `error|${a.symbol}|${a.date}`, symbol: a.symbol, date: a.date, kind: "error", text: a.text, sev: 0 });

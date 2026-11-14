@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { DEFAULTS, P1_CATS, P2_CATS, sentence, useSettings, type Settings } from "@/lib/feed";
+import { DEFAULTS, P1_CATS, sentence, useSettings, type Settings } from "@/lib/feed";
 import { label } from "@/lib/rank";
 
 export default function SettingsPage() {
@@ -23,9 +23,8 @@ export default function SettingsPage() {
       <NumberField id="move" label="Move vs Nifty" hint="either direction" unit="%" prefix="±" value={s.moveX} min={0.5} step={0.5} onSave={(v) => update({ moveX: v })} />
 
       <h2 className="mt-8 border-b border-ink/80 pb-1.5 text-[0.8125rem] font-semibold">Alert me on filings about</h2>
-      <CatGroup title="Material by default" cats={P1_CATS} s={s} toggle={toggle} />
-      <CatGroup title="Usually worth a look" cats={P2_CATS} s={s} toggle={toggle} />
-      <p className="pt-2 text-[0.8125rem] text-ink-2">Routine paperwork (investor meets, postal ballots, small insider trades) never alerts.</p>
+      <CatGroup title="Material filings" cats={P1_CATS} s={s} toggle={toggle} />
+      <p className="pt-2 text-[0.8125rem] text-ink-2">Only material filings alert. Dividends, calls, press releases and routine paperwork still show in the brief.</p>
 
       <button
         type="button"

@@ -41,7 +41,7 @@ export function TabBar() {
       <ul className="mx-auto grid h-14 max-w-[36rem] grid-cols-4">
         {TABS.map((t) => {
           const active = t.href === "/" ? path === "/" : path.startsWith(t.href);
-          const count = t.href === "/alerts" && !active ? unseen.length : 0;
+          const count = t.href === "/alerts" && !active ? new Set(unseen.map((a) => `${a.symbol}|${a.date}`)).size : 0; // one per inbox row
           return (
             <li key={t.href}>
               <Link
