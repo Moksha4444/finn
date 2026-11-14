@@ -190,3 +190,13 @@ def test_the_owners_split_on_the_next_page_is_sent_too():
          "profit for the period attributable to owners of the company non-controlling interests"]
     assert pdf.find_results_pages(t)[0] == [1, 2]
 
+
+
+def test_notes_and_review_pages_never_win_over_the_pnl_table():
+    """Real page texts (TRENT, MARUTI Q2 FY27). TRENT's notes page repeats the SEBI title and mentions 3 P&L lines; MARUTI's
+    consolidated P&L has a garbled text layer, so only its notes page and review report said "consolidated"."""
+    import json
+    t = json.loads((FIX / "results_page_texts.json").read_text(encoding="utf-8"))
+    assert pdf.find_results_pages(t["TRENT"]["pages"]) == ([9, 10], "consolidated")  # p10 table + p11 (PAT); not p14 notes
+    assert pdf.find_results_pages(t["MARUTI"]["pages"])[1] == "standalone"  # readable standalone p2, labelled as such
+    assert pdf.find_results_pages(t["MARUTI"]["pages"])[0][0] == 1

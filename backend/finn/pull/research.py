@@ -326,8 +326,7 @@ QUOTA_OUT = False  # set when the strong model answered with a daily cap: --rege
 
 
 def bull_bear(name: str, latest: str | None, ev: list[dict], symbol: str, prev: dict | None = None, snap: dict | None = None) -> dict | None:
-    """None when no point survives the checks, or the model is unavailable, and there is no previous section (page
-    hides it). Rejected points get one repair call; a side with fewer than 2 points carries a quiet note. prev: the page's last checked section, kept when the model is unavailable."""
+    """None when the model is unavailable and there is no previous section (page hides it). Rejected points get one repair call; a side with fewer than 2 points carries a quiet note. prev: the page's last checked section, kept when the model is unavailable."""
     global QUOTA_OUT
     payload = {"company": name, "latest_quarter": latest, "evidence": [{"id": e["id"], "text": e["text"]} for e in ev]}
     try:
@@ -358,12 +357,10 @@ def bull_bear(name: str, latest: str | None, ev: list[dict], symbol: str, prev: 
             QUOTA_OUT = QUOTA_OUT or isinstance(e, llm.Exhausted)
             print(f"  bull/bear repair unavailable for {symbol}: {type(e).__name__}: {str(e)[:120]}")
     (bull, d1), (bear, d2) = pts["bull"], pts["bear"]
-    if not bull and not bear:  # nothing survived: the last checked section, if any, beats a blank
-        if prev:
-            print(f"  bull/bear for {symbol}: no point passed the checks; kept the previous one")
-        return prev
+    # the model answered: its checked points stand, even none. The previous section is kept only when the model is
+    # unavailable; once it answers, old points may fail today's checks or quote a figure the filing has replaced (TRENT, 15 Nov).
     # fewer than 2 on a side (user, 15 Nov): show what passed, say so quietly
-    note = " ".join(f"Only 1 {s} point passed the evidence checks." if p else f"No {s} point passed the evidence checks."
+    note = " ".join(f"Only 1 {s} point is supported by the cited evidence." if p else f"No {s} point is supported by the cited evidence."
                     for s, p in (("bull", bull), ("bear", bear)) if len(p) < 2) or None
     return {"bull": bull, "bear": bear, "dropped": d1 + d2, "model": r["model"], "model_note": r.get("model_note"), "note": note}
 

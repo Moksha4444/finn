@@ -1,14 +1,16 @@
 {
- "generated_at": "2026-11-14T14:32+05:30",
+ "generated_at": "2026-11-15T01:36+05:30",
  "window": [
-  "2026-10-15",
-  "2026-11-14"
+  "2026-10-16",
+  "2026-11-15"
  ],
  "thresholds": {
   "volume_multiple": 2.0,
   "excess_move_pct": 3.0
  },
  "portfolio": [
+  "MARUTI",
+  "TRENT",
   "RELIANCE",
   "HDFCBANK",
   "TCS",
@@ -16,10 +18,8 @@
   "ITC",
   "LT",
   "SUNPHARMA",
-  "MARUTI",
   "BAJFINANCE",
   "ASIANPAINT",
-  "TRENT",
   "ETERNAL",
   "DIXON",
   "PERSISTENT",
@@ -31,6 +31,348 @@
   "DEEPAKNTR"
  ],
  "companies": {
+  "MARUTI": {
+   "name": "Maruti Suzuki India Ltd",
+   "sector": "Consumer Discretionary",
+   "closes": [
+    [
+     "2026-09-15",
+     12231.0
+    ],
+    [
+     "2026-09-16",
+     12166.0
+    ],
+    [
+     "2026-09-17",
+     12338.0
+    ],
+    [
+     "2026-09-18",
+     12103.0
+    ],
+    [
+     "2026-09-21",
+     12153.0
+    ],
+    [
+     "2026-09-22",
+     12190.0
+    ],
+    [
+     "2026-09-23",
+     12230.0
+    ],
+    [
+     "2026-09-24",
+     11990.0
+    ],
+    [
+     "2026-09-25",
+     12065.0
+    ],
+    [
+     "2026-09-28",
+     12008.0
+    ],
+    [
+     "2026-09-29",
+     11877.0
+    ],
+    [
+     "2026-09-30",
+     11967.0
+    ],
+    [
+     "2026-10-01",
+     11386.0
+    ],
+    [
+     "2026-10-05",
+     11532.0
+    ],
+    [
+     "2026-10-06",
+     11625.0
+    ],
+    [
+     "2026-10-07",
+     11450.0
+    ],
+    [
+     "2026-10-08",
+     11228.0
+    ],
+    [
+     "2026-10-09",
+     11420.0
+    ],
+    [
+     "2026-10-12",
+     11315.0
+    ],
+    [
+     "2026-10-13",
+     11245.0
+    ],
+    [
+     "2026-10-14",
+     11178.0
+    ],
+    [
+     "2026-10-15",
+     11445.0
+    ],
+    [
+     "2026-10-16",
+     11489.0
+    ],
+    [
+     "2026-10-19",
+     11475.0
+    ],
+    [
+     "2026-10-21",
+     11200.0
+    ],
+    [
+     "2026-10-22",
+     11170.0
+    ],
+    [
+     "2026-10-23",
+     11230.0
+    ],
+    [
+     "2026-10-26",
+     11220.0
+    ],
+    [
+     "2026-10-27",
+     11450.0
+    ],
+    [
+     "2026-10-28",
+     11579.0
+    ],
+    [
+     "2026-10-29",
+     11426.0
+    ],
+    [
+     "2026-10-30",
+     11397.0
+    ],
+    [
+     "2026-11-02",
+     11672.0
+    ],
+    [
+     "2026-11-03",
+     11869.0
+    ],
+    [
+     "2026-11-04",
+     11995.0
+    ],
+    [
+     "2026-11-05",
+     12652.0
+    ],
+    [
+     "2026-11-06",
+     12750.0
+    ],
+    [
+     "2026-11-09",
+     12928.0
+    ],
+    [
+     "2026-11-11",
+     13185.0
+    ],
+    [
+     "2026-11-12",
+     13024.0
+    ],
+    [
+     "2026-11-13",
+     12854.0
+    ]
+   ],
+   "credibility": null
+  },
+  "TRENT": {
+   "name": "Trent Ltd",
+   "sector": "Consumer Discretionary",
+   "closes": [
+    [
+     "2026-09-15",
+     2730.0
+    ],
+    [
+     "2026-09-16",
+     2769.7
+    ],
+    [
+     "2026-09-17",
+     2789.0
+    ],
+    [
+     "2026-09-18",
+     2824.0
+    ],
+    [
+     "2026-09-21",
+     2815.5
+    ],
+    [
+     "2026-09-22",
+     2782.9
+    ],
+    [
+     "2026-09-23",
+     2774.0
+    ],
+    [
+     "2026-09-24",
+     2700.0
+    ],
+    [
+     "2026-09-25",
+     2669.3
+    ],
+    [
+     "2026-09-28",
+     2626.0
+    ],
+    [
+     "2026-09-29",
+     2635.0
+    ],
+    [
+     "2026-09-30",
+     2621.6
+    ],
+    [
+     "2026-10-01",
+     2580.0
+    ],
+    [
+     "2026-10-05",
+     2580.0
+    ],
+    [
+     "2026-10-06",
+     2906.0
+    ],
+    [
+     "2026-10-07",
+     2890.3
+    ],
+    [
+     "2026-10-08",
+     2876.3
+    ],
+    [
+     "2026-10-09",
+     2918.2
+    ],
+    [
+     "2026-10-12",
+     2913.0
+    ],
+    [
+     "2026-10-13",
+     2987.8
+    ],
+    [
+     "2026-10-14",
+     2971.0
+    ],
+    [
+     "2026-10-15",
+     2949.7
+    ],
+    [
+     "2026-10-16",
+     2958.7
+    ],
+    [
+     "2026-10-19",
+     2891.6
+    ],
+    [
+     "2026-10-21",
+     2822.0
+    ],
+    [
+     "2026-10-22",
+     2775.8
+    ],
+    [
+     "2026-10-23",
+     2727.5
+    ],
+    [
+     "2026-10-26",
+     2754.0
+    ],
+    [
+     "2026-10-27",
+     2820.6
+    ],
+    [
+     "2026-10-28",
+     2913.9
+    ],
+    [
+     "2026-10-29",
+     2861.7
+    ],
+    [
+     "2026-10-30",
+     3017.3
+    ],
+    [
+     "2026-11-02",
+     3046.4
+    ],
+    [
+     "2026-11-03",
+     3036.5
+    ],
+    [
+     "2026-11-04",
+     3060.0
+    ],
+    [
+     "2026-11-05",
+     3055.0
+    ],
+    [
+     "2026-11-06",
+     3079.0
+    ],
+    [
+     "2026-11-09",
+     3119.2
+    ],
+    [
+     "2026-11-11",
+     3222.7
+    ],
+    [
+     "2026-11-12",
+     3180.0
+    ],
+    [
+     "2026-11-13",
+     3165.2
+    ]
+   ],
+   "credibility": null
+  },
   "RELIANCE": {
    "name": "Reliance Industries Ltd",
    "sector": "Energy",
@@ -1244,177 +1586,6 @@
     "open": 1
    }
   },
-  "MARUTI": {
-   "name": "Maruti Suzuki India Ltd",
-   "sector": "Consumer Discretionary",
-   "closes": [
-    [
-     "2026-09-15",
-     12231.0
-    ],
-    [
-     "2026-09-16",
-     12166.0
-    ],
-    [
-     "2026-09-17",
-     12338.0
-    ],
-    [
-     "2026-09-18",
-     12103.0
-    ],
-    [
-     "2026-09-21",
-     12153.0
-    ],
-    [
-     "2026-09-22",
-     12190.0
-    ],
-    [
-     "2026-09-23",
-     12230.0
-    ],
-    [
-     "2026-09-24",
-     11990.0
-    ],
-    [
-     "2026-09-25",
-     12065.0
-    ],
-    [
-     "2026-09-28",
-     12008.0
-    ],
-    [
-     "2026-09-29",
-     11877.0
-    ],
-    [
-     "2026-09-30",
-     11967.0
-    ],
-    [
-     "2026-10-01",
-     11386.0
-    ],
-    [
-     "2026-10-05",
-     11532.0
-    ],
-    [
-     "2026-10-06",
-     11625.0
-    ],
-    [
-     "2026-10-07",
-     11450.0
-    ],
-    [
-     "2026-10-08",
-     11228.0
-    ],
-    [
-     "2026-10-09",
-     11420.0
-    ],
-    [
-     "2026-10-12",
-     11315.0
-    ],
-    [
-     "2026-10-13",
-     11245.0
-    ],
-    [
-     "2026-10-14",
-     11178.0
-    ],
-    [
-     "2026-10-15",
-     11445.0
-    ],
-    [
-     "2026-10-16",
-     11489.0
-    ],
-    [
-     "2026-10-19",
-     11475.0
-    ],
-    [
-     "2026-10-21",
-     11200.0
-    ],
-    [
-     "2026-10-22",
-     11170.0
-    ],
-    [
-     "2026-10-23",
-     11230.0
-    ],
-    [
-     "2026-10-26",
-     11220.0
-    ],
-    [
-     "2026-10-27",
-     11450.0
-    ],
-    [
-     "2026-10-28",
-     11579.0
-    ],
-    [
-     "2026-10-29",
-     11426.0
-    ],
-    [
-     "2026-10-30",
-     11397.0
-    ],
-    [
-     "2026-11-02",
-     11672.0
-    ],
-    [
-     "2026-11-03",
-     11869.0
-    ],
-    [
-     "2026-11-04",
-     11995.0
-    ],
-    [
-     "2026-11-05",
-     12652.0
-    ],
-    [
-     "2026-11-06",
-     12750.0
-    ],
-    [
-     "2026-11-09",
-     12928.0
-    ],
-    [
-     "2026-11-11",
-     13185.0
-    ],
-    [
-     "2026-11-12",
-     13024.0
-    ],
-    [
-     "2026-11-13",
-     12854.0
-    ]
-   ],
-   "credibility": null
-  },
   "BAJFINANCE": {
    "name": "Bajaj Finance Ltd",
    "sector": "Financial Services",
@@ -1764,177 +1935,6 @@
     "missed": 1,
     "open": 1
    }
-  },
-  "TRENT": {
-   "name": "Trent Ltd",
-   "sector": "Consumer Discretionary",
-   "closes": [
-    [
-     "2026-09-15",
-     2730.0
-    ],
-    [
-     "2026-09-16",
-     2769.7
-    ],
-    [
-     "2026-09-17",
-     2789.0
-    ],
-    [
-     "2026-09-18",
-     2824.0
-    ],
-    [
-     "2026-09-21",
-     2815.5
-    ],
-    [
-     "2026-09-22",
-     2782.9
-    ],
-    [
-     "2026-09-23",
-     2774.0
-    ],
-    [
-     "2026-09-24",
-     2700.0
-    ],
-    [
-     "2026-09-25",
-     2669.3
-    ],
-    [
-     "2026-09-28",
-     2626.0
-    ],
-    [
-     "2026-09-29",
-     2635.0
-    ],
-    [
-     "2026-09-30",
-     2621.6
-    ],
-    [
-     "2026-10-01",
-     2580.0
-    ],
-    [
-     "2026-10-05",
-     2580.0
-    ],
-    [
-     "2026-10-06",
-     2906.0
-    ],
-    [
-     "2026-10-07",
-     2890.3
-    ],
-    [
-     "2026-10-08",
-     2876.3
-    ],
-    [
-     "2026-10-09",
-     2918.2
-    ],
-    [
-     "2026-10-12",
-     2913.0
-    ],
-    [
-     "2026-10-13",
-     2987.8
-    ],
-    [
-     "2026-10-14",
-     2971.0
-    ],
-    [
-     "2026-10-15",
-     2949.7
-    ],
-    [
-     "2026-10-16",
-     2958.7
-    ],
-    [
-     "2026-10-19",
-     2891.6
-    ],
-    [
-     "2026-10-21",
-     2822.0
-    ],
-    [
-     "2026-10-22",
-     2775.8
-    ],
-    [
-     "2026-10-23",
-     2727.5
-    ],
-    [
-     "2026-10-26",
-     2754.0
-    ],
-    [
-     "2026-10-27",
-     2820.6
-    ],
-    [
-     "2026-10-28",
-     2913.9
-    ],
-    [
-     "2026-10-29",
-     2861.7
-    ],
-    [
-     "2026-10-30",
-     3017.3
-    ],
-    [
-     "2026-11-02",
-     3046.4
-    ],
-    [
-     "2026-11-03",
-     3036.5
-    ],
-    [
-     "2026-11-04",
-     3060.0
-    ],
-    [
-     "2026-11-05",
-     3055.0
-    ],
-    [
-     "2026-11-06",
-     3079.0
-    ],
-    [
-     "2026-11-09",
-     3119.2
-    ],
-    [
-     "2026-11-11",
-     3222.7
-    ],
-    [
-     "2026-11-12",
-     3180.0
-    ],
-    [
-     "2026-11-13",
-     3165.2
-    ]
-   ],
-   "credibility": null
   },
   "ETERNAL": {
    "name": "Eternal Ltd",
@@ -4432,36 +4432,73 @@
     "excess_pct": 4.93,
     "vol_ratio": 3.86
    },
-   "card_error": "ValueError: need current, previous and year-ago columns with PBT and PAT",
-   "score": 450,
-   "reason": "Ranked high: results · +5.4% (+4.9% vs Nifty) · 3.9× volume",
-   "boosted": true,
-   "collapsed": false
-  },
-  {
-   "id": "34e227a1-ebd2-4b77-98fb-cb8e66c7450e",
-   "symbol": "TRENT",
-   "name": "Trent Ltd",
-   "filed": "2026-10-29T16:08",
-   "subject": "Outcome Of Board Meeting Held Today I.E. 29Th October 2026",
-   "headline": "Outcome of Board Meeting held today i.e. 29th October 2026",
-   "note": null,
-   "category": "results",
-   "tier": "P1",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/386aab9b-d99c-44af-ba52-1bd95d49a60c.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-30",
-    "move_pct": 5.44,
-    "nifty_pct": 0.51,
-    "excess_pct": 4.93,
-    "vol_ratio": 3.86
+   "card": {
+    "type": "results",
+    "basis": "consolidated",
+    "unit": "₹ crore",
+    "note": "EBITDA = revenue from operations − (total expenses − finance costs − D&A): other income, associates and exceptional items excluded",
+    "periods": [
+     "30th Sept, 2026",
+     "30th June, 2026",
+     "30th Sept, 2025"
+    ],
+    "lines": [
+     {
+      "name": "Revenue",
+      "value": 5873.14,
+      "qoq_pct": 2.1,
+      "yoy_pct": 21.9,
+      "values": [
+       5873.14,
+       5754.71,
+       4817.6
+      ]
+     },
+     {
+      "name": "EBITDA",
+      "value": 1078.09,
+      "qoq_pct": -4.5,
+      "yoy_pct": 32.0,
+      "values": [
+       1078.09,
+       1128.9,
+       817.0
+      ]
+     },
+     {
+      "name": "PBT",
+      "value": 619.06,
+      "qoq_pct": -10.5,
+      "yoy_pct": 29.8,
+      "values": [
+       619.06,
+       691.84,
+       476.98
+      ]
+     },
+     {
+      "name": "PAT (to owners)",
+      "value": 463.77,
+      "qoq_pct": -10.6,
+      "yoy_pct": 23.1,
+      "values": [
+       463.77,
+       519.01,
+       376.86
+      ]
+     }
+    ],
+    "one_offs": [
+     "This quarter includes ₹21 cr one-off charge",
+     "Previous quarter includes ₹10 cr one-off charge",
+     "Year-ago quarter includes ₹1 cr one-off charge"
+    ],
+    "pages": [
+     10,
+     11
+    ],
+    "model_note": null
    },
-   "card_error": "ValueError: need current, previous and year-ago columns with PBT and PAT",
    "score": 450,
    "reason": "Ranked high: results · +5.4% (+4.9% vs Nifty) · 3.9× volume",
    "boosted": true,
@@ -5019,214 +5056,6 @@
    },
    "score": 450,
    "reason": "Ranked high: fund raise · 4.4× volume",
-   "boosted": true,
-   "collapsed": false
-  },
-  {
-   "id": "a68646d0-bc61-4f82-9b6e-1e49d3344946",
-   "symbol": "PERSISTENT",
-   "name": "Persistent Systems Ltd",
-   "filed": "2026-10-15T16:48",
-   "subject": "Audited Financial Statements For The Quarter And Half Year Ended September 30, 2026",
-   "headline": "The audited financial statements for the quarter and half year ended September 30, 2026, is as enclosed.",
-   "note": null,
-   "category": "results",
-   "tier": "P1",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b434e771-e1e4-44d8-ba0f-4a92c67031ac.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": -1.7,
-    "nifty_pct": 0.65,
-    "excess_pct": -2.34,
-    "vol_ratio": 4.38
-   },
-   "score": 450,
-   "reason": "Ranked high: results · 4.4× volume",
-   "boosted": true,
-   "collapsed": false
-  },
-  {
-   "id": "8e79c896-5803-4f7e-a939-e6380086a31e",
-   "symbol": "PERSISTENT",
-   "name": "Persistent Systems Ltd",
-   "filed": "2026-10-15T16:05",
-   "subject": "Financial Results As Of September 30, 2026",
-   "headline": "The outcome of the Board Meeting is as enclosed",
-   "note": null,
-   "category": "results",
-   "tier": "P1",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/65a6126a-e1b1-4c5b-a0d8-5b9648dc32b6.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": -1.7,
-    "nifty_pct": 0.65,
-    "excess_pct": -2.34,
-    "vol_ratio": 4.38
-   },
-   "card": {
-    "type": "results",
-    "basis": "consolidated",
-    "unit": "₹ crore",
-    "note": "EBITDA = revenue from operations − (total expenses − finance costs − D&A): other income, associates and exceptional items excluded",
-    "periods": [
-     "September 30, 2026",
-     "June 30, 2026",
-     "September 30, 2025"
-    ],
-    "lines": [
-     {
-      "name": "Revenue",
-      "value": 4663.9,
-      "qoq_pct": 8.4,
-      "yoy_pct": 30.3,
-      "values": [
-       4663.9,
-       4303.23,
-       3580.72
-      ]
-     },
-     {
-      "name": "EBITDA",
-      "value": 633.48,
-      "qoq_pct": -9.1,
-      "yoy_pct": -7.3,
-      "values": [
-       633.48,
-       696.89,
-       683.08
-      ]
-     },
-     {
-      "name": "PBT",
-      "value": 453.68,
-      "qoq_pct": -27.2,
-      "yoy_pct": -26.4,
-      "values": [
-       453.68,
-       623.1,
-       616.83
-      ]
-     },
-     {
-      "name": "PAT (to owners)",
-      "value": 351.51,
-      "qoq_pct": -27.2,
-      "yoy_pct": -25.4,
-      "values": [
-       351.51,
-       483.04,
-       471.47
-      ]
-     }
-    ],
-    "one_offs": [],
-    "pages": [
-     19
-    ],
-    "model_note": null
-   },
-   "score": 450,
-   "reason": "Ranked high: results · 4.4× volume",
-   "boosted": true,
-   "collapsed": false
-  },
-  {
-   "id": "880e99bc-b13a-435b-901c-3b2bee137437",
-   "symbol": "POLYCAB",
-   "name": "Polycab India Ltd",
-   "filed": "2026-10-15T13:05",
-   "subject": "Unaudited Financial Results For The Quarter And Half Year Ended 30Th September 2026",
-   "headline": "Unaudited Financial Results for the quarter and half year ended 30th September 2026",
-   "note": null,
-   "category": "results",
-   "tier": "P1",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4ac93ea0-d4d1-4b85-8849-14a19e0dcceb.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-15",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-15",
-    "move_pct": -1.54,
-    "nifty_pct": 1.66,
-    "excess_pct": -3.19,
-    "vol_ratio": 1.82
-   },
-   "card": {
-    "type": "results",
-    "basis": "consolidated",
-    "unit": "₹ crore",
-    "note": "EBITDA = revenue from operations − (total expenses − finance costs − D&A): other income, associates and exceptional items excluded",
-    "periods": [
-     "30 Sep 26",
-     "30 Jun 26",
-     "30 Sep 25"
-    ],
-    "lines": [
-     {
-      "name": "Revenue",
-      "value": 9898.9,
-      "qoq_pct": 20.6,
-      "yoy_pct": 52.8,
-      "values": [
-       9898.9,
-       8209.73,
-       6477.21
-      ]
-     },
-     {
-      "name": "EBITDA",
-      "value": 1422.5,
-      "qoq_pct": 25.2,
-      "yoy_pct": 39.4,
-      "values": [
-       1422.5,
-       1136.2,
-       1020.75
-      ]
-     },
-     {
-      "name": "PBT",
-      "value": 1306.22,
-      "qoq_pct": 23.4,
-      "yoy_pct": 41.8,
-      "values": [
-       1306.22,
-       1058.22,
-       921.0
-      ]
-     },
-     {
-      "name": "PAT (to owners)",
-      "value": 977.37,
-      "qoq_pct": 24.6,
-      "yoy_pct": 42.6,
-      "values": [
-       977.37,
-       784.34,
-       685.46
-      ]
-     }
-    ],
-    "one_offs": [],
-    "pages": [
-     4
-    ],
-    "model_note": null
-   },
-   "score": 450,
-   "reason": "Ranked high: results · −1.5% (−3.2% vs Nifty)",
    "boosted": true,
    "collapsed": false
   },
@@ -5847,6 +5676,34 @@
    "collapsed": false
   },
   {
+   "id": "34e227a1-ebd2-4b77-98fb-cb8e66c7450e",
+   "symbol": "TRENT",
+   "name": "Trent Ltd",
+   "filed": "2026-10-29T16:08",
+   "subject": "Outcome Of Board Meeting Held Today I.E. 29Th October 2026",
+   "headline": "Outcome of Board Meeting held today i.e. 29th October 2026",
+   "note": null,
+   "category": "results",
+   "tier": "P2",
+   "classified_by": "rule",
+   "classify_error": null,
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/386aab9b-d99c-44af-ba52-1bd95d49a60c.pdf",
+   "source": "bse",
+   "reaction_day": "2026-10-30",
+   "last_bar": "2026-11-13",
+   "reaction": {
+    "date": "2026-10-30",
+    "move_pct": 5.44,
+    "nifty_pct": 0.51,
+    "excess_pct": 4.93,
+    "vol_ratio": 3.86
+   },
+   "score": 350,
+   "reason": "Ranked high: results · +5.4% (+4.9% vs Nifty) · 3.9× volume",
+   "boosted": true,
+   "collapsed": false
+  },
+  {
    "id": "d6bab95e-f802-44e9-befa-9f21ac8aa4bf",
    "symbol": "ASIANPAINT",
    "name": "Asian Paints Ltd",
@@ -6244,176 +6101,6 @@
    },
    "score": 350,
    "reason": "Ranked high: results · 2.4× volume",
-   "boosted": true,
-   "collapsed": false
-  },
-  {
-   "id": "5da9c5e9-76c1-4837-a6f5-910f871cf54b",
-   "symbol": "PERSISTENT",
-   "name": "Persistent Systems Ltd",
-   "filed": "2026-10-15T16:12",
-   "subject": "Announcement under Regulation 30 (LODR)-Press Release / Media Release",
-   "headline": "The Press Release dated October 15, 2026, is as enclosed",
-   "note": null,
-   "category": "press_release",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/166b7245-95f9-4dbd-85e2-ccdea03e53c0.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": -1.7,
-    "nifty_pct": 0.65,
-    "excess_pct": -2.34,
-    "vol_ratio": 4.38
-   },
-   "title": null,
-   "score": 350,
-   "reason": "Ranked high: press release · 4.4× volume",
-   "boosted": true,
-   "collapsed": false
-  },
-  {
-   "id": "356e9c74-a646-4703-9331-16bae2e5b67e",
-   "symbol": "PERSISTENT",
-   "name": "Persistent Systems Ltd",
-   "filed": "2026-10-15T16:08",
-   "subject": "Announcement under Regulation 30 (LODR)-Investor Presentation",
-   "headline": "The fact sheet for the quarter and half year ended is as enclosed.",
-   "note": null,
-   "category": "results",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/69eb4f2c-1eb5-4654-a500-c7bef33d2f19.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": -1.7,
-    "nifty_pct": 0.65,
-    "excess_pct": -2.34,
-    "vol_ratio": 4.38
-   },
-   "score": 350,
-   "reason": "Ranked high: results · 4.4× volume",
-   "boosted": true,
-   "collapsed": false
-  },
-  {
-   "id": "8cffcf45-1cae-48e0-b764-4bc3926817dd",
-   "symbol": "PERSISTENT",
-   "name": "Persistent Systems Ltd",
-   "filed": "2026-10-15T15:55",
-   "subject": "Board Meeting Outcome for Outcome Of The Board Meeting Held On October 14, 2026, And Concluded On October 15, 2026",
-   "headline": "Board approved audited financial results for the quarter and half year ended September 30, 2026",
-   "note": null,
-   "category": "results",
-   "tier": "P2",
-   "classified_by": "llm",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b34da17b-32f8-4d73-8f1a-803d6f561798.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": -1.7,
-    "nifty_pct": 0.65,
-    "excess_pct": -2.34,
-    "vol_ratio": 4.38
-   },
-   "score": 350,
-   "reason": "Ranked high: results · 4.4× volume",
-   "boosted": true,
-   "collapsed": false
-  },
-  {
-   "id": "71e9eb0f-581f-462a-b7e6-8b3c2f5556e7",
-   "symbol": "POLYCAB",
-   "name": "Polycab India Ltd",
-   "filed": "2026-10-15T13:58",
-   "subject": "Earnings Presentation",
-   "headline": "Earnings Presentation on the Unaudited Financial Results for the quarter and half year ended September 30, 2026",
-   "note": null,
-   "category": "results",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a940f987-41db-4848-8f35-4b6c8a8f5b47.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-15",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-15",
-    "move_pct": -1.54,
-    "nifty_pct": 1.66,
-    "excess_pct": -3.19,
-    "vol_ratio": 1.82
-   },
-   "score": 350,
-   "reason": "Ranked high: results · −1.5% (−3.2% vs Nifty)",
-   "boosted": true,
-   "collapsed": false
-  },
-  {
-   "id": "86eb8d0a-7bb5-424c-9bd3-dd66a20ac450",
-   "symbol": "POLYCAB",
-   "name": "Polycab India Ltd",
-   "filed": "2026-10-15T13:13",
-   "subject": "Announcement under Regulation 30 (LODR)-Press Release / Media Release",
-   "headline": "Press Release for the Unaudited (Standalone and Consolidated) Financial Results of the Company",
-   "note": null,
-   "category": "press_release",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b345a7a1-bdff-4a45-800c-889ce7a659a4.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-15",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-15",
-    "move_pct": -1.54,
-    "nifty_pct": 1.66,
-    "excess_pct": -3.19,
-    "vol_ratio": 1.82
-   },
-   "title": "Q2 FY27 revenue at ₹ 98,989 Mn, up 53% YoY",
-   "score": 350,
-   "reason": "Ranked high: press release · −1.5% (−3.2% vs Nifty)",
-   "boosted": true,
-   "collapsed": false
-  },
-  {
-   "id": "98f8755d-b964-4fd1-8ded-163dca00bdcd",
-   "symbol": "POLYCAB",
-   "name": "Polycab India Ltd",
-   "filed": "2026-10-15T12:58",
-   "subject": "Board Meeting Outcome for Outcome Of Board Meeting",
-   "headline": "Board approved unaudited standalone and consolidated financial results for the quarter and half year ended September 30, 2026",
-   "note": null,
-   "category": "results",
-   "tier": "P2",
-   "classified_by": "llm",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d05b4d50-f4ad-4c2f-8e4f-61c0a7bb6e8e.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-15",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-15",
-    "move_pct": -1.54,
-    "nifty_pct": 1.66,
-    "excess_pct": -3.19,
-    "vol_ratio": 1.82
-   },
-   "score": 350,
-   "reason": "Ranked high: results · −1.5% (−3.2% vs Nifty)",
    "boosted": true,
    "collapsed": false
   },
@@ -7046,38 +6733,71 @@
     "excess_pct": 1.35,
     "vol_ratio": 1.96
    },
-   "card_error": "ValueError: unknown unit: ",
+   "card": {
+    "type": "results",
+    "basis": "standalone",
+    "unit": "₹ crore",
+    "note": "EBITDA = revenue from operations − (total expenses − finance costs − D&A): other income, associates and exceptional items excluded",
+    "periods": [
+     "September 30, 2026",
+     "June 30, 2026",
+     "September 30, 2025"
+    ],
+    "lines": [
+     {
+      "name": "Revenue",
+      "value": 53340.2,
+      "qoq_pct": 1.7,
+      "yoy_pct": 26.0,
+      "values": [
+       53340.2,
+       52455.1,
+       42332.3
+      ]
+     },
+     {
+      "name": "EBITDA",
+      "value": 4763.3,
+      "qoq_pct": 10.5,
+      "yoy_pct": -6.3,
+      "values": [
+       4763.3,
+       4310.5,
+       5084.8
+      ]
+     },
+     {
+      "name": "PBT",
+      "value": 3165.8,
+      "qoq_pct": -27.1,
+      "yoy_pct": -26.2,
+      "values": [
+       3165.8,
+       4341.3,
+       4290.9
+      ]
+     },
+     {
+      "name": "PAT (to owners)",
+      "value": 2414.9,
+      "qoq_pct": -28.0,
+      "yoy_pct": -26.9,
+      "values": [
+       2414.9,
+       3352.1,
+       3302.8
+      ]
+     }
+    ],
+    "one_offs": [],
+    "pages": [
+     2,
+     3
+    ],
+    "model_note": null
+   },
    "score": 300,
    "reason": "results · +1.4% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
-   "id": "75d0117b-f394-4adb-9147-6bfa17243576",
-   "symbol": "MARUTI",
-   "name": "Maruti Suzuki India Ltd",
-   "filed": "2026-10-27T15:27",
-   "subject": " Un-Audited Financial Results For The Quarter Ended On 30Th September 2026",
-   "headline": "Un-audited financial results for the quarter ended on 30th September 2026",
-   "note": null,
-   "category": "results",
-   "tier": "P1",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fca20bad-7bfe-438f-a526-d9f42ccf0346.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-27",
-    "move_pct": 2.05,
-    "nifty_pct": -0.02,
-    "excess_pct": 2.07,
-    "vol_ratio": 0.91
-   },
-   "card_error": "ValueError: unknown unit: ",
-   "score": 300,
-   "reason": "results · +2.1% vs Nifty",
    "boosted": false,
    "collapsed": false
   },
@@ -7538,122 +7258,6 @@
    "title": "NCLAT reserved order in appeal regarding Asier Metals Private Limited",
    "score": 300,
    "reason": "litigation · −0.5% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
-   "id": "ef13ab0a-dd64-4e2b-b3e9-99bc984d3c7a",
-   "symbol": "IRCTC",
-   "name": "Indian Railway Catering & Tourism Corporation Ltd",
-   "filed": "2026-10-15T19:30",
-   "subject": "Disclosure Under Regulation 30 Of SEBI (LODR) Regulations, 2015.",
-   "headline": "GSTAT passed final order directing IRCTC to deposit profiteered amount of Rs. 50,41,44,461 with interest",
-   "note": null,
-   "category": "litigation",
-   "tier": "P1",
-   "classified_by": "llm",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ba59ec57-db8f-4aa2-827c-cedcc3c81882.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": -0.58,
-    "nifty_pct": 0.65,
-    "excess_pct": -1.22,
-    "vol_ratio": 1.52
-   },
-   "title": "Ordered to deposit ₹50,41,44,461/- plus interest following GSTAT final order",
-   "score": 300,
-   "reason": "litigation · −1.2% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
-   "id": "cb1658aa-fce2-4f72-9d9d-d5687e68e83e",
-   "symbol": "MARUTI",
-   "name": "Maruti Suzuki India Ltd",
-   "filed": "2026-10-15T19:12",
-   "subject": "Intimation Under Regulation 30 Of SEBI (Listing Obligations & Disclosure Requirements) Regulations, 2015 \r\n",
-   "headline": "Company received Income Tax Appellate Tribunal order with positive tax impact",
-   "note": null,
-   "category": "litigation",
-   "tier": "P1",
-   "classified_by": "llm",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fa561a4b-39c9-4134-8db9-b84c580aeaf5.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": 0.38,
-    "nifty_pct": 0.65,
-    "excess_pct": -0.26,
-    "vol_ratio": 0.91
-   },
-   "title": "Company received Income Tax Appellate Tribunal order with positive tax impact",
-   "score": 300,
-   "reason": "litigation · −0.3% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
-   "id": "e015caf8-728c-49ad-86d6-5008e2714ee0",
-   "symbol": "POLYCAB",
-   "name": "Polycab India Ltd",
-   "filed": "2026-10-15T15:32",
-   "subject": "Unaudited Interim Condensed (Standalone And Consolidated) Financial Statements For The Quarter And Half Year Ended September 30, 2026",
-   "headline": "Unaudited Interim Condensed (Standalone and Consolidated Financial Statement for the quarter and half year ended September 30, 2026",
-   "note": null,
-   "category": "results",
-   "tier": "P1",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d809fc71-20ab-4486-999a-953e40641efd.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": 0.15,
-    "nifty_pct": 0.65,
-    "excess_pct": -0.5,
-    "vol_ratio": 1.2
-   },
-   "card_error": "ValueError: columns are not this quarter, previous and year-ago: ['30 Sep 26', '30 Sep 25', '30 Sep 25 (Restated)']",
-   "score": 300,
-   "reason": "results · −0.5% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
-   "id": "85a90a42-ccad-4d29-983b-6c2164f010e0",
-   "symbol": "TCS",
-   "name": "Tata Consultancy Services Ltd",
-   "filed": "2026-10-15T13:28",
-   "subject": "Announcement under Regulation 30 (LODR)-Updates on Acquisition",
-   "headline": "Tata Consultancy Services Limited has informed the Exchange about completion of acquisition of BBY Services India LLP.",
-   "note": null,
-   "category": "m_and_a",
-   "tier": "P1",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ad952e13-3c76-410e-81f8-4fe3d108a196.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-15",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-15",
-    "move_pct": 1.96,
-    "nifty_pct": 1.66,
-    "excess_pct": 0.3,
-    "vol_ratio": 1.99
-   },
-   "title": "Completed acquisition of 100% partnership interest in BBY Services India LLP",
-   "score": 300,
-   "reason": "M&A · +0.3% vs Nifty",
    "boosted": false,
    "collapsed": false
   },
@@ -8633,6 +8237,34 @@
    "collapsed": false
   },
   {
+   "id": "75d0117b-f394-4adb-9147-6bfa17243576",
+   "symbol": "MARUTI",
+   "name": "Maruti Suzuki India Ltd",
+   "filed": "2026-10-27T15:27",
+   "subject": " Un-Audited Financial Results For The Quarter Ended On 30Th September 2026",
+   "headline": "Un-audited financial results for the quarter ended on 30th September 2026",
+   "note": null,
+   "category": "results",
+   "tier": "P2",
+   "classified_by": "rule",
+   "classify_error": null,
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fca20bad-7bfe-438f-a526-d9f42ccf0346.pdf",
+   "source": "bse",
+   "reaction_day": "2026-10-27",
+   "last_bar": "2026-11-13",
+   "reaction": {
+    "date": "2026-10-27",
+    "move_pct": 2.05,
+    "nifty_pct": -0.02,
+    "excess_pct": 2.07,
+    "vol_ratio": 0.91
+   },
+   "score": 200,
+   "reason": "results · +2.1% vs Nifty",
+   "boosted": false,
+   "collapsed": false
+  },
+  {
    "id": "a900e043-39a6-415b-ac5b-b504323657ca",
    "symbol": "TATAPOWER",
    "name": "Tata Power Company Ltd",
@@ -9232,108 +8864,6 @@
    },
    "score": 200,
    "reason": "management change · −1.2% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
-   "id": "9ac94bb8-eed8-4efb-af82-6a3535fd0252",
-   "symbol": "IRCTC",
-   "name": "Indian Railway Catering & Tourism Corporation Ltd",
-   "filed": "2026-10-15T19:42",
-   "subject": "Announcement under Regulation 30 (LODR)-Press Release / Media Release",
-   "headline": "Please find attached herewith Press Release.",
-   "note": null,
-   "category": "press_release",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7d3fb6ec-4135-426a-b75f-f391493daa44.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": -0.58,
-    "nifty_pct": 0.65,
-    "excess_pct": -1.22,
-    "vol_ratio": 1.52
-   },
-   "title": "Partnered with Quality Council of India for digital food safety audits",
-   "score": 200,
-   "reason": "press release · −1.2% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
-   "id": "8c68bb61-85f8-4bb7-bd5a-8f382380e18b",
-   "symbol": "IRCTC",
-   "name": "Indian Railway Catering & Tourism Corporation Ltd",
-   "filed": "2026-10-15T17:24",
-   "subject": "Announcement under Regulation 30 (LODR)-Change in Management",
-   "headline": "Please find attached herewith intimation regarding change in Senior Management.",
-   "note": "Not a CEO, MD, CFO or Chairman joining or leaving",
-   "category": "management_change",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/efea3641-beb0-497c-b395-df71da0c1896.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": -0.58,
-    "nifty_pct": 0.65,
-    "excess_pct": -1.22,
-    "vol_ratio": 1.52
-   },
-   "title": "Appointed Shri Raj Kumar Verma as Group General Manager on 15.10.2026",
-   "card": {
-    "type": "management_change",
-    "people": [
-     {
-      "name": "Raj Kumar Verma",
-      "change": "appointed",
-      "role": "Group General Manager (One Level Below Board)",
-      "effective": "15.10.2026",
-      "bio": "Officer of Indian Railway Service of Mechanical Engineers (IRSME) of 2008 Batch with approx. 18 years of experience with Indian Railways.",
-      "bio_page": 1,
-      "profile_ref": null
-     }
-    ],
-    "model_note": null
-   },
-   "score": 200,
-   "reason": "management change · −1.2% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
-   "id": "f478aa4a-86b6-4aca-a3c4-bfb9633a571a",
-   "symbol": "TCS",
-   "name": "Tata Consultancy Services Ltd",
-   "filed": "2026-10-15T11:31",
-   "subject": "Press Release - TCS Launches Industrial Intelligence Foundry To Accelerate AI-Led Autonomy And Engineering",
-   "headline": "Press Release - TCS launches Industrial Intelligence Foundry to accelerate AI-led autonomy and engineering",
-   "note": null,
-   "category": "press_release",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/50f14eb1-bf37-4fd3-a23d-5da7dc974ca4.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-15",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-15",
-    "move_pct": 1.96,
-    "nifty_pct": 1.66,
-    "excess_pct": 0.3,
-    "vol_ratio": 1.99
-   },
-   "title": "Launched Industrial Intelligence Foundry to accelerate AI-led autonomy and engineering",
-   "score": 200,
-   "reason": "press release · +0.3% vs Nifty",
    "boosted": false,
    "collapsed": false
   },
@@ -13082,230 +12612,6 @@
    "reason": "investor meetings · −1.4% vs Nifty",
    "boosted": false,
    "collapsed": true
-  },
-  {
-   "id": "4a96876d-75f1-401c-9f13-0590d469a9f0",
-   "symbol": "ASIANPAINT",
-   "name": "Asian Paints Ltd",
-   "filed": "2026-10-15T22:49",
-   "subject": "Compliances-Certificate under Reg. 74 (5) of SEBI (DP) Regulations, 2018",
-   "headline": "Please find enclosed herewith the Certificate received from MUFG Intime India Private Limited, Company''s Registrar and Share Transfer Agent for the quarter ended 30th September 2026 certifying ....",
-   "note": null,
-   "category": "unclassified",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ab56187f-c5d5-4433-9ca8-2a8ddb0da877.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": -0.77,
-    "nifty_pct": 0.65,
-    "excess_pct": -1.42,
-    "vol_ratio": 1.67
-   },
-   "score": 100,
-   "reason": "unclassified · −1.4% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "4fc9232f-3186-4ae5-af7c-4159fd44e390",
-   "symbol": "PERSISTENT",
-   "name": "Persistent Systems Ltd",
-   "filed": "2026-10-15T21:16",
-   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Outcome",
-   "headline": "The intimation of Submission of the Outcome, Audio and Video Recording of the investor/analyst call held on Thursday, October 15, 2026 (IST), is as enclosed.",
-   "note": null,
-   "category": "investor_meetings",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/312baade-09ef-453c-b5ef-d4e3125d6a42.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": -1.7,
-    "nifty_pct": 0.65,
-    "excess_pct": -2.34,
-    "vol_ratio": 4.38
-   },
-   "score": 100,
-   "reason": "investor meetings · −2.3% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "0e8598ab-7df7-4804-bb66-037c9b719541",
-   "symbol": "POLYCAB",
-   "name": "Polycab India Ltd",
-   "filed": "2026-10-15T20:48",
-   "subject": "Audio Recording Of Earnings Conference Call Q2 FY 26-27",
-   "headline": "Submission of Audio recording of earnings conference call",
-   "note": null,
-   "category": "earnings_call",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/3264baf9-979a-4835-85b1-c5a9838c57d6.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": 0.15,
-    "nifty_pct": 0.65,
-    "excess_pct": -0.5,
-    "vol_ratio": 1.2
-   },
-   "score": 100,
-   "reason": "earnings call · −0.5% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "9039b34f-7865-41c7-b69c-59c273643980",
-   "symbol": "ITC",
-   "name": "ITC Ltd",
-   "filed": "2026-10-15T19:18",
-   "subject": "Announcement under Regulation 30 (LODR)-Allotment of ESOP / ESPS",
-   "headline": "Allotment of Shares under the Company''s Employee Stock Option Schemes",
-   "note": null,
-   "category": "unclassified",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b57d5926-290d-4936-a8b7-3f7495bc27b0.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": -0.15,
-    "nifty_pct": 0.65,
-    "excess_pct": -0.8,
-    "vol_ratio": 0.65
-   },
-   "score": 100,
-   "reason": "unclassified · −0.8% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "9f479947-019f-43b7-b145-e75f77043e24",
-   "symbol": "SUNPHARMA",
-   "name": "Sun Pharmaceutical Industries Ltd",
-   "filed": "2026-10-15T18:24",
-   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Intimation",
-   "headline": "Earnings call for the financial results of the second quarter on 30 October 2026",
-   "note": null,
-   "category": "investor_meetings",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fee4866d-b8c6-40e5-b8d5-c93ade038a11.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": -0.29,
-    "nifty_pct": 0.65,
-    "excess_pct": -0.94,
-    "vol_ratio": 0.94
-   },
-   "score": 100,
-   "reason": "investor meetings · −0.9% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "73ed1635-1d86-46cd-8cf6-3bcc6ad2caf0",
-   "symbol": "RELIANCE",
-   "name": "Reliance Industries Ltd",
-   "filed": "2026-10-15T18:06",
-   "subject": "Newspaper Clippings - Special Window For Transfer And Dematerialisation (Demat) Of Physical Shares",
-   "headline": "Submitted newspaper clippings of special window for physical shares dematerialisation advertisement",
-   "note": null,
-   "category": "unclassified",
-   "tier": "P3",
-   "classified_by": "llm",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/77033afd-c77b-43c9-9593-18094bbd1322.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": -0.31,
-    "nifty_pct": 0.65,
-    "excess_pct": -0.96,
-    "vol_ratio": 1.24
-   },
-   "score": 100,
-   "reason": "unclassified · −1.0% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "ceddc54b-1e5e-4dbd-8442-1f97c957f3fd",
-   "symbol": "KPITTECH",
-   "name": "KPIT Technologies Ltd",
-   "filed": "2026-10-15T16:52",
-   "subject": "Board Meeting Intimation for Intimation Of Meeting Of Board Of Directors",
-   "headline": "Board meeting on October 28, 2026 to consider financial results",
-   "note": null,
-   "category": "results",
-   "tier": "P3",
-   "classified_by": "llm",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b34cb750-9855-4dc2-aef6-705c5064bd8a.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": 5.51,
-    "nifty_pct": 0.65,
-    "excess_pct": 4.87,
-    "vol_ratio": 2.44
-   },
-   "score": 100,
-   "reason": "results · +4.9% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "7bc912c3-e4c3-4974-b74d-4e1fb6269fae",
-   "symbol": "DEEPAKNTR",
-   "name": "Deepak Nitrite Ltd",
-   "filed": "2026-10-15T14:19",
-   "subject": "Board Meeting Intimation for Consideration Of Un-Audited Financial Results For The Quarter And Half Year Ended 30Th September, 2026.",
-   "headline": "Deepak Nitrite Ltd-has informed BSE that the meeting of the Board of Directors of the Company is scheduled on 29/10/2026 ,inter alia, to consider and approve Un-audited financial results ....",
-   "note": null,
-   "category": "results",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b07f062f-57c7-4fa7-ac53-6daa1758ab26.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-15",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-15",
-    "move_pct": -2.78,
-    "nifty_pct": 1.66,
-    "excess_pct": -4.44,
-    "vol_ratio": 0.82
-   },
-   "score": 100,
-   "reason": "results · −4.4% vs Nifty",
-   "boosted": false,
-   "collapsed": true
   }
  ],
  "alerts": [
@@ -13413,6 +12719,12 @@
    "text": "−3.3% (−5.3% vs Nifty) · 2.3× volume"
   },
   {
+   "symbol": "MARUTI",
+   "date": "2026-11-05",
+   "kind": "price",
+   "text": "+5.5% (+3.1% vs Nifty) · 2.6× volume"
+  },
+  {
    "symbol": "HDFCBANK",
    "date": "2026-11-05",
    "kind": "price",
@@ -13430,12 +12742,6 @@
    "date": "2026-11-05",
    "kind": "price",
    "text": "2.0× volume"
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-05",
-   "kind": "price",
-   "text": "+5.5% (+3.1% vs Nifty) · 2.6× volume"
   },
   {
    "symbol": "BAJFINANCE",
@@ -13561,6 +12867,12 @@
    "text": "results: CDSL has submitted to the Exchange, the financial results for the quarter and half year ended September 30, 2026."
   },
   {
+   "symbol": "TRENT",
+   "date": "2026-10-30",
+   "kind": "price",
+   "text": "+5.4% (+4.9% vs Nifty) · 3.9× volume"
+  },
+  {
    "symbol": "RELIANCE",
    "date": "2026-10-30",
    "kind": "filing",
@@ -13579,12 +12891,6 @@
    "kind": "filing",
    "id": "7bbcaf67-e404-4ffb-b7fd-07ff385fdb0a",
    "text": "results: Unaudited Financial Results for the quarter and half year ended 30 September 2026"
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-30",
-   "kind": "price",
-   "text": "+5.4% (+4.9% vs Nifty) · 3.9× volume"
   },
   {
    "symbol": "DIXON",
@@ -13620,19 +12926,6 @@
    "text": "24.1× volume"
   },
   {
-   "symbol": "ASIANPAINT",
-   "date": "2026-10-29",
-   "kind": "price",
-   "text": "3.7× volume"
-  },
-  {
-   "symbol": "ASIANPAINT",
-   "date": "2026-10-29",
-   "kind": "filing",
-   "id": "1f0df7d6-ab0a-4d13-b4e7-5f477f62005d",
-   "text": "results: Find enclosed the audited standalone and unaudited consolidated financial results of the Company for the quarter and half year ended 30th September 2026"
-  },
-  {
    "symbol": "TRENT",
    "date": "2026-10-29",
    "kind": "filing",
@@ -13645,6 +12938,19 @@
    "kind": "filing",
    "id": "d53eaf45-b3a2-4b76-95c4-35d69f117a62",
    "text": "results: Board approved standalone and consolidated financial results for the second quarter ended September 30, 2026"
+  },
+  {
+   "symbol": "ASIANPAINT",
+   "date": "2026-10-29",
+   "kind": "price",
+   "text": "3.7× volume"
+  },
+  {
+   "symbol": "ASIANPAINT",
+   "date": "2026-10-29",
+   "kind": "filing",
+   "id": "1f0df7d6-ab0a-4d13-b4e7-5f477f62005d",
+   "text": "results: Find enclosed the audited standalone and unaudited consolidated financial results of the Company for the quarter and half year ended 30th September 2026"
   },
   {
    "symbol": "CDSL",
@@ -13660,16 +12966,16 @@
    "text": "results: Unaudited Financial Result for the quarter and half year ended 30th September, 2026"
   },
   {
-   "symbol": "LT",
-   "date": "2026-10-28",
-   "kind": "price",
-   "text": "+3.7% (+3.9% vs Nifty) · 3.2× volume"
-  },
-  {
    "symbol": "TRENT",
    "date": "2026-10-28",
    "kind": "price",
    "text": "+3.3% (+3.5% vs Nifty)"
+  },
+  {
+   "symbol": "LT",
+   "date": "2026-10-28",
+   "kind": "price",
+   "text": "+3.7% (+3.9% vs Nifty) · 3.2× volume"
   },
   {
    "symbol": "POLYCAB",
@@ -13698,6 +13004,13 @@
    "text": "+4.0% (+4.2% vs Nifty)"
   },
   {
+   "symbol": "MARUTI",
+   "date": "2026-10-27",
+   "kind": "filing",
+   "id": "ed51c226-e785-4389-a0e9-7160e6eb21fb",
+   "text": "results:  Un-audited financial results for the quarter ended on 30th September 2026"
+  },
+  {
    "symbol": "RELIANCE",
    "date": "2026-10-27",
    "kind": "filing",
@@ -13723,13 +13036,6 @@
    "kind": "filing",
    "id": "84f672d2-60a7-4cef-adec-3711a9c76668",
    "text": "results: Outcome of Board Meeting of Larsen & Toubro Limited held on October 27,2026"
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-27",
-   "kind": "filing",
-   "id": "ed51c226-e785-4389-a0e9-7160e6eb21fb",
-   "text": "results:  Un-audited financial results for the quarter ended on 30th September 2026"
   },
   {
    "symbol": "SUNPHARMA",
@@ -13890,75 +13196,312 @@
    "date": "2026-10-16",
    "kind": "price",
    "text": "+5.5% (+4.9% vs Nifty) · 2.4× volume"
-  },
-  {
-   "symbol": "TCS",
-   "date": "2026-10-15",
-   "kind": "filing",
-   "id": "85a90a42-ccad-4d29-983b-6c2164f010e0",
-   "text": "M&A: Tata Consultancy Services Limited has informed the Exchange about completion of acquisition of BBY Services India LLP."
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-15",
-   "kind": "filing",
-   "id": "cb1658aa-fce2-4f72-9d9d-d5687e68e83e",
-   "text": "litigation: Company received Income Tax Appellate Tribunal order with positive tax impact"
-  },
-  {
-   "symbol": "PERSISTENT",
-   "date": "2026-10-15",
-   "kind": "price",
-   "text": "2.9× volume"
-  },
-  {
-   "symbol": "PERSISTENT",
-   "date": "2026-10-15",
-   "kind": "filing",
-   "id": "a68646d0-bc61-4f82-9b6e-1e49d3344946",
-   "text": "results: The audited financial statements for the quarter and half year ended September 30, 2026, is as enclosed."
-  },
-  {
-   "symbol": "POLYCAB",
-   "date": "2026-10-15",
-   "kind": "price",
-   "text": "−1.5% (−3.2% vs Nifty)"
-  },
-  {
-   "symbol": "POLYCAB",
-   "date": "2026-10-15",
-   "kind": "filing",
-   "id": "e015caf8-728c-49ad-86d6-5008e2714ee0",
-   "text": "results: Unaudited Interim Condensed (Standalone and Consolidated Financial Statement for the quarter and half year ended September 30, 2026"
-  },
-  {
-   "symbol": "IRCTC",
-   "date": "2026-10-15",
-   "kind": "price",
-   "text": "−1.6% (−3.3% vs Nifty)"
-  },
-  {
-   "symbol": "IRCTC",
-   "date": "2026-10-15",
-   "kind": "filing",
-   "id": "ef13ab0a-dd64-4e2b-b3e9-99bc984d3c7a",
-   "text": "litigation: GSTAT passed final order directing IRCTC to deposit profiteered amount of Rs. 50,41,44,461 with interest"
-  },
-  {
-   "symbol": "DEEPAKNTR",
-   "date": "2026-10-15",
-   "kind": "price",
-   "text": "−2.8% (−4.4% vs Nifty)"
   }
  ],
  "days": [
   {
-   "symbol": "RELIANCE",
-   "date": "2026-10-15",
-   "move_pct": 3.44,
-   "nifty_pct": 1.66,
-   "excess_pct": 1.78,
-   "vol_ratio": 1.78
+   "symbol": "MARUTI",
+   "date": "2026-10-16",
+   "move_pct": 0.38,
+   "nifty_pct": 0.65,
+   "excess_pct": -0.26,
+   "vol_ratio": 0.91
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-19",
+   "move_pct": -0.12,
+   "nifty_pct": -1.11,
+   "excess_pct": 0.99,
+   "vol_ratio": 0.99
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-21",
+   "move_pct": -2.4,
+   "nifty_pct": -0.34,
+   "excess_pct": -2.06,
+   "vol_ratio": 0.88
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-22",
+   "move_pct": -0.27,
+   "nifty_pct": -0.54,
+   "excess_pct": 0.27,
+   "vol_ratio": 0.9
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-23",
+   "move_pct": 0.54,
+   "nifty_pct": -0.39,
+   "excess_pct": 0.92,
+   "vol_ratio": 0.72
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-26",
+   "move_pct": -0.09,
+   "nifty_pct": 0.68,
+   "excess_pct": -0.77,
+   "vol_ratio": 1.05
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-27",
+   "move_pct": 2.05,
+   "nifty_pct": -0.02,
+   "excess_pct": 2.07,
+   "vol_ratio": 0.91
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-28",
+   "move_pct": 1.13,
+   "nifty_pct": -0.22,
+   "excess_pct": 1.35,
+   "vol_ratio": 1.96
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-29",
+   "move_pct": -1.32,
+   "nifty_pct": 1.05,
+   "excess_pct": -2.37,
+   "vol_ratio": 0.62
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-30",
+   "move_pct": -0.25,
+   "nifty_pct": 0.51,
+   "excess_pct": -0.76,
+   "vol_ratio": 0.56
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-02",
+   "move_pct": 2.41,
+   "nifty_pct": 1.68,
+   "excess_pct": 0.73,
+   "vol_ratio": 0.84
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-03",
+   "move_pct": 1.69,
+   "nifty_pct": 1.58,
+   "excess_pct": 0.11,
+   "vol_ratio": 0.78
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-04",
+   "move_pct": 1.06,
+   "nifty_pct": 0.63,
+   "excess_pct": 0.43,
+   "vol_ratio": 1.3
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-05",
+   "move_pct": 5.48,
+   "nifty_pct": 2.4,
+   "excess_pct": 3.07,
+   "vol_ratio": 2.59
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-06",
+   "move_pct": 0.77,
+   "nifty_pct": 2.01,
+   "excess_pct": -1.24,
+   "vol_ratio": 1.87
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-09",
+   "move_pct": 1.4,
+   "nifty_pct": 0.06,
+   "excess_pct": 1.34,
+   "vol_ratio": 1.08
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-11",
+   "move_pct": 1.99,
+   "nifty_pct": 0.84,
+   "excess_pct": 1.15,
+   "vol_ratio": 1.83
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-12",
+   "move_pct": -1.22,
+   "nifty_pct": 0.18,
+   "excess_pct": -1.4,
+   "vol_ratio": 1.29
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-13",
+   "move_pct": -1.31,
+   "nifty_pct": -0.61,
+   "excess_pct": -0.69,
+   "vol_ratio": 0.88
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-16",
+   "move_pct": 0.31,
+   "nifty_pct": 0.65,
+   "excess_pct": -0.34,
+   "vol_ratio": 0.45
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-19",
+   "move_pct": -2.27,
+   "nifty_pct": -1.11,
+   "excess_pct": -1.16,
+   "vol_ratio": 0.71
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-21",
+   "move_pct": -2.41,
+   "nifty_pct": -0.34,
+   "excess_pct": -2.07,
+   "vol_ratio": 0.68
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-22",
+   "move_pct": -1.64,
+   "nifty_pct": -0.54,
+   "excess_pct": -1.09,
+   "vol_ratio": 1.22
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-23",
+   "move_pct": -1.74,
+   "nifty_pct": -0.39,
+   "excess_pct": -1.35,
+   "vol_ratio": 0.65
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-26",
+   "move_pct": 0.97,
+   "nifty_pct": 0.68,
+   "excess_pct": 0.29,
+   "vol_ratio": 0.7
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-27",
+   "move_pct": 2.42,
+   "nifty_pct": -0.02,
+   "excess_pct": 2.43,
+   "vol_ratio": 0.45
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-28",
+   "move_pct": 3.31,
+   "nifty_pct": -0.22,
+   "excess_pct": 3.53,
+   "vol_ratio": 0.72
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-29",
+   "move_pct": -1.79,
+   "nifty_pct": 1.05,
+   "excess_pct": -2.84,
+   "vol_ratio": 0.64
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-30",
+   "move_pct": 5.44,
+   "nifty_pct": 0.51,
+   "excess_pct": 4.93,
+   "vol_ratio": 3.86
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-11-02",
+   "move_pct": 0.96,
+   "nifty_pct": 1.68,
+   "excess_pct": -0.72,
+   "vol_ratio": 0.75
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-11-03",
+   "move_pct": -0.32,
+   "nifty_pct": 1.58,
+   "excess_pct": -1.9,
+   "vol_ratio": 0.64
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-11-04",
+   "move_pct": 0.77,
+   "nifty_pct": 0.63,
+   "excess_pct": 0.15,
+   "vol_ratio": 0.47
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-11-05",
+   "move_pct": -0.16,
+   "nifty_pct": 2.4,
+   "excess_pct": -2.57,
+   "vol_ratio": 0.94
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-11-06",
+   "move_pct": 0.79,
+   "nifty_pct": 2.01,
+   "excess_pct": -1.23,
+   "vol_ratio": 0.57
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-11-09",
+   "move_pct": 1.31,
+   "nifty_pct": 0.06,
+   "excess_pct": 1.25,
+   "vol_ratio": 0.98
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-11-11",
+   "move_pct": 3.32,
+   "nifty_pct": 0.84,
+   "excess_pct": 2.48,
+   "vol_ratio": 1.58
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-11-12",
+   "move_pct": -1.32,
+   "nifty_pct": 0.18,
+   "excess_pct": -1.5,
+   "vol_ratio": 0.59
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-11-13",
+   "move_pct": -0.47,
+   "nifty_pct": -0.61,
+   "excess_pct": 0.15,
+   "vol_ratio": 0.57
   },
   {
    "symbol": "RELIANCE",
@@ -14114,14 +13657,6 @@
   },
   {
    "symbol": "HDFCBANK",
-   "date": "2026-10-15",
-   "move_pct": 2.27,
-   "nifty_pct": 1.66,
-   "excess_pct": 0.62,
-   "vol_ratio": 1.24
-  },
-  {
-   "symbol": "HDFCBANK",
    "date": "2026-10-16",
    "move_pct": 0.28,
    "nifty_pct": 0.65,
@@ -14271,14 +13806,6 @@
    "nifty_pct": -0.61,
    "excess_pct": -0.41,
    "vol_ratio": 0.59
-  },
-  {
-   "symbol": "TCS",
-   "date": "2026-10-15",
-   "move_pct": 1.96,
-   "nifty_pct": 1.66,
-   "excess_pct": 0.3,
-   "vol_ratio": 1.99
   },
   {
    "symbol": "TCS",
@@ -14434,14 +13961,6 @@
   },
   {
    "symbol": "BHARTIARTL",
-   "date": "2026-10-15",
-   "move_pct": 3.31,
-   "nifty_pct": 1.66,
-   "excess_pct": 1.65,
-   "vol_ratio": 1.76
-  },
-  {
-   "symbol": "BHARTIARTL",
    "date": "2026-10-16",
    "move_pct": 2.75,
    "nifty_pct": 0.65,
@@ -14591,14 +14110,6 @@
    "nifty_pct": -0.61,
    "excess_pct": 1.09,
    "vol_ratio": 0.57
-  },
-  {
-   "symbol": "ITC",
-   "date": "2026-10-15",
-   "move_pct": 0.92,
-   "nifty_pct": 1.66,
-   "excess_pct": -0.74,
-   "vol_ratio": 1.16
   },
   {
    "symbol": "ITC",
@@ -14754,14 +14265,6 @@
   },
   {
    "symbol": "LT",
-   "date": "2026-10-15",
-   "move_pct": -0.27,
-   "nifty_pct": 1.66,
-   "excess_pct": -1.93,
-   "vol_ratio": 1.45
-  },
-  {
-   "symbol": "LT",
    "date": "2026-10-16",
    "move_pct": -0.13,
    "nifty_pct": 0.65,
@@ -14914,14 +14417,6 @@
   },
   {
    "symbol": "SUNPHARMA",
-   "date": "2026-10-15",
-   "move_pct": 1.01,
-   "nifty_pct": 1.66,
-   "excess_pct": -0.65,
-   "vol_ratio": 0.85
-  },
-  {
-   "symbol": "SUNPHARMA",
    "date": "2026-10-16",
    "move_pct": -0.29,
    "nifty_pct": 0.65,
@@ -15071,174 +14566,6 @@
    "nifty_pct": -0.61,
    "excess_pct": 0.35,
    "vol_ratio": 0.88
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-15",
-   "move_pct": 2.39,
-   "nifty_pct": 1.66,
-   "excess_pct": 0.73,
-   "vol_ratio": 1.16
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-16",
-   "move_pct": 0.38,
-   "nifty_pct": 0.65,
-   "excess_pct": -0.26,
-   "vol_ratio": 0.91
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-19",
-   "move_pct": -0.12,
-   "nifty_pct": -1.11,
-   "excess_pct": 0.99,
-   "vol_ratio": 0.99
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-21",
-   "move_pct": -2.4,
-   "nifty_pct": -0.34,
-   "excess_pct": -2.06,
-   "vol_ratio": 0.88
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-22",
-   "move_pct": -0.27,
-   "nifty_pct": -0.54,
-   "excess_pct": 0.27,
-   "vol_ratio": 0.9
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-23",
-   "move_pct": 0.54,
-   "nifty_pct": -0.39,
-   "excess_pct": 0.92,
-   "vol_ratio": 0.72
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-26",
-   "move_pct": -0.09,
-   "nifty_pct": 0.68,
-   "excess_pct": -0.77,
-   "vol_ratio": 1.05
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-27",
-   "move_pct": 2.05,
-   "nifty_pct": -0.02,
-   "excess_pct": 2.07,
-   "vol_ratio": 0.91
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-28",
-   "move_pct": 1.13,
-   "nifty_pct": -0.22,
-   "excess_pct": 1.35,
-   "vol_ratio": 1.96
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-29",
-   "move_pct": -1.32,
-   "nifty_pct": 1.05,
-   "excess_pct": -2.37,
-   "vol_ratio": 0.62
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-30",
-   "move_pct": -0.25,
-   "nifty_pct": 0.51,
-   "excess_pct": -0.76,
-   "vol_ratio": 0.56
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-02",
-   "move_pct": 2.41,
-   "nifty_pct": 1.68,
-   "excess_pct": 0.73,
-   "vol_ratio": 0.84
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-03",
-   "move_pct": 1.69,
-   "nifty_pct": 1.58,
-   "excess_pct": 0.11,
-   "vol_ratio": 0.78
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-04",
-   "move_pct": 1.06,
-   "nifty_pct": 0.63,
-   "excess_pct": 0.43,
-   "vol_ratio": 1.3
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-05",
-   "move_pct": 5.48,
-   "nifty_pct": 2.4,
-   "excess_pct": 3.07,
-   "vol_ratio": 2.59
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-06",
-   "move_pct": 0.77,
-   "nifty_pct": 2.01,
-   "excess_pct": -1.24,
-   "vol_ratio": 1.87
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-09",
-   "move_pct": 1.4,
-   "nifty_pct": 0.06,
-   "excess_pct": 1.34,
-   "vol_ratio": 1.08
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-11",
-   "move_pct": 1.99,
-   "nifty_pct": 0.84,
-   "excess_pct": 1.15,
-   "vol_ratio": 1.83
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-12",
-   "move_pct": -1.22,
-   "nifty_pct": 0.18,
-   "excess_pct": -1.4,
-   "vol_ratio": 1.29
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-13",
-   "move_pct": -1.31,
-   "nifty_pct": -0.61,
-   "excess_pct": -0.69,
-   "vol_ratio": 0.88
-  },
-  {
-   "symbol": "BAJFINANCE",
-   "date": "2026-10-15",
-   "move_pct": 0.86,
-   "nifty_pct": 1.66,
-   "excess_pct": -0.79,
-   "vol_ratio": 1.47
   },
   {
    "symbol": "BAJFINANCE",
@@ -15394,14 +14721,6 @@
   },
   {
    "symbol": "ASIANPAINT",
-   "date": "2026-10-15",
-   "move_pct": 0.23,
-   "nifty_pct": 1.66,
-   "excess_pct": -1.43,
-   "vol_ratio": 1.4
-  },
-  {
-   "symbol": "ASIANPAINT",
    "date": "2026-10-16",
    "move_pct": -0.77,
    "nifty_pct": 0.65,
@@ -15551,174 +14870,6 @@
    "nifty_pct": -0.61,
    "excess_pct": 1.15,
    "vol_ratio": 0.56
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-15",
-   "move_pct": -0.72,
-   "nifty_pct": 1.66,
-   "excess_pct": -2.37,
-   "vol_ratio": 0.73
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-16",
-   "move_pct": 0.31,
-   "nifty_pct": 0.65,
-   "excess_pct": -0.34,
-   "vol_ratio": 0.45
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-19",
-   "move_pct": -2.27,
-   "nifty_pct": -1.11,
-   "excess_pct": -1.16,
-   "vol_ratio": 0.71
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-21",
-   "move_pct": -2.41,
-   "nifty_pct": -0.34,
-   "excess_pct": -2.07,
-   "vol_ratio": 0.68
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-22",
-   "move_pct": -1.64,
-   "nifty_pct": -0.54,
-   "excess_pct": -1.09,
-   "vol_ratio": 1.22
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-23",
-   "move_pct": -1.74,
-   "nifty_pct": -0.39,
-   "excess_pct": -1.35,
-   "vol_ratio": 0.65
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-26",
-   "move_pct": 0.97,
-   "nifty_pct": 0.68,
-   "excess_pct": 0.29,
-   "vol_ratio": 0.7
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-27",
-   "move_pct": 2.42,
-   "nifty_pct": -0.02,
-   "excess_pct": 2.43,
-   "vol_ratio": 0.45
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-28",
-   "move_pct": 3.31,
-   "nifty_pct": -0.22,
-   "excess_pct": 3.53,
-   "vol_ratio": 0.72
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-29",
-   "move_pct": -1.79,
-   "nifty_pct": 1.05,
-   "excess_pct": -2.84,
-   "vol_ratio": 0.64
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-30",
-   "move_pct": 5.44,
-   "nifty_pct": 0.51,
-   "excess_pct": 4.93,
-   "vol_ratio": 3.86
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-02",
-   "move_pct": 0.96,
-   "nifty_pct": 1.68,
-   "excess_pct": -0.72,
-   "vol_ratio": 0.75
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-03",
-   "move_pct": -0.32,
-   "nifty_pct": 1.58,
-   "excess_pct": -1.9,
-   "vol_ratio": 0.64
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-04",
-   "move_pct": 0.77,
-   "nifty_pct": 0.63,
-   "excess_pct": 0.15,
-   "vol_ratio": 0.47
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-05",
-   "move_pct": -0.16,
-   "nifty_pct": 2.4,
-   "excess_pct": -2.57,
-   "vol_ratio": 0.94
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-06",
-   "move_pct": 0.79,
-   "nifty_pct": 2.01,
-   "excess_pct": -1.23,
-   "vol_ratio": 0.57
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-09",
-   "move_pct": 1.31,
-   "nifty_pct": 0.06,
-   "excess_pct": 1.25,
-   "vol_ratio": 0.98
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-11",
-   "move_pct": 3.32,
-   "nifty_pct": 0.84,
-   "excess_pct": 2.48,
-   "vol_ratio": 1.58
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-12",
-   "move_pct": -1.32,
-   "nifty_pct": 0.18,
-   "excess_pct": -1.5,
-   "vol_ratio": 0.59
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-13",
-   "move_pct": -0.47,
-   "nifty_pct": -0.61,
-   "excess_pct": 0.15,
-   "vol_ratio": 0.57
-  },
-  {
-   "symbol": "ETERNAL",
-   "date": "2026-10-15",
-   "move_pct": 2.22,
-   "nifty_pct": 1.66,
-   "excess_pct": 0.56,
-   "vol_ratio": 0.86
   },
   {
    "symbol": "ETERNAL",
@@ -15874,14 +15025,6 @@
   },
   {
    "symbol": "DIXON",
-   "date": "2026-10-15",
-   "move_pct": -1.2,
-   "nifty_pct": 1.66,
-   "excess_pct": -2.86,
-   "vol_ratio": 1.19
-  },
-  {
-   "symbol": "DIXON",
    "date": "2026-10-16",
    "move_pct": -2.57,
    "nifty_pct": 0.65,
@@ -16031,14 +15174,6 @@
    "nifty_pct": -0.61,
    "excess_pct": -0.88,
    "vol_ratio": 0.5
-  },
-  {
-   "symbol": "PERSISTENT",
-   "date": "2026-10-15",
-   "move_pct": -0.98,
-   "nifty_pct": 1.66,
-   "excess_pct": -2.64,
-   "vol_ratio": 2.93
   },
   {
    "symbol": "PERSISTENT",
@@ -16194,14 +15329,6 @@
   },
   {
    "symbol": "POLYCAB",
-   "date": "2026-10-15",
-   "move_pct": -1.54,
-   "nifty_pct": 1.66,
-   "excess_pct": -3.19,
-   "vol_ratio": 1.82
-  },
-  {
-   "symbol": "POLYCAB",
    "date": "2026-10-16",
    "move_pct": 0.15,
    "nifty_pct": 0.65,
@@ -16351,14 +15478,6 @@
    "nifty_pct": -0.61,
    "excess_pct": -1.57,
    "vol_ratio": 1.1
-  },
-  {
-   "symbol": "TATAPOWER",
-   "date": "2026-10-15",
-   "move_pct": -0.91,
-   "nifty_pct": 1.66,
-   "excess_pct": -2.56,
-   "vol_ratio": 0.91
   },
   {
    "symbol": "TATAPOWER",
@@ -16514,14 +15633,6 @@
   },
   {
    "symbol": "IRCTC",
-   "date": "2026-10-15",
-   "move_pct": -1.62,
-   "nifty_pct": 1.66,
-   "excess_pct": -3.28,
-   "vol_ratio": 1.0
-  },
-  {
-   "symbol": "IRCTC",
    "date": "2026-10-16",
    "move_pct": -0.58,
    "nifty_pct": 0.65,
@@ -16671,14 +15782,6 @@
    "nifty_pct": -0.61,
    "excess_pct": -2.2,
    "vol_ratio": 1.6
-  },
-  {
-   "symbol": "CDSL",
-   "date": "2026-10-15",
-   "move_pct": 0.7,
-   "nifty_pct": 1.66,
-   "excess_pct": -0.96,
-   "vol_ratio": 0.82
   },
   {
    "symbol": "CDSL",
@@ -16834,14 +15937,6 @@
   },
   {
    "symbol": "KPITTECH",
-   "date": "2026-10-15",
-   "move_pct": 0.42,
-   "nifty_pct": 1.66,
-   "excess_pct": -1.24,
-   "vol_ratio": 1.46
-  },
-  {
-   "symbol": "KPITTECH",
    "date": "2026-10-16",
    "move_pct": 5.51,
    "nifty_pct": 0.65,
@@ -16991,14 +16086,6 @@
    "nifty_pct": -0.61,
    "excess_pct": -0.47,
    "vol_ratio": 0.5
-  },
-  {
-   "symbol": "DEEPAKNTR",
-   "date": "2026-10-15",
-   "move_pct": -2.78,
-   "nifty_pct": 1.66,
-   "excess_pct": -4.44,
-   "vol_ratio": 0.82
   },
   {
    "symbol": "DEEPAKNTR",

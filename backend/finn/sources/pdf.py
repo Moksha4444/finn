@@ -5,7 +5,10 @@ import pymupdf
 # Lines of a P&L statement; any 3 on one page means "this is the results table".
 PNL = ["revenue from operations", "interest earned", "interest income", "total income", "before tax",
        "tax expense", "net profit", "profit for the period", "profit after tax", "exceptional"]
-NOT_PNL = ["segment revenue", "assets and liabilities", "cash flows from operating"]
+NOT_PNL = ["segment revenue", "assets and liabilities", "cash flows from operating", "review report", "cashflow statement",
+           "cash flow statement"]
+# a notes page opens as notes ("Notes to the Statement…", "General / 1. The above … results"): TRENT, MARUTI 15 Nov
+NOTES = re.compile(r"\A\s*(?:general\s+)?(?:notes?\b|1\.\s+the above\b)")
 
 
 def open_pdf(b: bytes) -> pymupdf.Document:
@@ -22,10 +25,12 @@ def find_results_pages(texts: list[str]) -> tuple[list[int], str | None]:
     best = {}
     for i, t in enumerate(texts):
         low = t.lower()
-        score = sum(k in low for k in PNL) - 3 * sum(k in low for k in NOT_PNL)
+        lines = sum(k in low for k in PNL)
+        score = lines - 3 * sum(k in low for k in NOT_PNL) - 3 * bool(NOTES.match(low))
         # the SEBI statement's title; survives bad OCR better than line items, and investor-report
-        # summary pages (2 columns, no preceding quarter; e.g. BHARTIARTL) don't carry it
-        score += 3 * bool(re.search(r"results for the (quarter|three months|period)", low))
+        # summary pages (2 columns, no preceding quarter; e.g. BHARTIARTL) don't carry it. Only on a page with
+        # line items: notes and review reports repeat the title (MARUTI's consolidated notes page, 15 Nov)
+        score += 3 * (lines >= 2 and bool(re.search(r"results for the (quarter|three months|period)", low)))
         if score < 3:
             continue
         basis = "consolidated" if low.count("consolidated") > low.count("standalone") else "standalone"

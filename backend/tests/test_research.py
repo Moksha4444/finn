@@ -197,8 +197,16 @@ def test_rejected_points_get_one_repair_call_and_a_thin_side_says_so(monkeypatch
     sent = research.json.loads(calls[1][-1])
     assert len(calls) == 2 and sent["need"] == {"bull": 3, "bear": 2} and sent["rejected"][0]["reason"] == "a number not in its cited evidence"
     assert [p["point"] for p in out["bull"]] == ["Studded jewellery share 31% in Q2 FY27"] and len(out["bear"]) == 1
-    assert out["note"] == "Only 1 bull point passed the evidence checks. Only 1 bear point passed the evidence checks."
+    assert out["note"] == "Only 1 bull point is supported by the cited evidence. Only 1 bear point is supported by the cited evidence."
     calls.clear()
     first["bull"] = fixed["bull"]  # nothing rejected: the model just ran out of evidence, so no repair call
     research.bull_bear("Co", "Sep 2026", ev, "X")
     assert len(calls) == 1
+
+
+def test_an_answer_where_nothing_passes_replaces_the_previous_section(monkeypatch):
+    bad = {"bull": [{"claim": "Revenue +21.9% YoY in Q2 FY27", "why": "Boosts top-line growth.", "cites": ["F1"]}], "bear": []}
+    monkeypatch.setattr(research.llm, "run", lambda *a, **k: {"data": {} if k.get("step") == "repair" else bad, "model": "m"})
+    prev = {"bull": [{"point": "EBITDA margin 18.0% in Q2 FY27", "why": "old", "cites": []}], "bear": [], "model": "m"}
+    out = research.bull_bear("Co", "Sep 2026", [{"id": "F1", "text": "Revenue +21.9% YoY in Q2 FY27", "cite": {}}], "X", prev)
+    assert out["bull"] == [] and out["note"] == "No bull point is supported by the cited evidence. No bear point is supported by the cited evidence."
