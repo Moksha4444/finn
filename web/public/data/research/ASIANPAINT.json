@@ -1,7 +1,7 @@
 {
  "symbol": "ASIANPAINT",
  "name": "Asian Paints Ltd",
- "generated_at": "2026-11-14T14:32",
+ "generated_at": "2026-11-14T22:29",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -220,7 +220,7 @@
   "unmeasured": 3,
   "total": 6,
   "measured": 3,
-  "sentence": "Kept 1 of 3 measured promises from the last 4 calls; missed on volume growth (Q1 FY27 call); 1 on track."
+  "sentence": "Kept 1 of 3 measured promises from the last 4 calls; behind on volume growth (Q1 FY27 call); 1 on track."
  },
  "prices": {
   "closes": [
@@ -827,75 +827,6 @@
    "claim": "Debt/equity 0.18 at FY26 end (Mar 2026), from 0.11 at FY22 end."
   }
  },
- "bull_bear": {
-  "bull": [
-   {
-    "point": "PBDIT margin 18.8% in FY26, within 18‑20% target.",
-    "why": "supports earnings stability and profitability.",
-    "cites": [
-     {
-      "label": "Q2 FY26 call, p.27 (promise)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=99e65c90-6bb0-4984-ac71-2a0f0eb4cc7f.pdf"
-     }
-    ]
-   },
-   {
-    "point": "EBITDA margin 18.2% so far in FY27, on track for 18‑20% target.",
-    "why": "indicates strong operating leverage.",
-    "cites": [
-     {
-      "label": "Q2 FY27 call, p.28 (promise)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ee7e6efe-1f9b-4b5e-bff7-1da18902ffeb.pdf"
-     }
-    ]
-   },
-   {
-    "point": "Revenue up 16.9% YoY in Q2 FY27, PAT up 7.5%.",
-    "why": "drives top‑line growth and profit expansion.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#quarters"
-     }
-    ]
-   }
-  ],
-  "bear": [
-   {
-    "point": "Volume growth 6.4% in Q2 FY27, behind 8‑10% FY27 target.",
-    "why": "limits top‑line expansion and market‑share gains.",
-    "cites": [
-     {
-      "label": "Q1 FY27 call, p.20 (promise)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e0d5627-2b8b-4bf1-a7ce-9d0160833a0f.pdf"
-     }
-    ]
-   },
-   {
-    "point": "EBITDA margin 15.6% in Q2 FY27, down 2.0 pp YoY.",
-    "why": "compresses earnings and cash generation.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#margin"
-     }
-    ]
-   },
-   {
-    "point": "Analyst raised risk to 18‑20% EBITDA margin band on Q2 FY27.",
-    "why": "could erode profitability if margin pressure persists.",
-    "cites": [
-     {
-      "label": "Q2 FY27 call, p.28 (analyst)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ee7e6efe-1f9b-4b5e-bff7-1da18902ffeb.pdf"
-     }
-    ]
-   }
-  ],
-  "dropped": 0,
-  "model": "openai/gpt-oss-120b",
-  "model_note": null
- },
  "sources": [
   {
    "label": "Q2 FY27 earnings call transcript",
@@ -917,5 +848,48 @@
    "label": "Quarterly and annual tables (consolidated), screener.in, from the exchange filings",
    "url": "https://www.screener.in/company/ASIANPAINT/consolidated/"
   }
- ]
+ ],
+ "bull_bear": {
+  "bull": [
+   {
+    "point": "PBDIT margin, FY26 18.8%",
+    "why": "management credibility on PBDIT margin",
+    "cites": [
+     {
+      "label": "Q2 FY26 call, p.27 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=99e65c90-6bb0-4984-ac71-2a0f0eb4cc7f.pdf"
+     }
+    ]
+   },
+   {
+    "point": "New products revenue contribution, Q1 FY27 17%",
+    "why": "new products drive revenue mix",
+    "cites": [
+     {
+      "label": "Q1 FY27 call, p.11",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e0d5627-2b8b-4bf1-a7ce-9d0160833a0f.pdf"
+     }
+    ]
+   }
+  ],
+  "bear": [
+   {
+    "point": "Volume growth, Q2 FY27 6.4%",
+    "why": "volume growth target shortfall raises credibility concerns",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.14",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ee7e6efe-1f9b-4b5e-bff7-1da18902ffeb.pdf"
+     },
+     {
+      "label": "Q1 FY27 call, p.20 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e0d5627-2b8b-4bf1-a7ce-9d0160833a0f.pdf"
+     }
+    ]
+   }
+  ],
+  "dropped": 2,
+  "model": "openai/gpt-oss-120b",
+  "model_note": null
+ }
 }

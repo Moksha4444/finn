@@ -4,7 +4,7 @@ Python only, except bull/bear: the strong model picks and words the points, and 
 are not in the evidence it cites. Every snapshot number is computed here from screener's tables.
 Run from backend/:  ../.venv/Scripts/python -m finn.pull.research TCS HDFCBANK   (no args: every researched + portfolio ticker)
 """
-import re, sys, json, functools, datetime as dt
+import os, re, sys, json, functools, datetime as dt
 from finn import llm
 from finn.config import PORTFOLIO
 from finn.ingest import KEPT, MISSED, OPEN
@@ -99,6 +99,9 @@ def snapshot(co: dict) -> dict:
 
 
 # ---- track record (template sentence, no LLM) ----
+VERB = {"miss": "missed", "behind pace": "behind", "moved away": "moved away from target"}
+
+
 def summary(rows: list[dict], n_calls: int) -> dict:
     v = [r["verdict"] for r in rows]
     c = {"kept": sum(x in KEPT for x in v), "missed": sum(x in MISSED for x in v), "open": sum(x in OPEN for x in v),
@@ -121,7 +124,8 @@ def summary(rows: list[dict], n_calls: int) -> dict:
             words = m["metric"].split()
             # "Operating Margin" -> "operating margin"; keep acronyms ("EBITDA margin", "FY 26")
             name = m["metric"] if any(len(w) > 1 and w.isupper() for w in words) else m["metric"].lower()
-            tail.append(f"missed {len(missed)}, the latest on {name} ({m['call']} call)" if len(missed) > 1 else f"missed on {name} ({m['call']} call)")
+            said = f"{VERB[m['verdict']]} on {name} ({m['call']} call)"  # the row's badge wording: "behind on", not "missed on"
+            tail.append(f"{len(missed)} not kept, the latest {said}" if len(missed) > 1 else said)
         if c["open"]:
             tail.append(f"{c['open']} on track")
         if c["partial"]:
@@ -169,12 +173,21 @@ def evidence(rows: list[dict], reported: list[dict], questions: list[dict], snap
     for k, r in enumerate(rows):
         ev.append({"id": f"P{k + 1}", "verdict": r["verdict"],
                    "text": f"Promised on the {r['call']} call: {r['metric']}: {r['target']} ({r['period']}). "
-                           f"Verdict: {r['verdict']}{RUNNING.get(r['verdict'], '')}. Actual: {r['actual']}",
+                           f"Verdict: {r['verdict']}{RUNNING.get(r['verdict'], '')}. Actual: {part_year(r['actual'])}",
                    "cite": {"label": f"{r['call']} call, p.{r['page']} (promise)", "url": r["transcript"]}})
     for k, key in enumerate(("quarters", "margin", "cash", "leverage")):
         if snap.get(key, {}).get("claim"):
-            ev.append({"id": f"F{k + 1}", "text": snap[key]["claim"], "cite": {"label": "Financial snapshot (results filings)", "url": f"#{key}"}})
+            text = snap[key]["claim"] + (f" [{snap[key]['name']}]" if snap[key].get("name") else "")  # the page's own definition
+            ev.append({"id": f"F{k + 1}", "text": text, "cite": {"label": "Financial snapshot (results filings)", "url": f"#{key}"}})
     return ev
+
+
+def part_year(actual: str) -> str:
+    """"FY27 (Apr 2026 – Mar 2027) so far (Q1–Q2, 2 of 4 quarters)" -> "H1 FY27 (Q1–Q2)": a part-year figure is named by
+    its quarters, so "EBITDA margin 18.2%, H1 FY27" can't read as the same fact as the Q2 figure (ASIANPAINT, 14 Nov)."""
+    name = {"Q1": "Q1", "Q1–Q2": "H1", "Q1–Q3": "9M"}
+    return re.sub(r"\b(FY\d{2}) \([^)]*\) so far \((Q1(?:–Q[23])?), \d of 4 quarters\)",
+                  lambda m: f"{name[m.group(2)]} {m.group(1)} ({m.group(2)})", actual)
 
 
 RUNNING = {"on track": " (period still running: no hit or miss yet)", "ahead": " (period still running: no hit or miss yet)",
@@ -191,7 +204,7 @@ LOSS = re.compile(r"\b(?:miss\w*|fell short|falls? short|short of|failed|fails)\
 # a company-level fact starts with its metric: "EBITDA margin 15.6% in Q2 FY27". "EPC revenues ..." or "FMEG EBITDA
 # margins ..." are a segment's (another metric); "EBITDA ... up 4.8% YoY" is growth, not a margin (SUNPHARMA, POLYCAB 14 Nov).
 # "Operating margin" is left out: TCS's is EBIT, not the snapshot's EBITDA.
-_LEAD = r"\s*(?:consolidated\s+)?"
+_LEAD = r"\s*(?:[+−-]?\d[\d.,]*\s?%\s+)?(?:consolidated\s+)?"  # numbers-first too: "15.6% EBITDA margin in Q2 FY27"
 FAMILY = (("margin", re.compile(_LEAD + r"(?:ebitda|pbdit)\s+margins?\b", re.I)),
           ("revenue", re.compile(_LEAD + r"(?:revenue|sales|total income)\b", re.I)),
           ("pat", re.compile(_LEAD + r"(?:pat|net profit|profit after tax)\b(?!\s+margin)", re.I)))
@@ -213,7 +226,37 @@ def fact(text: str) -> tuple[str, str, float] | None:
 MACRO = re.compile(r"\b(?:cpi|wpi|gdp|repo rate|headline inflation|consumer price)\b", re.I)
 
 
-def problem(pt: dict, ids: list[str], by_id: dict[str, dict]) -> str | None:
+# "Why it matters" filler that fits any company (user, 14 Nov): the why must name this company's driver instead
+FILLER = re.compile(r"\b(?:supports?|boosts?|drives?|improves?|enhances?|strengthens?|erodes?|compress\w*|reduces?|limits?|pressur\w*|"
+                    r"raises?|elevates?|increases?|heightens?|signals?|indicates?|highlights?)\s+(?:[\w’']+[\s‑-]+){0,2}?"
+                    r"(?:profitability|top[\s‑-]?line(?:\s+growth)?|earnings(?:\s+(?:growth|momentum|potential|expansion))?|momentum|"
+                    r"cash\s+generation|shareholder\s+value|(?:leverage|financial|balance[\s‑-]?sheet)\s+risk)\b|"
+                    r"\b(?:operating leverage|financial flexibility|earnings momentum|cash generation)\b", re.I)
+# words any why could use: they name no driver
+GENERIC = set("""about above across after again against ahead also among amount analyst analysts annual around asked based basis
+been behind below between beyond billion both business call calls cash change company compared consolidated continue cost
+costs could crore crores current decline declined deliver delivered demand down during each earnings ebitda equity even
+expand expansion expected figure figures financial flow flows from further gross growth guidance have higher holding however
+income increase indicates into investor investors keeps lakh latest less level levels lower made make management margin
+margins market million momentum month months more most much must operating over overall percent period points positive
+pressure previous price prices profit profitability profits promise promised quarter quarterly quarters question questioned
+ratio reach reached remain reported result results return returns revenue revenues rise risk rose said sales same says share
+shareholder shows since sheet some still strong such target targets than that their them then there these they this those
+through total track trend upon value verdict versus very visibility weak were what when where which while will with within
+would year years your""".split())
+
+
+def _stems(text: str) -> set[str]:
+    return {w[:6] for w in re.findall(r"[a-z]{4,}", text.lower()) if w not in GENERIC}
+
+
+DE = re.compile(r"\bdebt[\s/-]*(?:to[\s-]*)?equity\b|\bD/E\b", re.I)
+PACE = (("behind", re.compile(r"\bbehind\b", re.I)), ("on track", re.compile(r"\bon track\b", re.I)), ("ahead", re.compile(r"\bahead of\b", re.I)))
+NOT_KEPT, KEPT_V = {"miss", "behind pace", "moved away"}, {"hit", "ahead"}
+CREDIBLE = re.compile(r"credib|guidance|track record|delivers? on|promises?\b", re.I)
+
+
+def problem(pt: dict, ids: list[str], by_id: dict[str, dict], side: str | None = None) -> str | None:
     """Why a bull/bear point can't be shown (None = fine). Python checks, not prompt wishes."""
     text = f"{pt['claim']} {pt['why']}"
     body = re.sub(r"[,\s]", "", " ".join(by_id[i]["text"] for i in ids))
@@ -230,10 +273,24 @@ def problem(pt: dict, ids: list[str], by_id: dict[str, dict]) -> str | None:
         return "claims a target was beaten that isn't a hit"
     if LOSS.search(text) and "miss" not in verdicts:
         return "claims a miss that isn't a miss"
+    for v, rx in PACE:  # "behind", "on track", "ahead of" only where a cited promise has that verdict
+        if rx.search(pt["claim"]) and not any((x or "").startswith(v) for x in verdicts):
+            return f"says '{v}' but no cited promise is {v}"
+    if (side == "bull" and verdicts & NOT_KEPT) or (side == "bear" and verdicts & KEPT_V):
+        return "contradicts a promise verdict"
+    if side == "bear" and DE.search(pt["claim"]) and max(map(float, re.findall(r"(?<![\d.])\d+\.\d+(?![\d.%×x])", pt["claim"])), default=1) < 0.5:
+        return "debt/equity below 0.5 is not a leverage risk"
+    if re.search(r"\bso far\b", pt["claim"], re.I):
+        return "a part-year figure without its quarters (H1 / 9M)"
+    if FILLER.search(pt["why"]):
+        return "a generic why"
+    measured = verdicts & (NOT_KEPT | KEPT_V)  # on a kept or missed promise, credibility is the driver
+    if not _stems(pt["why"]) & _stems(" ".join(by_id[i]["text"] for i in ids)) and not (measured and CREDIBLE.search(pt["why"])):
+        return "the why names no driver from its evidence"
     return None
 
 
-def checked(points: list[dict], by_id: dict[str, dict], facts: dict | None = None) -> tuple[list[dict], int]:
+def checked(points: list[dict], by_id: dict[str, dict], facts: dict | None = None, side: str | None = None) -> tuple[list[dict], int]:
     """(first 3 points that pass problem() and agree with facts already used, number rejected).
     facts: {(family, period): figure} shared by both sides, so bull and bear can't quote two numbers for one fact."""
     facts = {} if facts is None else facts
@@ -247,7 +304,7 @@ def checked(points: list[dict], by_id: dict[str, dict], facts: dict | None = Non
         # one fact said twice in other words (KEI: "Revenue growth +38.5%" and "Net sales growth 38.52%", both Q2 FY27)
         per, pct = NAMED_PERIOD.search(pt["claim"]), re.search(r"(\d+(?:\.\d+)?)\s?%", pt["claim"])
         dup = per and pct and (per.group(0), round(float(pct.group(1)), 1))
-        if problem(pt, ids, by_id) or (f and facts.get(f[:2], f[2]) != f[2]) or (dup and dup in said):
+        if problem(pt, ids, by_id, side) or (f and facts.get(f[:2], f[2]) != f[2]) or (dup and dup in said):
             dropped += 1
             continue
         if dup:
@@ -258,6 +315,9 @@ def checked(points: list[dict], by_id: dict[str, dict], facts: dict | None = Non
     return keep[:3], dropped
 
 
+QUOTA_OUT = False  # set when the strong model answered with a daily cap: --regen stops there
+
+
 def bull_bear(name: str, latest: str | None, ev: list[dict], symbol: str, prev: dict | None = None, snap: dict | None = None) -> dict | None:
     """None when a side has no point that survives the number check, or the model is unavailable and there is no
     previous section (page hides it). prev: the page's last checked section, kept when the model is unavailable."""
@@ -265,6 +325,8 @@ def bull_bear(name: str, latest: str | None, ev: list[dict], symbol: str, prev: 
     try:
         r = llm.run("bull_bear", "bull_bear", [json.dumps(payload, ensure_ascii=False)], BB, symbol=symbol, patient=True)
     except Exception as e:  # quota / network: keep the last checked section rather than blank it (14 Nov: Groq's daily cap)
+        global QUOTA_OUT
+        QUOTA_OUT = QUOTA_OUT or isinstance(e, llm.Exhausted)
         print(f"  bull/bear unavailable for {symbol}: {type(e).__name__}: {str(e)[:120]}{'; kept the previous one' if prev else ''}")
         return prev
     by_id = {e["id"]: e for e in ev}
@@ -273,8 +335,8 @@ def bull_bear(name: str, latest: str | None, ev: list[dict], symbol: str, prev: 
     # segment's, with the segment's name dropped: POLYCAB "EBITDA margins 10.1% in Q2 FY27" against 14.4%) is dropped
     m = (snap or {}).get("margin") or {}
     facts: dict = {("margin", pvd.fy_name(q)): round(v, 1) for q, v in zip(m.get("periods", []), m.get("values", []))}
-    bull, d1 = checked(data.get("bull") or [], by_id, facts)
-    bear, d2 = checked(data.get("bear") or [], by_id, facts)
+    bull, d1 = checked(data.get("bull") or [], by_id, facts, "bull")
+    bear, d2 = checked(data.get("bear") or [], by_id, facts, "bear")
     if not bull or not bear:  # nothing survives on a side: the last checked section, if any, beats a blank
         if prev:
             print(f"  bull/bear for {symbol}: a side had no point that passed the checks; kept the previous one")
@@ -378,7 +440,9 @@ def index() -> list[dict]:
         if f.stem == "index":
             continue
         d = json.loads(f.read_text(encoding="utf-8"))
-        s = d.get("summary") or summary(d["promises"], len(d["calls"]))
+        s = summary(d["promises"], len(d["calls"]))  # re-derived (pure Python), so a template fix reaches every page
+        if d.get("summary") and d["summary"] != s and not d.get("pvd_error"):
+            f.write_text(json.dumps(d | {"summary": s}, ensure_ascii=False, indent=1), encoding="utf-8")
         rows.append({"symbol": d["symbol"], "name": d["name"], "sector": d.get("sector"), "generated_at": d["generated_at"],
                      "summary": {k: s[k] for k in ("kept", "missed", "open", "partial", "measured", "total")}})
     (OUT / "index.json").write_text(json.dumps(rows, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -386,9 +450,20 @@ def index() -> list[dict]:
 
 
 def main(argv=None):
+    """python -m finn.pull.research [SYMBOL ...] [--regen]
+    --regen: rebuild every page with bull/bear by the strong model only (gpt-oss-120b, no Gemini stand-in; user, 14 Nov).
+    Everything else comes from the cache. Stops at the first daily-cap answer; run it again later to resume (done pages are cached)."""
     sys.stdout.reconfigure(encoding="utf-8")
-    syms = argv or sys.argv[1:] or sorted({f.stem for f in OUT.glob("*.json") if f.stem != "index"} | set(PORTFOLIO))
-    for sym in syms:
+    args = argv if argv is not None else sys.argv[1:]
+    regen = "--regen" in args
+    args = [a for a in args if a != "--regen"]
+    if regen:
+        os.environ["FINN_STRONG_FALLBACK"] = llm.model_for("bull_bear")  # the chain collapses to one model
+    syms = args or sorted({f.stem for f in OUT.glob("*.json") if f.stem != "index"} | set(PORTFOLIO))
+    for k, sym in enumerate(syms):
+        if regen and QUOTA_OUT:
+            print(f"{llm.model_for('bull_bear')} is out of quota: stopped before {', '.join(syms[k:])}. Run --regen again once it resets.")
+            break
         try:
             out = build(sym)
         except Exception as e:
