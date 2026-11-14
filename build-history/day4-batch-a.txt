@@ -1,0 +1,2607 @@
+
+● Committed. The feed → research chain is running in the background (about 20–40
+  minutes, mostly pacing for Groq's 8k-tokens-a-minute limit). When it finishes
+  I'll check the consistency gate, fix whatever it flags, then do the
+  end-to-end check of Asian Paints and L&T and the final feed re-ingest for the
+  credibility chips.
+
+● Background command "Run feed then research for all tickers" completed (exit
+code 0)
+  ⎿  Referenced file backend\finn\push\cards.py
+  ⎿  Referenced file backend\finn\pull\pvd.py
+  ⎿  Read ..\..\..\MOKSHA~1\AppData\Local\Temp\claude\638d0bc94bb048d8\aed1dd49-
+     cc45-4f16-8ead-f16ef9a45cb1\scratchpad\e11.py (43 lines)
+  ⎿  Read backend\tests\test_consistency.py (31 lines)
+  ⎿  Read ..\..\..\MOKSHA~1\AppData\Local\Temp\claude\638d0bc94bb048d8\aed1dd49-
+     cc45-4f16-8ead-f16ef9a45cb1\scratchpad\c2.py (72 lines)
+  ⎿  Skills restored (impeccable:impeccable)
+
+● Compacted using a summary written while you were away · turn off with
+  "idleCompaction": false in settings.json
+
+  Read 1 file, ran 4 shell commands (ctrl+o to expand)
+
+● The consistency gate found 10 issues, including a real bug where ITC and
+  POLYCAB's results cards assume a fixed column order, making ITC's YoY show
+  +6.0% instead of the true +3.9%. I'm fixing that now, then moving on to the
+  TCS margin and KPIT/Persistent PAT-label findings. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend"; cat >
+      "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/aed1dd49-cc4
+      5-4f16-8ead-f16ef9a45cb1/s…)
+  ⎿  Updated backend\finn\push\cards.py (+30 -0)
+      56      return None if a is None or b is None else a - b
+      57  
+      58  
+      59 +MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug
+         +", "sep", "oct", "nov", "dec"]                                 
+      60 +                                                               
+      61 +                                                               
+      62 +def _month_end(label: str) -> tuple[int, int] | None:          
+      63 +    """(year, month) of a column header: '30.09.2026', '30 Sep 
+         +26', 'September 30, 2026'; None if unreadable."""              
+      64 +    s = label.lower()                                          
+      65 +    if m := re.search(r"\d{1,2}[./-](\d{1,2})[./-](\d{2,4})", s
+         +):                                                             
+      66 +        mo, y = int(m.group(1)), int(m.group(2))               
+      67 +    elif m := re.search(r"(" + "|".join(MONTHS) + r")[a-z]*\.?\
+         +s*(?:\d{1,2}(?:st|nd|rd|th)?,?\s*)?(\d{4}|\d{2})", s):         
+      68 +        mo, y = MONTHS.index(m.group(1)) + 1, int(m.group(2))  
+      69 +    else:                                                      
+      70 +        return None                                            
+      71 +    return (y + 2000 if y < 100 else y, mo) if 1 <= mo <= 12 el
+         +se None                                                        
+      72 +                                                               
+      73 +                                                               
+      74 +def _in_order(cols: list[dict]) -> list[dict]:                 
+      75 +    """Columns as (this quarter, previous quarter, year-ago qua
+         +rter) whatever order the filing prints them in (ITC prints     
+      76 +    the year-ago quarter second). Headers that can't be read ke
+         +ep the printed order; readable ones without a previous         
+      77 +    and a year-ago quarter can't make a card (POLYCAB: two year
+         +-ago columns, restated and not)."""                            
+      78 +    ends = [_month_end(c["period_label"]) for c in cols]       
+      79 +    if None in ends:                                           
+      80 +        return cols                                            
+      81 +    (y, m), back = max(ends), lambda n: divmod(max(ends)[0] * 1
+         +2 + max(ends)[1] - 1 - n, 12)                                  
+      82 +    want = [(y, m), (back(3)[0], back(3)[1] + 1), (back(12)[0],
+         + back(12)[1] + 1)]                                             
+      83 +    if sorted(ends) != sorted(want):                           
+      84 +        raise ValueError(f"columns are not this quarter, previo
+         +us and year-ago: {[c['period_label'] for c in cols]}")         
+      85 +    return [cols[ends.index(w)] for w in want]                 
+      86 +                                                               
+      87 +                                                               
+      88  def _bottom_up(c: dict, top_down: float | None) -> float | None
+          :
+      89      """Revenue from operations − operating expenses. "Total exp
+          enses" usually includes finance costs and D&A (the SEBI
+      90      format), but some tables print it before them (BHARTIARTL):
+           take the reading that agrees with the top-down figure,
+     ...
+      108      # a page without all 3 quarters makes the model pad column
+           s, and a YoY number gets shown as QoQ
+      109      if len(cols) < 3 or any(c.get("profit_before_tax") is None
+            or c.get("profit_after_tax") is None for c in cols)          
+              or len({c["period_label"] for c in cols}) < 3:
+      110          raise ValueError("need current, previous and year-ago 
+           columns with PBT and PAT")
+      111 +    cols = _in_order(cols)                                    
+      112  
+     … 2 more lines (ctrl+o to expand)
+  ⎿  Updated backend\tests\test_results.py (+27 -12)
+      149          col["excise_duty"] = e
+      150      c = results_card(ex)
+      151      assert {l["name"]: l for l in c["lines"]}["Revenue"]["valu
+           e"] == 73188 - 10000 and c["note"].startswith("Revenue net of 
+           excise duty")
+      152 -                                                              
+      153 -                                                              
+      154 -def test_total_expenses_printed_before_finance_costs_and_dna()
+          -:                                                             
+      155 -    # BHARTIARTL Q2 FY27 (₹ million): "Total expenses" 259,316
+          - excludes finance costs and D&A; EBITDA 349,459, not 552,703  
+      156 -    cols = [dict(period_label=p, revenue_from_operations=r, ot
+          -her_income=oi, total_expenses=te, finance_costs=f, depreciatio
+          -n_amortisation=da,                                            
+      157 -                 profit_before_exceptional_and_tax=pbe, profit
+          -_before_tax=pbt, profit_after_tax=pat, profit_attributable_to_
+          -owners=o)                                                     
+      158 -            for p, r, oi, te, f, da, pbe, pbt, pat, o in [    
+      159 -                ("Sep 26", 608775, 8769, 259316, 57073, 146171
+          -, 156012, 154280, 107104, 88875),                             
+      160 -                ("Jun 26", 585391, 9066, 252363, 59564, 142350
+          -, 141262, 137728, 100116, 81674),                             
+      161 -                ("Sep 25", 521454, 7277, 225840, 48657, 131821
+          -, 123223, 123223, 86508, 67917)]]                             
+      162 -    c = results_card({"data": {"basis": "consolidated", "unit"
+          -: "₹ million", "is_bank_or_nbfc": False, "columns": cols}, "pa
+          -ges": [2]})                                                   
+      163 -    assert {l["name"]: l for l in c["lines"]}["EBITDA"]["value
+          -s"][0] == round((608775 - 259316) * 0.1, 2)                   
+      152 +                                                              
+      153 +                                                              
+      154 +def test_total_expenses_printed_before_finance_costs_and_dna()
+          +:                                                             
+      155 +    # BHARTIARTL Q2 FY27 (₹ million): "Total expenses" 259,316
+          + excludes finance costs and D&A; EBITDA 349,459, not 552,703  
+      156 +    cols = [dict(period_label=p, revenue_from_operations=r, ot
+          +her_income=oi, total_expenses=te, finance_costs=f, depreciatio
+          +n_amortisation=da,                                            
+      157 +                 profit_before_exceptional_and_tax=pbe, profit
+          +_before_tax=pbt, profit_after_tax=pat, profit_attributable_to_
+          +owners=o)                                                     
+      158 +            for p, r, oi, te, f, da, pbe, pbt, pat, o in [    
+      159 +                ("Sep 26", 608775, 8769, 259316, 57073, 146171
+          +, 156012, 154280, 107104, 88875),                             
+      160 +                ("Jun 26", 585391, 9066, 252363, 59564, 142350
+          +, 141262, 137728, 100116, 81674),                             
+      161 +                ("Sep 25", 521454, 7277, 225840, 48657, 131821
+          +, 123223, 123223, 86508, 67917)]]                             
+      162 +    c = results_card({"data": {"basis": "consolidated", "unit"
+          +: "₹ million", "is_bank_or_nbfc": False, "columns": cols}, "pa
+          +ges": [2]})                                                   
+      163 +    assert {l["name"]: l for l in c["lines"]}["EBITDA"]["value
+          +s"][0] == round((608775 - 259316) * 0.1, 2)                   
+      164 +                                                              
+      165 +                                                              
+      166 +def test_columns_are_put_in_order_by_their_dates():           
+      167 +    from finn.push.cards import _in_order, _month_end         
+      168 +    assert _month_end("3 Months ended 30.09.2026") == (2026, 9
+          +) and _month_end("30 Sep 26") == (2026, 9)                    
+      169 +    assert _month_end("Quarter ended September 30, 2025") == (
+          +2025, 9) and _month_end("Q2") is None                         
+      170 +    # ITC prints this quarter, year-ago, previous             
+      171 +    cols = [{"period_label": l} for l in ["30.09.2026", "30.09
+          +.2025", "30.06.2026"]]                                        
+      172 +    assert [c["period_label"] for c in _in_order(cols)] == ["3
+          +0.09.2026", "30.06.2026", "30.09.2025"]                       
+      173 +    # Q4 wraps the year: Mar 2026, Dec 2025, Mar 2025         
+      174 +    cols = [{"period_label": l} for l in ["31.03.2026", "31.12
+          +.2025", "31.03.2025"]]                                        
+      175 +    assert _in_order(cols) == cols                            
+      176 +    with pytest.raises(ValueError):  # POLYCAB: two year-ago c
+          +olumns, no previous quarter                                   
+     … 2 more lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The shell mangled the backslashes again (the same issue as earlier), so I'm
+  fixing the regex lines directly with Edit.
+
+  Searched for 1 pattern, read 1 file (ctrl+o to expand)
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend";
+      ../.venv/Scripts/python -X utf8 -c "
+      import pathlib,re…)
+  ⎿  Updated backend\finn\push\cards.py (+2 -2)
+      62  def _month_end(label: str) -> tuple[int, int] | None:
+      63      """(year, month) of a column header: '30.09.2026', '30 Sep 
+          26', 'September 30, 2026'; None if unreadable."""
+      64      s = label.lower()
+      65 -    if m := re.search(r"\d{1,2}[./-](\d{1,2})[./-](\d{2,4})", s
+         -):                                                             
+      65 +    if m := re.search(r"\b\d{1,2}[./-](\d{1,2})[./-](\d{2,4})\b
+         +", s):                                                         
+      66          mo, y = int(m.group(1)), int(m.group(2))
+      67 -    elif m := re.search(r"(" + "|".join(MONTHS) + r")[a-z]*\.?\
+         -s*(?:\d{1,2}(?:st|nd|rd|th)?,?\s*)?(\d{4}|\d{2})", s):         
+      67 +    elif m := re.search(r"\b(" + "|".join(MONTHS) + r")[a-z]*\.
+         +?\s*(?:\d{1,2}(?:st|nd|rd|th)?,?\s*)?(\d{4}|\d{2})\b", s):     
+      68          mo, y = MONTHS.index(m.group(1)) + 1, int(m.group(2))
+      69      else:
+      70          return None
+
+● Now a simpler back helper, then the tests:
+
+● Update(backend\finn\push\cards.py)
+  ⎿  Added 2 lines, removed 2 lines
+      78      ends = [_month_end(c["period_label"]) for c in cols]
+      79      if None in ends:
+      80          return cols
+      81 -    (y, m), back = max(ends), lambda n: divmod(max(ends)[0] * 1
+         -2 + max(ends)[1] - 1 - n, 12)                                  
+      82 -    want = [(y, m), (back(3)[0], back(3)[1] + 1), (back(12)[0],
+         - back(12)[1] + 1)]                                             
+      81 +    y, m = max(ends)                                           
+      82 +    want = [(y, m), (y, m - 3) if m > 3 else (y - 1, m + 9), (y
+         + - 1, m)]                                                      
+      83      if sorted(ends) != sorted(want):
+      84          raise ValueError(f"columns are not this quarter, previo
+          us and year-ago: {[c['period_label'] for c in cols]}")
+      85      return [cols[ends.index(w)] for w in want]
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Column ordering is fixed and all tests pass apart from the data gate. Next is
+  TCS: the PvD rows use 25.2%, the snapshot 27.2%.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● TCS's margin isn't wrong; its label reads like EBITDA, so I'm renaming that
+  series to EBIT so the gate stops comparing different metrics. · summary
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 2 lines, removed 1 line
+      317          cites = {q: {"label": f"{fy_name(q)} call, p.{reported
+           [q]['page']}: “{reported[q]['quote']}”", "url": reported[q]["t
+           ranscript"]} for q in call_qs}
+      318          name = f"{r0['name'][:1].upper()}{r0['name'][1:]}"
+      319          if m and all(q in m and abs(m[q] - reported[q]["value"
+           ]) <= AGREE_PP for q in call_qs):
+      320 -            return {"q": m, "w": sales, "name": f"{name} (oper
+          -ating profit over revenue; matches what management reports)", 
+      320 +            how = "operating profit less depreciation, over re
+          +venue" if ebit else "operating profit over revenue"  # TCS: EB
+          +IT, not the snapshot's EBITDA                                 
+      321 +            return {"q": m, "w": sales, "name": f"{name} ({how
+          +}; matches what management reports)",                         
+      322                      "source": SOURCE, "cites": cites}
+      323          return {"q": {q: reported[q]["value"] for q in call_qs
+           }, "w": sales or {}, "name": f"{name} (as reported)",
+      324                  "source": SAID_MARGIN, "cites": cites}
+
+  Ran 4 shell commands (ctrl+o to expand)
+
+● The KPIT extractor only read page 9, but the P&L table continues onto page 10
+  where the owners and non-controlling split sits. Persistent has no
+  non-controlling interests at all, so its total PAT is PAT to owners, and the
+  card should say that. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+  ⎿  You've hit your 5-hour limit · resets 1:50am (Asia/Kolkata)
+     /upgrade to increase your usage limit.
+
+> continue
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend";
+      ../.venv/Scripts/python -X utf8 - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\push\cards.py (+4 -2)
+      41      pages = [i + 1 for i in idx] or list(range(1, len(texts) + 
+          1))
+      42      key = f"{hashlib.sha256(pdf_bytes).hexdigest()}:{path}:{pag
+          es}"
+      43      out = llm.run("extract_results", "extract_results", inputs,
+           RESULTS_SCHEMA, key=key, path=path, pages=pages)
+      44 -    return out | {"path": path, "pages": pages}                
+      44 +    # no non-controlling interests anywhere in the filing: all 
+         +of PAT is the owners' (PERSISTENT)                             
+      45 +    no_nci = not any(k in t.lower() for t in texts for k in ("n
+         +on-controlling", "non controlling", "minority interest"))      
+      46 +    return out | {"path": path, "pages": pages, "no_nci": no_nc
+         +i}                                                             
+      47  
+      48  
+      49  def _pct(a, b):
+     ...
+      142              note = "Revenue net of excise duty; " + note
+      143      # Owners' share matches the headline net profit and EPS; o
+           nly if all 3 columns have it, so QoQ/YoY compare like with lik
+           e.
+      144      owners = [c.get("profit_attributable_to_owners") for c in 
+           cols]
+      143 -    pat = ("PAT (to owners)", owners) if None not in owners el
+          -se ("PAT", [c["profit_after_tax"] for c in cols])             
+      145 +    pat = ("PAT (to owners)", owners) if None not in owners el
+          +se         ("PAT (to owners)" if ex.get("no_nci") else "PAT", 
+          +[c["profit_after_tax"] for c in cols])                        
+      146      lines |= {"PBT": [c["profit_before_tax"] for c in cols], p
+           at[0]: pat[1]}
+      147  
+      148      one_offs = []
+  ⎿  Updated backend\finn\sources\pdf.py (+4 -1)
+      37              idx = [i]
+      38              # table may spill onto the next page when PAT isn't
+           on this one
+      39              low = texts[i].lower()
+      40 -            if i + 1 < len(texts) and not any(k in low for k in
+         - ("net profit", "profit for the period", "profit after tax")): 
+      40 +            # or when the owners / non-controlling split is on 
+         +the next page (KPITTECH Q2 FY27)                               
+      41 +            nxt = texts[i + 1].lower() if i + 1 < len(texts) el
+         +se ""                                                          
+      42 +            if nxt and (not any(k in low for k in ("net profit"
+         +, "profit for the period", "profit after tax"))                
+      43 +                        or ("attributable to" not in low and "a
+         +ttributable to" in nxt)):                                      
+      44                  idx.append(i + 1)
+      45              return idx, basis
+      46      return [], None
+  ⎿  Updated backend\tests\test_results.py (+14 -0)
+      176      with pytest.raises(ValueError):  # POLYCAB: two year-ago c
+           olumns, no previous quarter
+      177          _in_order([{"period_label": l} for l in ["30 Sep 26", 
+           "30 Sep 25", "30 Sep 25 (Restated)"]])
+      178  
+      179 +                                                              
+      180 +def test_pat_is_owners_when_the_filing_has_no_non_controlling_
+          +interests():                                                  
+      181 +    ex = _fake("TCS_results.pdf")                             
+      182 +    for c in ex["data"]["columns"]:                           
+      183 +        c["profit_attributable_to_owners"] = None             
+      184 +    assert "PAT" in {l["name"] for l in results_card(ex)["line
+          +s"]}                                                          
+      185 +    assert "PAT (to owners)" in {l["name"] for l in results_ca
+          +rd(ex | {"no_nci": True})["lines"]}                           
+      186 +                                                              
+      187 +                                                              
+      188 +def test_the_owners_split_on_the_next_page_is_sent_too():     
+      189 +    t = ["cover", "statement of consolidated results for the q
+          +uarter revenue from operations total expenses profit before ta
+          +x tax expense profit for the period consolidated",            
+      190 +         "profit for the period attributable to owners of the 
+          +company non-controlling interests"]                           
+      191 +    assert pdf.find_results_pages(t)[0] == [1, 2]             
+      192 +                                                              
+
+● The shell ate the line continuation again. The code still works, but I'll tidy
+  it:
+● Update(backend\finn\push\cards.py)
+  ⎿  Added 4 lines, removed 1 line
+      142              note = "Revenue net of excise duty; " + note
+      143      # Owners' share matches the headline net profit and EPS; o
+           nly if all 3 columns have it, so QoQ/YoY compare like with lik
+           e.
+      144      owners = [c.get("profit_attributable_to_owners") for c in 
+           cols]
+      145 -    pat = ("PAT (to owners)", owners) if None not in owners el
+          -se         ("PAT (to owners)" if ex.get("no_nci") else "PAT", 
+          -[c["profit_after_tax"] for c in cols])                        
+      145 +    if None not in owners:                                    
+      146 +        pat = ("PAT (to owners)", owners)                     
+      147 +    else:                                                     
+      148 +        pat = ("PAT (to owners)" if ex.get("no_nci") else "PAT
+          +", [c["profit_after_tax"] for c in cols])                     
+      149      lines |= {"PBT": [c["profit_before_tax"] for c in cols], p
+           at[0]: pat[1]}
+      150  
+      151      one_offs = []
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● It's 02:31 on Saturday, so small re-runs are still within your rule. First the
+  feed: everything is cached except KPIT's card, which now sends two pages and
+  needs one cheap extraction call.
+
+  Ran 2 shell commands (ctrl+o to expand)
+  ⎿  4 skills available
+
+● All four cards are fixed, with ITC, KPIT and Persistent corrected and POLYCAB
+  now using the clean filing. I'm researching the nine affected tickers next,
+  which are those four plus TCS and the five that hit Gemini 429/503 errors last
+  night. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● While that runs: Asian Paints and L&T were regenerated last night, so here's
+  their end-to-end check (item k).
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn"; .venv/Scripts/python -X
+      utf8 -c "
+      import json…)
+  ⎿  1 file changed (binary, mode only or too large to show)
+
+● Two things look off: the not-measurable rows show "not disclosed" instead of
+  their reason, and L&T's FY26 8.5% EBITDA promise is missing. Checking both:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The not-measurable reasons are in place (why: "segment not reported",
+  "promised on the latest call…"); the actual field just holds "not disclosed".
+  Now the missing L&T 8.5% row:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● L&T's FY26 8.5% EBITDA row was dropped by the 6-promise display cap rather
+  than flipped. Its bull/bear also has problems: only one bull point, a macro
+  bear, and a stale working-capital bear that conflicts with the 4.1% target hit
+  shown in the PvD row. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The fix will be two prompt rules plus a rule-based macro filter. I'm waiting
+  for the background run to finish before editing the prompt file, since it
+  reads that file on every call. · summary
+
+  Read 1 file (ctrl+o to expand)
+
+● The log is empty because Python buffers output when redirected, so the
+  completion notice will arrive later. Since research.py is already loaded, I'll
+  edit its checks now and leave the prompt file alone until the run finishes.
+  · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Update(backend\finn\pull\research.py)
+  ⎿  Added 2 lines
+      214          return "the why restates numbers instead of arguing"
+      215      if _nums(PERIOD.sub("", pt["claim"])) and not NAMED_PERIOD
+           .search(pt["claim"]):
+      216          return "a number without its period"
+      217 +    if MACRO.search(pt["claim"]):                             
+      218 +        return "an economy statistic, not a fact about the com
+          +pany"                                                         
+      219      verdicts = {by_id[i].get("verdict") for i in ids}
+      220      if WIN.search(text) and "hit" not in verdicts:
+      221          return "claims a target was beaten that isn't a hit"
+
+● Update(backend\finn\pull\research.py)
+  ⎿  Added 4 lines
+      204      return fam[0], per.group(0), float(pct.group(1).replace("−
+           ", "-"))
+      205  
+      206  
+      207 +# management quoting the economy (LT: "Headline CPI 4.4% in Ju
+          +ne 2026") is not a case for or against the company            
+      208 +MACRO = re.compile(r"\b(?:cpi|wpi|gdp|repo rate|headline infla
+          +tion|consumer price)\b", re.I)                                
+      209 +                                                              
+      210 +                                                              
+      211  def problem(pt: dict, ids: list[str], by_id: dict[str, dict]) 
+           -> str | None:
+      212      """Why a bull/bear point can't be shown (None = fine). Pyt
+           hon checks, not prompt wishes."""
+      213      text = f"{pt['claim']} {pt['why']}"
+
+● Now a test for it, then a scan of the committed pages to see which bull/bear
+  sections break the new rule:
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Only L&T breaks the new rule; the five "hidden" pages are in the run now.
+  While it runs, I'll update DECISIONS.md for the fixes made since its last
+  entry.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Update(DECISIONS.md)
+  ⎿  Added 12 lines
+      206  - **PvD verdicts don't flip between runs.** A model verdict is
+            stored per promise (company, call, quote) with the statements
+            it used and reused until a newer call brings new statements; 
+           an empty answer never replaces a measured one. Seeded from the
+            committed history, which restores BAJFINANCE's AUM growth "hi
+           t" (22.4% vs 22–23%) lost on 13 Nov morning. Python-computed v
+           erdicts were already deterministic.
+      207  - **ASTRAL segment table: no prompt change.** All four quarter
+           s (Dec 2025 – Sep 2026) parse with the current prompt, includi
+           ng Mar 2026 where the column dates are split across lines and 
+           OCR reads 2025 as "202S". The earlier failures were the Gemini
+            quota. Changing the prompt would have voided all 38 cached se
+           gment extractions for nothing.
+      208  
+      209 +## One number per fact, second pass (13 Nov night – 14 Nov: wh
+          +at the gate and the re-runs found)                            
+      210 +- **EBITDA is built bottom-up: revenue from operations − (tota
+          +l expenses − finance costs − D&A).** "PBT + interest + D&A − o
+          +ther income" still left the associates' share in (Asian Paints
+          +' card read 16.0%, management and screener 15.6%). Bottom-up k
+          +eeps other income, associates and exceptional items out whatev
+          +er order the table prints them in, and equals the companies' P
+          +BDIT and screener's operating profit. Top-down is kept only as
+          + the fallback when a filing has no total-expenses line, and th
+          +e card's note then says associates are not excluded.          
+      211 +- **Some tables print total expenses before finance costs and 
+          +D&A (BHARTIARTL).** Subtracting them again gave EBITDA at 91% 
+          +of revenue. The card now takes whichever of the two readings a
+          +grees with the top-down figure (they differ only by the associ
+          +ates' share), so the P&L identity decides, not the layout.    
+      212 +- **A margin the results table can't compute is never judged o
+          +n the EBITDA series.** Asian Paints' 41–43% *gross* margin was
+          + being compared with 15.6% PBDIT. Gross, contribution, materia
+          +l, NIM and net margins go to the model with management's own s
+          +tatements, or are not measurable.                             
+      213 +- **Evidence said after a deadline doesn't count for it.** L&T
+          +'s FY26 margin target was judged on a Q1 FY27 figure. Statemen
+          +ts are now cut at the period's end.                           
+      214 +- **One quarter can't settle a finished full-year target.** L&
+          +T's FY26 8.5% EBITDA target came back "hit" from one quarter's
+          + 10.4%. When the period is over and the only figure is a singl
+          +e quarter's, the verdict is not measurable, with the reason.  
+      215 +- **Results columns are ordered by their dates, not their posi
+          +tion.** The card assumed "this quarter, previous, year-ago", b
+          +ut ITC prints the year-ago quarter second, so the feed showed 
+          +revenue +6.0% and PAT −5.1% YoY (true: +3.9%, −18.7%). The gat
+          +e caught it. Headers are now read as dates and reordered; a fi
+          +ling whose columns aren't those three quarters (POLYCAB's seco
+          +nd copy: two year-ago columns, restated and not) gets no card 
+          +and shows the raw filing link (rule 9). Unreadable headers kee
+          +p the printed order.                                          
+      216 +- **The owners' share is found even when it is on the next pag
+          +e.** KPIT's P&L ends on p.9 and "attributable to owners / non-
+          +controlling interests" is on p.10, so the card fell back to to
+          +tal PAT. The next page is now sent when it carries the split a
+          +nd the table page doesn't. A filing with no non-controlling in
+          +terests anywhere (Persistent) has all of PAT going to owners, 
+          +and the card labels it so.                                    
+      217 +- **TCS's operating margin is EBIT, and is labelled that way.*
+          +* Management's figure matches operating profit less depreciati
+          +on over revenue, so the promise chart (25.0%) and the snapshot
+          +'s EBITDA margin (27.2%) are two metrics, not one fact with tw
+          +o numbers. The label said "operating profit over revenue", whi
+          +ch made them look like the same thing.                        
+      218 +- **Bull/bear: company facts only, newest figure.** L&T's bear
+          + cited "Headline CPI 4.4%" (management quoting the economy) an
+          +d an older working-capital ratio (8.2%, Dec 2025) after the ta
+          +rget was already hit (4.1%, Mar 2026). Python now drops econom
+          +y statistics (CPI, WPI, GDP, repo rate); the prompt says to us
+          +e the newest figure for a metric and never one a promise verdi
+          +ct has overturned.                                            
+      219 +- **At most 6 promises per page** (unchanged, noted because it
+          + looked like a lost row): L&T has 10, and its FY26 8.5% EBITDA
+          + target is not among the 6 shown. Measured and finished promis
+          +es are picked first.                                          
+      220 +                                                              
+      221  ## Feed rules (13 Nov afternoon)
+      222  - **Management change is P1 only when a CEO, MD, CFO or Chairm
+           an joins or leaves.** Decided from the people the filing names
+            (the management card the cheap model already extracts), not t
+           he subject line, which is usually "Change in Management". Re-a
+           ppointments and redesignations, directors (including independe
+           nt directors), a Deputy MD and senior management below the CEO
+            are P2 with a note saying why. No card (extraction failed) ke
+           eps P1: never hide. On the 30-day feed: HDFCBANK MD & CEO, TRE
+           NT and ASIANPAINT Chairman, TATAPOWER CEO-designate stay P1; B
+           ajaj Finance CISO re-appointment, HDFCBANK whole-time director
+            re-appointment, KPIT independent director, CDSL SVP, IRCTC se
+           nior management, HDFCBANK deputy MD and group head go to P2.
+      223  - **Internal restructurings are P2 ("internal restructuring"),
+            not M&A.** A transfer, merger or amalgamation with a wholly o
+           wned subsidiary, or a filing titled restructuring (L&T's busin
+           ess transfer to Vyoma.AI, ITC amalgamating Sproutlife, ETERNAL
+           's restructuring). Buying or selling outside the group stays M
+           &A P1 (TCS buying BBY, TRENT's subsidiary selling Netria).
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The research re-run for the 9 tickers is still going. It's paced by Groq's
+  8k-tokens-a-minute limit, and its output is buffered until it exits. When it
+  finishes I'll:
+  1. Update the bull/bear prompt (company facts only, newest figure) and
+     regenerate L&T's bull/bear alone.
+  2. Re-ingest so the feed's credibility chips pick up the new verdicts.
+  3. Run the consistency gate to 0 problems, then commit.
+
+  Done so far this session, all in the committed code path, with 157 tests
+  passing apart from the data gate:
+  - Results cards read column dates. ITC prints the year-ago quarter second, so
+    its card showed revenue +6.0% and PAT −5.1% YoY. The real figures are +3.9%
+    and −18.7%. The gate caught this.
+  - KPIT and Persistent show PAT to owners. KPIT's owners line sits on the page
+    after its P&L, and Persistent has no non-controlling interests at all.
+  - TCS's margin is labelled as EBIT. It was labelled like the snapshot's EBITDA
+    margin, which made two different metrics look like one fact with two
+    numbers.
+  - Bull/bear drops economy statistics. L&T's "Headline CPI 4.4%" was the only
+    offender across the 22 pages.
+  - DECISIONS.md has a new "second pass" section covering all of the above, plus
+    the bottom-up EBITDA, Bharti, gross-margin, deadline and one-quarter fixes.
+
+  Not yet done: the 5 tickers that hit Gemini's daily quota last night
+  (Persistent, Reliance, Sun Pharma, Tata Power, Titan) may hit it again before
+  about 13:30 IST, when Gemini resets. If they do, their pages keep the previous
+  promises and their bull/bear stays hidden with a note. Nothing crashes.
+
+> continue
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Still running after about 55 minutes with nothing logged, so I'm checking that
+  it's actually working and not stalled:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The last LLM call was at 02:46, 49 minutes ago, so the run is stuck in
+  patient-mode retries. Checking how long patient mode can wait:
+
+  Ran 2 shell commands (ctrl+o to expand)
+● Every retry is bounded, but they stack: up to 8 tries per model with waits of
+  up to 2 minutes each, across two models. Checking what the process is talking
+  to right now:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The process is asleep in a retry backoff with nothing lost, since every
+  finished call is cached. I'm stopping it, applying the bull/bear prompt change
+  first, adding L&T, and restarting with unbuffered output. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Update(backend\finn\prompts\bull_bear.md)
+  ⎿  Added 2 lines
+      17  - Bull and bear argue from the same evidence. If both mention t
+          he same metric for the same period, they use the same number. N
+          ever put two figures for one metric and period on the page (a q
+          uarter's margin and a half-year margin are different periods: n
+          ame them).
+      18  - Never contradict a `P` verdict. Only a verdict of hit may be 
+          called beaten, met or achieved; only a verdict of miss may be c
+          alled missed or fallen short. For ahead, on track and behind pa
+          ce the period is still running: say "ahead of", "on track for" 
+          or "behind pace for" the target, never beaten or missed.
+      19  - Do not repeat one fact in both lists. Do not make two points 
+          from the same fact.
+      20 +- For a metric with figures from several periods, use the newes
+         +t. Never argue from an older figure that a later figure or a `P
+         +` verdict has overturned (a working-capital ratio from an earli
+         +er call when the target has since been hit).                   
+      21 +- Facts about the company only. Economy figures management quot
+         +ed (inflation, CPI, GDP, interest rates) are not points.       
+      22  
+      23  What goes where:
+      24  - The bear case must not be only management's own caveats. Use,
+           where the evidence has them: promises that were missed, are be
+          hind pace or moved away (`P`); falling or weakening figures (`F
+          `); and concerns analysts pressed on (`Q`) — say what the analy
+          st was worried about, not that "an analyst asked".
+
+● Background command "Re-run research for nine affected tickers" completed (exit
+code 0)
+
+● The process has stopped, and Gemini's daily quota error is being treated as
+  retryable, so patient mode wastes eight retries per call. I'm fixing that
+  before restarting. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Update(backend\finn\llm.py)
+  ⎿  Added 2 lines
+      52          r = client.models.generate_content(model=model, content
+          s=contents, config=types.GenerateContentConfig(
+      53              response_mime_type="application/json", response_sch
+          ema=schema, temperature=0))
+      54      except errors.APIError as e:
+      55 +        if e.code == 429 and "PerDay" in str(e):  # the daily c
+         +ap (quotaId ...PerDay...): retrying stalls a batch for hours   
+      56 +            raise Exhausted(str(e)[:200]) from e               
+      57          if e.code in (429, 500, 503):
+      58              raise Retryable(str(e)) from e
+      59          raise
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend"; cat >>
+      tests/test_llm_routing.py <<'EOF'…)
+  ⎿  Updated backend\tests\test_llm_routing.py (+20 -0)
+       81      assert len(parts) == 3 and all(p[0] == "ctx" and len(p[1])
+            <= llm.GROQ_CHARS for p in parts) and parts[1][1].startswith(
+           "[p.3]")
+       82      assert llm.merge([{"promises": [1], "m": None}, {"promises
+           ": [2], "m": {"v": 1}}], schema) == {"promises": [1, 2], "m": 
+           {"v": 1}}
+       83      assert len(llm.chunks(["ctx", text], {"type": "object", "p
+           roperties": {"basis": {"type": "string"}}})) == 1  # scalars c
+           an't be joined
+       84 +                                                              
+       85 +                                                              
+       86 +def test_gemini_daily_quota_is_exhausted_not_retryable(monkeyp
+          +atch):                                                        
+       87 +    from google import genai                                  
+       88 +    from google.genai import errors                           
+       89 +    monkeypatch.setenv("GEMINI_API_KEY", "x")                 
+       90 +                                                              
+       91 +    def client(msg):                                          
+       92 +        class C:                                              
+       93 +            class models:                                     
+       94 +                @staticmethod                                 
+       95 +                def generate_content(**k):                    
+       96 +                    raise errors.APIError(429, {"error": {"cod
+          +e": 429, "message": msg, "status": "RESOURCE_EXHAUSTED"}})    
+       97 +        return lambda **k: C()                                
+       98 +    monkeypatch.setattr(genai, "Client", client("quota exceede
+          +d, quotaId: GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+          +))                                                            
+       99 +    with pytest.raises(llm.Exhausted):                        
+      100 +        llm._gemini("gemini-3.8-flash", ["x"], SCHEMA)        
+      101 +    monkeypatch.setattr(genai, "Client", client("quota exceede
+          +d, quotaId: GenerateRequestsPerMinutePerProjectPerModel-FreeTi
+          +er"))                                                         
+      102 +    with pytest.raises(llm.Retryable):                        
+      103 +        llm._gemini("gemini-3.8-flash", ["x"], SCHEMA)        
+
+● Now the restart: 10 tickers (the 9, plus L&T for the new prompt), unbuffered,
+  with a monitor on the ticker lines and any failures.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Monitor(research re-run: per-ticker results and failures)
+  ⎿  Monitor started · task btqx63ul2 · timeout 1800s
+
+● While it runs, I'll add this round to PLAN.md:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The restarted run is going, with a monitor reporting each ticker and any
+  failure. Gemini's daily-quota errors now skip straight to the next model
+  instead of sleeping, so it can't stall for an hour again. I'll add the PLAN.md
+  §3l status once the final numbers are in.
+
+● Monitor event: "research re-run: per-ticker results and failures"
+  bull/bear unavailable for ITC: Exhausted: 429 RESOURCE_EXHAUSTED. {'error':
+  {'code': 429, 'message': 'You exceeded your current quota, please check your
+  plan and
+  ITC: No earnings-call transcripts were found to check promises against. ·
+  snapshot quarters, margin, cash, leverage · bull/bear hidden
+
+● ITC's bull/bear went to Gemini (quota out) instead of Groq, so Groq must have
+  failed first. And a failure hides a section that was fine before. Checking why
+  Groq failed:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Groq answered TATAPOWER calls at 03:36, so it isn't simply down. A tiny probe
+  to see its current limits:
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend";
+      ../.venv/Scripts/python -X utf8 -c "
+      import os,httpx…)
+  ⎿  1 file changed (binary, mode only or too large to show)
+
+● Monitor event: "research re-run: per-ticker results and failures"
+  bull/bear unavailable for KPITTECH: Exhausted: 429 RESOURCE_EXHAUSTED.
+  {'error': {'code': 429, 'message': 'You exceeded your current quota, please
+  check your plan and
+  KPITTECH: Kept 0 of 4 measured promises from the last 4 calls; missed 4, the
+  latest on revenue (Q1 FY27 call). · snapshot quarters, margin, cash, leverage
+  · bull/bear hidden
+
+● Groq is healthy with 7.9k of 8k tokens free, yet bull/bear still skips it and
+  hides good sections on each failure. I'm stopping the run to find the cause.
+  · summary
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Monitor event: "research re-run: per-ticker results and failures"
+  bull/bear unavailable for PERSISTENT: Exhausted: 429 RESOURCE_EXHAUSTED.
+  {'error': {'code': 429, 'message': 'You exceeded your current quota, please
+  check your plan and
+  PERSISTENT: None of the 3 promises from the last 4 calls can be checked yet;
+  the reasons are listed below. · snapshot quarters, margin, cash, leverage ·
+  bull/bear hidden
+
+● Background command "Re-run research for ten tickers, unbuffered" completed
+(exit code 0)
+
+● No env override, so the chain really is Groq → Gemini. To see Groq's actual
+  error, I'll re-run ITC with the Groq adapter wrapped to print it, and Gemini
+  disabled so the run can't fall through:
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend";
+      ../.venv/Scripts/python -u -X utf8 -c "
+      from finn import llm…)
+  ⎿  Updated web\public\data\research\ITC.json (+40 -2)
+      1  {
+      2   "symbol": "ITC",
+      3   "name": "ITC Ltd",
+      4 - "generated_at": "2026-11-14T03:37",                            
+      4 + "generated_at": "2026-11-14T03:38",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [],
+      7   "skipped_calls": [],
+     ...
+      639     "claim": "Debt/equity 0.03 at FY26 end (Mar 2026), from 0.0
+           0 at FY22 end."
+      640    }
+      641   },
+      642 - "bull_bear": null,                                           
+      642 + "bull_bear": {                                               
+      643 +  "bull": [                                                   
+      644 +   {                                                          
+      645 +    "point": "Revenue +3.9% YoY in Q2 FY27.",                 
+      646 +    "why": "Boosts top‑line growth, supporting earnings expans
+          +ion.",                                                        
+      647 +    "cites": [                                                
+      648 +     {                                                        
+      649 +      "label": "Financial snapshot (results filings)",        
+      650 +      "url": "#quarters"                                      
+      651 +     }                                                        
+      652 +    ]                                                         
+      653 +   }                                                          
+      654 +  ],                                                          
+      655 +  "bear": [                                                   
+      656 +   {                                                          
+      657 +    "point": "Debt/equity 0.03 at FY26 end, from 0.00 at FY22 
+          +end.",                                                        
+      658 +    "why": "Rising leverage increases balance‑sheet risk, limi
+          +ting financial flexibility.",                                 
+      659 +    "cites": [                                                
+      660 +     {                                                        
+      661 +      "label": "Financial snapshot (results filings)",        
+      662 +      "url": "#leverage"                                      
+      663 +     }                                                        
+      664 +    ]                                                         
+      665 +   },                                                         
+      666 +   {                                                          
+      667 +    "point": "EBITDA margin 27.9% in Q2 FY27, −6.5 pp YoY.",  
+      668 +    "why": "Margin compression hurts profitability, pressuring
+          + earnings quality.",                                          
+      669 +    "cites": [                                                
+     … 14 more lines (ctrl+o to expand)
+  ⎿  (timeout 6m 40s)
+
+● Monitor event: "research re-run: per-ticker results and failures"
+  research exit 127
+
+● ITC succeeded on Groq this time, so the earlier failures were likely
+  transient, probably from Groq's daily token cap, which made the call fall
+  through to an exhausted Gemini quota. The proper fix is to keep a page's
+  previous bull/bear when regeneration fails, as PvD already does. · summary
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Citations are stored resolved (label + URL), so a kept section stays valid on
+  its own. Implementing:
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend";
+      ../.venv/Scripts/python -X utf8 - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\pull\research.py (+9 -6)
+      248      return keep[:3], dropped
+      249  
+      250  
+      251 -def bull_bear(name: str, latest: str | None, ev: list[dict], s
+          -ymbol: str) -> dict | None:                                   
+      252 -    """None when the model is unavailable or a side has no poi
+          -nt that survives the number check (page hides it)."""         
+      251 +def bull_bear(name: str, latest: str | None, ev: list[dict], s
+          +ymbol: str, prev: dict | None = None) -> dict | None:         
+      252 +    """None when a side has no point that survives the number 
+          +check, or the model is unavailable and there is no            
+      253 +    previous section (page hides it). prev: the page's last ch
+          +ecked section, kept when the model is unavailable."""         
+      254      payload = {"company": name, "latest_quarter": latest, "evi
+           dence": [{"id": e["id"], "text": e["text"]} for e in ev]}
+      255      try:
+      256          r = llm.run("bull_bear", "bull_bear", [json.dumps(payl
+           oad, ensure_ascii=False)], BB, symbol=symbol, patient=True)
+      256 -    except Exception as e:  # quota / network: hide the sectio
+          -n, keep the rest of the page                                  
+      257 -        print(f"  bull/bear unavailable for {symbol}: {type(e)
+          -.__name__}: {str(e)[:120]}")                                  
+      258 -        return None                                           
+      257 +    except Exception as e:  # quota / network: keep the last c
+          +hecked section rather than blank it (14 Nov: Groq's daily cap)
+      258 +        print(f"  bull/bear unavailable for {symbol}: {type(e)
+          +.__name__}: {str(e)[:120]}{'; kept the previous one' if prev e
+          +lse ''}")                                                     
+      259 +        return prev                                           
+      260      by_id = {e["id"]: e for e in ev}
+      261      data = r["data"] if isinstance(r["data"], dict) else {}
+      262      facts: dict = {}
+     ...
+      310      except Exception as e:  # e.g. an uncached cheap-model cal
+           l on a quota day: keep last good PvD, rebuild the rest
+      311          if not f.exists():
+      312              raise
+      313 +        co = None                                             
+      314          print(f"  {sym}: PvD not re-run ({type(e).__name__}: {
+           str(e)[:100]}); kept the previous promises")
+      315          out = {k: v for k, v in json.loads(f.read_text(encodin
+           g="utf-8")).items() if k not in ("snapshot", "bull_bear", "pri
+           ces", "summary", "sources")}
+      316          co, reported, texts = pvd.company(sym), [], {}
+     ...
+      319                  texts[c["quarter"]] = pdf.pages(pdf.open_pdf(p
+           vd.transcript(c["transcript"])))
+      320              except Exception:
+      321                  pass
+      322 +    prev = (json.loads(f.read_text(encoding="utf-8")).get("bul
+          +l_bear") or None) if f.exists() else None                     
+      323      urls = {c["quarter"]: c["transcript"] for c in out["calls"
+           ]}
+      324      snap = snapshot(co)
+      325      ev = evidence(out["promises"], reported, analyst_questions
+           (texts, urls), snap, urls)
+      326      out |= {"sector": co.get("sector"), "summary": summary(out
+           ["promises"], len(out["calls"])), "prices": price_lines(sym),
+      324 -            "snapshot": snap, "bull_bear": bull_bear(out["name
+          -"], out.get("latest_quarter"), ev, sym), "sources": sources(ou
+          -t, co)}                                                       
+      327 +            "snapshot": snap, "bull_bear": bull_bear(out["name
+          +"], out.get("latest_quarter"), ev, sym, prev), "sources": sour
+          +ces(out, co)}                                                 
+      328      tmp = f.with_suffix(".tmp")
+      329      tmp.write_text(json.dumps(out, ensure_ascii=False, indent=
+           1), encoding="utf-8")
+      330      tmp.replace(f)
+
+● I'm removing a stray co = None line I added, and restoring KPIT's and
+  Persistent's last committed bull/bear sections, which the killed run had
+  overwritten with "hidden", so the fallback has something to keep. · summary
+
+● Update(backend\finn\pull\research.py)
+  ⎿  Removed 1 line
+      310      except Exception as e:  # e.g. an uncached cheap-model cal
+           l on a quota day: keep last good PvD, rebuild the rest
+      311          if not f.exists():
+      312              raise
+      313 -        co = None                                             
+      313          print(f"  {sym}: PvD not re-run ({type(e).__name__}: {
+           str(e)[:100]}); kept the previous promises")
+      314          out = {k: v for k, v in json.loads(f.read_text(encodin
+           g="utf-8")).items() if k not in ("snapshot", "bull_bear", "pri
+           ces", "summary", "sources")}
+      315          co, reported, texts = pvd.company(sym), [], {}
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn"; .venv/Scripts/python -X
+      utf8 -c "
+      import json,subprocess,glob…)
+  ⎿  Updated web\public\data\research\KPITTECH.json (+63 -1)
+      803     "claim": "Debt/equity 0.24 at FY26 end (Mar 2026), from 0.1
+           7 at FY22 end."
+      804    }
+      805   },
+      806 - "bull_bear": null,                                           
+      806 + "bull_bear": {                                               
+      807 +  "bull": [                                                   
+      808 +   {                                                          
+      809 +    "point": "Operating cash flow at 1.65× PAT over FY22–FY26 
+          +ensures high quality earnings.",                              
+      810 +    "cites": [                                                
+      811 +     {                                                        
+      812 +      "label": "Financial snapshot (results filings)",        
+      813 +      "url": "#cash"                                          
+      814 +     }                                                        
+      815 +    ]                                                         
+      816 +   },                                                         
+      817 +   {                                                          
+      818 +    "point": "Solutions and products revenue grew 25% YoY, par
+          +tially meeting the 30% FY27 target.",                         
+      819 +    "cites": [                                                
+      820 +     {                                                        
+      821 +      "label": "Q4 FY26 call, p.17 (promise)",                
+      822 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=70c85b6c-58e6-423f-9b32-50b17a948674.pdf"            
+      823 +     }                                                        
+      824 +    ]                                                         
+      825 +   },                                                         
+      826 +   {                                                          
+      827 +    "point": "Debt/equity of 0.24 remains low, preserving bala
+          +nce sheet flexibility for investments.",                      
+      828 +    "cites": [                                                
+      829 +     {                                                        
+      830 +      "label": "Financial snapshot (results filings)",        
+      831 +      "url": "#leverage"                                      
+      832 +     }                                                        
+      833 +    ]                                                         
+      834 +   }                                                          
+      835 +  ],                                                          
+      836 +  "bear": [                                                   
+      837 +   {                                                          
+      838 +    "point": "EBITDA margin fell to 15.8% from 18.5%, missing 
+          +the 22–24% medium-term target.",                              
+      839 +    "cites": [                                                
+      840 +     {                                                        
+      841 +      "label": "Q4 FY26 call, p.18 (promise)",                
+     … 30 more lines (ctrl+o to expand)
+  ⎿  Updated web\public\data\research\PERSISTENT.json (+67 -1)
+      715     "claim": "Debt/equity 0.06 at FY26 end (Mar 2026), from 0.1
+           7 at FY22 end."
+      716    }
+      717   },
+      718 - "bull_bear": null,                                           
+      718 + "bull_bear": {                                               
+      719 +  "bull": [                                                   
+      720 +   {                                                          
+      721 +    "point": "Revenue grew 30.2% YoY, outpacing the $2 billion
+          + annual aspiration pace.",                                    
+      722 +    "cites": [                                                
+      723 +     {                                                        
+      724 +      "label": "Financial snapshot (results filings)",        
+      725 +      "url": "#quarters"                                      
+      726 +     },                                                       
+      727 +     {                                                        
+      728 +      "label": "Q3 FY26 call, p.6 (promise)",                 
+      729 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=b68ef2b0-b285-4696-8c08-e3bb58039b0e.pdf"            
+      730 +     }                                                        
+      731 +    ]                                                         
+      732 +   },                                                         
+      733 +   {                                                          
+      734 +    "point": "Operating cash flow covered PAT 1.01 times over 
+          +FY22–FY26, ensuring cash quality.",                           
+      735 +    "cites": [                                                
+      736 +     {                                                        
+      737 +      "label": "Financial snapshot (results filings)",        
+      738 +      "url": "#cash"                                          
+      739 +     }                                                        
+      740 +    ]                                                         
+      741 +   },                                                         
+      742 +   {                                                          
+      743 +    "point": "Debt/equity fell to 0.06 from 0.17, reducing fin
+          +ancial leverage risk.",                                       
+      744 +    "cites": [                                                
+      745 +     {                                                        
+      746 +      "label": "Financial snapshot (results filings)",        
+      747 +      "url": "#leverage"                                      
+      748 +     }                                                        
+      749 +    ]                                                         
+      750 +   }                                                          
+      751 +  ],                                                          
+      752 +  "bear": [                                                   
+      753 +   {                                                          
+     … 34 more lines (ctrl+o to expand)
+  ⎿  Updated web\public\data\research\POLYCAB.json (+80 -1)
+      243     "model": "openai/gpt-oss-120b",
+      244     "why": "Not measurable: results filings don't report this f
+           igure (volumes, NOV/GMV, orders, AUM, mix or payout)."
+      245    }
+      246 - ]                                                            
+      246 + ],                                                           
+      247 + "bull_bear": {                                               
+      248 +  "bull": [                                                   
+      249 +   {                                                          
+      250 +    "point": "FMEG EBIT margin hit 10.1%, meeting the 8-10% FY
+          +30 target.",                                                  
+      251 +    "cites": [                                                
+      252 +     {                                                        
+      253 +      "label": "Q3 FY26 call, p.7 (promise)",                 
+      254 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf"            
+      255 +     },                                                       
+      256 +     {                                                        
+      257 +      "label": "Q2 FY27 call, p.7",                           
+      258 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"            
+      259 +     }                                                        
+      260 +    ]                                                         
+      261 +   },                                                         
+      262 +   {                                                          
+      263 +    "point": "Wires & Cables EBIT margin reached 14.2%, exceed
+          +ing the 11-13% target.",                                      
+      264 +    "cites": [                                                
+      265 +     {                                                        
+      266 +      "label": "Q1 FY27 call, p.5 (promise)",                 
+      267 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=e47a217c-cefa-4ff6-8e34-6bbd07d42b13.pdf"            
+      268 +     }                                                        
+      269 +    ]                                                         
+      270 +   },                                                         
+      271 +   {                                                          
+      272 +    "point": "PAT margin 10.0% and EBITDA margin 14.4% show op
+          +erational efficiency.",                                       
+      273 +    "cites": [                                                
+      274 +     {                                                        
+      275 +      "label": "Q2 FY27 call, p.6",                           
+      276 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"            
+      277 +     },                                                       
+      278 +     {                                                        
+      279 +      "label": "Q2 FY27 call, p.6",                           
+      280 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"            
+      281 +     }                                                        
+     … 45 more lines (ctrl+o to expand)
+  ⎿  Updated web\public\data\research\RELIANCE.json (+71 -1)
+      697     "claim": "Debt/equity 0.45 at FY26 end (Mar 2026), from 0.4
+           1 at FY22 end."
+      698    }
+      699   },
+      700 - "bull_bear": null,                                           
+      700 + "bull_bear": {                                               
+      701 +  "bull": [                                                   
+      702 +   {                                                          
+      703 +    "point": "PAT reached Rs.30,000 Crores, up 34% YoY, demons
+          +trating significant bottom-line acceleration.",               
+      704 +    "cites": [                                                
+      705 +     {                                                        
+      706 +      "label": "Q2 FY27 call, p.3",                           
+      707 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=8e997741-4d35-4188-933a-cf020fb9c816.pdf"            
+      708 +     },                                                       
+      709 +     {                                                        
+      710 +      "label": "Q2 FY27 call, p.4",                           
+      711 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=8e997741-4d35-4188-933a-cf020fb9c816.pdf"            
+      712 +     }                                                        
+      713 +    ]                                                         
+      714 +   },                                                         
+      715 +   {                                                          
+      716 +    "point": "EBITDA hit Rs.62,409 Crores, up 24% YoY, showing
+          + strong operational profitability growth.",                   
+      717 +    "cites": [                                                
+      718 +     {                                                        
+      719 +      "label": "Q2 FY27 call, p.3",                           
+      720 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=8e997741-4d35-4188-933a-cf020fb9c816.pdf"            
+      721 +     },                                                       
+      722 +     {                                                        
+      723 +      "label": "Q2 FY27 call, p.4",                           
+      724 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=8e997741-4d35-4188-933a-cf020fb9c816.pdf"            
+      725 +     }                                                        
+      726 +    ]                                                         
+      727 +   },                                                         
+      728 +   {                                                          
+      729 +    "point": "5G subscribers reached 300 million, securing a d
+          +ominant market position in next-gen connectivity.",           
+      730 +    "cites": [                                                
+      731 +     {                                                        
+      732 +      "label": "Q2 FY27 call, p.5",                           
+      733 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=8e997741-4d35-4188-933a-cf020fb9c816.pdf"            
+      734 +     }                                                        
+      735 +    ]                                                         
+     … 38 more lines (ctrl+o to expand)
+  ⎿  Updated web\public\data\research\SUNPHARMA.json (+71 -1)
+      761     "claim": "Debt/equity 0.06 at FY26 end (Mar 2026), from 0.0
+           3 at FY22 end."
+      762    }
+      763   },
+      764 - "bull_bear": null,                                           
+      764 + "bull_bear": {                                               
+      765 +  "bull": [                                                   
+      766 +   {                                                          
+      767 +    "point": "Sales grew 11.8% YoY to INR1,61,000 million, exc
+          +eeding high single-digit targets.",                           
+      768 +    "cites": [                                                
+      769 +     {                                                        
+      770 +      "label": "Q2 FY27 call, p.3",                           
+      771 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf"            
+      772 +     },                                                       
+      773 +     {                                                        
+      774 +      "label": "Q2 FY27 call, p.3",                           
+      775 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf"            
+      776 +     }                                                        
+      777 +    ]                                                         
+      778 +   },                                                         
+      779 +   {                                                          
+      780 +    "point": "Gross margin reached 80.8%, higher than last yea
+          +r due to better product mix.",                                
+      781 +    "cites": [                                                
+      782 +     {                                                        
+      783 +      "label": "Q2 FY27 call, p.3",                           
+      784 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf"            
+      785 +     }                                                        
+      786 +    ]                                                         
+      787 +   },                                                         
+      788 +   {                                                          
+      789 +    "point": "India formulations sales grew 17.3% to INR55,523
+          + million, outpacing overall company growth.",                 
+      790 +    "cites": [                                                
+      791 +     {                                                        
+      792 +      "label": "Q2 FY27 call, p.5",                           
+      793 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf"            
+      794 +     }                                                        
+      795 +    ]                                                         
+      796 +   }                                                          
+      797 +  ],                                                          
+      798 +  "bear": [                                                   
+      799 +   {                                                          
+     … 38 more lines (ctrl+o to expand)
+  ⎿  … 2 more files changed
+
+● All seven had qwen-written sections in HEAD; those come back as the fallback,
+  and item 7 replaces them with gpt-oss-120b wherever Groq answers. Adding a
+  test, then re-running:
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend"; cat >>
+      tests/test_research.py <<'EOF'…)
+  ⎿  Updated backend\tests\test_research.py (+9 -0)
+      110      by_id = {"S1": {"text": "Headline CPI at 4.4% in June 2026
+           "}}
+      111      pt = {"claim": "Headline CPI 4.4% in Q1 FY27", "why": "Inp
+           ut costs rise and squeeze margins", "cites": ["S1"]}
+      112      assert research.problem(pt, ["S1"], by_id) == "an economy 
+           statistic, not a fact about the company"
+      113 +                                                              
+      114 +                                                              
+      115 +def test_an_unavailable_model_keeps_the_previous_bull_bear(mon
+          +keypatch):                                                    
+      116 +    def down(*a, **k):                                        
+      117 +        raise research.llm.Exhausted("429 daily cap")         
+      118 +    monkeypatch.setattr(research.llm, "run", down)            
+      119 +    prev = {"bull": [{"point": "x", "why": "y", "cites": []}],
+          + "bear": [], "model": "openai/gpt-oss-120b"}                  
+      120 +    assert research.bull_bear("Co", "Sep 2026", [], "X", prev)
+          + is prev                                                      
+      121 +    assert research.bull_bear("Co", "Sep 2026", [], "X") is No
+          +ne                                                            
+
+● All 159 pass, including the data gate on the current files. Which pages still
+  have qwen-written bull/bear (item 7)?
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Seven pages still carry qwen-written bull/bear sections, and only IRCTC among
+  the chartless pages is left to check for charts. I'm re-running those seven
+  plus L&T and TCS with the new prompt. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Monitor(research run b: per-ticker results and failures)
+  ⎿  Monitor started · task bsa37dca6 · timeout 1800s
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● IRCTC's one measured promise ("15% growth this year", missed at 11.6%) is
+  judged from a single figure management stated on the next call. There's no
+  quarterly path to draw, so no chart is the honest output there.
+
+  The run for the 9 tickers is going, with the monitor on.
+
+● Monitor event: "research run b: per-ticker results and failures"
+  bull/bear unavailable for LT: Exhausted: 429 RESOURCE_EXHAUSTED. {'error':
+  {'code': 429, 'message': 'You exceeded your current quota, please check your
+  plan and
+  LT: Kept 2 of 5 measured promises from the last 4 calls; missed on full year
+  revenue growth (Q2 FY26 call); 2 on track. · snapshot quarters, margin, cash,
+  leverage · bull/bear hidden
+
+● L&T shows "hidden" with no "kept the previous one", so my fallback didn't
+  fire. Checking:
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend"; grep -n "prev"
+      finn/pull/research.py; git -C .. diff --stat --
+      web/public/data/research/LT.json; git -C ..…)
+  ⎿  1 file changed (binary, mode only or too large to show)
+
+● Monitor event: "research run b: per-ticker results and failures"
+  bull/bear unavailable for TCS: Exhausted: 429 RESOURCE_EXHAUSTED. {'error':
+  {'code': 429, 'message': 'You exceeded your current quota, please check your
+  plan and
+  TCS: Kept 0 of 2 measured promises from the last 4 calls; missed 2, the latest
+  on operating margin (Q1 FY27 call). · snapshot quarters, margin, cash,
+  leverage · bull/bear hidden
+
+● The code looks correct, but I suspect pvd.run() writes the page file before
+  build() reads prev, so prev is just the fresh PvD-only file. TCS hit the same
+  problem, so I'm stopping the run to avoid wasting more pages. · summary
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Background command "Re-run research for nine tickers" completed (exit code 0)
+
+● Confirmed that pvd.run writes the page at pvd.py line 845. Next I'll move the
+  prev read to the start of build() and add per-model failure logging in the
+  router. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Monitor event: "research run b: per-ticker results and failures"
+  research exit 127
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend";
+      ../.venv/Scripts/python -X utf8 - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\llm.py (+2 -1)
+      194              if k:
+      195                  note = f"Generated by {spec.split(':', 1)[1]} 
+           ({chain[0].split(':', 1)[1]} unavailable)"
+      196              break
+      197 -        except (Retryable, Exhausted):                        
+      197 +        except (Retryable, Exhausted) as e:                   
+      198              if k == len(chain) - 1:
+      199                  raise
+      200 +            print(f"  {task}: {spec} failed ({type(e).__name__
+          +}: {str(e)[:120]}); trying {chain[k + 1]}", file=sys.stderr)  
+      201      pin, pout = PRICE.get(model, (0, 0))
+      202      entry = {"ts": dt.datetime.now().isoformat(timespec="secon
+           ds"), "task": task, "model": model,
+      203               "tokens_in": tin, "tokens_out": tout, "usd": roun
+           d((tin * pin + tout * pout) / 1e6, 6), **log}
+  ⎿  Updated backend\finn\pull\research.py (+2 -1)
+      303  def build(symbol: str) -> dict:
+      304      sym = symbol.upper()
+      305      f = OUT / f"{sym}.json"
+      306 +    # read before pvd.run(), which rewrites the file without i
+          +t                                                             
+      307 +    prev = (json.loads(f.read_text(encoding="utf-8")).get("bul
+          +l_bear") or None) if f.exists() else None                     
+      308      try:
+      309          out = pvd.run(sym)
+      310          co, reported, texts = out.pop("_company"), out.pop("_r
+           eported"), out.pop("_texts")
+     ...
+      320                  texts[c["quarter"]] = pdf.pages(pdf.open_pdf(p
+           vd.transcript(c["transcript"])))
+      321              except Exception:
+      322                  pass
+      321 -    prev = (json.loads(f.read_text(encoding="utf-8")).get("bul
+          -l_bear") or None) if f.exists() else None                     
+      323      urls = {c["quarter"]: c["transcript"] for c in out["calls"
+           ]}
+      324      snap = snapshot(co)
+      325      ev = evidence(out["promises"], reported, analyst_questions
+           (texts, urls), snap, urls)
+
+● sys isn't imported in llm.py; adding it, restoring L&T's and TCS's sections
+  from HEAD, and running the tests:
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend"; sed -i '6s/^import
+      os, re, json, time, hashlib, datetime as dt$/import os, re, sys, json,
+      time, hashlib, d…)
+  ⎿  Updated web\public\data\research\KPITTECH.json (+64 -1)
+      186     "model": "openai/gpt-oss-120b",
+      187     "why": "Not measurable (segment not reported): the results 
+           filings report Americas, UK & Europe, Rest of the World, not t
+           his business."
+      188    }
+      189 - ]                                                            
+      189 + ],                                                           
+      190 + "bull_bear": {                                               
+      191 +  "bull": [                                                   
+      192 +   {                                                          
+      193 +    "point": "Operating cash flow at 1.65× PAT over FY22–FY26 
+          +ensures high quality earnings.",                              
+      194 +    "cites": [                                                
+      195 +     {                                                        
+      196 +      "label": "Financial snapshot (results filings)",        
+      197 +      "url": "#cash"                                          
+      198 +     }                                                        
+      199 +    ]                                                         
+      200 +   },                                                         
+      201 +   {                                                          
+      202 +    "point": "Solutions and products revenue grew 25% YoY, par
+          +tially meeting the 30% FY27 target.",                         
+      203 +    "cites": [                                                
+      204 +     {                                                        
+      205 +      "label": "Q4 FY26 call, p.17 (promise)",                
+      206 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=70c85b6c-58e6-423f-9b32-50b17a948674.pdf"            
+      207 +     }                                                        
+      208 +    ]                                                         
+      209 +   },                                                         
+      210 +   {                                                          
+      211 +    "point": "Debt/equity of 0.24 remains low, preserving bala
+          +nce sheet flexibility for investments.",                      
+      212 +    "cites": [                                                
+      213 +     {                                                        
+      214 +      "label": "Financial snapshot (results filings)",        
+      215 +      "url": "#leverage"                                      
+      216 +     }                                                        
+      217 +    ]                                                         
+      218 +   }                                                          
+      219 +  ],                                                          
+      220 +  "bear": [                                                   
+      221 +   {                                                          
+      222 +    "point": "EBITDA margin fell to 15.8% from 18.5%, missing 
+          +the 22–24% medium-term target.",                              
+      223 +    "cites": [                                                
+      224 +     {                                                        
+     … 29 more lines (ctrl+o to expand)
+  ⎿  Updated web\public\data\research\LT.json (+71 -1)
+      845     "claim": "Debt/equity 1.15 at FY26 end (Mar 2026), from 1.5
+           2 at FY22 end."
+      846    }
+      847   },
+      848 - "bull_bear": null,                                           
+      848 + "bull_bear": {                                               
+      849 +  "bull": [                                                   
+      850 +   {                                                          
+      851 +    "point": "Order inflows hit Rs. 1,080 billion, beating 10-
+          +12% guidance with 14% growth.",                               
+      852 +    "cites": [                                                
+      853 +     {                                                        
+      854 +      "label": "Q1 FY27 call, p.4",                           
+      855 +      "url": "https://investors.larsentoubro.com/upload/Analys
+          +ttrans/FY2027AnalysttransL&T-Earnings-Jul28-2026.pdf"         
+      856 +     },                                                       
+      857 +     {                                                        
+      858 +      "label": "Q4 FY26 call, p.13 (promise)",                
+      859 +      "url": "https://investors.larsentoubro.com/upload/Analys
+          +ttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20T
+          +ranscript.pdf"                                                
+      860 +     }                                                        
+      861 +    ]                                                         
+      862 +   },                                                         
+      863 +   {                                                          
+      864 +    "point": "NWC to sales ratio improved to 4.9%, beating 10%
+          + target.",                                                    
+      865 +    "cites": [                                                
+      866 +     {                                                        
+      867 +      "label": "Q1 FY27 call, p.6",                           
+      868 +      "url": "https://investors.larsentoubro.com/upload/Analys
+          +ttrans/FY2027AnalysttransL&T-Earnings-Jul28-2026.pdf"         
+      869 +     },                                                       
+      870 +     {                                                        
+      871 +      "label": "Q4 FY26 call, p.13 (promise)",                
+      872 +      "url": "https://investors.larsentoubro.com/upload/Analys
+          +ttrans/FY2026AnalysttransL&T%20Q4%20FY26%20Earnings%20Call%20T
+          +ranscript.pdf"                                                
+      873 +     }                                                        
+      874 +    ]                                                         
+      875 +   },                                                         
+      876 +   {                                                          
+      877 +    "point": "PAT grew 27.2% YoY, outpacing 15.8% revenue grow
+          +th.",                                                         
+      878 +    "cites": [                                                
+      879 +     {                                                        
+      880 +      "label": "Financial snapshot (results filings)",        
+      881 +      "url": "#quarters"                                      
+      882 +     }                                                        
+      883 +    ]                                                         
+     … 38 more lines (ctrl+o to expand)
+  ⎿  Updated web\public\data\research\TCS.json (+79 -1)
+      743     "claim": "Debt/equity 0.11 at FY26 end (Mar 2026), from 0.0
+           9 at FY22 end."
+      744    }
+      745   },
+      746 - "bull_bear": null,                                           
+      746 + "bull_bear": {                                               
+      747 +  "bull": [                                                   
+      748 +   {                                                          
+      749 +    "point": "Annualized AI revenue hit $3.1 billion, crossing
+          + 10% of total revenue.",                                      
+      750 +    "cites": [                                                
+      751 +     {                                                        
+      752 +      "label": "Q2 FY27 call, p.4",                           
+      753 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=7dc14216-f892-46f1-bf82-5c7b387a83b9.pdf"            
+      754 +     }                                                        
+      755 +    ]                                                         
+      756 +   },                                                         
+      757 +   {                                                          
+      758 +    "point": "TCV reached US$9.6 billion, up from $9.5 billion
+          + in Q1 FY27.",                                                
+      759 +    "cites": [                                                
+      760 +     {                                                        
+      761 +      "label": "Q2 FY27 call, p.3",                           
+      762 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=7dc14216-f892-46f1-bf82-5c7b387a83b9.pdf"            
+      763 +     },                                                       
+      764 +     {                                                        
+      765 +      "label": "Q1 FY27 call, p.3",                           
+      766 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=27523cab-de62-4f78-939a-6d9853bbd060.pdf"            
+      767 +     }                                                        
+      768 +    ]                                                         
+      769 +   },                                                         
+      770 +   {                                                          
+      771 +    "point": "PAT grew 14.9% YoY, outpacing 11.2% revenue grow
+          +th.",                                                         
+      772 +    "cites": [                                                
+      773 +     {                                                        
+      774 +      "label": "Financial snapshot (results filings)",        
+      775 +      "url": "#quarters"                                      
+      776 +     }                                                        
+      777 +    ]                                                         
+      778 +   }                                                          
+      779 +  ],                                                          
+      780 +  "bear": [                                                   
+      781 +   {                                                          
+     … 46 more lines (ctrl+o to expand)
+  ⎿  … 1 more file changed
+
+● Tests pass, but the stopped runs overwrote L&T's and TCS's gpt-oss sections,
+  so HEAD's qwen versions are back for now. I'm running L&T alone next to see
+  Groq's actual error. · summary
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend"; timeout 900
+      ../.venv/Scripts/python -u -X utf8 -m finn.pull.research LT 2>&1 | grep -v
+      "^\s*$" | cut -c1-2…)
+  ⎿  Updated web\public\data\research\LT.json (+1 -1)
+      1  {
+      2   "symbol": "LT",
+      3   "name": "Larsen & Toubro Ltd",
+      4 - "generated_at": "2026-11-14T03:39",                            
+      4 + "generated_at": "2026-11-14T03:41",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+  ⎿  Updated web\public\data\research\index.json (+17 -17)
+      143    "symbol": "ITC",
+      144    "name": "ITC Ltd",
+      145    "sector": "Fast Moving Consumer Goods",
+      146 -  "generated_at": "2026-11-13T21:52",                         
+      146 +  "generated_at": "2026-11-14T03:38",                         
+      147    "summary": {
+      148     "kept": 0,
+      149     "missed": 0,
+     ...
+      156   {
+      157    "symbol": "KPITTECH",
+      158    "name": "KPIT Technologies Ltd",
+      159 -  "sector": "Information Technology",                         
+      160 -  "generated_at": "2026-11-13T21:52",                         
+      159 +  "sector": null,                                             
+      160 +  "generated_at": "2026-11-14T03:40",                         
+      161    "summary": {
+      162     "kept": 0,
+      163     "missed": 4,
+     ...
+      171    "symbol": "LT",
+      172    "name": "Larsen & Toubro Ltd",
+      173    "sector": "Industrials",
+      174 -  "generated_at": "2026-11-13T21:53",                         
+      174 +  "generated_at": "2026-11-14T03:41",                         
+      175    "summary": {
+      176     "kept": 2,
+      177     "missed": 1,
+     ...
+      199    "symbol": "PERSISTENT",
+      200    "name": "Persistent Systems Ltd",
+      201    "sector": "Information Technology",
+      202 -  "generated_at": "2026-11-12T18:02",                         
+      202 +  "generated_at": "2026-11-14T03:37",                         
+      203    "summary": {
+      204     "kept": 0,
+      205     "missed": 0,
+     ...
+      212   {
+      213    "symbol": "POLYCAB",
+      214    "name": "Polycab India Ltd",
+      215 -  "sector": "Industrials",                                    
+      216 -  "generated_at": "2026-11-13T22:00",                         
+      215 +  "sector": null,                                             
+     … 54 more lines (ctrl+o to expand)
+  ⎿  (timeout 10m)
+
+● Groq's 429 is gpt-oss-120b's daily token cap, still used up from last night,
+  so the driver will wait out the retry time per ticker (up to 4 tries) while
+  the fallback keeps L&T's previous section. · summary
+
+  Made 1 scratchpad edit +26, ran 1 shell command (ctrl+o to expand)
+● Monitor(drip regeneration: one line per ticker attempt)
+  ⎿  Monitor started · task b9424i029 · timeout 1800s
+
+● While that waits on Groq, I'll record the two fallback fixes in DECISIONS.md
+  and commit the code (data comes later, once regeneration settles).
+
+● Update(DECISIONS.md)
+  ⎿  Added 1 line
+      216  - **The owners' share is found even when it is on the next pag
+           e.** KPIT's P&L ends on p.9 and "attributable to owners / non-
+           controlling interests" is on p.10, so the card fell back to to
+           tal PAT. The next page is now sent when it carries the split a
+           nd the table page doesn't. A filing with no non-controlling in
+           terests anywhere (Persistent) has all of PAT going to owners, 
+           and the card labels it so.
+      217  - **TCS's operating margin is EBIT, and is labelled that way.*
+           * Management's figure matches operating profit less depreciati
+           on over revenue, so the promise chart (25.0%) and the snapshot
+           's EBITDA margin (27.2%) are two metrics, not one fact with tw
+           o numbers. The label said "operating profit over revenue", whi
+           ch made them look like the same thing.
+      218  - **Bull/bear: company facts only, newest figure.** L&T's bear
+            cited "Headline CPI 4.4%" (management quoting the economy) an
+           d an older working-capital ratio (8.2%, Dec 2025) after the ta
+           rget was already hit (4.1%, Mar 2026). Python now drops econom
+           y statistics (CPI, WPI, GDP, repo rate); the prompt says to us
+           e the newest figure for a metric and never one a promise verdi
+           ct has overturned.
+      219 +- **A quota day keeps the last checked bull/bear instead of hi
+          +ding it.** Groq's gpt-oss-120b has a rolling 200k-tokens-a-day
+          + cap; after the 13 Nov runs it answered "retry after 1682s", a
+          +nd Gemini's daily quota was gone too, so regenerated pages los
+          +t a section that had been fine. Now the previous section (alre
+          +ady number-checked, citations stored as label + link) stays un
+          +til a model answers, just as PvD keeps its previous promises. 
+          +The batch also stalled for ~50 minutes because Gemini's *daily
+          +* 429 was retried like a per-minute one; a 429 whose quota id 
+          +says "PerDay" now skips to the next model at once, and every m
+          +odel that fails in the chain is logged with its reason.       
+      220  - **At most 6 promises per page** (unchanged, noted because it
+            looked like a lost row): L&T has 10, and its FY26 8.5% EBITDA
+            target is not among the 6 shown. Measured and finished promis
+           es are picked first.
+      221  
+      222  ## Feed rules (13 Nov afternoon)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Code is committed as b2d7f52, with no attribution lines. The page regeneration
+  is waiting out Groq's daily cap, one ticker at a time, and I'll commit the
+  data and send the final report when it finishes.
+
+● Monitor event: "drip regeneration: one line per ticker attempt"
+  03:42 LT try 1: exit 0, bull/bear by qwen/qwen3.8-27b, kept previous (Groq
+  wait 1928s)
+
+● L&T's first try hit Groq's cap (retry in about 32 minutes), so the driver is
+  sleeping until then. L&T keeps its previous section meanwhile. I'll keep
+  watching.
+
+● Monitor event: "research re-run: per-ticker results and failures"
+  [Monitor expired after 30m with 4 events delivered. Re-arm it if you still
+  need the watch.]
+
+● That was the old monitor from the stopped run expiring; nothing to do. The
+  driver's own monitor is still live.
+
+● Monitor event: "research run b: per-ticker results and failures"
+  [Monitor expired after 30m with 3 events delivered. Re-arm it if you still
+  need the watch.]
+
+● That was also an old monitor expiring. The driver is still waiting on Groq.
+
+● Monitor event: "drip regeneration: one line per ticker attempt"
+  [Monitor expired after 30m with 1 event delivered. Re-arm it if you still need
+  the watch.]
+
+● Monitor(drip regeneration: one line per ticker attempt)
+  ⎿  Monitor started · task b27dtup5n · timeout 1800s
+
+● The monitor is re-armed. Note that it replays the log from the start, so it
+  will repeat L&T's first-try line. L&T's second try is due about now.
+
+● Monitor event: "drip regeneration: one line per ticker attempt"
+  03:42 LT try 1: exit 0, bull/bear by qwen/qwen3.8-27b, kept previous (Groq
+  wait 1928s)
+
+● That's the replayed first-try line. L&T's second try comes next.
+
+● Monitor event: "drip regeneration: one line per ticker attempt"
+  04:15 LT try 2: exit 0, bull/bear by qwen/qwen3.8-27b, kept previous (Groq
+  wait 1553s)
+
+● Groq's window is freeing up slowly (the wait went from 32 to 26 minutes). Once
+  last night's heavy usage ages out of the rolling 24 hours, calls should start
+  going through in a run. Leaving the driver to wait it out; nothing on any
+  page is lost meanwhile.
+
+● Monitor event: "drip regeneration: one line per ticker attempt"
+  [Monitor expired after 30m with 2 events delivered. Re-arm it if you still
+  need the watch.]
+
+● Monitor(drip regeneration: one line per ticker attempt)
+  ⎿  Monitor started · task bt6xo87u3 · timeout 1800s
+
+● The monitor is re-armed, new lines only this time. L&T's third try is due
+  around 04:42.
+
+● Monitor event: "drip regeneration: one line per ticker attempt"
+  04:42 LT try 3: exit 0, bull/bear by openai/gpt-oss-120b
+
+● L&T went through on gpt-oss-120b with the new prompt. Checking what it wrote:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The bear points now agree with the PvD rows, but only one bull point is in the
+  model, even though L&T has an "ahead", a "hit" and two "on track" rows. I'm
+  checking whether those rows reach the model. · summary
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● The model treats "write fewer if the evidence supports fewer" as license to
+  under-list P rows, so I'm making the prompt explicit that every hit or ahead
+  promise becomes a bull point before the driver reaches the other tickers, then
+  returning to L&T. · summary
+
+● Update(backend\finn\prompts\bull_bear.md)  ⎿  Added 1 line, removed 1 line
+      22  
+      23  What goes where:
+      24  - The bear case must not be only management's own caveats. Use,
+           where the evidence has them: promises that were missed, are be
+          hind pace or moved away (`P`); falling or weakening figures (`F
+          `); and concerns analysts pressed on (`Q`) — say what the analy
+          st was worried about, not that "an analyst asked".
+      25 -- The bull case uses kept or running-ahead promises (hit, ahead
+         -, on track), improving figures and management's reported number
+         -s.                                                             
+      25 +- The bull case uses kept or running-ahead promises (hit, ahead
+         +, on track), improving figures and management's reported number
+         +s. Every `P` with verdict hit or ahead is a bull point of its o
+         +wn; so is every `P` with verdict miss or behind pace a bear poi
+         +nt. Both sides get as many points as the evidence supports, up 
+         +to 4.                                                          
+      26  - Terse analyst voice. No hedging words ("may", "could potentia
+          lly"), no adjectives like "robust" or "strong" without a number
+          . Write percentage-point changes as "pp".
+      27  
+      28  Rules:
+
+● Monitor event: "drip regeneration: one line per ticker attempt"
+  04:42 TCS try 1: exit 0, bull/bear by qwen/qwen3.8-27b, kept previous (Groq
+  wait 2479s)
+
+● TCS hit the cap again (retry in about 41 minutes); its next try will use the
+  updated prompt. L&T goes back through once the driver finishes its list.
+
+● Monitor event: "drip regeneration: one line per ticker attempt"
+  [Monitor expired after 30m with 2 events delivered. Re-arm it if you still
+  need the watch.]
+
+● Monitor(drip regeneration: one line per ticker attempt)
+  ⎿  Monitor started · task b6a1fpcm2 · timeout 1800s
+
+● The monitor is re-armed. TCS's second try is due around 05:24.
+
+● Monitor event: "drip regeneration: one line per ticker attempt"
+  [Monitor expired after 30m with no events delivered. Re-arm it if you still
+  need the watch — and widen the filter if silence was unexpected.]
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● It's now 13:38, and the log hasn't moved since 04:42, so the machine was
+  probably asleep. Checking whether the driver is still alive:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The machine slept overnight, so the driver resumed at 13:38 for TCS's second
+  try. With Groq's rate window likely refreshed, the remaining work should go
+  quickly. · summary
+
+● Monitor(drip regeneration: one line per ticker attempt)
+  ⎿  Monitor started · task bgbt3r2v6 · timeout 1800s
+
+● The monitor is re-armed. I'll check each page's bull/bear as it lands.
+
+● Monitor event: "drip regeneration: one line per ticker attempt"
+  13:38 TCS try 2: exit 0, bull/bear by openai/gpt-oss-120b
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● TCS is good. Its points follow the verdicts: the FY26 miss is called a miss
+  and FY27 "behind pace", and EBIT "operating margin" (25.0%, 24.0%) is kept
+  apart from EBITDA margin (25.7%) by name. Waiting on the other 7.
+
+● Monitor event: "drip regeneration: one line per ticker attempt"
+  13:38 KPITTECH try 1: exit 0, bull/bear by openai/gpt-oss-120b
+
+● KPIT went through on gpt-oss-120b on the first try. Six to go.
+
+● Monitor event: "drip regeneration: one line per ticker attempt"
+  13:39 PERSISTENT try 1: exit 0, bull/bear by openai/gpt-oss-120b
+
+● Persistent is done too. Five left.
+
+> continue
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● POLYCAB is running, and I've queued the L&T rerun, the feed re-ingest and the
+  consistency gate to start as soon as the driver exits. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● While that's queued, a quick look at KPIT's and Persistent's new sections:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Both read as arguments, and KPIT's bear side follows its four
+  behind-pace/moved-away verdicts. Two small style slips, which the prompt
+  forbids and Python doesn't check: "may affect valuation" (hedging) and "Cash
+  at quarter end 9.6 billion" (no currency, copied from management's own quote).
+  I'll list them as known limits rather than spend Groq budget re-rolling.
+
+  Waiting on POLYCAB → TITAN, then L&T, the ingest and the gate.
+
+● Monitor event: "drip regeneration: one line per ticker attempt"
+  13:41 POLYCAB try 1: exit 1, bull/bear by openai/gpt-oss-120b | INCONSISTENT
+  POLYCAB: bull margin Q2 FY27: EBITDA margins 10.1% in Q2 FY27 vs 14.4%
+
+● POLYCAB's bull point says "EBITDA margins 10.1% in Q2 FY27", but the company's
+  margin that quarter is 14.4%. The 10.1% is almost certainly a single-business
+  figure from management's quote, with the business name dropped. The gate
+  caught it after the fact. The generation-time check should catch it before the
+  page is written, so I'll seed the shared facts with the snapshot's own
+  margins, as the gate does.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend";
+      ../.venv/Scripts/python -X utf8 - <<'EOF'
+      import pathlib…)  ⎿  Updated backend\finn\pull\research.py (+10 -5)
+      248      return keep[:3], dropped
+      249  
+      250  
+      251 -def bull_bear(name: str, latest: str | None, ev: list[dict], s
+          -ymbol: str, prev: dict | None = None) -> dict | None:         
+      251 +def bull_bear(name: str, latest: str | None, ev: list[dict], s
+          +ymbol: str, prev: dict | None = None, snap: dict | None = None
+          +) -> dict | None:                                             
+      252      """None when a side has no point that survives the number 
+           check, or the model is unavailable and there is no
+      253      previous section (page hides it). prev: the page's last ch
+           ecked section, kept when the model is unavailable."""
+      254      payload = {"company": name, "latest_quarter": latest, "evi
+           dence": [{"id": e["id"], "text": e["text"]} for e in ev]}
+     ...
+      259          return prev
+      260      by_id = {e["id"]: e for e in ev}
+      261      data = r["data"] if isinstance(r["data"], dict) else {}
+      262 -    facts: dict = {}                                          
+      262 +    # the snapshot's margins are facts already on the page: a 
+          +point quoting another margin for the same quarter (a          
+      263 +    # segment's, with the segment's name dropped: POLYCAB "EBI
+          +TDA margins 10.1% in Q2 FY27" against 14.4%) is dropped       
+      264 +    m = (snap or {}).get("margin") or {}                      
+      265 +    facts: dict = {("margin", pvd.fy_name(q)): round(v, 1) for
+          + q, v in zip(m.get("periods", []), m.get("values", []))}      
+      266      bull, d1 = checked(data.get("bull") or [], by_id, facts)
+      267      bear, d2 = checked(data.get("bear") or [], by_id, facts)
+      265 -    if not bull or not bear:                                  
+      266 -        return None                                           
+      268 +    if not bull or not bear:  # nothing survives on a side: th
+          +e last checked section, if any, beats a blank                 
+      269 +        if prev:                                              
+      270 +            print(f"  bull/bear for {symbol}: a side had no po
+          +int that passed the checks; kept the previous one")           
+      271 +        return prev                                           
+      272      return {"bull": bull, "bear": bear, "dropped": d1 + d2, "m
+           odel": r["model"], "model_note": r.get("model_note")}
+      273  
+      274  
+     ...
+      329      snap = snapshot(co)
+      330      ev = evidence(out["promises"], reported, analyst_questions
+           (texts, urls), snap, urls)
+      331      out |= {"sector": co.get("sector"), "summary": summary(out
+           ["promises"], len(out["calls"])), "prices": price_lines(sym),
+      327 -            "snapshot": snap, "bull_bear": bull_bear(out["name
+          -"], out.get("latest_quarter"), ev, sym, prev), "sources": sour
+          -ces(out, co)}                                                 
+      332 +            "snapshot": snap, "bull_bear": bull_bear(out["name
+          +"], out.get("latest_quarter"), ev, sym, prev, snap), "sources"
+          +: sources(out, co)}                                           
+      333      tmp = f.with_suffix(".tmp")
+      334      tmp.write_text(json.dumps(out, ensure_ascii=False, indent=
+           1), encoding="utf-8")
+      335      tmp.replace(f)
+  ⎿  Updated backend\tests\test_research.py (+26 -15)
+      104  def test_checked_survives_malformed_model_output():
+      105      keep, dropped = research.checked([{"claim": "x"}, "text", 
+           {"cites": ["S1"]}], {"S1": {"text": "", "cite": {}}})
+      106      assert keep == [] and dropped == 3
+      107 -                                                              
+      108 -                                                              
+      109 -def test_an_economy_statistic_is_not_a_bull_or_bear_point():  
+      110 -    by_id = {"S1": {"text": "Headline CPI at 4.4% in June 2026
+          -"}}                                                           
+      111 -    pt = {"claim": "Headline CPI 4.4% in Q1 FY27", "why": "Inp
+          -ut costs rise and squeeze margins", "cites": ["S1"]}          
+      112 -    assert research.problem(pt, ["S1"], by_id) == "an economy 
+          -statistic, not a fact about the company"                      
+      113 -                                                              
+      114 -                                                              
+      115 -def test_an_unavailable_model_keeps_the_previous_bull_bear(mon
+          -keypatch):                                                    
+      116 -    def down(*a, **k):                                        
+      117 -        raise research.llm.Exhausted("429 daily cap")         
+      118 -    monkeypatch.setattr(research.llm, "run", down)            
+      119 -    prev = {"bull": [{"point": "x", "why": "y", "cites": []}],
+          - "bear": [], "model": "openai/gpt-oss-120b"}                  
+      120 -    assert research.bull_bear("Co", "Sep 2026", [], "X", prev)
+          - is prev                                                      
+      121 -    assert research.bull_bear("Co", "Sep 2026", [], "X") is No
+          -ne                                                            
+      107 +                                                              
+      108 +                                                              
+      109 +def test_an_economy_statistic_is_not_a_bull_or_bear_point():  
+      110 +    by_id = {"S1": {"text": "Headline CPI at 4.4% in June 2026
+          +"}}                                                           
+      111 +    pt = {"claim": "Headline CPI 4.4% in Q1 FY27", "why": "Inp
+          +ut costs rise and squeeze margins", "cites": ["S1"]}          
+      112 +    assert research.problem(pt, ["S1"], by_id) == "an economy 
+          +statistic, not a fact about the company"                      
+      113 +                                                              
+      114 +                                                              
+      115 +def test_an_unavailable_model_keeps_the_previous_bull_bear(mon
+          +keypatch):                                                    
+      116 +    def down(*a, **k):                                        
+      117 +        raise research.llm.Exhausted("429 daily cap")         
+      118 +    monkeypatch.setattr(research.llm, "run", down)            
+      119 +    prev = {"bull": [{"point": "x", "why": "y", "cites": []}],
+          + "bear": [], "model": "openai/gpt-oss-120b"}                  
+      120 +    assert research.bull_bear("Co", "Sep 2026", [], "X", prev)
+          + is prev                                                      
+      121 +    assert research.bull_bear("Co", "Sep 2026", [], "X") is No
+          +ne                                                            
+      122 +                                                              
+      123 +                                                              
+      124 +def test_a_second_margin_for_a_quarter_on_the_page_is_dropped(
+          +monkeypatch):                                                 
+      125 +    ev = [{"id": "P1", "text": "FMEG EBITDA margins 10.1% (Q2 
+          +FY27)", "cite": {}}, {"id": "F2", "text": "EBITDA margin 14.4%
+          + in Q2 FY27", "cite": {}}]                                    
+      126 +    pts = {"bull": [{"claim": "EBITDA margins 10.1% in Q2 FY27
+          +", "why": "Shows pricing power", "cites": ["P1"]},            
+      127 +                    {"claim": "EBITDA margin 14.4% in Q2 FY27"
+          +, "why": "Shows pricing power", "cites": ["F2"]}],            
+      128 +           "bear": [{"claim": "EBITDA margin 14.4% in Q2 FY27"
+          +, "why": "Leaves less room for price cuts", "cites": ["F2"]}]}
+     … 4 more lines (ctrl+o to expand)
+
+● Monitor event: "drip regeneration: one line per ticker attempt"
+  13:42 RELIANCE try 1: exit 1, bull/bear by openai/gpt-oss-120b | INCONSISTENT
+  POLYCAB: bull margin Q2 FY27: EBITDA margins 10.1% in Q2 FY27 vs 14.4%
+
+● RELIANCE's exit 1 comes from the gate still checking the POLYCAB page on every
+  run, so I'm restoring POLYCAB's last committed section and re-running, which
+  costs nothing since the model's answer is cached. · summary
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn"; .venv/Scripts/python -X
+      utf8 -c "
+      import json,subprocess…)
+  ⎿  Updated web\public\data\research\POLYCAB.json (+56 -6)
+      863   "bull_bear": {
+      864    "bull": [
+      865     {
+      866 -    "point": "EBITDA margins 10.1% in Q2 FY27",               
+      867 -    "why": "strengthens earnings growth and pricing power",   
+      866 +    "point": "FMEG EBIT margin hit 10.1%, meeting the 8-10% FY
+          +30 target.",                                                  
+      867      "cites": [
+      868       {
+      869        "label": "Q3 FY26 call, p.7 (promise)",
+      870        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+           px?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf"
+      871 +     },                                                       
+      872 +     {                                                        
+      873 +      "label": "Q2 FY27 call, p.7",                           
+      874 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"            
+      875 +     }                                                        
+      876 +    ]                                                         
+      877 +   },                                                         
+      878 +   {                                                          
+      879 +    "point": "Wires & Cables EBIT margin reached 14.2%, exceed
+          +ing the 11-13% target.",                                      
+      880 +    "cites": [                                                
+      881 +     {                                                        
+      882 +      "label": "Q1 FY27 call, p.5 (promise)",                 
+      883 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=e47a217c-cefa-4ff6-8e34-6bbd07d42b13.pdf"            
+      884 +     }                                                        
+      885 +    ]                                                         
+      886 +   },                                                         
+      887 +   {                                                          
+      888 +    "point": "PAT margin 10.0% and EBITDA margin 14.4% show op
+          +erational efficiency.",                                       
+      889 +    "cites": [                                                
+      890 +     {                                                        
+      891 +      "label": "Q2 FY27 call, p.6",                           
+      892 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"            
+      893 +     },                                                       
+      894 +     {                                                        
+      895 +      "label": "Q2 FY27 call, p.6",                           
+      896 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"            
+      897       }
+      898      ]
+      899     }
+      900    ],
+     … 46 more lines (ctrl+o to expand)
+
+● The POLYCAB section in the committed file breaks the new rules, so I'm
+  discarding it and regenerating that one entry with the configured fallback
+  model, gemini-3.8-flash, since gpt-oss's answer is weak and a retry at
+  temperature 0 would just return the same result. · summary
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn"; .venv/Scripts/python -X
+      utf8 -c "
+      import json; f='web/public/data/research/POLYCAB.json';
+      r=json.load(open(f,encod…)
+  ⎿  Updated web\public\data\research\POLYCAB.json (+2 -80)
+      1  {
+      2   "symbol": "POLYCAB",
+      3   "name": "Polycab India Ltd",
+      4 - "generated_at": "2026-11-14T13:39",                            
+      4 + "generated_at": "2026-11-14T13:43",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+     ...
+      860     "claim": "Debt/equity 0.02 at FY26 end (Mar 2026), from 0.0
+           2 at FY22 end."
+      861    }
+      862   },
+      863 - "bull_bear": {                                               
+      864 -  "bull": [                                                   
+      865 -   {                                                          
+      866 -    "point": "FMEG EBIT margin hit 10.1%, meeting the 8-10% FY
+          -30 target.",                                                  
+      867 -    "cites": [                                                
+      868 -     {                                                        
+      869 -      "label": "Q3 FY26 call, p.7 (promise)",                 
+      870 -      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          -px?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf"            
+      871 -     },                                                       
+      872 -     {                                                        
+      873 -      "label": "Q2 FY27 call, p.7",                           
+      874 -      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          -px?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf"            
+      875 -     }                                                        
+      876 -    ]                                                         
+      877 -   },                                                         
+      878 -   {                                                          
+      879 -    "point": "Wires & Cables EBIT margin reached 14.2%, exceed
+          -ing the 11-13% target.",                                      
+      880 -    "cites": [                                                
+      881 -     {                                                        
+      882 -      "label": "Q1 FY27 call, p.5 (promise)",                 
+      883 -      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          -px?Pname=e47a217c-cefa-4ff6-8e34-6bbd07d42b13.pdf"            
+      884 -     }                                                        
+      885 -    ]                                                         
+      886 -   },                                                         
+      887 -   {                                                          
+      888 -    "point": "PAT margin 10.0% and EBITDA margin 14.4% show op
+          -erational efficiency.",                                       
+      889 -    "cites": [                                                
+      890 -     {                                                        
+      891 -      "label": "Q2 FY27 call, p.6",                           
+     … 54 more lines (ctrl+o to expand)
+  ⎿  Updated web\public\data\research\TATAPOWER.json (+2 -69)
+      1  {
+      2   "symbol": "TATAPOWER",
+      3   "name": "Tata Power Company Ltd",
+      4 - "generated_at": "2026-11-14T03:36",                            
+      4 + "generated_at": "2026-11-14T13:43",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+     ...
+      165     "model": "openai/gpt-oss-120b",
+      166     "why": "Not measurable (segment not reported): the results 
+           filings report Thermal & Hydro (Refer Note 2), Renewables, Tra
+           nsmission and Distribution, Others, not this business."
+      167    }
+      168 - ],                                                           
+      169 - "bull_bear": {                                               
+      170 -  "bull": [                                                   
+      171 -   {                                                          
+      172 -    "point": "PAT grew 32.7% YoY, outpacing 26.3% revenue grow
+          -th to show operating leverage.",                              
+      173 -    "cites": [                                                
+      174 -     {                                                        
+      175 -      "label": "Financial snapshot (results filings)",        
+      176 -      "url": "#quarters"                                      
+      177 -     }                                                        
+      178 -    ]                                                         
+      179 -   },                                                         
+      180 -   {                                                          
+      181 -    "point": "Debt/equity improved to 1.93 from 2.28, reducing
+          - financial risk and interest burden.",                        
+      182 -    "cites": [                                                
+      183 -     {                                                        
+      184 -      "label": "Financial snapshot (results filings)",        
+      185 -      "url": "#leverage"                                      
+      186 -     }                                                        
+      187 -    ]                                                         
+      188 -   },                                                         
+      189 -   {                                                          
+      190 -    "point": "Operating cash flow was 2.24× PAT, ensuring high
+          - cash conversion and debt repayment capacity.",               
+      191 -    "cites": [                                                
+      192 -     {                                                        
+      193 -      "label": "Financial snapshot (results filings)",        
+      194 -      "url": "#cash"                                          
+      195 -     }                                                        
+      196 -    ]                                                         
+     … 41 more lines (ctrl+o to expand)
+  ⎿  Updated web\public\data\research\index.json (+2 -2)
+      213    "symbol": "POLYCAB",
+      214    "name": "Polycab India Ltd",
+      215    "sector": "Industrials",
+      216 -  "generated_at": "2026-11-14T13:39",                         
+      216 +  "generated_at": "2026-11-14T13:43",                         
+      217    "summary": {
+      218     "kept": 3,
+      219     "missed": 0,
+     ...
+      255    "symbol": "TATAPOWER",
+      256    "name": "Tata Power Company Ltd",
+      257    "sector": null,
+      258 -  "generated_at": "2026-11-14T03:36",                         
+      258 +  "generated_at": "2026-11-14T13:43",                         
+      259    "summary": {
+      260     "kept": 1,
+      261     "missed": 1,
+  ⎿  (timeout 10m)
+
+● Monitor event: "drip regeneration: one line per ticker attempt"
+  13:43 SUNPHARMA try 1: exit 1, bull/bear by openai/gpt-oss-120b | INCONSISTENT
+  POLYCAB: bear revenue YoY Q1 FY27: EPC revenues INR 3,077 million declined
+  11% YoY in Q1 FY27. vs +39.0% / INCONSISTENT SUNPHARMA: bull margin Q2 FY27:
+  EBITDA INR47,439 million in Q2 FY27, up 4.8% YoY vs 29.3%
+
+● POLYCAB is hidden again because one side had no point passing the checks,
+  which is the designed fallback. I'm changing the gate so segment figures like
+  "EPC revenues" no longer count as company-level metrics, since that's what
+  produced the two false positives. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Monitor event: "drip regeneration: one line per ticker attempt"
+  13:43 TATAPOWER try 1: exit 1, bull/bear by openai/gpt-oss-120b | INCONSISTENT
+  SUNPHARMA: bull margin Q2 FY27: EBITDA INR47,439 million in Q2 FY27, up 4.8%
+  YoY vs 29.3%
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● I'll use Edit here, since these regexes contain \b, which the shell keeps
+  mangling:
+
+● Update(backend\finn\pull\research.py)
+  ⎿  Added 7 lines, removed 2 lines
+      188  # a target is beaten or missed only once its period has ended 
+           (user's rule, 13 Nov)
+      189  WIN = re.compile(r"\b(?:beat|beats|beating|beaten|exceed\w*|su
+           rpass\w*|outperform\w*|hit|achiev\w*|met)\b", re.I)
+      190  LOSS = re.compile(r"\b(?:miss\w*|fell short|falls? short|short
+            of|failed|fails)\b", re.I)
+      191 -FAMILY = (("margin", re.compile(r"margin|pbdit|ebitda", re.I))
+          -, ("revenue", re.compile(r"revenue|sales|total income", re.I))
+          -,                                                             
+      192 -          ("pat", re.compile(r"\bpat\b|net profit|profit after
+          - tax", re.I)))                                                
+      191 +# a company-level fact starts with its metric: "EBITDA margin 
+          +15.6% in Q2 FY27". "EPC revenues ..." or "FMEG EBITDA         
+      192 +# margins ..." are a segment's (another metric); "EBITDA ... u
+          +p 4.8% YoY" is growth, not a margin (SUNPHARMA, POLYCAB 14 Nov
+          +).                                                            
+      193 +# "Operating margin" is left out: TCS's is EBIT, not the snaps
+          +hot's EBITDA.                                                 
+      194 +_LEAD = r"\s*(?:consolidated\s+)?"                            
+      195 +FAMILY = (("margin", re.compile(_LEAD + r"(?:ebitda|pbdit)\s+m
+          +argins?\b", re.I)),                                           
+      196 +          ("revenue", re.compile(_LEAD + r"(?:revenue|sales|to
+          +tal income)\b", re.I)),                                       
+      197 +          ("pat", re.compile(_LEAD + r"(?:pat|net profit|profi
+          +t after tax)\b(?!\s+margin)", re.I)))                         
+      198  QUALIFIED = re.compile(r"gross|segment|standalone|\bnim\b|net 
+           interest", re.I)
+      199  
+      200  
+
+● Update(backend\finn\pull\research.py)
+  ⎿  Added 2 lines, removed 2 lines
+      202      """(metric family, period, first % figure) of a sentence a
+           bout one company metric, for the same-facts check."""
+      203      if QUALIFIED.search(text):  # gross / segment / standalone
+            margins are other metrics, not a second figure for this one
+      204          return None
+      205 -    fam = [f for f, rx in FAMILY if rx.search(text)]          
+      206 -    per, pct =NAMED_PERIOD.search(text), re.search(r"([+−-]?\d
+          -+(?:\.\d+)?)\s?%", text)                                      
+      205 +    fam = [f for f, rx in FAMILY if rx.match(text)]           
+      206 +    per, pct = NAMED_PERIOD.search(text), re.search(r"([+−-]?\
+          +d+(?:\.\d+)?)\s?%", text)                                     
+      207      if len(fam) != 1 or not per or not pct:
+      208          return None
+      209      return fam[0], per.group(0), float(pct.group(1).replace("−
+           ", "-"))
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend"; cat >>
+      tests/test_research.py <<'EOF'…)
+  ⎿  Updated backend\tests\test_research.py (+9 -0)
+      130      out = research.bull_bear("Co", "Sep 2026", ev, "X", snap={
+           "margin": {"periods": ["Sep 2026"], "values": [14.42]}})
+      131      assert [p["point"] for p in out["bull"]] == ["EBITDA margi
+           n 14.4% in Q2 FY27"] and out["dropped"] == 1
+      132  
+      133 +                                                              
+      134 +                                                              
+      135 +def test_fact_reads_company_metrics_only_when_the_claim_starts
+          +_with_them():                                                 
+      136 +    assert research.fact("EBITDA margin 15.6% in Q2 FY27, down
+          + 2.0 pp YoY") == ("margin", "Q2 FY27", 15.6)                  
+      137 +    assert research.fact("EBITDA margins 10.1% in Q2 FY27") ==
+          + ("margin", "Q2 FY27", 10.1)  # a segment's, name dropped: sti
+          +ll checked                                                    
+      138 +    assert research.fact("EBITDA INR47,439 million in Q2 FY27,
+          + up 4.8% YoY") is None  # growth, not a margin                
+      139 +    assert research.fact("EPC revenues INR 3,077 million decli
+          +ned 11% YoY in Q1 FY27") is None  # a segment                 
+      140 +    assert research.fact("PAT margin 10.0% in Q2 FY27") is Non
+          +e                                                             
+      141 +    assert research.fact("Revenue +16.9% YoY in Q2 FY27; PAT (
+          +to owners) +7.5%") == ("revenue", "Q2 FY27", 16.9)            
+
+● 161 tests pass and the gate reports 0 problems across all pages and the feed.
+  POLYCAB is the last page without a section, so here's why Gemini's (cached,
+  free to re-read) answer was dropped:
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend";
+      FINN_TASK_BULL_BEAR=gemini:gemini-3.8-flash timeout 600
+      ../.venv/Scripts/python -u -X utf8 -c "
+      from finn.…)
+  ⎿  Updated web\public\data\research\POLYCAB.json (+50 -2)
+      1  {
+      2   "symbol": "POLYCAB",
+      3   "name": "Polycab India Ltd",
+      4 - "generated_at": "2026-11-14T13:43",                            
+      4 + "generated_at": "2026-11-14T13:44",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+     ...
+      860     "claim": "Debt/equity 0.02 at FY26 end (Mar 2026), from 0.0
+           2 at FY22 end."
+      861    }
+      862   },
+      863 - "bull_bear": null,                                           
+      863 + "bull_bear": {                                               
+      864 +  "bull": [                                                   
+      865 +   {                                                          
+      866 +    "point": "EPC margin 11.0% in Q2 FY27",                   
+      867 +    "why": "enhances segment profitability and cash generation
+          +",                                                            
+      868 +    "cites": [                                                
+      869 +     {                                                        
+      870 +      "label": "Q3 FY26 call, p.7 (promise)",                 
+      871 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf"            
+      872 +     }                                                        
+      873 +    ]                                                         
+      874 +   },                                                         
+      875 +   {                                                          
+      876 +    "point": "Wires & Cables margin 14.2% in Q2 FY27",        
+      877 +    "why": "drives segment earnings and validates margin guida
+          +nce",                                                         
+      878 +    "cites": [                                                
+      879 +     {                                                        
+      880 +      "label": "Q1 FY27 call, p.5 (promise)",                 
+      881 +      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.as
+          +px?Pname=e47a217c-cefa-4ff6-8e34-6bbd07d42b13.pdf"            
+      882 +     }                                                        
+      883 +    ]                                                         
+      884 +   }                                                          
+      885 +  ],                                                          
+      886 +  "bear": [                                                   
+      887 +   {                                                          
+      888 +    "point": "EBITDA margin 14.4% in Q2 FY27, down 1.4 pp YoY"
+          +,                                                             
+      889 +    "why": "compresses profitability and cash conversion",    
+      890 +    "cites": [                                                
+     … 24 more lines (ctrl+o to expand)
+  ⎿  (timeout 10m)
+
+● Background command "Regenerate nine pages one at a time, waiting out Groq's
+cap" completed (exit code 0)
+
+● Monitor event: "drip regeneration: one line per ticker attempt"
+  13:44 TITAN try 1: exit 0, bull/bear by openai/gpt-oss-120b
+  drip done
+
+● The driver finished: TITAN went through on gpt-oss-120b. In that trace, "OK"
+  is only problem()'s verdict; the same-facts check runs after it. Here's what
+  POLYCAB's page actually kept:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● POLYCAB is now right: 2 bull and 2 bear points, written by gpt-oss-120b. The
+  router serves the cached answer whatever the override says. Under the new
+  check, the dropped-name 10.1% point is gone, and the EPC and Wires & Cables
+  margins survive as named segment figures. Earlier those two were wrongly
+  dropped as conflicting with the 10.1%.
+
+  The chain has moved on to L&T. When it's done, I'll re-apply the new checks to
+  the other regenerated pages. That's free: their model answers are cached.
+
+● Background command "After drip: re-run L&T, re-ingest feed, run consistency
+gate" completed (exit code 0)
+
+  Read 1 file (ctrl+o to expand)
+
+● The new prompt went through L&T, the feed is re-ingested, and the gate shows
+  no problems. I'm now re-applying the checks to the 7 earlier pages from cache.
+  · summary
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend"; n0=$(wc -l <
+      ../cache/llm_calls.jsonl); timeout 1200 ../.venv/Scripts/python -u -X utf8
+      -m finn.pull.resea…)
+  ⎿  Updated web\public\data\research\KPITTECH.json (+1 -1)
+      1  {
+      2   "symbol": "KPITTECH",
+      3   "name": "KPIT Technologies Ltd",
+      4 - "generated_at": "2026-11-14T13:38",                            
+      4 + "generated_at": "2026-11-14T13:47",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+  ⎿  Updated web\public\data\research\PERSISTENT.json (+1 -1)
+      1  {
+      2   "symbol": "PERSISTENT",
+      3   "name": "Persistent Systems Ltd",
+      4 - "generated_at": "2026-11-14T13:38",                            
+      4 + "generated_at": "2026-11-14T13:47",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+  ⎿  Updated web\public\data\research\RELIANCE.json (+1 -1)
+      1  {
+      2   "symbol": "RELIANCE",
+      3   "name": "Reliance Industries Ltd",
+      4 - "generated_at": "2026-11-14T13:42",                            
+      4 + "generated_at": "2026-11-14T13:47",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+  ⎿  Updated web\public\data\research\SUNPHARMA.json (+12 -2)
+      1  {
+      2   "symbol": "SUNPHARMA",
+      3   "name": "Sun Pharmaceutical Industries Ltd",
+      4 - "generated_at": "2026-11-14T13:42",                            
+      4 + "generated_at": "2026-11-14T13:47",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+     ...
+      805       }
+      806      ]
+      807     },
+      808 +   {                                                          
+      809 +    "point": "EBITDA margin 29.3% in Q2 FY27, down 2.0 pp YoY"
+          +,                                                             
+      810 +    "why": "Erodes profitability and cash generation capacity"
+          +,                                                             
+      811 +    "cites": [                                                
+      812 +     {                                                        
+      813 +      "label": "Financial snapshot (results filings)",        
+      814 +      "url": "#margin"                                        
+      815 +     }                                                        
+      816 +    ]                                                         
+      817 +   },                                                         
+      818     {
+      819      "point": "Debt/equity rose to 0.06 at FY26 end, up from 0.
+           03",
+      820      "why": "Increases financial leverage and balance‑sheet ris
+           k",
+     ...
+      826      ]
+      827     }
+      828    ],
+      819 -  "dropped": 3,                                               
+      829 +  "dropped": 2,                                               
+      830    "model": "openai/gpt-oss-120b",
+      831    "model_note": null
+      832   },
+  ⎿  Updated web\public\data\research\TATAPOWER.json (+1 -1)
+      1  {
+      2   "symbol": "TATAPOWER",
+      3   "name": "Tata Power Company Ltd",
+      4 - "generated_at": "2026-11-14T13:43",                            
+      4 + "generated_at": "2026-11-14T13:47",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+  ⎿  … 3 more files changed
+  ⎿  (timeout 10m)
+
+● Zero new LLM calls and no inconsistencies. Now the final state across all 22:
+  tests, gate, bull/bear model per page, and charts.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Every target is met: all 22 bull/bear sections are by gpt-oss-120b, 161 tests
+  pass, and the gate reports 0 problems. Last, the end-to-end check of Asian
+  Paints and L&T (item k):
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Both pages match on every fact, but the feed-chip lookup came back empty,
+  which I suspect is a wrong key name in my query. I'm checking that now.
+  · summary
+
+  Ran 2 shell commands (ctrl+o to expand)
+● The chips sit at company level and match the pages: Asian Paints Kept 1 ·
+  Missed 1 · Open 1, and L&T Kept 2 · Missed 1 · Open 2. Now the docs, then the
+  commit.
+
+● Update(DECISIONS.md)
+  ⎿  Added 2 lines
+      217  - **TCS's operating margin is EBIT, and is labelled that way.*
+           * Management's figure matches operating profit less depreciati
+           on over revenue, so the promise chart (25.0%) and the snapshot
+           's EBITDA margin (27.2%) are two metrics, not one fact with tw
+           o numbers. The label said "operating profit over revenue", whi
+           ch made them look like the same thing.
+      218  - **Bull/bear: company facts only, newest figure.** L&T's bear
+            cited "Headline CPI 4.4%" (management quoting the economy) an
+           d an older working-capital ratio (8.2%, Dec 2025) after the ta
+           rget was already hit (4.1%, Mar 2026). Python now drops econom
+           y statistics (CPI, WPI, GDP, repo rate); the prompt says to us
+           e the newest figure for a metric and never one a promise verdi
+           ct has overturned.
+      219  - **A quota day keeps the last checked bull/bear instead of hi
+           ding it.** Groq's gpt-oss-120b has a rolling 200k-tokens-a-day
+            cap; after the 13 Nov runs it answered "retry after 1682s", a
+           nd Gemini's daily quota was gone too, so regenerated pages los
+           t a section that had been fine. Now the previous section (alre
+           ady number-checked, citations stored as label + link) stays un
+           til a model answers, just as PvD keeps its previous promises. 
+           The batch also stalled for ~50 minutes because Gemini's *daily
+           * 429 was retried like a per-minute one; a 429 whose quota id 
+           says "PerDay" now skips to the next model at once, and every m
+           odel that fails in the chain is logged with its reason.
+      220 +- **A bull/bear figure counts as a company fact only when the 
+          +claim starts with its metric.** The same-facts check read any 
+          +sentence mentioning "EBITDA" as a margin and any "revenues" as
+          + company revenue, so it flagged SUNPHARMA's "EBITDA ₹47,439 m,
+          + up 4.8% YoY" as a 4.8% margin and POLYCAB's "EPC revenues … d
+          +eclined 11%" as company revenue, and it dropped POLYCAB's name
+          +d segment margins as conflicts. Now "EBITDA margin …", "Revenu
+          +e …", "PAT …" at the start of a claim are company facts; a seg
+          +ment name in front makes it another metric. The snapshot's own
+          + margins seed the check, so a segment figure whose name the mo
+          +del dropped (POLYCAB "EBITDA margins 10.1% in Q2 FY27" against
+          + the company's 14.4%) is caught before it reaches the page, no
+          +t only by the gate afterwards. "Operating margin" is not read 
+          +as EBITDA (TCS's is EBIT).                                    
+      221 +- **Bull/bear prompt: every hit or ahead promise is a bull poi
+          +nt, every miss or behind pace a bear point.** L&T's first rege
+          +neration had one bull point, although the page shows an ahead,
+          + a hit and two on-track promises ("write fewer if the evidence
+          + supports fewer" let the model stop early). Now 3+3.          
+      222  - **At most 6 promises per page** (unchanged, noted because it
+            looked like a lost row): L&T has 10, and its FY26 8.5% EBITDA
+            target is not among the 6 shown. Measured and finished promis
+           es are picked first.
+      223  
+      224  ## Feed rules (13 Nov afternoon)
+
+● Update(PLAN.md)
+  ⎿  Added 8 lines
+      227  - 125 backend + 11 web tests pass; static build OK. LLM spend 
+           this round **$0.022 / 27 calls** (Groq only); to date **$2.66 
+           / 763 calls**.
+      228  - **Next (Sat 14):** re-run PvD for the 9 kept tickers once th
+           e Gemini quota resets (`python -m finn.pull.research ASIANPAIN
+           T ASTRAL BHARTIARTL DEEPAKNTR ETERNAL IRCTC KPITTECH PERSISTEN
+           T TATAPOWER`), then live pull for unseen symbols.
+      229  
+      230 +## 3l. Status at 14 Nov, ~14:00 (one number per fact; all 22 r
+          +egenerated)                                                   
+      231 +- **Consistency gate green:** `python -m finn.consistency` rep
+          +orts 0 problems across the 22 research pages and the feed; 161
+          + backend tests pass (the gate is one of them). The research ba
+          +tch exits non-zero when it isn't.                             
+      232 +- **What the gate found and fixed at the cause:** results colu
+          +mns printed in another order (ITC: feed YoY was wrong), owners
+          +' PAT on the page after the P&L (KPIT), no non-controlling int
+          +erests (Persistent), TCS's EBIT margin named like EBITDA, bull
+          +/bear segment figures read as company figures (POLYCAB, SUNPHA
+          +RMA). Earlier in the round: bottom-up EBITDA, Bharti's table l
+          +ayout, gross margin, post-deadline evidence, one-quarter rule 
+          +(DECISIONS, "second pass").                                   
+      233 +- **All 22 bull/bear by gpt-oss-120b** (the 14 qwen sections r
+          +eplaced; one batch, cached). Groq's rolling daily cap meant re
+          +generating one ticker at a time and waiting out "retry after" 
+          +(scratch driver, not committed); a quota failure now keeps the
+          + last checked section instead of hiding it.                   
+      234 +- **Charts:** 11 pages, 29 rows. The other 11 have nothing cha
+          +rtable: no transcripts (ITC, TRENT), no checkable promises (BH
+          +ARTIARTL, CDSL), only not-yet-measurable promises (7 more), or
+          + one figure from management's own statement (IRCTC).          
+      235 +- **Spend this round:** $0.23 / 172 calls (121 cheap, 51 gpt-o
+          +ss-120b); to date **$2.89 / 935 calls** (list prices; all free
+          + tiers).                                                      
+      236 +- **Next:** no bulk re-runs after Saturday evening (user's rul
+          +e). Remaining: writeup, demo pass on the phone.               
+      237 +                                                              
+      238  ## 4. Day-by-day
+      239  
+      240  **Wed 11 (done):** repo init, spikes, decisions. Session expor
+           t.
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn"; sed -i 's/^Current status:
+      see §3k (13 Nov morning: Research page)/Current status: see §3l (14 Nov:
+      one number per…)
+  ⎿  Updated PLAN.md (+1 -1)
+      1  # FINN — build plan (11–15 Nov 2026)
+      2  
+      3  Single source of truth for the build. Scope and hard rules live 
+         in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.
+      4 -Current status: see §3k (13 Nov morning: Research page), §3j (ov
+        -ernight 13 Nov: ingest safety, classifier, Also lines, segment P
+        -vD), §3i (feed UI round 3), §3h (PvD review), §3g (PvD rework), 
+        -§3f (PvD backend), §3e (redesign), §3d (feed UI) and §3c. Day pl
+        -an: §4 (re-planned 12 Nov). PvD session: start at §4a.          
+      4 +Current status: see §3l (14 Nov: one number per fact, all 22 reg
+        +enerated), §3k (13 Nov morning: Research page), §3j (overnight 1
+        +3 Nov: ingest safety, classifier, Also lines, segment PvD), §3i 
+        +(feed UI round 3), §3h (PvD review), §3g (PvD rework), §3f (PvD 
+        +backend), §3e (redesign), §3d (feed UI) and §3c. Day plan: §4 (r
+        +e-planned 12 Nov). PvD session: start at §4a.                   
+      5  
+      6  ---
+      7  
+
+● Before committing the data, a quick check that the web app's tests still pass
+  on it:
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Everything in the list is done and committed (b2d7f52, 3de8ceb, 6e2fe48, no
+  attribution lines, not pushed). The consistency gate reports 0 problems across
+  all 22 research pages and the feed. 161 backend tests and 13 web tests pass.
+
+  Summary
+  - One number per fact. EBITDA is now revenue from operations minus operating
+    expenses, and PAT is to owners everywhere. Where a filing exists, its
+    figures override screener's for the quarters it covers.
+  - The consistency gate stops the data build when one fact shows two numbers.
+    On its first run it found real bugs:
+    - ITC prints its year-ago column second, so the feed showed revenue +6.0%
+      YoY instead of the true +3.9%.
+    - KPIT's owners' profit line sits on the next page of the filing.
+    - Persistent has no minority shareholders, so all its PAT is to owners and
+      is now labelled that way.
+    - TCS's EBIT margin was labelled like an EBITDA margin.
+    - Bull/bear read segment figures as company figures (POLYCAB, SUNPHARMA).
+  - Period rules. No hit or miss before a deadline (ahead / on track / behind
+    pace instead), and nothing said after a deadline counts as evidence for it.
+  - Bull/bear is written by gpt-oss-120b on all 22 pages. Each point is a claim
+    plus why it matters, both sides share one set of figures, and economy
+    statistics are dropped. A quota failure now keeps the last checked section
+    instead of hiding it.
+  - Feed rules. Management-change and restructuring tiers, prices that never
+    move backwards, a 7-day alert default, and Groq as the fallback for the
+    cheap tasks.
+
+  Asian Paints, final verdicts (feed and research agree: revenue +16.9%, PAT to
+  owners +7.5%, Q2 FY27 EBITDA margin 15.6%)
+
+  ┌─────────────────────────┬───────────────────────────────────────────────┐
+  │         Promise         │                    Verdict                    │
+  ├─────────────────────────┼───────────────────────────────────────────────┤
+  │ FY26 PBDIT margin       │ Hit (18.8%)                                   │
+  │ 18–20%                  │                                               │
+  ├─────────────────────────┼───────────────────────────────────────────────┤
+  │ FY27 volume growth      │ Behind pace (6.4%)                            │
+  │ 8–10%                   │                                               │
+  ├─────────────────────────┼───────────────────────────────────────────────┤
+  │ FY27 EBITDA margin      │ On track (18.2% for H1)                       │
+  │ 18–20%                  │                                               │
+  ├─────────────────────────┼───────────────────────────────────────────────┤
+  │ Value growth            │ Not measurable: no segment reported           │
+  ├─────────────────────────┼───────────────────────────────────────────────┤
+  │ Gross margin 41–43%     │ Not measurable yet                            │
+  ├─────────────────────────┼───────────────────────────────────────────────┤
+  │ Volume growth 8–9%      │ Not measurable: no figure in the results      │
+  │                         │ filings                                       │
+  └─────────────────────────┴───────────────────────────────────────────────┘
+
+  L&T, final verdicts (revenue +15.8%, PAT +32.5%, margin 8.7%; bull/bear now
+  3+3 and in line with every row)
+
+  ┌──────────────────────────┬──────────────────────────────────────────────┐
+  │         Promise          │                   Verdict                    │
+  ├──────────────────────────┼──────────────────────────────────────────────┤
+  │ FY26 revenue growth 15%  │ Miss (+11.8%)                                │
+  ├──────────────────────────┼──────────────────────────────────────────────┤
+  │ FY26 working capital     │ Hit (4.1%)                                   │
+  │ ~12%                     │                                              │
+  ├──────────────────────────┼──────────────────────────────────────────────┤
+  │ FY27 order inflows       │ Ahead (14%)                                  │
+  │ 10–12%                   │                                              │
+  ├──────────────────────────┼──────────────────────────────────────────────┤
+  │ FY27 revenue growth      │ On track (+11.4%)                            │
+  │ 10–12%                   │                                              │
+  ├──────────────────────────┼──────────────────────────────────────────────┤
+  │ FY27 working capital     │ On track (4.9%)                              │
+  │ ~10%                     │                                              │
+  ├──────────────────────────┼──────────────────────────────────────────────┤
+  │ FY26 order-inflow        │ Not measurable: no figure in the results     │
+  │ guidance                 │ filings                                      │
+  └──────────────────────────┴──────────────────────────────────────────────┘
+
+  The FY26 8.5% EBITDA target isn't missing: the page shows at most 6 of L&T's
+  10 promises, and it didn't make the cut.
+
+  Item 7: 11 pages have mini-charts (29 rows). The other 11 have nothing to
+  chart: no transcripts (ITC, TRENT), no checkable promises (BHARTIARTL, CDSL),
+  or only not-yet-measurable promises. The exception is IRCTC, whose one verdict
+  rests on a single figure management stated.
+
+  Doctor: fixed the stale design sidecar. I left the image build-path setting
+  unset on purpose: no image generation is used, and every FINN screen is built
+  in code.
+
+  ASTRAL: no prompt change. All four quarters parse with the current prompt; the
+  earlier failures were Gemini quota. Changing it would have voided 38 cached
+  extractions.
+
+  Cost: this round $0.23 for 172 calls; to date $2.89 for 935 calls.
+
+  Known limits:
+  - Groq's free daily cap means a full regeneration has to go one ticker at a
+    time.
+  - Scanned PDFs still need Gemini.
+  - The gpt-oss-20b price in the cost log is unverified.
+  - Results cards still fail for TRENT, MARUTI (unknown unit), one KPIT copy,
+    and one POLYCAB copy whose columns aren't the three quarters. Each shows the
+    raw filing link instead.
+  - Two style slips survive in bull/bear text: KPIT "may affect valuation", and
+    an amount with no currency. Python checks numbers, not wording.

@@ -1,0 +1,2732 @@
+
+> Read CLAUDE.md, PLAN.md (latest status) and DECISIONS.md. PvD review
+  decisions:
+  1. Results filings ARE primary sources (the company's own exchange filings)
+  and are allowed on the research side. Compute bank ratios (CD ratio =
+  advances / deposits) in Python from them and measure both HDFCBANK CD-ratio
+  promises; FY26 has ended, so that one gets hit or miss.
+  2. Directional promises without a deadline (e.g. "inch closer to 26–28%"):
+  verdict = direction of travel since the promise, computed in Python, showing
+  the quarterly path, e.g. "Moved away: 24.9% → 24.6% → 24.3%". No averages.
+  3. One metric definition per company: use the company's own reported metric
+  where it states one (TCS reports operating/EBIT margin), otherwise the
+  computed one, labelled.
+  4. Promise selection: prioritise financial, checkable promises (growth,
+  margins, capex, ratios, numeric guidance). Drop soft/operational ones unless
+  a later call measures them. Target 4–6 per company across the last 4 calls.
+  5. Then run all 20 portfolio companies + the 2 outside research tickers.
+  Report a table: company → number of promises → verdict counts → errors. Log
+  decisions, commit, push, update PLAN.md status, and stop.
+
+● I'll start by reading PLAN.md, DECISIONS.md and the PvD code.
+
+  Read 3 files, ran 5 shell commands (ctrl+o to expand)
+
+● The day-1 plan names ASTRAL and TITAN as the outside tickers; I'll use those.
+  Next, the current HDFCBANK/TCS output and the tests.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Now the sources and results-extraction code I'd reuse for reading bank balance
+  sheets from results filings.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● I'm checking HDFCBANK's BSE results filings for a balance-sheet page to pull
+  deposits and advances from, starting with a small spike. The CD ratio,
+  directional path and margin definition follow once that works. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Background shell command didn't finish before the previous session ended
+
+> continue
+
+  Read 1 file (ctrl+o to expand)
+
+● The spike printed nothing before it died. I'll time a single BSE call to see
+  whether the API is hanging.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● A single call takes about 2 seconds. Re-running the spike with a timeout and
+  flushed output:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The earlier hang was my own mistake: a stray cat > waiting on stdin, not BSE.
+  Writing the spike file properly:
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+● The Q4 FY26 results attachment won't download, so I'm checking the
+  board-meeting outcomes, press releases and quarterly updates for the deposits
+  and advances figures instead. · summary
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● HDFCBANK's Q4 results carry a standalone balance sheet (deposits 2,860,054.60
+  and advances 2,821,446.50 as at 31.12.2025), but the Q4 file is scanned
+  without a text layer, so I'll send that whole PDF to the model. Next I'll read
+  llm.py for the call signature and limits. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● I'm adding a new pull/bank.py for the CD ratio, reworking pvd.py with
+  per-company metric series, travel verdicts, dedupe and promise selection, and
+  updating both prompt files. Writing the prompt first. · summary
+
+● Write(backend\finn\prompts\extract_guidance.md)
+  ⎿  Added 12 lines, removed 7 lines
+       1  You are reading an Indian listed company's earnings-call transc
+          ript. The first line tells you which quarter the call reports o
+          n. The transcript carries page markers like [p.7]: the page a l
+          ine is on is the nearest marker above it. Indian fiscal years r
+          un April to March: FY27 = April 2026 to March 2027, Q1 FY27 end
+          s June 2026, H1 = Q1 + Q2.
+       2  
+       3 -Return two lists. Extract only; do no arithmetic.              
+       3 +Return three things. Extract only; do no arithmetic.           
+       4  
+       5 -**promises**: management's forward-looking commitments, meaning
+         - explicit targets or guidance about a future period.           
+       5 +**promises**: management's forward-looking commitments that lat
+         +er results can check.                                          
+       6  - Only statements made by the company's management, never by an
+          alysts asking questions.
+       7 -- Prefer near-term commitments that the coming quarters' result
+         -s can check: guidance for next quarter, the current or next fis
+         -cal year, or "the next few quarters" on revenue or growth, marg
+         -ins, profit, capex, debt, ratios (CASA, loan-to-deposit, credit
+         - cost), and capacity / store / plant counts with a date. Includ
+         -e at most 1 long-term aspiration and at most 2 commitments of a
+         -ny other kind (product launches, AI deal values, partnerships).
+       7 +- Financial, checkable promises only: revenue or growth guidanc
+         +e, margins, profit, capex amounts, ratios (CASA, credit-deposit
+         + / loan-to-deposit, credit cost, NIM, net debt), and other nume
+         +ric guidance with a period. A directional target with a number 
+         +counts ("inch closer to 26-28%", "get back to 25%").           
+       8 +- At most 1 operational commitment, and only if it has a number
+         + and a date (stores, plants, MW capacity by a stated period). S
+         +kip soft statements: strategy, product launches, partnerships, 
+         +"we remain confident", hiring plans, AI deal pipelines.        
+       9  - A statement of fact about the past quarter is not a commitmen
+          t. It belongs in `reported`.
+       9 -- At most 6 promises. Fewer is fine: if management avoids guida
+         -nce, return only what they actually committed to.              
+      10 +- At most 4 promises. Fewer is fine: if management avoids guida
+         +nce, return only what they actually committed to.              
+      11  - `target`: the commitment as stated, copying every number exac
+          tly as spoken, with its unit.
+      12  - `period`: the period as stated ("FY27", "next quarter", "next
+           few quarters"); "not stated" if none.
+      12 -- `target_type`: growth_pct (a growth rate, e.g. "double-digit 
+         -revenue growth"), margin_pct (a margin level, e.g. "EBITDA marg
+         -in 26-28%"), amount (a money amount), count (stores, plants, MW
+         -, people), other.                                              
+      13 +- `target_type`: growth_pct (a growth rate, e.g. "double-digit 
+         +revenue growth"), margin_pct (a margin or ratio level, e.g. "EB
+         +ITDA margin 26-28%", "CD ratio 85-90%"), amount (a money amount
+         +), count (stores, plants, MW, people), other.                  
+      14  - `target_low` / `target_high`: the bounds as numbers, copied f
+          rom the target. "26-28%" -> 26 / 28. "25% plus" -> 25 / null. "
+          double-digit" -> 10 / null. "mid-teens" -> 14 / 16. Null if the
+           target has no number.
+      15  - `horizon`: next_quarter, quarter (a named quarter), half_year
+          , fiscal_year, next_few_quarters, long_term, unspecified.
+      16  - `fy`: the fiscal year as 2 digits (FY27 -> 27). "This year" m
+          eans the fiscal year the call's quarter belongs to; "next year"
+           the one after. Null if not a fiscal-year-bound target.
+     ...
+      25  - `value`: the number exactly as stated, with its unit. `period
+          `: the quarter or date it refers to, as stated.
+      26  - At most 15.
+      27  
+      27 -For both lists:                                                
+      28 +**quarter_margin**: the one headline margin management states f
+         +or the quarter this call reports on: the operating, EBIT or EBI
+         +TDA margin; for banks and NBFCs the net interest margin (NIM). 
+         +Null if management does not state one.                         
+      29 +- `name`: as management calls it ("operating margin", "EBITDA m
+         +argin", "NIM"). `basis`: ebit, ebitda, nim or other (IT-service
+         +s "operating margin" is ebit).                                 
+      30 +- `value`: the number as stated, without the % sign. Use the wh
+         +ole-company figure, not a segment's.                           
+      31 +                                                               
+      32 +For all three:                                                 
+      33  - Use only the transcript. No outside knowledge, no inference.
+      34  - `quote`: the speaker's own words, at most 30 words, verbatim,
+           containing the number.
+      35  - `page`: the page number from the marker above the quote.
+      31 -- `metric_key`: the closest of revenue (sales / revenue / top l
+         -ine, including growth), operating_margin (EBITDA or operating m
+         -argin), net_profit, capex, other.                              
+      36 +- `metric_key`: the closest of revenue (sales / revenue / top l
+         +ine, including growth), operating_margin (EBITDA, EBIT or opera
+         +ting margin; for banks and NBFCs the NIM), net_profit, capex, c
+         +d_ratio (credit-deposit or loan-to-deposit ratio, LDR), other. 
+
+● Now the bank balance-sheet reader and its prompt:
+
+● Write(backend\finn\prompts\extract_balance_sheet.md)
+  ⎿  Wrote 13 lines to backend\finn\prompts\extract_balance_sheet.md
+       1 This is an Indian bank's or lender's results filing. The first l
+         ine gives a quarter-end date.
+       2
+       3 Find the Statement of Assets and Liabilities (balance sheet) and
+          copy two lines from the column "as at" that quarter-end date:
+       4 - `deposits`: the Deposits line (under capital and liabilities).
+       5 - `advances`: the Advances line (under assets).
+       6
+       7 Rules:
+       8 - Prefer the STANDALONE statement (the bank itself). Use the con
+     … +6 lines (ctrl+o to expand)
+
+● Write(backend\finn\pull\bank.py)
+  ⎿  Wrote 64 lines to backend\finn\pull\bank.py
+       1 """Bank ratios from the bank's own results filings (a primary so
+         urce: the company's exchange filing).
+       2 CD ratio = advances / deposits, from the Statement of Assets and
+          Liabilities; the model only copies the two lines."""
+       3 import re, hashlib, calendar, datetime as dt
+       4 from finn import llm
+       5 from finn.sources import bse, pdf
+       6
+       7 NUM = {"type": "number", "nullable": True}
+       8 SCHEMA = {"type": "object", "properties": {
+     … +56 lines (ctrl+o to expand)
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" && sed -i
+      's/"classify": "CHEAP", "extract_results": "CHEAP", "extract_guidance":
+      "CHEAP", "extract_bio": "…)
+  ⎿  Updated backend\finn\llm.py (+1 -1)
+      10  LOG = CACHE / "llm_calls.jsonl"
+      11  
+      12  TIER = {  # task -> tier; tier -> env var
+      13 -    "classify": "CHEAP", "extract_results": "CHEAP", "extract_g
+         -uidance": "CHEAP", "extract_bio": "CHEAP",                     
+      13 +    "classify": "CHEAP", "extract_results": "CHEAP", "extract_g
+         +uidance": "CHEAP", "extract_bio": "CHEAP", "extract_balance_she
+         +et": "CHEAP",                                                  
+      14      "business_snapshot": "CHEAP", "headline": "CHEAP", "pvd_ver
+          dict": "STRONG", "bull_bear": "STRONG",
+      15  }
+      16  # STRONG = Groq's free gpt-oss-120b (user's decision 12 Nov: ge
+          mini-3.8-flash was overloaded for 17+ min);
+
+● Quick live test of the CD-ratio reader on all four HDFCBANK quarters:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Three of four quarters are extracted, including the scanned Q4 file. The
+  September 2026 pull failed because its window runs into the future, so I'm
+  capping the window at today and making BSE errors return None. · summary
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\pull\bank.py (+69 -64)
+       1 -"""Bank ratios from the bank's own results filings (a primary s
+         -ource: the company's exchange filing).                         
+       2 -CD ratio = advances / deposits, from the Statement of Assets an
+         -d Liabilities; the model only copies the two lines."""         
+       3 -import re, hashlib, calendar, datetime as dt                   
+       4 -from finn import llm                                           
+       5 -from finn.sources import bse, pdf                              
+       6 -                                                               
+       7 -NUM = {"type": "number", "nullable": True}                     
+       8 -SCHEMA = {"type": "object", "properties": {                    
+       9 -    "found": {"type": "boolean"}, "basis": {"type": "string", "
+         -enum": ["standalone", "consolidated"]},                        
+      10 -    "as_at": {"type": "string"}, "unit": {"type": "string"}, "d
+         -eposits": NUM, "advances": NUM, "page": {"type": "integer"}},  
+      11 -    "required": ["found", "basis", "as_at", "unit", "deposits",
+         - "advances", "page"]}                                          
+      12 -MON = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", 
+         -"sep", "oct", "nov", "dec"]                                    
+      13 -                                                               
+      14 -                                                               
+      15 -def quarter_end(q: str) -> dt.date:                            
+      16 -    d = dt.datetime.strptime(q, "%b %Y")                       
+      17 -    return dt.date(d.year, d.month, calendar.monthrange(d.year,
+         - d.month)[1])                                                  
+      18 -                                                               
+      19 -                                                               
+      20 -def same_date(as_at: str, qe: dt.date) -> bool:                
+      21 -    """The column the model copied is the quarter-end one: year
+         - plus month (number or name) in the printed header."""         
+      22 -    s = as_at.lower()                                          
+      23 -    return str(qe.year) in s and (bool(re.search(rf"\b0?{qe.mon
+         -th}\b", re.sub(r"[./-]", " ", s))) or MON[qe.month - 1] in s)  
+      24 -                                                               
+      25 -                                                               
+      26 -def _candidates(scrip: str, qe: dt.date) -> list[dict]:        
+      27 -    """Results filings in the 50 days after the quarter end: 'R
+         -esult' category first, then board-meeting outcomes             
+      28 -    (HDFCBANK files results under 'Outcome of Board Meeting'). 
+         -Oldest first: the first one is the results day."""             
+      29 -    rows = bse.announcements(scrip, qe + dt.timedelta(1), qe + 
+         -dt.timedelta(50), max_age=None)                                
+      30 -    rows = [r for r in rows if r.get("ATTACHMENTNAME") and (r["
+         -CATEGORYNAME"] == "Result" or r["SUBCATNAME"] == "Outcome of Bo
+         -ard Meeting"                                                   
+      31 -                                                            or 
+         -"financial result" in (r["NEWSSUB"] or "").lower())]           
+      32 -    return sorted(rows, key=lambda r: (r["CATEGORYNAME"] != "Re
+         -sult", r["NEWS_DT"]))[:3]                                      
+      33 -                                                               
+      34 -                                                               
+      35 -def balance_sheet(scrip: str, quarter: str, symbol: str = "") -
+         -> dict | None:                                                 
+      36 -    """{quarter, deposits, advances, cd_ratio, basis, page, url
+         -} or None if no filing yields the quarter-end column."""       
+      37 -    qe = quarter_end(quarter)                                  
+      38 -    for row in _candidates(scrip, qe):                         
+      39 -        try:                                                   
+      40 -            b = bse.attachment(row["ATTACHMENTNAME"])          
+     … 93 more lines (ctrl+o to expand)
+  ⎿  (timeout 5m 20s)
+● All four quarters now extract cleanly, and the Dec 2025 figures match the PDF
+  text. I'm switching the citation to BSE's viewer link, since the AttachLive
+  link would 404 for these files. · summary
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\pull\bank.py (+3 -1)
+       9      "found": {"type": "boolean"}, "basis": {"type": "string", "
+          enum": ["standalone", "consolidated"]},
+      10      "as_at": {"type": "string"}, "unit": {"type": "string"}, "d
+          eposits": NUM, "advances": NUM, "page": {"type": "integer"}},
+      11      "required": ["found", "basis", "as_at", "unit", "deposits",
+           "advances", "page"]}
+      12 +VIEWER = "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pn
+         +ame="                                                          
+      13  MON = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", 
+          "sep", "oct", "nov", "dec"]
+      14  
+      15  
+     ...
+      66              continue  # a misread line, not a bank's CD ratio
+      67          page = pages[0] if len(pages) == 1 else d["page"]
+      68          return {"quarter": quarter, "deposits": d["deposits"], 
+          "advances": d["advances"], "unit": d["unit"], "cd_ratio": round
+          (cd, 1),
+      68 -                "basis": d["basis"], "page": page, "url": bse.a
+         -ttachment_url(row["ATTACHMENTNAME"])}                          
+      69 +                "basis": d["basis"], "page": page,             
+      70 +                "url": VIEWER + row["ATTACHMENTNAME"]}  # BSE's
+         + viewer finds the file in AttachLive or AttachHis; a direct lin
+         +k can 404                                                      
+      71      return None
+
+● Next I'm rewriting pvd.py's span/progress block to produce one series per
+  metric per company, a quarterly path, and a direction-of-travel verdict for
+  open-ended promises. · summary
+
+  Read 1 file, ran 1 shell command (ctrl+o to expand)
+
+● The heredoc broke on quoting. I'll write the block to a file instead, and
+  clean up the direction() helper on the way.
+
+  Made 1 scratchpad edit +155 (ctrl+o to expand)
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python -c "
+      import pathlib…)
+  ⎿  1 file changed (binary, mode only or too large to show)
+
+● Now the constants and schema at the top of pvd.py:
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 6 lines, removed 3 lines
+      18  MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", 
+          "Sep", "Oct", "Nov", "Dec"]
+      19  # screener rows; banks/NBFCs use Revenue / Financing Profit
+      20  ROWS = {"revenue": ["Sales", "Revenue"], "net_profit": ["Net Pr
+          ofit"]}
+      21 -MARGIN = {"operating_margin": [("Operating Profit", "Sales"), (
+         -"Financing Profit", "Revenue")],                               
+      22 -          "net_profit": [("Net Profit", "Sales"), ("Net Profit"
+         -, "Revenue")]}                                                 
+      21  SOURCE = "screener.in quarterly results table (from the company
+          's exchange results filings)"
+      22  SAID = "management's statements on later calls (transcripts)"
+      23 +SAID_MARGIN = "management's reported margin for each quarter, o
+         +n that quarter's results call (transcripts)"                   
+      24 +BANK_SOURCE = "the bank's results filings on BSE: statement of 
+         +assets and liabilities; ratio computed in Python"              
+      25  RULE = "python (computed)"
+      26 +DIRECTIONAL = ("next_few_quarters", "unspecified", "long_term")
+         +  # no deadline: judged by direction of travel                 
+      27 +FINANCIAL = ("revenue", "operating_margin", "net_profit", "cape
+         +x", "cd_ratio")                                                
+      28 +MAX_PROMISES = 6                                               
+      29  
+      27 -KEY = {"type": "string", "enum": ["revenue", "operating_margin"
+         -, "net_profit", "capex", "other"]}                             
+      30 +KEY = {"type": "string", "enum": ["revenue", "operating_margin"
+         +, "net_profit", "capex", "cd_ratio", "other"]}                 
+      31  NUM = {"type": "number", "nullable": True}
+      32  INT = {"type": "integer", "nullable": True}
+      33  PROMISE = {"type": "object", "properties": {
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 5 lines, removed 1 line
+      45  REPORTED = {"type": "object", "properties": {
+      46      "metric": {"type": "string"}, "metric_key": KEY, "value": {
+          "type": "string"}, "period": {"type": "string"},
+      47      "quote": {"type": "string"}, "page": {"type": "integer"}}, 
+          "required": ["metric", "metric_key", "value", "period", "quote"
+          , "page"]}
+      48 +QMARGIN = {"type": "object", "nullable": True, "properties": { 
+      49 +    "name": {"type": "string"}, "basis": {"type": "string", "en
+         +um": ["ebit", "ebitda", "nim", "other"]}, "value": {"type": "nu
+         +mber"},                                                        
+      50 +    "quote": {"type": "string"}, "page": {"type": "integer"}}, 
+         +"required": ["name", "basis", "value", "quote", "page"]}       
+      51  GUIDANCE = {"type": "object", "properties": {"promises": {"type
+          ": "array", "items": PROMISE},
+      49 -                                              "reported": {"typ
+         -e": "array", "items": REPORTED}}, "required": ["promises", "rep
+         -orted"]}                                                       
+      52 +                                              "reported": {"typ
+         +e": "array", "items": REPORTED}, "quarter_margin": QMARGIN},   
+      53 +            "required": ["promises", "reported", "quarter_margi
+         +n"]}                                                           
+      54  VERDICT = {"type": "object", "properties": {"verdicts": {"type"
+          : "array", "items": {"type": "object", "properties": {
+      55      "id": {"type": "integer"}, "verdict": {"type": "string", "e
+          num": ["hit", "miss", "partial", "not-yet-measurable"]},
+      56      "used_reported": {"type": "array", "items": {"type": "strin
+          g"}}, "why": {"type": "string"}},
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 1 line, removed 1 line
+      55      "id": {"type": "integer"}, "verdict": {"type": "string", "e
+          num": ["hit", "miss", "partial", "not-yet-measurable"]},
+      56      "used_reported": {"type": "array", "items": {"type": "strin
+          g"}}, "why": {"type": "string"}},
+      57      "required": ["id", "verdict", "used_reported", "why"]}}}, "
+          required": ["verdicts"]}
+      58 -VERDICTS = ("hit", "ahead", "on track", "partial", "behind pace
+         -", "miss", "not-yet-measurable")                               
+      58 +VERDICTS = ("hit", "ahead", "on track", "moved closer", "partia
+         +l", "no change", "behind pace", "moved away", "miss", "not-yet-
+         +measurable")                                                   
+      59  _q = lambda q: dt.datetime.strptime(q, "%b %Y")
+      60  
+      61  
+
+● Now dedupe, selection and run():
+
+  Read 1 file (ctrl+o to expand)
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" && cat >
+      "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/b5e3075c-555
+      a-464f-985e-2f68304427c5…)
+  ⎿  Updated backend\finn\pull\pvd.py (+45 -8)
+      12  from finn import llm
+      13  from finn.config import ROOT
+      14  from finn.sources import fetch, bse, screener, pdf
+      15 +from finn.pull import bank                                     
+      16  
+      17  OUT = ROOT / "web" / "public" / "data" / "research"
+      18  QEND = (3, 6, 9, 12)
+     ...
+      341  
+      342  
+      343  def dedupe(promises: list[dict]) -> list[dict]:
+      343 -    """Management repeats a target within one call (opening re
+          -marks, then Q&A): keep the first mention."""                  
+      344 +    """Management repeats a target within a call (remarks, the
+          +n Q&A) and across calls: keep the oldest mention,             
+      345 +    which has the longest track record. A target with no numbe
+          +r is only deduped within its own call."""                     
+      346      seen, out = set(), []
+      345 -    for p in promises:                                        
+      346 -        k = (p["said_in"], p["metric_key"], re.sub(r"[^0-9%]",
+          - "", p["target"]) or p["target"].lower())                     
+      347 +    for p in sorted(promises, key=lambda p: _q(p["said_in"])):
+          +  # stable: within a call the first mention wins              
+      348 +        nums = re.sub(r"[^0-9%]", "", p["target"])            
+      349 +        k = (p["metric_key"], nums) if nums else (p["said_in"]
+          +, p["metric_key"], p["target"].lower())                       
+      350          if k not in seen:
+      351              seen.add(k)
+      352              out.append(p)
+      353      return out
+      354  
+      355  
+      356 +def select(promises: list[dict], judged: dict[int, dict], n: i
+          +nt = MAX_PROMISES) -> list[int]:                              
+      357 +    """User's rule: financial, checkable promises first; a sof
+          +t or operational one stays only if something measured it.     
+      358 +    Measured before unmeasured, financial before operational, 
+          +oldest first; at most n."""                                   
+      359 +    fin = lambda p: p["metric_key"] in FINANCIAL or p["target_
+          +type"] in ("growth_pct", "margin_pct", "amount")              
+      360 +    nym = lambda k: judged.get(k, {}).get("verdict", "not-yet-
+          +measurable") == "not-yet-measurable"                          
+      361 +    keep = [k for k, p in enumerate(promises) if fin(p) or not
+          + nym(k)]                                                      
+      362 +    return sorted(keep, key=lambda k: (nym(k), not fin(promise
+          +s[k]), _q(promises[k]["said_in"])))[:n]                       
+      363 +                                                              
+      364 +                                                              
+      365 +def _margin_ok(m: dict | None, n_pages: int) -> bool:         
+      366 +    """A reported margin counts only if its number is in its o
+          +wn quote and the page exists."""                              
+      367 +    return bool(m and 1 <= m["page"] <= n_pages and any(abs(fl
+          +oat(x) - m["value"]) < 1e-9 for x in re.findall(r"\d+(?:\.\d+)
+          +?", m["quote"])))                                             
+      368 +                                                              
+      369 +                                                              
+      370  def run(symbol: str) -> dict:
+     … 63 more lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Updating the module docstring, then the tests.
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 5 lines, removed 3 lines
+       2  1. Pick the 4 latest *results* calls from screener's concall li
+          st (it also lists analyst meets and mislabels some).
+       3  2. Cheap model reads each transcript once -> promises (with the
+           target as numbers: low/high, type, fiscal period)
+       4     and numbers management reports as achieved, each with a verb
+          atim quote + page. Extraction only, no maths.
+       5 -3. Python decides every promise it can compute: growth or margi
+         -n targets vs screener's quarterly table                        
+       6 -   (which mirrors the exchange results filings). Finished perio
+         -d -> hit / miss; unfinished -> on track /                      
+       7 -   ahead / behind pace, with the numbers shown. The LLM never d
+         -oes arithmetic.                                                
+       5 +3. Python decides every promise it can compute, against one ser
+         +ies per metric per company: growth from screener's             
+       6 +   quarterly table, the margin management itself reports on eac
+         +h call (else computed from the table, labelled), bank          
+       7 +   CD ratio from the bank's own results filings. Deadline passe
+         +d -> hit / miss; running -> on track / ahead / behind          
+       8 +   pace; no deadline -> direction of travel since the promise, 
+         +with the quarterly path. The LLM never does arithmetic.        
+       9  4. Strong model judges only the rest (store counts, CASA, capac
+          ity...) from management's later-reported numbers.
+      10 +5. Keep 4-6: financial and measured first; soft / operational p
+         +romises only if something measured them.                       
+      11  Run from backend/:  ../.venv/Scripts/python -m finn.pull.pvd TC
+          S
+      12  """
+      13  import re, sys, json, hashlib, datetime as dt
+
+● The tests need updating for the new progress(p, call_q, series) signature, and
+  new ones added for travel verdicts, CD ratio, margin choice and selection.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● I'd half-written a wrong assertion in that draft; it never ran. Writing the
+  full test file cleanly instead:
+
+  Made 1 scratchpad edit +141, ran 1 shell command (ctrl+o to expand)
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python -c "
+      import pathlib…)
+  ⎿  Updated backend\tests\test_pvd.py (+204 -126)
+        1 -"""Promised vs Delivered: call selection and actuals math (off
+          -line), plus the 2 saved transcript fixtures."""               
+        2 -import pathlib                                                
+        3 -import pytest                                                 
+        4 -from finn.pull import pvd                                     
+        5 -from finn.sources import pdf                                  
+        6 -                                                              
+        7 -FIX = pathlib.Path(__file__).parent / "fixtures"              
+        8 -BSE = "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pnam
+          -e="                                                           
+        9 -                                                              
+       10 -                                                              
+       11 -def test_results_calls_pick_one_per_quarter_and_skip_non_resul
+          -ts_calls():                                                   
+       12 -    # TCS as screener listed it on 12 Nov 2026: a company-site
+          - "Jul 2026" link that is really the 2025 file,                
+       13 -    # a deck-only "Mar 2026" row and an analyst-day "Dec 2025"
+          - call.                                                        
+       14 -    concalls = [                                              
+       15 -        {"period": "Oct 2026", "transcript": BSE + "a.pdf"},  
+       16 -        {"period": "Jul 2026", "transcript": BSE + "b.pdf"},  
+       17 -        {"period": "Jul 2026", "transcript": "https://www.tcs.
+          -com/.../Q1%202025-26.pdf"},                                   
+       18 -        {"period": "Apr 2026", "transcript": BSE + "c.pdf"},  
+       19 -        {"period": "Mar 2026", "transcript": None},           
+       20 -        {"period": "Jan 2026", "transcript": BSE + "d.pdf"},  
+       21 -        {"period": "Dec 2025", "transcript": BSE + "e.pdf"},  
+       22 -        {"period": "Oct 2025", "transcript": BSE + "f.pdf"},  
+       23 -    ]                                                         
+       24 -    got = pvd.results_calls(concalls)                         
+       25 -    assert [c["quarter"] for c in got] == ["Sep 2026", "Jun 20
+          -26", "Mar 2026", "Dec 2025"]                                  
+       26 -    assert got[1]["transcript"].endswith("b.pdf")  # BSE copy 
+          -wins over the mislabelled company-site link                   
+       27 -                                                              
+       28 -                                                              
+       29 -def test_hdfcbank_march_call_is_not_a_results_call():         
+       30 -    assert pvd.reported_quarter("Mar 2026") is None  # 3 month
+          -s after Dec: an investor call, not results                    
+       31 -    assert pvd.reported_quarter("Jan 2026") == "Dec 2025"     
+       32 -    assert pvd.reported_quarter("Nov 2026") == "Sep 2026"     
+       33 -                                                              
+       34 -                                                              
+       35 -def test_actuals_compute_growth_in_python_and_margins_in_point
+          -s():                                                          
+       36 -    q = {"periods": ["Sep 2025", "Dec 2025", "Mar 2026", "Jun 
+          -2026", "Sep 2026"],                                           
+       37 -         "rows": {"Sales": [100, 104, 108, 110, 115], "OPM %":
+          - [24.0, 25.0, 25.5, 24.5, 26.0]}}                             
+       38 -    s = pvd.actuals(q, "revenue", "Jun 2026")                 
+       39 -    assert s == [{"quarter": "Sep 2026", "value": 115, "unit":
+          - "₹ crore", "yoy_pct": 15.0, "qoq_pct": 4.5}]                 
+       40 -    m = pvd.actuals(q, "operating_margin", "Jun 2026")[0]     
+     … 290 more lines (ctrl+o to expand)
+
+● All 20 PvD tests pass. Next: the full suite, then live runs of TCS and
+  HDFCBANK.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● While that runs, I'll write the batch runner for all 22 tickers. It keeps
+  going past a failing company and prints the summary table.
+
+  Made 1 scratchpad edit +34 (ctrl+o to expand)
+
+● The runner is ready. I'm waiting for the TCS and HDFCBANK run before starting
+  the batch.
+
+● The TCS and HDFCBANK run is still going in the background, re-extracting all 8
+  transcripts because the prompt changed. Once it finishes I'll review those
+  two, then start the 22-ticker batch.
+
+● Background command "Run PvD live for TCS and HDFCBANK" completed (exit code 0)
+
+  Read 1 file (ctrl+o to expand)
+● TCS returned only one promise, and it was judged against net margin (19%)
+  rather than the operating-margin target, which is wrong. HDFCBANK lost its
+  FY26 CD-ratio promise entirely, so I'm inspecting the raw extractions next.
+  · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The stricter prompt lost some numeric targets (TCS's long-term 26–28% band,
+  HDFCBANK's FY26 90–96%) and cited net margin for an operating-margin target.
+  I'll make the prompt count every numeric target, including long-term bands,
+  and treat a yearless target like "exit at 25% plus" as direction-of-travel
+  only. · summary
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" && cat >
+      "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/b5e3075c-555
+      a-464f-985e-2f68304427c5…)
+  ⎿  Updated backend\finn\prompts\extract_guidance.md (+37 -36)
+       1 -You are reading an Indian listed company's earnings-call transc
+         -ript. The first line tells you which quarter the call reports o
+         -n. The transcript carries page markers like [p.7]: the page a l
+         -ine is on is the nearest marker above it. Indian fiscal years r
+         -un April to March: FY27 = April 2026 to March 2027, Q1 FY27 end
+         -s June 2026, H1 = Q1 + Q2.                                     
+       2 -                                                               
+       3 -Return three things. Extract only; do no arithmetic.           
+       4 -                                                               
+       5 -**promises**: management's forward-looking commitments that lat
+         -er results can check.                                          
+       6 -- Only statements made by the company's management, never by an
+         -alysts asking questions.                                       
+       7 -- Financial, checkable promises only: revenue or growth guidanc
+         -e, margins, profit, capex amounts, ratios (CASA, credit-deposit
+         - / loan-to-deposit, credit cost, NIM, net debt), and other nume
+         -ric guidance with a period. A directional target with a number 
+         -counts ("inch closer to 26-28%", "get back to 25%").           
+       8 -- At most 1 operational commitment, and only if it has a number
+         - and a date (stores, plants, MW capacity by a stated period). S
+         -kip soft statements: strategy, product launches, partnerships, 
+         -"we remain confident", hiring plans, AI deal pipelines.        
+       9 -- A statement of fact about the past quarter is not a commitmen
+         -t. It belongs in `reported`.                                   
+      10 -- At most 4 promises. Fewer is fine: if management avoids guida
+         -nce, return only what they actually committed to.              
+      11 -- `target`: the commitment as stated, copying every number exac
+         -tly as spoken, with its unit.                                  
+      12 -- `period`: the period as stated ("FY27", "next quarter", "next
+         - few quarters"); "not stated" if none.                         
+      13 -- `target_type`: growth_pct (a growth rate, e.g. "double-digit 
+         -revenue growth"), margin_pct (a margin or ratio level, e.g. "EB
+         -ITDA margin 26-28%", "CD ratio 85-90%"), amount (a money amount
+         -), count (stores, plants, MW, people), other.                  
+      14 -- `target_low` / `target_high`: the bounds as numbers, copied f
+         -rom the target. "26-28%" -> 26 / 28. "25% plus" -> 25 / null. "
+         -double-digit" -> 10 / null. "mid-teens" -> 14 / 16. Null if the
+         - target has no number.                                         
+      15 -- `horizon`: next_quarter, quarter (a named quarter), half_year
+         -, fiscal_year, next_few_quarters, long_term, unspecified.      
+      16 -- `fy`: the fiscal year as 2 digits (FY27 -> 27). "This year" m
+         -eans the fiscal year the call's quarter belongs to; "next year"
+         - the one after. Null if not a fiscal-year-bound target.        
+      17 -- `quarter_no` (1-4) for a named quarter, `half_no` (1-2) for a
+         - half; null otherwise.                                         
+      18 -- `basis`: constant_currency_or_usd if the target is stated in 
+         -constant currency, CC, USD or dollar terms; reported_inr for ru
+         -pee or reported figures; not_applicable otherwise.             
+      19 -- `direction`: at_least (the number is a floor: "25% plus", "do
+         -uble-digit", "inch closer to 26-28%" from below), at_most (a ce
+         -iling: "credit cost below 1%", "bring LDR down to 85-90%" from 
+         -above), within (stay inside a band).                           
+      20 -- `margin_basis` for margin targets: ebit (EBIT margin; IT-serv
+         -ices companies' "operating margin" is EBIT, after depreciation)
+         -, ebitda (EBITDA or "operating margin" before depreciation), ne
+         -t (net profit margin), unclear; not_applicable for non-margin t
+         -argets.                                                        
+      21 -- Never take a promise from a question. If the quote is someone
+         - asking about a target, find management's own words in the answ
+         -er or skip it.                                                 
+      22 -                                                               
+      23 -**reported**: numbers management states as achieved, for the qu
+         -arter just ended or as of a date: growth rates (including const
+         -ant-currency growth), margins, ratios (CASA, loan-to-deposit, N
+         -IM, credit cost, GNPA), capacity or store counts, capex spent, 
+         -deal wins, segment revenue.                                    
+      24 -- Only management's own statements of achieved results, never t
+         -argets, never analysts' numbers.                               
+      25 -- `value`: the number exactly as stated, with its unit. `period
+         -`: the quarter or date it refers to, as stated.                
+      26 -- At most 15.                                                  
+      27 -                                                               
+      28 -**quarter_margin**: the one headline margin management states f
+         -or the quarter this call reports on: the operating, EBIT or EBI
+         -TDA margin; for banks and NBFCs the net interest margin (NIM). 
+         -Null if management does not state one.                         
+      29 -- `name`: as management calls it ("operating margin", "EBITDA m
+         -argin", "NIM"). `basis`: ebit, ebitda, nim or other (IT-service
+         -s "operating margin" is ebit).                                 
+      30 -- `value`: the number as stated, without the % sign. Use the wh
+         -ole-company figure, not a segment's.                           
+      31 -                                                               
+      32 -For all three:                                                 
+      33 -- Use only the transcript. No outside knowledge, no inference. 
+      34 -- `quote`: the speaker's own words, at most 30 words, verbatim,
+         - containing the number.                                        
+      35 -- `page`: the page number from the marker above the quote.     
+      36 -- `metric_key`: the closest of revenue (sales / revenue / top l
+         -ine, including growth), operating_margin (EBITDA, EBIT or opera
+         -ting margin; for banks and NBFCs the NIM), net_profit, capex, c
+         -d_ratio (credit-deposit or loan-to-deposit ratio, LDR), other. 
+       1 +You are reading an Indian listed company's earnings-call transc
+         +ript. The first line tells you which quarter the call reports o
+         +n. The transcript carries page markers like [p.7]: the page a l
+         +ine is on is the nearest marker above it. Indian fiscal years r
+         +un April to March: FY27 = April 2026 to March 2027, Q1 FY27 end
+         +s June 2026, H1 = Q1 + Q2.                                     
+       2 +                                                               
+       3 +Return three things. Extract only; do no arithmetic.           
+       4 +                                                               
+     … 33 more lines (ctrl+o to expand)
+  ⎿  Updated backend\finn\pull\pvd.py (+4 -2)
+      288      fmt = (lambda v: f"{v:+.1f}%") if s["kind"] == "growth" el
+           se (lambda v: f"{v:.1f}%")
+      289      path = f"{' → '.join(fmt(vals[q]) for q in pts)} ({fy_name
+           (pts[0])} → {fy_name(pts[-1])})" if len(pts) > 1 else None
+      290      out = {"path": path, "actual_source": s["source"], "model"
+           : RULE, "cites": [s["cites"][q] for q in pts if q in s["cites"
+           ]]}
+      291 -    if p["horizon"] in DIRECTIONAL:                           
+      291 +    if p["horizon"] in DIRECTIONAL or not p.get("fy") and p["h
+          +orizon"] in ("quarter", "half_year", "fiscal_year"):  # no yea
+          +r stated = no deadline                                        
+      292          if len(pts) < 2:
+      293              return None
+      294          g0, g1 = gap(vals[pts[0]], p), gap(vals[pts[-1]], p)
+     ...
+      436              if x["id"] not in batch:
+      437                  continue
+      438              p = promises[x["id"]]
+      439 -            used = [i for i in x.get("used_reported", []) if i
+          - in p["eligible_reported"]]                                   
+      439 +            # evidence must be about the same metric: a net ma
+          +rgin can't measure an operating-margin promise                
+      440 +            used = [i for i in x.get("used_reported", []) if i
+          + in p["eligible_reported"]                                    
+      441 +                    and "other" in (p["metric_key"], by_id[i][
+          +"metric_key"]) or i in p["eligible_reported"] and p["metric_ke
+          +y"] == by_id[i]["metric_key"]]                                
+      442              said = evidence(p, reported, used)
+      443              j = {"verdict": x["verdict"] if said else "not-yet
+           -measurable",  # no shown evidence, no verdict
+      444                   "actual": "; ".join(said) or "not disclosed",
+            "actual_source": SAID if said else None, "model": v["model"],
+            "why": x["why"]}
+
+● That used filter came out unreadable. Rewriting it so it's clearly correct,
+  with the eligibility check first so an invented id can't raise a KeyError:
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PYEOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\pull\pvd.py (+2 -2)
+      437                  continue
+      438              p = promises[x["id"]]
+      439              # evidence must be about the same metric: a net ma
+           rgin can't measure an operating-margin promise
+      440 -            used = [i for i in x.get("used_reported", []) if i
+          - in p["eligible_reported"]                                    
+      441 -                    and "other" in (p["metric_key"], by_id[i][
+          -"metric_key"]) or i in p["eligible_reported"] and p["metric_ke
+          -y"] == by_id[i]["metric_key"]]                                
+      440 +            same = lambda i: p["metric_key"] == by_id[i]["metr
+          +ic_key"] or "other" in (p["metric_key"], by_id[i]["metric_key"
+          +])                                                            
+      441 +            used = [i for i in x.get("used_reported", []) if i
+          + in p["eligible_reported"] and same(i)]                       
+      442              said = evidence(p, reported, used)
+      443              j = {"verdict": x["verdict"] if said else "not-yet
+           -measurable",  # no shown evidence, no verdict
+      444                   "actual": "; ".join(said) or "not disclosed",
+            "actual_source": SAID if said else None, "model": v["model"],
+            "why": x["why"]}
+
+● Adding a test for the no-year case, then re-running both companies:
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PYEOF'
+      import pathlib…)
+  ⎿  Updated backend\tests\test_pvd.py (+3 -0)
+      142      assert prog(p, "Mar 2026", margin=m)["verdict"] == "hit"
+      143      m["q"]["Sep 2026"] = 25.0
+      144      assert prog(p, "Mar 2026", margin=m)["verdict"] == "moved 
+           closer"
+      145 +    # TCS "exit at 25% plus": a fiscal-year target with no yea
+          +r named has no deadline -> direction of travel                
+      146 +    r = prog(p | {"horizon": "fiscal_year", "fy": None, "targe
+          +t_low": 25}, "Jun 2026", margin=m)                            
+      147 +    assert r["verdict"] == "hit" and r["path"] == "24.8% → 25.
+          +0% (Q1 FY27 → Q2 FY27)"                                       
+      148  
+      149  
+      150  CD = {q: {"cd_ratio": v, "deposits": 100.0, "advances": v, "un
+           it": "₹ crore", "basis": "standalone", "page": 5, "url": "u"}
+  ⎿  Updated web\public\data\research\HDFCBANK.json (+40 -23)
+      1  {
+      2   "symbol": "HDFCBANK",
+      3   "name": "HDFC Bank Ltd",
+      4 - "generated_at": "2026-11-12T16:01",                            
+      4 + "generated_at": "2026-11-12T16:06",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+     ...
+      28   "margin_definition": null,
+      29   "model_note": null,
+      30   "score": {
+      31 -  "hit": 0,                                                    
+      31 +  "hit": 1,                                                    
+      32    "ahead": 0,
+      33    "on track": 0,
+      34    "moved closer": 0,
+     ...
+      37    "behind pace": 1,
+      38    "moved away": 0,
+      39    "miss": 0,
+      40 -  "not-yet-measurable": 2                                      
+      40 +  "not-yet-measurable": 1                                      
+      41   },
+      42   "promises": [
+      43 +  {                                                            
+      44 +   "metric": "CD ratio",                                       
+      45 +   "target": "90% to 96% in the year FY '26",                  
+      46 +   "period": "FY26",                                           
+      47 +   "said_in": "Dec 2025",                                      
+      48 +   "call": "Q3 FY26",                                          
+      49 +   "quote": "We said we will try and be in a range of somewhere
+         + between 90% to 96% in the year FY '26, which is what we will b
+         +e is what we are very confident about.",                       
+      50 +   "page": 6,                                                  
+      51 +   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen
+         +.aspx?Pname=6e45f8a0-0fe6-40a3-8e5a-51c53713e6f0.pdf",         
+      52 +   "path": "98.7% → 94.6% → 95.8% → 96.0% (Q3 FY26 → Q2 FY27)",
+      53 +   "cites": [                                                  
+      54 +    {                                                          
+      55 +     "label": "Q3 FY26 results filing, p.5 (standalone balance 
+         +sheet): advances 2,821,446.50 / deposits 2,860,054.60 (in crore
+         +)",                                                            
+      56 +     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx
+         +?Pname=9bbca52b-6e66-4b9a-ae83-ef30ec660628.pdf"               
+      57 +    },                                                         
+      58 +    {                                                          
+      59 +     "label": "Q4 FY26 results filing, p.6 (standalone balance 
+         +sheet): advances 2,937,166.26 / deposits 3,105,250.48 (in crore
+         +)",                                                            
+     … 61 more lines (ctrl+o to expand)
+  ⎿  Updated web\public\data\research\TCS.json (+81 -12)
+      1  {
+      2   "symbol": "TCS",
+      3   "name": "Tata Consultancy Services Ltd",
+      4 - "generated_at": "2026-11-12T16:01",                            
+      4 + "generated_at": "2026-11-12T16:05",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+     ...
+       38    "partial": 0,
+       39    "no change": 0,
+       40    "behind pace": 1,
+       41 -  "moved away": 0,                                            
+       42 -  "miss": 0,                                                  
+       41 +  "moved away": 1,                                            
+       42 +  "miss": 1,                                                  
+       43    "not-yet-measurable": 0
+       44   },
+       45   "promises": [
+       46    {
+       47 -   "metric": "margins",                                       
+       48 -   "target": "25% plus",                                      
+       49 -   "period": "exit at 25% plus",                              
+       47 +   "metric": "operating margin",                              
+       48 +   "target": "move towards 26%",                              
+       49 +   "period": "longer-term",                                   
+       50 +   "said_in": "Mar 2026",                                     
+       51 +   "call": "Q4 FY26",                                         
+       52 +   "quote": "We'd like to move towards 26%, but on a longer-te
+          +rm basis.",                                                   
+       53 +   "page": 26,                                                
+       54 +   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpe
+          +n.aspx?Pname=07ae2d32-1050-4e80-96ff-eb2d98378d4e.pdf",       
+       55 +   "path": "25.3% → 24.0% → 24.0% (Q4 FY26 → Q2 FY27)",       
+       56 +   "cites": [                                                 
+       57 +    {                                                         
+       58 +     "label": "Q4 FY26 call, p.6: “Our Q4 operating margin sto
+          +od at 25.3%, a sequential increase of 10 basis points.”",     
+       59 +     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.asp
+          +x?Pname=07ae2d32-1050-4e80-96ff-eb2d98378d4e.pdf"             
+       60 +    },                                                        
+       61 +    {                                                         
+       62 +     "label": "Q1 FY27 call, p.5: “Operating margin for the qu
+          +arter was 24%, declining 130 bps sequentially.”",             
+       63 +     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.asp
+          +x?Pname=27523cab-de62-4f78-939a-6d9853bbd060.pdf"             
+       64 +    },                                                        
+     … 75 more lines (ctrl+o to expand)
+  ⎿  (timeout 10m)
+
+● HDFCBANK's CD-ratio verdicts are now in: FY26 hit, FY27 behind pace. Next I'll
+  route the "wage hike impact of 150–200 bps" check away from the margin-level
+  test, since basis-point targets describe a change. · summary
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PYEOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\pull\pvd.py (+2 -2)
+      281      Deadline passed -> hit / miss; deadline running -> ahead /
+            on track / behind pace; no deadline -> direction of
+      282      travel since the promise (hit / moved closer / no change /
+            moved away). Always shows the quarterly path."""
+      283      if not s or (p.get("target_low") is None and p.get("target
+           _high") is None) or p.get("basis") == "constant_currency_or_us
+           d" \
+      284 -            or re.search(r"qoq|sequential|quarter-on-quarter",
+          - p["target"], re.I):                                          
+      285 -        return None  # ₹ figures can't check a constant-curren
+          -cy or sequential target                                       
+      284 +            or re.search(r"qoq|sequential|quarter-on-quarter|b
+          +ps|basis point", p["target"], re.I):                          
+      285 +        return None  # ₹ figures can't check a constant-curren
+          +cy or sequential target; "150-200 bps" is a change, not a leve
+          +l                                                             
+      286      vals = s["q"]
+      287      pts = [q for q in sorted(vals, key=_q) if _q(q) >= _q(call
+           _q)]
+      288      fmt = (lambda v: f"{v:+.1f}%") if s["kind"] == "growth" el
+           se (lambda v: f"{v:.1f}%")
+  ⎿  Updated backend\tests\test_pvd.py (+2 -0)
+      108      assert prog(P(metric_key="revenue", target_type="growth_pc
+           t", target_low=10, horizon="fiscal_year", fy=27, basis="consta
+           nt_currency_or_usd"), "Mar 2026") is None
+      109      assert prog(P(metric_key="other", target_type="count", tar
+           get_low=200, horizon="fiscal_year", fy=27), "Mar 2026") is Non
+           e
+      110      assert prog(P(metric_key="revenue", target_type="growth_pc
+           t", target_low=10, horizon="fiscal_year", fy=28), "Mar 2026") 
+           is None  # nothing reported yet
+      111 +    # TCS "wage hike impact of 150 to 200 basis points": a mar
+          +gin change, never compared with a margin level                
+      112 +    assert prog(P(metric_key="operating_margin", target_type="
+          +margin_pct", target="150 to 200 basis points", target_low=1.5,
+          + target_high=2, horizon="next_quarter"), "Mar 2026") is None  
+      113  
+      114  
+      115  def test_no_deadline_is_direction_of_travel_on_computed_ebit()
+           :
+  ⎿  (timeout 5m)
+
+● 88 tests pass. Starting the 22-ticker batch in the background; most
+  transcripts are new, so expect it to take a while.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● I'll watch the log so each company's result line shows up as it lands:
+
+● Monitor(PvD batch: per-company results and errors)
+  ⎿  Monitor started · task b9qrq4do1 · timeout 1800s
+
+● The batch is running and I'm watching it. Once it finishes I'll write up
+  DECISIONS.md, PLAN.md, the commit and the push.
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "RELIANCE", "n": 2, "calls": 4, "score": {"partial": 1,
+  "not-yet-measurable": 1}, "margin": "EBITDA margin (as reported)", "err": "",
+  "secs": 51}
+
+● RELIANCE is done: 2 promises, both kept on its own reported EBITDA margin.
+  Waiting for the rest.
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "HDFCBANK", "n": 3, "calls": 4, "score": {"hit": 1, "behind pace": 1,
+  "not-yet-measurable": 1}, "margin": null, "err": "", "secs": 7}
+
+● HDFCBANK matches the earlier run: CD ratio 1 hit, 1 behind pace, plus 1 not
+  yet measurable.
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "TCS", "n": 3, "calls": 4, "score": {"behind pace": 1, "moved away":
+  1, "not-yet-measurable": 1}, "margin": "Operating margin (as reported)",
+  "err": "", "secs": 4}
+
+● TCS is done. Its "150–200 bps" change target now goes to the model instead of
+  a false miss, and came back not yet measurable.
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "BHARTIARTL", "n": 0, "calls": 4, "score": {}, "margin": "EBITDAaL
+  margin (as reported)", "err": "", "secs": 67}
+
+● BHARTIARTL came back with 0 promises. Airtel's management is known for not
+  giving guidance, but I'll check whether selection dropped anything once the
+  batch finishes.
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "ITC", "n": 0, "calls": 0, "score": {}, "margin": "EBITDA margin
+  (computed: operating profit over sales)", "err": "", "secs": 0}
+
+● ITC has 0 calls. ITC historically doesn't hold earnings calls, which would be
+  a real "no data" case, not a bug. I'll confirm against screener afterwards.
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "LT", "n": 6, "calls": 4, "score": {"hit": 2, "on track": 1, "behind
+  pace": 1, "miss": 2}, "margin": "EBITDA margin (as reported)", "err": "",
+  "secs": 80}
+
+● LT: 6 promises, all measured (2 hit, 1 on track, 1 behind pace, 2 miss).
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "SUNPHARMA", "n": 5, "calls": 4, "score": {"hit": 1, "ahead": 1,
+  "behind pace": 1, "not-yet-measurable": 2}, "margin": "EBITDA margin (as
+  reported)", "err": "", "secs": 44}
+● SUNPHARMA: 5 promises, 3 measured.
+
+● Monitor event: "PvD batch: per-company results and errors"
+  Traceback (most recent call last):
+  raise ValueError(f"unexpected response from {host}: {r.content[:60]!r}")
+  ValueError: unexpected response from www.marutisuzuki.com: b'<!DOCTYPE
+  html>\n<html>\n  <head>\n    <title>Pdf Viewer</title'
+  {"sym": "MARUTI", "n": 0, "calls": 0, "score": {}, "margin": null, "err":
+  "ValueError: unexpected response from www.marutisuzuki.com: b'<!DOCTYPE
+  html>\\n<html>\\n  <head>\\n    <title>Pdf Viewer</title'", "secs": 1}
+
+● MARUTI failed outright. One transcript link on marutisuzuki.com serves an HTML
+  viewer page instead of a PDF, and that error killed the whole company. That
+  breaks the fail-gracefully rule, so I'll fix it now; the running batch has
+  already loaded the old code, so editing is safe. The fix: skip a call whose
+  transcript won't download, take the next older results call, and record the
+  skip in the output.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● That anchor wasn't unique, so the script aborted without writing anything.
+  Retrying with a more specific one:
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PYEOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\pull\pvd.py (+11 -3)
+      371  
+      372  def run(symbol: str) -> dict:
+      373      co = screener.company(symbol)
+      374 -    calls = results_calls(co["concalls"])                     
+      374 +    calls, skipped = [], []                                   
+      375      promises, reported, margins = [], [], {}
+      376 -    for c in calls:                                           
+      377 -        b = transcript(c["transcript"])                       
+      376 +    for c in results_calls(co["concalls"], n=6):              
+      377 +        if len(calls) == 4:                                   
+      378 +            break                                             
+      379 +        try:  # one dead link (MARUTI's company-site viewer pa
+          +ge) skips that call, not the company                          
+      380 +            b = transcript(c["transcript"])                   
+      381 +        except Exception as e:                                
+      382 +            skipped.append({"call": fy_name(c["quarter"]), "tr
+          +anscript": c["transcript"], "error": f"{type(e).__name__}: {st
+          +r(e)[:80]}"})                                                 
+      383 +            continue                                          
+      384 +        calls.append(c)                                       
+      385          texts = pdf.pages(pdf.open_pdf(b))
+      386          context = f"This call discusses results for {fy_name(c
+           ['quarter'])}, the quarter ended {c['quarter']}."
+      387          r = llm.run("extract_guidance", "extract_guidance", [c
+           ontext, pdf.marked_text(texts, list(range(len(texts))))], GUID
+           ANCE,
+     ...
+      464      score = {s: sum(r["verdict"] == s for r in rows) for s in 
+           VERDICTS}
+      465      out = {"symbol": symbol.upper(), "name": co["name"], "gene
+           rated_at": dt.datetime.now().isoformat(timespec="minutes"),
+      466             "latest_quarter": latest, "calls": [{"quarter": c["
+           quarter"], "call": fy_name(c["quarter"]), "transcript": c["tra
+           nscript"]} for c in calls],
+      467 +           "skipped_calls": skipped,                          
+      468             "margin_definition": margin and {"name": margin["na
+           me"], "source": margin["source"]},
+      469             "model_note": "; ".join(sorted(notes)) or None, "sc
+           ore": score, "promises": rows}
+      470      OUT.mkdir(parents=True, exist_ok=True)
+
+● The fix is in and the tests pass. I'll also have the summary table list
+  skipped calls as errors. MARUTI gets re-run after the batch.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The runner now reports skipped calls. Waiting for the batch to continue.
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "BAJFINANCE", "n": 6, "calls": 4, "score": {"on track": 1, "partial":
+  2, "behind pace": 1, "miss": 2}, "margin": null, "err": "", "secs": 253}
+
+● BAJFINANCE (the NBFC): 6 promises, all measured. It took 253 seconds, most
+  likely waiting on Groq's per-minute token limit.
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "ASIANPAINT", "n": 6, "calls": 4, "score": {"hit": 1, "on track": 1,
+  "partial": 1, "moved away": 1, "not-yet-measurable": 2}, "margin": "PBDIT
+  margin (as reported)", "err": "", "secs": 112}
+
+● ASIANPAINT: 6 promises, judged on its own reported PBDIT margin.
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "TRENT", "n": 0, "calls": 0, "score": {}, "margin": "EBITDA margin
+  (computed: operating profit over sales)", "err": "", "secs": 0}
+
+● TRENT also has 0 calls. I'll check screener's concall list for ITC and TRENT
+  after the batch.
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "ETERNAL", "n": 6, "calls": 4, "score": {"hit": 1, "moved closer": 2,
+  "not-yet-measurable": 3}, "margin": "EBITDA margin (computed: operating profit
+  over sales)", "err": "", "secs": 46}
+
+● ETERNAL: 6 promises, including 2 "moved closer" from the new
+  direction-of-travel verdict.
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "DIXON", "n": 6, "calls": 4, "score": {"hit": 1, "moved closer": 1,
+  "partial": 2, "behind pace": 1, "not-yet-measurable": 1}, "margin": "EBITDA
+  margin (computed: operating profit over sales)", "err": "", "secs": 92}
+
+● DIXON: 6 promises, 5 measured.
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "PERSISTENT", "n": 3, "calls": 4, "score": {"not-yet-measurable": 3},
+  "margin": "EBIT margin (as reported)", "err": "", "secs": 80}
+
+● PERSISTENT: 3 promises, none measurable yet. I'll check why when I review the
+  outputs.
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "POLYCAB", "n": 6, "calls": 4, "score": {"moved away": 3,
+  "not-yet-measurable": 3}, "margin": "EBITDA margin (as reported)", "err": "",
+  "secs": 74}
+
+● POLYCAB: 6 promises, 3 of them "moved away".
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "TATAPOWER", "n": 5, "calls": 4, "score": {"behind pace": 1,
+  "not-yet-measurable": 4}, "margin": "EBITDA margin (computed: operating profit
+  over sales)", "err": "", "secs": 83}
+
+● TATAPOWER: 5 promises, 1 measured.
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "IRCTC", "n": 1, "calls": 4, "score": {"miss": 1}, "margin": "EBITDA
+  margin (as reported)", "err": "", "secs": 30}
+
+● IRCTC: 1 promise (a miss).
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "CDSL", "n": 0, "calls": 4, "score": {}, "margin": "EBITDA margin
+  (computed: operating profit over sales)", "err": "", "secs": 28}
+● CDSL: 4 calls but 0 promises. Its management may simply not guide; I'll check
+  during review.
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "KPITTECH", "n": 5, "calls": 4, "score": {"behind pace": 2, "moved
+  away": 1, "miss": 1, "not-yet-measurable": 1}, "margin": "EBIT margin
+  (computed: operating profit less depreciation, over sales)", "err": "",
+  "secs": 47}
+
+● KPITTECH: 5 promises, 4 measured, on computed EBIT.
+
+● Monitor event: "PvD batch: per-company results and errors"
+  {"sym": "DEEPAKNTR", "n": 0, "calls": 4, "score": {}, "margin": "EBITDA margin
+  (as reported)", "err": "", "secs": 43}
+
+● DEEPAKNTR: 4 calls, 0 promises. That one is on the review list too.
+
+● Monitor event: "PvD batch: per-company results and errors"
+  [Monitor expired after 30m with 20 events delivered. Re-arm it if you still
+  need the watch.]
+
+  Read 1 file (ctrl+o to expand)
+
+● Monitor(PvD batch: ASTRAL, TITAN and the final cost line)
+  ⎿  Monitor started · task btlgt5hja · timeout 1200s
+
+● While ASTRAL and TITAN run, I'll look at the zero-promise companies. ITC and
+  TRENT first, which found no calls at all:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Monitor event: "PvD batch: ASTRAL, TITAN and the final cost line"
+  {"sym": "ASTRAL", "n": 6, "calls": 4, "score": {"hit": 1, "ahead": 1, "on
+  track": 2, "moved closer": 1, "miss": 1}, "margin": "EBITDA margin (computed:
+  operating profit over sales)", "err": "", "secs": 1995}
+
+● ITC and TRENT have only investor presentations and no call transcripts, so
+  their zero counts are real; I'll add a visible note. ASTRAL finished with 6
+  promises, all measured, in 33 minutes, and I'm pulling raw extractions for the
+  three companies with calls but no promises next. · summary
+
+● ITC and TRENT have only investor presentations on screener with no
+  transcripts, so that's a genuine no-data case. ASTRAL is done with 6 promises,
+  and I'm checking the three companies that had calls but returned zero
+  promises next. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The extractor returned zero promises for BHARTIARTL, CDSL and DEEPAKNTR, and
+  PERSISTENT has a duplicate that the text dedupe missed. Next I'll check
+  whether DEEPAKNTR's management avoided numeric guidance or whether the prompt
+  is too strict. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● DEEPAKNTR missed one guided target, so the cheap model's recall isn't perfect,
+  which I'll log in DECISIONS. The zeros for CDSL and Airtel are accurate,
+  since neither guides numerically. Next I'm switching dedupe to structured
+  fields to fix PERSISTENT's duplicate. · summary
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PYEOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\pull\pvd.py (+4 -3)
+      344  
+      345  def dedupe(promises: list[dict]) -> list[dict]:
+      346      """Management repeats a target within a call (remarks, the
+           n Q&A) and across calls: keep the oldest mention,
+      347 -    which has the longest track record. A target with no numbe
+          -r is only deduped within its own call."""                     
+      347 +    which has the longest track record. Matched on the extract
+          +ed numbers, not the wording ("$5 billion by FY31" =           
+      348 +    "$5 billion by March 2031"). A target with no number is on
+          +ly deduped within its own call."""                            
+      349      seen, out = set(), []
+      350      for p in sorted(promises, key=lambda p: _q(p["said_in"])):
+             # stable: within a call the first mention wins
+      350 -        nums = re.sub(r"[^0-9%]", "", p["target"])            
+      351 -        k = (p["metric_key"], nums) if nums else (p["said_in"]
+          -, p["metric_key"], p["target"].lower())                       
+      351 +        lo, hi = p.get("target_low"), p.get("target_high")    
+      352 +        k = (p["metric_key"], lo, hi, p.get("fy")) if lo is no
+          +t None or hi is not None else (p["said_in"], p["metric_key"], 
+          +p["target"].lower())                                          
+      353          if k not in seen:
+      354              seen.add(k)
+      355              out.append(p)
+  ⎿  Updated backend\tests\test_pvd.py (+9 -5)
+      55  
+      56  
+      57  def test_dedupe_keeps_oldest_mention_across_calls():
+      58 -    ps = [{"said_in": "Sep 2026", "metric_key": "operating_marg
+         -in", "target": "26% to 28%", "page": 14},                      
+      59 -          {"said_in": "Sep 2026", "metric_key": "operating_marg
+         -in", "target": "26%-28%", "page": 26},                         
+      60 -          {"said_in": "Jun 2026", "metric_key": "operating_marg
+         -in", "target": "26%-28%", "page": 9},                          
+      61 -          {"said_in": "Sep 2026", "metric_key": "other", "targe
+         -t": "more digital deals", "page": 3}]                          
+      62 -    assert [p["page"] for p in pvd.dedupe(ps)] == [9, 3]  # the
+         - Jun 2026 call's mention has the longest track record          
+      58 +    band = {"metric_key": "operating_margin", "target_low": 26,
+         + "target_high": 28, "fy": None}                                
+      59 +    ps = [band | {"said_in": "Sep 2026", "target": "26% to 28%"
+         +, "page": 14},                                                 
+      60 +          band | {"said_in": "Sep 2026", "target": "26%-28%", "
+         +page": 26},                                                    
+      61 +          band | {"said_in": "Jun 2026", "target": "26%-28%", "
+         +page": 9},                                                     
+      62 +          {"said_in": "Sep 2026", "metric_key": "other", "targe
+         +t": "more digital deals", "page": 3},                          
+      63 +          # PERSISTENT: the same target worded two ways on one 
+         +call                                                           
+      64 +          {"said_in": "Sep 2026", "metric_key": "revenue", "tar
+         +get": "$5 billion in annual revenue by FY31", "target_low": 5, 
+         +"target_high": None, "fy": 31, "page": 4},                     
+      65 +          {"said_in": "Sep 2026", "metric_key": "revenue", "tar
+         +get": "$5 billion by March 2031", "target_low": 5, "target_high
+         +": None, "fy": 31, "page": 12}]                                
+      66 +    assert [p["page"] for p in pvd.dedupe(ps)] == [9, 3, 4]  # 
+         +the Jun 2026 call's mention has the longest track record       
+      67  
+      68  
+      69  def test_evidence_only_from_later_calls_and_built_by_python():
+  ⎿  Created web\public\data\research\TITAN.json (+98 -0)
+       1 +{                                                              
+       2 + "symbol": "TITAN",                                            
+       3 + "name": "Titan Company Ltd",                                  
+       4 + "generated_at": "2026-11-12T17:01",                           
+       5 + "latest_quarter": "Sep 2026",                                 
+       6 + "calls": [                                                    
+       7 +  {                                                            
+       8 +   "quarter": "Sep 2026",                                      
+       9 +   "call": "Q2 FY27",                                          
+      10 +   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen
+         +.aspx?Pname=daa6c172-771a-4af5-b4b3-9813fdf7536a.pdf"          
+      11 +  },                                                           
+      12 +  {                                                            
+      13 +   "quarter": "Jun 2026",                                      
+      14 +   "call": "Q1 FY27",                                          
+      15 +   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen
+         +.aspx?Pname=f70a0a33-43cf-40b6-a753-67b06123e8de.pdf"          
+      16 +  },                                                           
+      17 +  {                                                            
+      18 +   "quarter": "Dec 2025",                                      
+      19 +   "call": "Q3 FY26",                                          
+      20 +   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen
+         +.aspx?Pname=0ee5b68b-8f66-4705-9a84-9debaa9aae1d.pdf"          
+      21 +  },                                                           
+      22 +  {                                                            
+      23 +   "quarter": "Sep 2025",                                      
+      24 +   "call": "Q2 FY26",                                          
+      25 +   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen
+         +.aspx?Pname=c3a5d70a-78ac-4407-aed7-e06b93e17a8f.pdf"          
+      26 +  }                                                            
+      27 + ],                                                            
+      28 + "margin_definition": {                                        
+      29 +  "name": "EBIT margin (computed: operating profit less depreci
+         +ation, over sales)",                                           
+      30 +  "source": "screener.in quarterly results table (from the comp
+         +any's exchange results filings)"                               
+      31 + },                                                            
+      32 + "model_note": null,                                           
+      33 + "score": {                                                    
+      34 +  "hit": 0,                                                    
+      35 +  "ahead": 0,                                                  
+      36 +  "on track": 0,                                               
+      37 +  "moved closer": 1,                                           
+      38 +  "partial": 0,                                                
+      39 +  "no change": 0,                                              
+      40 +  "behind pace": 1,                                            
+     … 58 more lines (ctrl+o to expand)
+  ⎿  (timeout 5m)
+
+● Monitor event: "PvD batch: ASTRAL, TITAN and the final cost line"
+  {"sym": "TITAN", "n": 3, "calls": 4, "score": {"moved closer": 1, "behind
+  pace": 1, "not-yet-measurable": 1}, "margin": "EBIT margin (computed:
+  operating profit less depreciation, over sales)", "err": "", "secs": 117}
+  | Company | Calls | Promises | Verdicts | Margin definition | Errors |
+  | MARUTI | 0 | 0 | - | - | ValueError: unexpected response from
+  www.marutisuzuki.com: b'<!DOCTYPE html>\n<html>\n  <head>\n    <title>Pdf
+  Viewer</title' |
+  Cost this batch: $0.7948 / 86 calls; to date $1.4975 / 380 calls
+
+● Background command "Run PvD for all 22 tickers" completed (exit code 0)
+
+● The first batch cost $0.79 for 86 calls at list prices, and we're on free
+  tiers. I'm re-running all 22 with the MARUTI and dedupe fixes in, relying on
+  cache for everything except MARUTI's transcripts and a few changed verdict
+  batches. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● While that runs, I'll spot-check verdict quality in the JSON from the first
+  batch, looking for nonsense like the earlier bps case.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The spot-check turned up real verdict errors, so I'm not reporting this table
+  yet. I'm adding a company_total flag and direction-aware verdicts, and
+  stopping the second batch. · summary
+
+● Stop Task
+  ⎿  cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+     ../.venv/Scripts/python -u "C:/Users/MOKSHA~1/AppData/Local/Temp/claud
+     e/638d0bc94bb048d8/b5e3075c-555a-4… · stopped
+
+● Now the extraction prompt: the company_total flag and the lower-is-better rule
+  for costs.
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PYEOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\prompts\extract_guidance.md (+2 -1)
+      17  - `fy`: the fiscal year as 2 digits (FY27 -> 27). "This year" m
+          eans the fiscal year the call's quarter belongs to; "next year"
+           the one after. Null if not a fiscal-year-bound target.
+      18  - `quarter_no` (1-4) for a named quarter, `half_no` (1-2) for a
+           half; null otherwise.
+      19  - `basis`: constant_currency_or_usd if the target is stated in 
+          constant currency, CC, USD or dollar terms; reported_inr for ru
+          pee or reported figures; not_applicable otherwise.
+      20 -- `direction`: at_least (the number is a floor: "25% plus", "do
+         -uble-digit", "inch closer to 26-28%" from below), at_most (a ce
+         -iling: "credit cost below 1%", "bring LDR down to 85-90%" from 
+         -above), within (stay inside a band).                           
+      20 +- `direction`: at_least (the number is a floor: "25% plus", "do
+         +uble-digit", "inch closer to 26-28%" from below), at_most (a ce
+         +iling: "credit cost below 1%", "bring LDR down to 85-90%" from 
+         +above), within (stay inside a band). Costs and cost-like ratios
+         + (cost of funds, credit cost, opex ratio, working capital to sa
+         +les, net debt) are better when lower: a range for them is at_mo
+         +st.                                                            
+      21 +- `company_total`: true only if the target is about the whole c
+         +ompany's total revenue / sales, its consolidated EBITDA / EBIT 
+         +/ operating margin, or its total net profit. False for a segmen
+         +t, business, brand, product line or geography (FMEG, quick comm
+         +erce, US business), and for other measures even if they sound l
+         +ike growth: order inflow, order book, volumes, AUM, loan book, 
+         +deposits, NOV / GOV / GMV, customers, payout, exports share.   
+      22  - `margin_basis` for margin targets: ebit (EBIT margin; IT-serv
+          ices companies' "operating margin" is EBIT, after depreciation)
+          , ebitda (EBITDA or "operating margin" before depreciation), ne
+          t (net profit margin), unclear; not_applicable for non-margin t
+          argets.
+      23  - Never take a promise from a question. If the quote is someone
+           asking about a target, find management's own words in the answ
+          er or skip it.
+      24  
+  ⎿  Updated backend\finn\pull\pvd.py (+2 -2)
+      42      "fy": INT, "quarter_no": INT, "half_no": INT,
+      43      "basis": {"type": "string", "enum": ["reported_inr", "const
+          ant_currency_or_usd", "not_applicable"]},
+      44      "direction": {"type": "string", "enum": ["at_least", "at_mo
+          st", "within"]},
+      45 -    "margin_basis": {"type": "string", "enum": ["ebitda", "ebit
+         -", "net", "unclear", "not_applicable"]}},                      
+      45 +    "margin_basis": {"type": "string", "enum": ["ebitda", "ebit
+         +", "net", "unclear", "not_applicable"]}, "company_total": {"typ
+         +e": "boolean"}},                                               
+      46      "required": ["metric", "metric_key", "target", "period", "q
+          uote", "page", "target_type", "target_low", "target_high",
+      47 -                 "horizon", "fy", "quarter_no", "half_no", "bas
+         -is", "direction", "margin_basis"]}                             
+      47 +                 "horizon", "fy", "quarter_no", "half_no", "bas
+         +is", "direction", "margin_basis", "company_total"]}            
+      48  REPORTED = {"type": "object", "properties": {
+      49      "metric": {"type": "string"}, "metric_key": KEY, "value": {
+          "type": "string"}, "period": {"type": "string"},
+      50      "quote": {"type": "string"}, "page": {"type": "integer"}}, 
+          "required": ["metric", "metric_key", "value", "period", "quote"
+          , "page"]}
+
+● Now the Python side: series() requires company_total, _bounds gets the two
+  normalisations, and the verdict payload carries the bounds and direction.
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PYEOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\prompts\pvd_verdict.md (+21 -21)
+       1 -You judge whether an Indian listed company's management deliver
+         -ed on promises made on earnings calls. Growth and margin target
+         -s that reported results can measure were already scored by code
+         -; you get the rest.                                            
+       2 -                                                               
+       3 -You get JSON:                                                  
+       4 -- `latest_quarter`: the latest quarter with reported results.  
+       5 -- `reported`: numbers management stated as achieved on later ca
+         -lls, each with an `id` like "R4", the call it was said on (`sai
+         -d_in`, e.g. "Q2 FY27"), the `value` exactly as stated and a ver
+         -batim `quote`.                                                 
+       6 -- `promises`: each has an `id`, what was promised (`metric`, `t
+         -arget`, `period`, `quote`), the call it was made on (`said_in`)
+         -, `actuals` (reported quarterly figures after that call, in ₹ c
+         -rore or % for margins, with `yoy_pct` / `qoq_pct` / `*_pp` alre
+         -ady computed), and `eligible_reported`: the ids of `reported` e
+         -ntries said after this promise. Only those may be used for it. 
+       7 -                                                               
+       8 -For each promise:                                              
+       9 -1. Find the evidence first. Look through `reported` for stateme
+         -nts about the same thing, even when worded differently: "LDR" i
+         -s the loan-to-deposit ratio, "CASA" is current and savings acco
+         -unts, "advances" are loans. Put the ids you rely on in `used_re
+         -ported` (only ids from that promise's `eligible_reported`; newe
+         -st first).                                                     
+      10 -2. Then give the `verdict`:                                    
+      11 -   - `hit`: the evidence meets or beats the target, and the tar
+         -get's period has ended or the target is already met.           
+      12 -   - `miss`: the period has ended and the evidence clearly fall
+         -s short.                                                       
+      13 -   - `partial`: part of it was delivered (part of the amount, s
+         -ome of the items, a range only partly reached).                
+      14 -   - `not-yet-measurable`: no evidence speaks to this promise. 
+      15 -   If the period is still running, still pick the evidence and 
+         -give the closest verdict; code will turn a percentage-level com
+         -parison into on track / behind pace itself.                    
+      16 -3. `why`: at most 25 words, citing the evidence numbers exactly
+         - as given.                                                     
+      17 -                                                               
+      18 -Rules:                                                         
+      19 -- Use only the JSON. No outside knowledge about the company, it
+         -s sector or later events.                                      
+      20 -- Do not compute anything. Compare the given numbers with the t
+         -arget. If a judgment needs a number that is not given, say not-
+         -yet-measurable.                                                
+      21 -- A constant-currency or USD target can only be judged from a `
+         -reported` constant-currency or USD number, never from the ₹ `ac
+         -tuals`.                                                        
+       1 +You judge whether an Indian listed company's management deliver
+         +ed on promises made on earnings calls. Growth and margin target
+         +s that reported results can measure were already scored by code
+         +; you get the rest.                                            
+       2 +                                                               
+       3 +You get JSON:                                                  
+       4 +- `latest_quarter`: the latest quarter with reported results.  
+       5 +- `reported`: numbers management stated as achieved on later ca
+         +lls, each with an `id` like "R4", the call it was said on (`sai
+         +d_in`, e.g. "Q2 FY27"), the `value` exactly as stated and a ver
+         +batim `quote`.                                                 
+       6 +- `promises`: each has an `id`, what was promised (`metric`, `t
+         +arget`, `period`, `quote`), its bounds (`target_low`, `target_h
+         +igh`) and `direction` (at_least: higher is better; at_most: low
+         +er is better, e.g. cost of funds 7.31% beats a 7.55-7.60% targe
+         +t; within: inside the band), the call it was made on (`said_in`
+         +), `actuals` (reported quarterly figures after that call, in ₹ 
+         +crore or % for margins, with `yoy_pct` / `qoq_pct` / `*_pp` alr
+         +eady computed), and `eligible_reported`: the ids of `reported` 
+         +entries said after this promise. Only those may be used for it.
+       7 +                                                               
+       8 +For each promise:                                              
+       9 +1. Find the evidence first. Look through `reported` for stateme
+         +nts about the same thing, even when worded differently: "LDR" i
+         +s the loan-to-deposit ratio, "CASA" is current and savings acco
+         +unts, "advances" are loans. Put the ids you rely on in `used_re
+         +ported` (only ids from that promise's `eligible_reported`; newe
+         +st first).                                                     
+      10 +2. Then give the `verdict`:                                    
+      11 +   - `hit`: the evidence meets or beats the target, and the tar
+         +get's period has ended or the target is already met.           
+      12 +   - `miss`: the period has ended and the evidence clearly fall
+         +s short.                                                       
+      13 +   - `partial`: part of it was delivered (part of the amount, s
+         +ome of the items, a range only partly reached).                
+      14 +   - `not-yet-measurable`: no evidence speaks to this promise. 
+      15 +   If the period is still running, still pick the evidence and 
+         +give the closest verdict; code will turn a percentage-level com
+         +parison into on track / behind pace itself.                    
+      16 +3. `why`: at most 25 words, citing the evidence numbers exactly
+         + as given.                                                     
+      17 +                                                               
+      18 +Rules:                                                         
+      19 +- Use only the JSON. No outside knowledge about the company, it
+         +s sector or later events.                                      
+     … 2 more lines (ctrl+o to expand)
+  ⎿  Updated backend\finn\pull\pvd.py (+8 -1)
+      186  
+      187  def _bounds(p: dict) -> tuple[str, float | None, float | None]
+           :
+      188      lo, hi = p.get("target_low"), p.get("target_high")
+      189 +    if lo is not None and hi == lo:                           
+      190 +        hi = None  # "15%" extracted as 15-15                 
+      191      d = p.get("direction") or ("within" if lo is not None and 
+           hi is not None else "at_least" if lo is not None else "at_most
+           ")
+      192 +    if d == "at_most" and lo is not None and p.get("metric_key
+          +") in ("revenue", "operating_margin", "net_profit"):          
+      193 +        d = "at_least"  # nobody promises a ceiling on their o
+          +wn growth or margin: an extraction slip (L&T "8.5% margin targ
+          +et")                                                          
+      194      return ("at_most" if lo is None else d), lo, hi
+      195  
+      196  
+     ...
+      245  def series(p: dict, quarters: dict, margin: dict | None = None
+           , bank=None) -> dict | None:
+      246      """{q: {quarter: value}, agg(quarters) -> value over a per
+           iod, name, source, cites, kind} for this promise, or None."""
+      247      key, tt = p["metric_key"], p["target_type"]
+      248 +    if key != "cd_ratio" and not p.get("company_total"):      
+      249 +        return None  # a segment's margin or order inflow can'
+          +t be measured with company totals (POLYCAB FMEG, L&T orders)  
+      250      if key == "cd_ratio" and bank:
+      251          b = bank(p["said_in"])
+      252          if not b:
+     ...
+      439          for k in batch:
+      440              p = promises[k]
+      441              p["eligible_reported"] = [x["id"] for x in later i
+           f _q(x["said_in"]) > _q(p["said_in"])]
+      436 -            payload["promises"].append({"id": k, **{f: p[f] fo
+          -r f in ("metric", "target", "period", "quote", "eligible_repor
+          -ted")},                                                       
+      442 +            payload["promises"].append({"id": k, **{f: p[f] fo
+          +r f in ("metric", "target", "period", "quote", "eligible_repor
+          +ted", "target_low", "target_high")},                          
+      443 +                                        "direction": _bounds(p
+          +)[0],                                                         
+      444                                          "said_in": fy_name(p["
+           said_in"]), "actuals": actuals(quarters, p["metric_key"], p["s
+           aid_in"])})
+      445          if not later and not any(q["actuals"] for q in payload
+           ["promises"]):
+      446              continue  # nothing to judge with: not-yet-measura
+           ble without spending a call
+
+● The test helper's promises are missing company_total, which explains the
+  expected failures. I'm defaulting it to true in the helper and adding tests
+  for the segment target, the margin ceiling, and the 15–15 display. · summary
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PYEOF'
+      import pathlib…)
+  ⎿  Updated backend\tests\test_pvd.py (+11 -1)
+      83  Q = {"periods": ["Jun 2025", "Sep 2025", "Dec 2025", "Mar 2026"
+          , "Jun 2026", "Sep 2026"],
+      84       "rows": {"Sales": [100, 100, 100, 100, 108, 112], "Operati
+          ng Profit": [24, 25, 25, 25, 27, 29.12]}}
+      85  P = lambda **k: {"metric": "m", "target": "t", "basis": "report
+          ed_inr", "fy": None, "quarter_no": None, "half_no": None, "targ
+          et_high": None,
+      86 -                 "said_in": "Mar 2026", "margin_basis": "ebitda
+         -"} | k                                                         
+      86 +                 "said_in": "Mar 2026", "margin_basis": "ebitda
+         +", "company_total": True} | k                                  
+      87  
+      88  
+      89  def prog(p, call_q, q=Q, margin=None, bank=None):
+     ...
+      112      assert prog(P(metric_key="revenue", target_type="growth_pc
+           t", target_low=10, horizon="fiscal_year", fy=27, basis="consta
+           nt_currency_or_usd"), "Mar 2026") is None
+      113      assert prog(P(metric_key="other", target_type="count", tar
+           get_low=200, horizon="fiscal_year", fy=27), "Mar 2026") is Non
+           e
+      114      assert prog(P(metric_key="revenue", target_type="growth_pc
+           t", target_low=10, horizon="fiscal_year", fy=28), "Mar 2026") 
+           is None  # nothing reported yet
+      115 +    # POLYCAB "8-10% EBITDA margin by FY30" is the FMEG segmen
+          +t's: company totals can't measure it                          
+      116 +    assert prog(P(metric_key="operating_margin", target_type="
+          +margin_pct", target_low=8, target_high=10, horizon="long_term"
+          +, company_total=False), "Mar 2026") is None                   
+      117      # TCS "wage hike impact of 150 to 200 basis points": a mar
+           gin change, never compared with a margin level
+      118      assert prog(P(metric_key="operating_margin", target_type="
+           margin_pct", target="150 to 200 basis points", target_low=1.5,
+            target_high=2, horizon="next_quarter"), "Mar 2026") is None
+      119  
+     ...
+      197      assert not bank.same_date("31.03.2025", qe) and not bank.s
+           ame_date("31.12.2024", qe)
+      198  
+      199  
+      200 +def test_bound_slips_are_normalised():                        
+      201 +    # L&T "EBITDA margin target of 8.5%" extracted as 8.5-8.5,
+          + at_most: a margin target is a floor, shown as one number     
+      202 +    p = P(metric_key="operating_margin", target_low=8.5, targe
+          +t_high=8.5, direction="at_most")                              
+      203 +    assert pvd.judge(10.3, p, complete=True) == ("hit", "≥8.5%
+          +")                                                            
+      204 +    # a cost ceiling stays a ceiling                          
+      205 +    assert pvd.judge(7.31, P(metric_key="other", target_low=7.
+          +55, target_high=7.6, direction="at_most"), complete=True) == (
+          +"hit", "≤7.6%")                                               
+      206 +                                                              
+      207 +                                                              
+      208  def test_ceiling_targets_and_bands():
+      209      p = P(target_low=85, target_high=90, direction="at_most")
+      210      assert pvd.judge(96, p, complete=False) == ("behind pace",
+            "≤90%")
+  ⎿  (timeout 5m)
+
+● 89 tests pass. Re-running all 22 now. The prompt change means every transcript
+  is re-extracted, so this is the long run.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Monitor(Final PvD batch: per-company results)
+  ⎿  Monitor started · task b9pl5qqxo · timeout 1800s
+
+● The final batch is running. I'll write DECISIONS.md and PLAN.md once the
+  numbers are in.
+
+● Monitor event: "Final PvD batch: per-company results"
+  {"sym": "RELIANCE", "n": 2, "calls": 4, "score": {"partial": 1,
+  "not-yet-measurable": 1}, "margin": "EBITDA margin (computed: operating profit
+  over sales)", "err": "", "secs": 66}
+
+● RELIANCE: same verdicts as before. Its margin now falls back to the computed
+  one because one call didn't state a margin.
+
+● Monitor event: "Final PvD batch: per-company results"
+  {"sym": "HDFCBANK", "n": 3, "calls": 4, "score": {"hit": 1, "behind pace": 1,
+  "not-yet-measurable": 1}, "margin": null, "err": "", "secs": 139}
+
+● HDFCBANK is stable across re-extraction: CD ratio FY26 hit, FY27 behind pace.
+
+● Monitor event: "Final PvD batch: per-company results"
+  {"sym": "TCS", "n": 2, "calls": 4, "score": {"behind pace": 1, "moved away":
+  1}, "margin": "Operating margin (as reported)", "err": "", "secs": 72}
+
+● TCS: 2 promises, both measured on its own reported operating margin.
+
+● Monitor event: "Final PvD batch: per-company results"
+  {"sym": "BHARTIARTL", "n": 0, "calls": 4, "score": {}, "margin": "EBITDAaL
+  margin (as reported)", "err": "", "secs": 158}
+
+● BHARTIARTL: 0 promises again, consistent with Airtel's management not giving
+  numeric guidance.
+
+● Monitor event: "Final PvD batch: per-company results"
+  {"sym": "ITC", "n": 0, "calls": 0, "score": {}, "margin": "EBITDA margin
+  (computed: operating profit over sales)", "err": "", "secs": 0}
+
+● ITC: no transcripts, as expected.
+
+● Monitor event: "Final PvD batch: per-company results"
+  {"sym": "LT", "n": 6, "calls": 4, "score": {"hit": 4, "miss": 2}, "margin":
+  "EBITDA margin (as reported)", "err": "", "secs": 188}
+
+● LT: 6 promises (4 hit, 2 miss). I'll check that the order-inflow and NWC
+  verdicts are now correct.
+
+● Monitor event: "Final PvD batch: per-company results"
+  {"sym": "SUNPHARMA", "n": 4, "calls": 4, "score": {"hit": 1, "on track": 1,
+  "miss": 1, "not-yet-measurable": 1}, "margin": "EBITDA margin (as reported)",
+  "err": "", "secs": 143}
+
+● SUNPHARMA: 4 promises, 3 measured.
+
+● Monitor event: "Final PvD batch: per-company results"
+  {"sym": "MARUTI", "n": 1, "calls": 1, "score": {"not-yet-measurable": 1},
+  "margin": "Operating profit margin EBIT (as reported)", "err": "skipped Q2
+  FY27: ValueError: unexpected response from www.marutisuz; skipped Q1 FY27:
+  ValueError: unexpected response from www.marutisuz; skipped Q3 FY26:
+  ValueError: unexpected response from marutistorage; skipped Q2 FY26:
+  ValueError: unexpected response from marutistorage; skipped Q1 FY26:
+  ValueError: unexpected response from marutistorage", "secs": 41}
+
+● MARUTI no longer crashes, but 5 of 6 transcript links point to
+  marutisuzuki.com viewer pages, so only 1 call was read. Maruti also files its
+  transcripts on BSE. The general fix: when screener's link doesn't return a
+  PDF, look for a BSE filing whose subject mentions "transcript" in the weeks
+  after that quarter's results. I'll build it now (the running batch isn't
+  affected) and re-run MARUTI afterwards.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● BSE has a dedicated "Earnings Call Transcript" subcategory. Adding the
+  fallback:
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PYEOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\pull\pvd.py (+22 -3)
+      120      return fetch(url, expect=b"%PDF")
+      121  
+      122  
+      123 +def bse_transcript(scrip: str, quarter: str) -> tuple[str, byt
+          +es] | None:                                                   
+      124 +    """The quarter's transcript as filed on BSE ('Earnings Cal
+          +l Transcript'), for when screener's link is a company-site    
+      125 +    viewer page instead of a PDF (MARUTI). Earliest filing 15-
+          +100 days after the quarter end; None if there is none."""     
+      126 +    qe = bank.quarter_end(quarter)                            
+      127 +    end = min(qe + dt.timedelta(100), dt.date.today())        
+      128 +    rows = bse.announcements(scrip, qe + dt.timedelta(15), end
+          +, max_age=None if end < dt.date.today() else 3600)            
+      129 +    for r in sorted(rows, key=lambda r: r["NEWS_DT"]):        
+      130 +        if r.get("ATTACHMENTNAME") and (r["SUBCATNAME"] == "Ea
+          +rnings Call Transcript" or "transcript" in (r["NEWSSUB"] or ""
+          +).lower()):                                                   
+      131 +            return bank.VIEWER + r["ATTACHMENTNAME"], bse.atta
+          +chment(r["ATTACHMENTNAME"])                                   
+      132 +    return None                                               
+      133 +                                                              
+      134 +                                                              
+      135  # ---- actuals (all maths here) ----
+      136  def _row(quarters: dict, names: list[str]) -> dict[str, float]
+            | None:
+      137      rows = quarters.get("rows", {})
+     ...
+      395      for c in results_calls(co["concalls"], n=6):
+      396          if len(calls) == 4:
+      397              break
+      386 -        try:  # one dead link (MARUTI's company-site viewer pa
+          -ge) skips that call, not the company                          
+      398 +        try:  # a dead link (MARUTI's company-site viewer page
+          +): try the BSE filing, else skip that call, not the company   
+      399              b = transcript(c["transcript"])
+      400          except Exception as e:
+      389 -            skipped.append({"call": fy_name(c["quarter"]), "tr
+          -anscript": c["transcript"], "error": f"{type(e).__name__}: {st
+          -r(e)[:80]}"})                                                 
+      390 -            continue                                          
+      401 +            try:                                              
+      402 +                alt = co.get("bse_code") and bse_transcript(co
+          +["bse_code"], c["quarter"])                                   
+      403 +            except Exception:                                 
+      404 +                alt = None                                    
+      405 +            if not alt:                                       
+      406 +                skipped.append({"call": fy_name(c["quarter"]),
+          + "transcript": c["transcript"], "error": f"{type(e).__name__}:
+          + {str(e)[:80]}"})                                             
+      407 +                continue                                      
+      408 +            c = c | {"transcript": alt[0]}                    
+      409 +            b = alt[1]                                        
+      410          calls.append(c)
+      411          texts = pdf.pages(pdf.open_pdf(b))
+      412          context = f"This call discusses results for {fy_name(c
+           ['quarter'])}, the quarter ended {c['quarter']}."
+
+● The fallback is a new branch, so it gets a small offline test with BSE
+  stubbed:
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" && cat >>
+      tests/test_pvd.py <<'PYEOF'…)
+  ⎿  Updated backend\tests\test_pvd.py (+12 -0)
+      221      r = pvd.pace_reported(p, used, "Sep 2026")
+      222      assert r["verdict"] == "behind pace" and "around 96% (Q2 F
+           Y27 call)" in r["why"]
+      223      assert pvd.pace_reported(p, [{"said_in": "Sep 2026", "valu
+           e": "96% and 98%"}], "Sep 2026") is None  # ambiguous
+      224 +                                                              
+      225 +                                                              
+      226 +def test_bse_transcript_fallback_picks_the_transcript_filing(m
+          +onkeypatch):                                                  
+      227 +    # MARUTI, Q2 FY27: screener links a company-site viewer pa
+          +ge; BSE has the transcript under its own subcategory          
+      228 +    rows = [{"NEWS_DT": "2026-10-27T10:00:00", "SUBCATNAME": "
+          +General", "NEWSSUB": "Audio Recording", "ATTACHMENTNAME": "aud
+          +io.pdf"},                                                     
+      229 +            {"NEWS_DT": "2026-11-02T10:00:00", "SUBCATNAME": "
+          +Earnings Call Transcript", "NEWSSUB": "Announcement under Regu
+          +lation 30", "ATTACHMENTNAME": "t.pdf"}]                       
+      230 +    monkeypatch.setattr(pvd.bse, "announcements", lambda *a, *
+          +*k: rows)                                                     
+      231 +    monkeypatch.setattr(pvd.bse, "attachment", lambda name: b"
+          +%PDF " + name.encode())                                       
+      232 +    url, b = pvd.bse_transcript("532500", "Sep 2026")         
+      233 +    assert url.endswith("Pname=t.pdf") and b == b"%PDF t.pdf" 
+      234 +    monkeypatch.setattr(pvd.bse, "announcements", lambda *a, *
+          +*k: rows[:1])                                                 
+      235 +    assert pvd.bse_transcript("532500", "Sep 2026") is None   
+
+● The fallback is tested. MARUTI gets re-run once the batch finishes.
+● Monitor event: "PvD batch: ASTRAL, TITAN and the final cost line"
+  [Monitor expired after 20m with 2 events delivered. Re-arm it if you still
+  need the watch.]
+
+● That expiry is the old monitor from the first batch. The final batch's monitor
+  is still running.
+
+● Monitor event: "Final PvD batch: per-company results"
+  {"sym": "BAJFINANCE", "n": 6, "calls": 4, "score": {"on track": 2, "miss": 4},
+  "margin": null, "err": "", "secs": 230}
+
+● BAJFINANCE: 6 promises (2 on track, 4 miss). Four misses is a lot, so I'll
+  check them in the final spot-check.
+
+● Monitor event: "Final PvD batch: per-company results"
+  {"sym": "ASIANPAINT", "n": 6, "calls": 4, "score": {"hit": 1, "on track": 1,
+  "moved away": 1, "not-yet-measurable": 3}, "margin": "PBDIT margin (as
+  reported)", "err": "", "secs": 514}
+  {"sym": "TRENT", "n": 0, "calls": 0, "score": {}, "margin": "EBITDA margin
+  (computed: operating profit over sales)", "err": "", "secs": 0}
+
+● ASIANPAINT has 6 promises, 3 measured. TRENT has no transcripts, as expected.
+
+● Monitor event: "Final PvD batch: per-company results"
+  {"sym": "ETERNAL", "n": 4, "calls": 4, "score": {"not-yet-measurable": 4},
+  "margin": "EBITDA margin (computed: operating profit over sales)", "err": "",
+  "secs": 83}
+
+● ETERNAL is now 4 not-yet-measurable. Its NOV and quick-commerce targets no
+  longer get false "moved closer" or "hit" verdicts from company totals, and
+  nothing in later calls measured them.
+
+● Monitor event: "Final PvD batch: per-company results"
+  [Monitor expired after 30m with 11 events delivered. Re-arm it if you still
+  need the watch.]
+
+● Monitor(Final PvD batch: remaining companies)
+  ⎿  Monitor started · task bkbz6uuwp · timeout 1800s
+
+● The monitor is re-armed for the remaining companies, DIXON onward.
+
+● Monitor event: "Final PvD batch: remaining companies"
+  Traceback (most recent call last):
+  Traceback (most recent call last):
+  {"sym": "DIXON", "n": 0, "calls": 0, "score": {}, "margin": null, "err":
+  "Retryable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is
+  currently experiencing high demand. Spikes in demand ", "secs": 261}
+
+● DIXON hit a Gemini 503 ("high demand") on extraction after retries and the
+  fallback. It's transient, so I'll re-run it with MARUTI at the end.
+
+● Monitor event: "Final PvD batch: remaining companies"
+  {"sym": "PERSISTENT", "n": 3, "calls": 4, "score": {"not-yet-measurable": 3},
+  "margin": "EBIT margin (computed: operating profit less depreciation, over
+  sales)", "err": "", "secs": 71}
+
+● PERSISTENT: 3 promises, all USD revenue targets for FY27 or later. The ₹ table
+  can't measure those, so not-yet-measurable is right.
+
+● Monitor event: "Final PvD batch: remaining companies"
+  {"sym": "POLYCAB", "n": 6, "calls": 4, "score": {"not-yet-measurable": 6},
+  "margin": "EBITDA margins (as reported)", "err": "", "secs": 166}
+
+● POLYCAB: all 6 are now not-yet-measurable. The FMEG and wires-and-cables
+  segment targets no longer get false "moved away" verdicts from company totals.
+
+● Monitor event: "Final PvD batch: remaining companies"
+  {"sym": "TATAPOWER", "n": 4, "calls": 4, "score": {"partial": 2,
+  "not-yet-measurable": 2}, "margin": "EBITDA margin (computed: operating profit
+  over sales)", "err": "", "secs": 111}
+
+● TATAPOWER: 4 promises, 2 partial.
+
+● Monitor event: "Final PvD batch: remaining companies"
+  {"sym": "IRCTC", "n": 1, "calls": 4, "score": {"miss": 1}, "margin": "EBITDA
+  margin (as reported)", "err": "", "secs": 95}
+
+● IRCTC: 1 promise, a miss.
+
+● Monitor event: "Final PvD batch: remaining companies"
+  {"sym": "CDSL", "n": 0, "calls": 4, "score": {}, "margin": "EBITDA margin
+  (computed: operating profit over sales)", "err": "", "secs": 52}
+
+● CDSL: 0 promises, consistent with its transcripts containing no numeric
+  guidance.
+
+● Monitor event: "Final PvD batch: remaining companies"
+  {"sym": "KPITTECH", "n": 5, "calls": 4, "score": {"partial": 1, "behind pace":
+  1, "moved away": 1, "not-yet-measurable": 2}, "margin": "EBITDA margin
+  (computed: operating profit over sales)", "err": "", "secs": 65}
+
+● KPITTECH: 5 promises, 3 measured.
+
+● Monitor event: "Final PvD batch: remaining companies"
+  {"sym": "DEEPAKNTR", "n": 1, "calls": 4, "score": {"not-yet-measurable": 1},
+  "margin": "EBITDA margin (as reported)", "err": "", "secs": 77}
+
+● DEEPAKNTR: 1 promise this time; the re-extraction picked up the "14–15% EBIT
+  next year" target it missed before.
+● Monitor event: "Final PvD batch: remaining companies"
+  {"sym": "ASTRAL", "n": 6, "calls": 4, "score": {"hit": 2,
+  "not-yet-measurable": 4}, "margin": "EBITDA margin (computed: operating profit
+  over sales)", "err": "", "secs": 76}
+
+● ASTRAL: 6 promises, 2 hit.
+
+● Background command "Final PvD run for all 22 tickers" completed (exit code 0)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Monitor event: "Final PvD batch: remaining companies"
+  {"sym": "TITAN", "n": 6, "calls": 4, "score": {"on track": 1,
+  "not-yet-measurable": 5}, "margin": "EBIT margin (computed: operating profit
+  less depreciation, over sales)", "err": "", "secs": 77}
+  Cost this batch: $0.8625 / 101 calls; to date $2.3615 / 482 calls
+
+● Final batch is done. Two companies need a re-run: MARUTI (with the new BSE
+  transcript fallback) and DIXON (the transient 503).
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" && timeout 1700
+      ../.venv/Scripts/python -u
+      "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/b5…)
+  ⎿  Updated web\public\data\research\DIXON.json (+74 -73)
+      1  {
+      2   "symbol": "DIXON",
+      3   "name": "Dixon Technologies (India) Ltd",
+      4 - "generated_at": "2026-11-12T16:19",                            
+      4 + "generated_at": "2026-11-12T17:51",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+     ...
+       25     "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpe
+           n.aspx?Pname=ad6e72f1-b5f8-4a75-8e45-f2e88c7525e0.pdf"
+       26    }
+       27   ],
+       28 + "skipped_calls": [],                                         
+       29   "margin_definition": {
+       30    "name": "EBITDA margin (computed: operating profit over sale
+           s)",
+       31    "source": "screener.in quarterly results table (from the com
+           pany's exchange results filings)"
+       32   },
+       33   "model_note": null,
+       34   "score": {
+       34 -  "hit": 1,                                                   
+       35 +  "hit": 0,                                                   
+       36    "ahead": 0,
+       37    "on track": 0,
+       37 -  "moved closer": 1,                                          
+       38 -  "partial": 2,                                               
+       38 +  "moved closer": 0,                                          
+       39 +  "partial": 0,                                               
+       40    "no change": 0,
+       40 -  "behind pace": 1,                                           
+       41 +  "behind pace": 0,                                           
+       42    "moved away": 0,
+       42 -  "miss": 0,                                                  
+       43 -  "not-yet-measurable": 1                                     
+       43 +  "miss": 2,                                                  
+       44 +  "not-yet-measurable": 4                                     
+       45   },
+       46   "promises": [
+       47    {
+       47 -   "metric": "mobile phone business margin",                  
+       48 -   "target": "2.8% to 3.1%, 3.2%",                            
+       49 -   "period": "next 12 months",                                
+     … 166 more lines (ctrl+o to expand)
+  ⎿  Updated web\public\data\research\MARUTI.json (+14 -25)
+       1  {
+       2   "symbol": "MARUTI",
+       3   "name": "Maruti Suzuki India Ltd",
+       4 - "generated_at": "2026-11-12T17:16",                           
+       4 + "generated_at": "2026-11-12T17:49",                           
+       5   "latest_quarter": "Sep 2026",
+       6   "calls": [
+       7    {
+       8 -   "quarter": "Mar 2026",                                      
+       9 -   "call": "Q4 FY26",                                          
+      10 -   "transcript": "https://az-ci-afde-prd-arena-03-efddeyfchzf9a
+         -kbb.z01.azurefd.net/msilintiwebpdfcopyfromdefault/Transcript_ea
+         -rnings_call_Maruti_Suzuki_Q4_FY_26.pdf"                        
+      11 -  }                                                            
+      12 - ],                                                            
+      13 - "skipped_calls": [                                            
+      14 -  {                                                            
+       8 +   "quarter": "Sep 2026",                                      
+       9     "call": "Q2 FY27",
+      16 -   "transcript": "https://www.marutisuzuki.com/pdf-viewer?pdf=%
+         -2Fcontent%2Fdam%2Farena-eds%2Fcorporate%2Fpdf%2Fcompany-reports
+         -%2F2026-2027%2FTranscript_earnings_call_Maruti_Suzuki_Q2_FY_27.
+         -pdf",                                                          
+      17 -   "error": "ValueError: unexpected response from www.marutisuz
+         -uki.com: b'<!DOCTYPE html>\\n<html>\\n  <hea"                  
+      10 +   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen
+         +.aspx?Pname=4a189744-1646-4de4-809b-e936a67b6fe4.pdf"          
+      11    },
+      12    {
+      13 +   "quarter": "Jun 2026",                                      
+      14     "call": "Q1 FY27",
+      21 -   "transcript": "https://www.marutisuzuki.com/pdf-viewer?pdf=%
+         -2Fcontent%2Fdam%2Farena-eds%2Fcorporate%2Fpdf%2Fcompany-reports
+         -%2F2026-2027%2FTranscript_earnings_call_Maruti_Suzuki_Q1_FY_27.
+         -pdf",                                                          
+      22 -   "error": "ValueError: unexpected response from www.marutisuz
+         -uki.com: b'<!DOCTYPE html>\\n<html>\\n  <hea"                  
+      15 +   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen
+         +.aspx?Pname=e5ed553b-9881-4cd9-a131-370360446a83.pdf"          
+      16    },
+      17    {
+      25 -   "call": "Q3 FY26",                                          
+      26 -   "transcript": "https://marutistoragenew.blob.core.windows.ne
+         -t/msilintiwebpdf/Transcript_earnings_call_Maruti_Suzuki_Q3_FY_2
+         -6.pdf",                                                        
+      27 -   "error": "ValueError: unexpected response from marutistorage
+         -new.blob.core.windows.net: b'<!doctype htm"                    
+      28 -  },                                                           
+      29 -  {                                                            
+      30 -   "call": "Q2 FY26",                                          
+      31 -   "transcript": "https://marutistoragenew.blob.core.windows.ne
+         -t/msilintiwebpdf/Transcript_earnings_call_Maruti_Suzuki_Q2_FY_2
+         -6.pdf",                                                        
+      32 -   "error": "ValueError: unexpected response from marutistorage
+         -new.blob.core.windows.net: b'<!doctype htm"                    
+      18 +   "quarter": "Mar 2026",                                      
+      19 +   "call": "Q4 FY26",                                          
+      20 +   "transcript": "https://az-ci-afde-prd-arena-03-efddeyfchzf9a
+         +kbb.z01.azurefd.net/msilintiwebpdfcopyfromdefault/Transcript_ea
+         +rnings_call_Maruti_Suzuki_Q4_FY_26.pdf"                        
+     … 19 more lines (ctrl+o to expand)
+  ⎿  (timeout 10m)
+
+● MARUTI now reads all 4 calls through the BSE fallback, and DIXON completed.
+  Before reporting, I'm spot-checking the final measured verdicts, especially
+  the misses:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Four error types remain in the verdicts: company totals sometimes mislabeled,
+  cost direction flipped by "within" wording, a number in the reasoning that
+  appears in no source, and misses scored before the fiscal period has ended.
+  I'm checking KPIT's margin source next, since 15.6% computed against a
+  20.5–21.2% guide looks off. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● KPIT checks out, with both computed and reported margins sitting below the
+  20.5–21.2% guidance. Next I'll apply the four fixes, reusing the
+  number-matching helper in headline.py for fix 3. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Reusing _nums. The model's reasons also cite evidence ids ("R14") and periods
+  ("FY26", "Q4"); those get stripped before the check, or every reason would
+  fail.
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PYEOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\pull\pvd.py (+34 -1)
+      15  from finn.config import ROOT
+      16  from finn.sources import fetch, bse, screener, pdf
+      17  from finn.pull import bank
+      18 +from finn.push.headline import _nums                           
+      19  
+      20  OUT = ROOT / "web" / "public" / "data" / "research"
+      21  QEND = (3, 6, 9, 12)
+     ...
+      30  DIRECTIONAL = ("next_few_quarters", "unspecified", "long_term")
+            # no deadline: judged by direction of travel
+      31  FINANCIAL = ("revenue", "operating_margin", "net_profit", "cape
+          x", "cd_ratio")
+      32  MAX_PROMISES = 6
+      33 +# rules before the LLM: measures that are never the company's t
+         +otal revenue / margin / profit, whatever the extractor says    
+      34 +NOT_TOTAL = re.compile(r"order|inflow|aum|assets under|volume|l
+         +oan|advances|deposit|nov|gov|gmv|customer|export|payout|disburs
+         +e|segment", re.I)                                              
+      35 +COST = re.compile(r"cost|opex|expense|npa|working capital|nwc|n
+         +et debt|leverage", re.I)  # lower is better                    
+      36  
+      37  KEY = {"type": "string", "enum": ["revenue", "operating_margin"
+          , "net_profit", "capex", "cd_ratio", "other"]}
+      38  NUM = {"type": "number", "nullable": True}
+     ...
+      205      if lo is not None and hi == lo:
+      206          hi = None  # "15%" extracted as 15-15
+      207      d = p.get("direction") or ("within" if lo is not None and 
+           hi is not None else "at_least" if lo is not None else "at_most
+           ")
+      208 +    text = f"{p.get('metric', '')} {p.get('target', '')}"     
+      209      if d == "at_most" and lo is not None and p.get("metric_key
+           ") in ("revenue", "operating_margin", "net_profit"):
+      210          d = "at_least"  # nobody promises a ceiling on their o
+           wn growth or margin: an extraction slip (L&T "8.5% margin targ
+           et")
+      211 +    elif COST.search(text) and "saving" not in text.lower():  
+      212 +        d = "at_most"  # a cost band is a ceiling: BAJFINANCE 
+          +cost of funds 7.41% beats "7.55-7.60%"                        
+      213      return ("at_most" if lo is None else d), lo, hi
+      214  
+      215  
+     ...
+      264  def series(p: dict, quarters: dict, margin: dict | None = None
+           , bank=None) -> dict | None:
+      265      """{q: {quarter: value}, agg(quarters) -> value over a per
+           iod, name, source, cites, kind} for this promise, or None."""
+      266      key, tt = p["metric_key"], p["target_type"]
+      260 -    if key != "cd_ratio" and not p.get("company_total"):      
+      267 +    if key != "cd_ratio" and (not p.get("company_total") or NO
+          +T_TOTAL.search(f"{p['metric']} {p['target']}")):              
+      268          return None  # a segment's margin or order inflow can'
+           t be measured with company totals (POLYCAB FMEG, L&T orders)
+      269      if key == "cd_ratio" and bank:
+      270          b = bank(p["said_in"])
+     ...
+      390      return sorted(keep, key=lambda k: (nym(k), not fin(promise
+           s[k]), _q(promises[k]["said_in"])))[:n]
+      391  
+      392  
+      393 +def period_end(p: dict) -> str | None:                        
+      394 +    """Last quarter of a promise's deadline, if it has one."""
+     … 33 more lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The word boundaries (\b) didn't survive the shell-and-Python quoting. Let me
+  check the raw bytes:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● They became literal backspace characters. Fixing those lines with the Edit
+  tool:
+
+  Read 1 file, ran 1 shell command (ctrl+o to expand)
+
+● Shell escaping keeps fighting me here. I'll write a tiny fix script with the
+  Write tool and replace those lines by line number:
+
+  Made 1 scratchpad edit +15 (ctrl+o to expand)
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0
+      bc94bb048d8/b5e3075c-555a-464f…)
+  ⎿  Updated backend\finn\pull\pvd.py (+3 -3)
+      31  FINANCIAL = ("revenue", "operating_margin", "net_profit", "cape
+          x", "cd_ratio")
+      32  MAX_PROMISES = 6
+      33  # rules before the LLM: measures that are never the company's t
+          otal revenue / margin / profit, whatever the extractor says
+      34 -NOT_TOTAL = re.compile(r"order|inflow|aum|assets under|volume|l
+         -oan|advances|deposit|nov|gov|gmv|customer|export|payout|disburs
+         -e|segment", re.I)                                              
+      35 -COST = re.compile(r"cost|opex|expense|npa|working capital|nwc|n
+         -et debt|leverage", re.I)  # lower is better                    
+      34 +NOT_TOTAL = re.compile(r"order|inflow|\baum\b|assets under|volu
+         +me|loan|advances|deposit|\bnov\b|\bgov\b|\bgmv\b|customer|expor
+         +t|payout|disburse|segment", re.I)                              
+      35 +COST = re.compile(r"cost|opex|expense|\bnpa\b|working capital|\
+         +bnwc\b|net debt|leverage", re.I)  # lower is better            
+      36  
+      37  KEY = {"type": "string", "enum": ["revenue", "operating_margin"
+          , "net_profit", "capex", "cd_ratio", "other"]}
+      38  NUM = {"type": "number", "nullable": True}
+     ...
+      405      """Why a model verdict can't be shown (None = fine). Every
+            number in its reason must be in the evidence or the
+      406      promise (no invented or computed numbers: DIXON's "21,794 
+           crore"); a miss needs the period to have ended."""
+      407      body = re.sub(r"[,\s]", "", " ".join(said) + p["target"] +
+            p["quote"] + p["period"])
+      408 -    clean = re.sub(r"(?:R|FY|Q|H)\s?'?\d+", "", why)  # eviden
+          -ce ids and period names aren't claims                         
+      408 +    clean = re.sub(r"\b(?:R|FY|Q|H)\s?'?\d+\b", "", why)  # ev
+          +idence ids and period names aren't claims                     
+      409      if any(x not in body for x in _nums(clean)):
+      410          return "The model's reason used a number that is not i
+           n the evidence."
+      411      end = period_end(p)
+
+● The word boundaries are correct now. The earlier replace pass reported 14
+  substitutions, so I'll confirm no other line picked up a stray \b:
+
+  Searched for 1 pattern, ran 1 shell command (ctrl+o to expand)
+
+● Only the three intended lines contain \b. Adding tests for the new guards:
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" && cat >>
+      tests/test_pvd.py <<'PYEOF'…)
+  ⎿  Updated backend\tests\test_pvd.py (+20 -0)
+      233      assert url.endswith("Pname=t.pdf") and b == b"%PDF t.pdf"
+      234      monkeypatch.setattr(pvd.bse, "announcements", lambda *a, *
+           *k: rows[:1])
+      235      assert pvd.bse_transcript("532500", "Sep 2026") is None
+      236 +                                                              
+      237 +                                                              
+      238 +def test_rules_override_the_extractor_on_measure_and_direction
+          +():                                                           
+      239 +    # L&T order inflow / BAJFINANCE AUM marked company_total b
+          +y the model: never measured with revenue                      
+      240 +    for metric in ("group order inflows growth", "AUM growth")
+          +:                                                             
+      241 +        assert prog(P(metric=metric, metric_key="revenue", tar
+          +get_type="growth_pct", target_low=10, horizon="fiscal_year", f
+          +y=27), "Mar 2026") is None                                    
+      242 +    # BAJFINANCE cost of funds "7.55% to 7.60%", extracted as 
+          +a band: lower is better                                       
+      243 +    p = P(metric="cost of funds", metric_key="other", target_l
+          +ow=7.55, target_high=7.6, direction="within")                 
+      244 +    assert pvd.judge(7.41, p, complete=True) == ("hit", "≤7.6%
+          +")                                                            
+      245 +                                                              
+      246 +                                                              
+      247 +def test_model_verdicts_are_checked_in_python():              
+      248 +    p = P(target="INR3,500 crores to INR4,000 crores", quote="
+          +IT hardware revenue of 3,500 to 4,000 crores", period="next ye
+          +ar",                                                          
+      249 +          horizon="fiscal_year", fy=27, said_in="Dec 2025")   
+      250 +    said = ["Q2 FY27 call, p.6: “Revenues for the quarter was 
+          +Rs. 2,160 crores.”"]                                          
+      251 +    # DIXON: the reason cites 21,794 crore, which is in no quo
+          +te                                                            
+      252 +    assert "not in the evidence" in pvd.model_check("hit", "Se
+          +p 2026 IT hardware revenue 21,794 crore exceeds 4,000 crore (R
+          +7).", p, said, "Sep 2026")                                    
+      253 +    # a quarter's revenue against a full-year amount while FY2
+          +7 runs: not a miss yet                                        
+      254 +    assert "runs to Mar 2027" in pvd.model_check("miss", "R7 s
+          +hows 2,160 crores, below 3,500 crores.", p, said, "Sep 2026") 
+      255 +    assert pvd.model_check("partial", "R7 shows 2,160 crores a
+          +gainst 3,500 crores in FY27.", p, said, "Sep 2026") is None   
+  ⎿  (timeout 5m)
+
+● 92 tests pass. This should be the final re-run of all 22. Extractions are
+  cached, so only changed verdict batches cost anything.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● While that runs, I'll write the DECISIONS.md entries. The results table goes
+  in once the run finishes.
+
+● Update(DECISIONS.md)
+  ⎿  Added 15 lines
+       91    - The model judges only what's left (non-numeric promises). 
+           A verdict whose evidence can't be shown becomes not-yet-measur
+           able.
+       92    - Questions are dropped as promises (one TCS "promise" was a
+           n analyst asking about the target).
+       93    - Result: TCS 3 promises, 2 measured (both behind pace: EBIT
+            margin 24.4% since the Q3 FY26 call vs 26-28%; management's o
+           wn "24%" vs "exit at 25% plus"). HDFCBANK 3 promises, all stil
+           l not-yet-measurable, honestly: after setting "CD ratio 85-90%
+            by FY27" management never states the ratio again on a call (Q
+           4 FY26: "LDR is not in focus"), and transcripts + annual repor
+           ts are the only pull-side sources. Next option (not built): re
+           ad advances and deposits from the bank's results filing and co
+           mpute the CD ratio in Python.
+       94 +### PvD review (12 Nov, user's decisions 1-5)                 
+       95 +- **Results filings are primary sources on the research side t
+          +oo.** They are the company's own exchange filings. Bank CD rat
+          +io = advances / deposits, computed in Python from the **standa
+          +lone Statement of Assets and Liabilities** in each quarter's r
+          +esults filing on BSE. The cheap model only copies the two line
+          +s, from that one page (or the whole PDF when the filing is a s
+          +can with no text layer, as HDFCBANK's Q4 FY26 was). Python che
+          +cks the column date is the quarter end and the ratio is betwee
+          +n 30% and 200%. HDFCBANK: 98.7% (Dec 2025) → 94.6% (Mar 2026) 
+          +→ 95.8% → 96.0% (Sep 2026). "90-96% in FY26" = **hit**; "85-90
+          +% for FY27" = **behind pace**. Each quarter is cited to its fi
+          +ling and page; links use BSE's viewer URL, because older files
+          + 404 on the direct AttachLive path. Gave up: nothing; this is 
+          +4 cheap calls per bank, cached.                               
+       96 +- **No deadline → direction of travel, never an average.** "In
+          +ch closer to 26-28%" / "next few quarters" / long-term bands a
+          +re judged on where the number went since the call that made th
+          +e promise, with the quarterly path shown: `Moved away: 25.3% →
+          + 24.0% → 24.0% (Q4 FY26 → Q2 FY27) vs target ≥26%`. Verdicts: 
+          +hit (in the band now) / moved closer / no change / moved away.
+          + A fiscal-year target with no year named ("exit at 25% plus") 
+          +counts as no deadline. Deadline targets keep hit/miss (ended) 
+          +and on track/behind pace (running), and also show the path.   
+       97 +- **One margin definition per company.** Each call's extractio
+          +n also returns the headline margin management states for that 
+          +quarter (with quote and page; Python rejects it unless the num
+          +ber is in its own quote). If every call states one on the same
+          + basis, that series is the company's margin, e.g. TCS "Operati
+          +ng margin (as reported)", ASIANPAINT "PBDIT margin". Otherwise
+          + it is computed from the results table and labelled ("EBITDA m
+          +argin (computed: operating profit over sales)", or EBIT when t
+          +he company guides on EBIT). Definitions are never mixed within
+          + a company. Lenders' margin is NIM: reported or nothing, becau
+          +se the table can't compute it.                                
+       98 +- **Promise selection: financial and checkable first, 4-6 per 
+          +company.** The prompt asks for numeric financial guidance (gro
+          +wth, margins, profit, capex, ratios) and at most 1 dated opera
+          +tional target per call, and skips strategy talk. Python dedupe
+          +s across calls on the extracted numbers (metric, bounds, fisca
+          +l year), keeping the oldest mention, which has the longest tra
+          +ck record ("$5 billion by FY31" = "$5 billion by March 2031").
+          + It then drops soft or operational promises nothing measured a
+          +nd keeps 6: measured first, financial first, oldest first.    
+       99 +- **Rules guard the extractor (found in the first 22-ticker ru
+          +n, where verdicts were wrong):**                              
+      100 +  - *Segment and non-revenue targets are never measured with c
+          +ompany totals.* POLYCAB's FMEG "8-10% EBITDA by FY30" had been
+          + scored "moved away" against the company's 14%; L&T order infl
+          +ow and Bajaj AUM growth had been scored as revenue growth. Fix
+          +ed with an extractor flag `company_total` plus a Python keywor
+          +d override (order, inflow, AUM, volume, loan, deposit, NOV/GMV
+          +, customers, exports, segment…). These now go to evidence from
+          + later calls, or stay not-yet-measurable.                     
+      101 +  - *Direction:* cost-like targets (cost of funds, opex, NPA, 
+          +working capital, net debt) are ceilings ("7.41% vs 7.55-7.60%"
+          + is a hit, not a miss). A "ceiling" on the company's own growt
+          +h or margin is an extraction slip and becomes a floor. "15-15%
+          +" shows as "15%".                                             
+      102 +  - *Margin changes aren't margin levels:* "wage-hike impact o
+          +f 150-200 bps" is never compared with a 24% margin.           
+      103 +  - *Model verdicts are checked in Python:* every number in th
+          +e model's reason must appear in the evidence or the promise (D
+          +IXON's reason cited a "21,794 crore" that is in no quote); a "
+          +miss" before the period has ended becomes not-yet-measurable (
+          +one quarter's telecom revenue against a full-year target). Evi
+          +dence must be about the same metric: a 19% *net* margin can't 
+          +judge an operating-margin promise.                            
+      104 +  - The verdict model now gets each target's bounds and direct
+          +ion ("lower is better").                                      
+      105 +- **Broken transcript links don't break a company.** MARUTI's 
+          +screener links are company-site viewer pages, not PDFs (5 of 6
+          +). A dead link now falls back to the BSE filing in the "Earnin
+          +gs Call Transcript" subcategory, and failing that the call is 
+          +skipped and listed in `skipped_calls`, never a crash. MARUTI w
+          +ent from 0 calls to 4.                                        
+      106 +- **Honest gaps:** ITC and TRENT publish no call transcripts (
+          +screener lists only presentations), so PvD is empty for them. 
+          +BHARTIARTL and CDSL gave no numeric guidance in 4 calls (check
+          +ed by searching the transcripts). Cheap-model recall isn't per
+          +fect: DEEPAKNTR's "14-15% EBIT next year" was missed on one ex
+          +traction and found on the next. Long-dated targets (FY29-FY31)
+          + and segment targets are most of the remaining not-yet-measura
+          +ble verdicts; that is the honest answer, not a bug.           
+      107 +- **Research outside the portfolio:** ASTRAL and TITAN (the da
+          +y-1 plan's suggestions) were run with the same code; nothing i
+          +s ticker-specific.                                            
+      108 +                                                              
+      109  - **Maruti's parent-company results no longer count as Maruti'
+           s results.** A company's own results are "approved by the boar
+           d", never "issued by" someone, so "results ... issued/released
+           /declared by" turns a results match into a press release (P2) 
+           with a note. Tested on the real row.
+      110  
+      111  ## Spike findings (11 Nov)
+
+● I'll also mark the old "next option (not built)" note in DECISIONS.md as
+  superseded:
+
+● Update(DECISIONS.md)  ⎿  Added 1 line, removed 1 line
+      90    - percentage-level targets the table can't hold (CD ratio, CA
+          SA) are checked against the newest % management reported on a l
+          ater call: the model only points at the statement, Python parse
+          s the number and decides.
+      91    - The model judges only what's left (non-numeric promises). A
+           verdict whose evidence can't be shown becomes not-yet-measurab
+          le.
+      92    - Questions are dropped as promises (one TCS "promise" was an
+           analyst asking about the target).
+      93 -  - Result: TCS 3 promises, 2 measured (both behind pace: EBIT 
+         -margin 24.4% since the Q3 FY26 call vs 26-28%; management's own
+         - "24%" vs "exit at 25% plus"). HDFCBANK 3 promises, all still n
+         -ot-yet-measurable, honestly: after setting "CD ratio 85-90% by 
+         -FY27" management never states the ratio again on a call (Q4 FY2
+         -6: "LDR is not in focus"), and transcripts + annual reports are
+         - the only pull-side sources. Next option (not built): read adva
+         -nces and deposits from the bank's results filing and compute th
+         -e CD ratio in Python.                                          
+      93 +  - Result: TCS 3 promises, 2 measured (both behind pace: EBIT 
+         +margin 24.4% since the Q3 FY26 call vs 26-28%; management's own
+         + "24%" vs "exit at 25% plus"). HDFCBANK 3 promises, all still n
+         +ot-yet-measurable, honestly: after setting "CD ratio 85-90% by 
+         +FY27" management never states the ratio again on a call (Q4 FY2
+         +6: "LDR is not in focus"), and transcripts + annual reports are
+         + the only pull-side sources. ~~Next option (not built): read ad
+         +vances and deposits from the bank's results filing and compute 
+         +the CD ratio in Python.~~ Built; see "PvD review" below.       
+      94  ### PvD review (12 Nov, user's decisions 1-5)
+      95  - **Results filings are primary sources on the research side to
+          o.** They are the company's own exchange filings. Bank CD ratio
+           = advances / deposits, computed in Python from the **standalon
+          e Statement of Assets and Liabilities** in each quarter's resul
+          ts filing on BSE. The cheap model only copies the two lines, fr
+          om that one page (or the whole PDF when the filing is a scan wi
+          th no text layer, as HDFCBANK's Q4 FY26 was). Python checks the
+           column date is the quarter end and the ratio is between 30% an
+          d 200%. HDFCBANK: 98.7% (Dec 2025) → 94.6% (Mar 2026) → 95.8% →
+           96.0% (Sep 2026). "90-96% in FY26" = **hit**; "85-90% for FY27
+          " = **behind pace**. Each quarter is cited to its filing and pa
+          ge; links use BSE's viewer URL, because older files 404 on the 
+          direct AttachLive path. Gave up: nothing; this is 4 cheap calls
+           per bank, cached.
+      96  - **No deadline → direction of travel, never an average.** "Inc
+          h closer to 26-28%" / "next few quarters" / long-term bands are
+           judged on where the number went since the call that made the p
+          romise, with the quarterly path shown: `Moved away: 25.3% → 24.
+          0% → 24.0% (Q4 FY26 → Q2 FY27) vs target ≥26%`. Verdicts: hit (
+          in the band now) / moved closer / no change / moved away. A fis
+          cal-year target with no year named ("exit at 25% plus") counts 
+          as no deadline. Deadline targets keep hit/miss (ended) and on t
+          rack/behind pace (running), and also show the path.
+
+● The DECISIONS.md entries are drafted. Waiting for the final run before adding
+  the table and the PLAN.md status.
+
+● Background command "Final PvD run for all 22 tickers with guards" completed
+(exit code 0)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Monitor event: "Final PvD batch: remaining companies"
+  [Monitor expired after 30m with 10 events delivered. Re-arm it if you still
+  need the watch.]
+
+● The final run finished with no crashes, but 45 of 72 promises (62%) can't be
+  measured yet. I'm breaking down why before I report, since you said the hero
+  feature shouldn't be mostly unmeasured. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Most of the 36 unmeasurable verdicts are segment or volume targets that the
+  guards now refuse to score on company totals, so the real gap is unsourced
+  segment actuals. I'm recording that in DECISIONS.md and PLAN.md next.
+  · summary
+
+● Update(DECISIONS.md)
+  ⎿  Added 29 lines
+      105  - **Broken transcript links don't break a company.** MARUTI's 
+           screener links are company-site viewer pages, not PDFs (5 of 6
+           ). A dead link now falls back to the BSE filing in the "Earnin
+           gs Call Transcript" subcategory, and failing that the call is 
+           skipped and listed in `skipped_calls`, never a crash. MARUTI w
+           ent from 0 calls to 4.
+      106  - **Honest gaps:** ITC and TRENT publish no call transcripts (
+           screener lists only presentations), so PvD is empty for them. 
+           BHARTIARTL and CDSL gave no numeric guidance in 4 calls (check
+           ed by searching the transcripts). Cheap-model recall isn't per
+           fect: DEEPAKNTR's "14-15% EBIT next year" was missed on one ex
+           traction and found on the next. Long-dated targets (FY29-FY31)
+            and segment targets are most of the remaining not-yet-measura
+           ble verdicts; that is the honest answer, not a bug.
+      107  - **Research outside the portfolio:** ASTRAL and TITAN (the da
+           y-1 plan's suggestions) were run with the same code; nothing i
+           s ticker-specific.
+      108 +- **Result of the 22-ticker run (12 Nov, after the guards abov
+          +e), last 4 results calls each:**                              
+      109  
+      110 +  | Company | Promises | Verdicts | Margin used | Errors |    
+      111 +  |---|---|---|---|---|                                       
+      112 +  | RELIANCE | 2 | 2 nym | EBITDA (computed) | - |            
+      113 +  | HDFCBANK | 3 | 1 hit, 1 behind pace, 1 nym | - (bank) | - 
+          +|                                                             
+      114 +  | TCS | 2 | 1 behind pace, 1 moved away | Operating (reporte
+          +d) | - |                                                      
+      115 +  | BHARTIARTL | 0 | no numeric guidance | EBITDAaL (reported)
+          + | - |                                                        
+      116 +  | ITC | 0 | no transcripts published | - | - |              
+      117 +  | LT | 6 | 3 hit, 1 on track, 2 miss | EBITDA (reported) | -
+          + |                                                            
+      118 +  | SUNPHARMA | 4 | 1 hit, 1 on track, 2 nym | EBITDA (reporte
+          +d) | - |                                                      
+      119 +  | MARUTI | 1 | 1 nym | EBIT (computed) | 4 transcripts via B
+          +SE fallback |                                                 
+      120 +  | BAJFINANCE | 6 | 2 hit, 1 on track, 3 nym | - (NBFC) | - |
+      121 +  | ASIANPAINT | 6 | 1 hit, 1 on track, 1 moved away, 3 nym | 
+          +PBDIT (reported) | - |                                        
+      122 +  | TRENT | 0 | no transcripts published | - | - |            
+      123 +  | ETERNAL | 4 | 4 nym | EBITDA (computed) | - |             
+      124 +  | DIXON | 6 | 6 nym | EBITDA (computed) | 503 on the first r
+          +un; re-run fine |                                             
+      125 +  | PERSISTENT | 3 | 3 nym (USD targets) | EBIT (computed) | -
+          + |                                                            
+      126 +  | POLYCAB | 6 | 6 nym (segment / FY30) | EBITDA (reported) |
+          + - |                                                          
+      127 +  | TATAPOWER | 4 | 2 partial, 2 nym | EBITDA (computed) | - |
+      128 +  | IRCTC | 1 | 1 miss | EBITDA (reported) | - |              
+      129 +  | CDSL | 0 | no numeric guidance | - | - |                  
+      130 +  | KPITTECH | 5 | 1 partial, 1 behind pace, 1 moved away, 2 n
+          +ym | EBITDA (computed) | - |                                  
+      131 +  | DEEPAKNTR | 1 | 1 nym | EBITDA (reported) | - |           
+      132 +  | ASTRAL | 6 | 2 hit, 4 nym | EBITDA (computed) | - |       
+      133 +  | TITAN | 6 | 1 on track, 5 nym | EBIT (computed) | - |     
+      134 +                                                              
+      135 +  Total: 72 promises; 27 measured (10 hit, 5 on track, 3 parti
+          +al, 3 behind pace, 3 moved away, 3 miss), **45 not-yet-measura
+          +ble (62%)**. Of those 45: 36 are segment / volume / other meas
+          +ures that no later call states a number for, 5 are FY28+ targe
+          +ts, and 4 had a model verdict withheld by the Python checks. 0
+          + crashes. The run before the guards had only 34 not-yet-measur
+          +able, but about 10 of its "measured" verdicts were wrong (segm
+          +ent targets scored on company totals, cost targets backwards).
+          + Fewer, correct verdicts beat more, wrong ones. **The next lev
+          +er (not built):** segment actuals from the segment-results pag
+          +e of the same exchange filings (a primary source), which would
+          + measure POLYCAB, ETERNAL, DIXON, ASTRAL and TITAN's segment t
+          +argets.                                                       
+      136 +  - Cost: the three full runs plus fixes cost $1.94 / 226 call
+          +s at paid list prices (free tiers in practice; most of it was 
+          +re-extracting ~90 transcripts after each prompt change). A cac
+          +hed re-run of all 22 costs $0.008. **LLM spend to date: $2.40 
+          +/ 496 calls.**                                                
+      137 +                                                              
+      138  - **Maruti's parent-company results no longer count as Maruti'
+           s results.** A company's own results are "approved by the boar
+           d", never "issued by" someone, so "results ... issued/released
+           /declared by" turns a results match into a press release (P2) 
+           with a note. Tested on the real row.
+      139  
+      140  ## Spike findings (11 Nov)
+
+● Update(PLAN.md)
+  ⎿  Added 7 lines
+      167  - Maruti parent-results misclassification fixed (rule + test).
+            82 backend tests pass.
+      168  - LLM spend to date: **$0.46 / 270 calls** (PvD all-time $0.27
+            / 40 calls, most of it re-extraction while prompts changed).
+      169  
+      170 +## 3h. Status at 12 Nov, evening (PvD review, user decisions 1
+          +-5)                                                           
+      171 +- Bank CD ratio from the bank's own results filings (`pull/ban
+          +k.py`, standalone balance sheet, Python ratio). HDFCBANK: FY26
+          + 90-96% **hit** (94.6%), FY27 85-90% **behind pace** (96.0%), 
+          +each quarter cited to its filing page.                        
+      172 +- No-deadline promises → direction of travel with the quarterl
+          +y path (hit / moved closer / no change / moved away). One marg
+          +in definition per company: management's reported margin if eve
+          +ry call states it, else computed and labelled. Selection: fina
+          +ncial first, dedupe across calls, max 6.                      
+      173 +- Python guards after the first 22-ticker run showed wrong ver
+          +dicts: segment / order / AUM targets never measured on company
+          + totals, cost targets are ceilings, model reasons may only cit
+          +e numbers in the evidence, no model "miss" before the period e
+          +nds, dead transcript links fall back to BSE (MARUTI 0 → 4 call
+          +s).                                                           
+      174 +- 22 tickers (20 + ASTRAL, TITAN): 72 promises, 27 measured, 4
+          +5 not-yet-measurable (mostly segment targets), 0 crashes; tabl
+          +e in DECISIONS.md. 94 backend tests pass.                     
+      175 +- **Open:** 62% not-yet-measurable. Next lever = segment actua
+          +ls from the results filings' segment page. LLM spend to date *
+          +*$2.40 / 496 calls** (list prices; free tiers).               
+      176 +                                                              
+      177  ## 4. Day-by-day
+      178  
+      179  **Wed 11 (done):** repo init, spikes, decisions. Session expor
+           t.
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn" && sed -i 's/^Current
+      status: see §3g (PvD rework)/Current status: see §3h (PvD review), §3g
+      (PvD rework)/' PLAN.md…)
+  ⎿  1 file changed (binary, mode only or too large to show)
+  ⎿  (timeout 5m)
+
+● The suite is 92 tests, not 94; correcting PLAN.md. Then I'll commit in four
+  logical pieces, with no attribution lines per your CLAUDE.md. I'm leaving the
+  untracked build-history file alone.
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn" && sed -i 's/0 crashes;
+      table in DECISIONS.md. 94 backend tests pass./0 crashes; table in
+      DECISIONS.md. 92 backend…)
+  ⎿  Updated PLAN.md (+1 -1)
+      171  - Bank CD ratio from the bank's own results filings (`pull/ban
+           k.py`, standalone balance sheet, Python ratio). HDFCBANK: FY26
+            90-96% **hit** (94.6%), FY27 85-90% **behind pace** (96.0%), 
+           each quarter cited to its filing page.
+      172  - No-deadline promises → direction of travel with the quarterl
+           y path (hit / moved closer / no change / moved away). One marg
+           in definition per company: management's reported margin if eve
+           ry call states it, else computed and labelled. Selection: fina
+           ncial first, dedupe across calls, max 6.
+      173  - Python guards after the first 22-ticker run showed wrong ver
+           dicts: segment / order / AUM targets never measured on company
+            totals, cost targets are ceilings, model reasons may only cit
+           e numbers in the evidence, no model "miss" before the period e
+           nds, dead transcript links fall back to BSE (MARUTI 0 → 4 call
+           s).
+      174 -- 22 tickers (20 + ASTRAL, TITAN): 72 promises, 27 measured, 4
+          -5 not-yet-measurable (mostly segment targets), 0 crashes; tabl
+          -e in DECISIONS.md. 94 backend tests pass.                     
+      174 +- 22 tickers (20 + ASTRAL, TITAN): 72 promises, 27 measured, 4
+          +5 not-yet-measurable (mostly segment targets), 0 crashes; tabl
+          +e in DECISIONS.md. 92 backend tests pass.                     
+      175  - **Open:** 62% not-yet-measurable. Next lever = segment actua
+           ls from the results filings' segment page. LLM spend to date *
+           *$2.40 / 496 calls** (list prices; free tiers).
+      176  
+      177  ## 4. Day-by-day
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● I've built all five decisions, run all 22 tickers, and committed and pushed (4
+  commits, ead9c00 → 46754b5), with DECISIONS.md and PLAN.md §3h updated. The
+  main problem: 45 of 72 promises (62%) are still "not-yet-measurable", so the
+  hero feature is mostly unmeasured again.
+
+  Your five decisions:
+  1. CD ratio: advances and deposits now come from each quarter's results filing
+     on BSE, and Python divides them. HDFCBANK went 98.7% → 94.6% → 95.8% →
+     96.0%. "90–96% in FY26" is a hit (94.6% at 31 Mar 2026). "85–90% for FY27"
+     is behind pace (96.0% at Sep 2026). Each quarter cites its filing and page.
+  2. Promises with no deadline: judged by direction of travel since the promise,
+     with the quarterly path and no averages. For example TCS: "Moved away:
+     25.3% → 24.0% → 24.0% vs target ≥26%".
+  3. One margin per company: management's own reported margin if every call
+     states one (TCS operating margin, ASIANPAINT PBDIT). Otherwise it's
+     computed from the results table and labelled; the two are never mixed.
+  4. Selection: financial promises first, duplicates across calls merged (oldest
+     kept), at most 6 per company.
+  5. Run: all 22 tickers, table below.
+
+  Fixes the run forced. The first run produced about 10 wrong verdicts, so I
+  added checks in Python:
+  - Segment targets: these were being scored on company totals, e.g. POLYCAB's
+    FMEG segment margin and L&T's order inflow. They no longer are.
+  - Costs: targets like cost of funds now count lower as better.
+  - Model verdicts:
+    - Every number in the model's reasoning must appear in the cited evidence.
+    - A model "miss" before the period ends is withheld.
+  - Dead transcript links: these now fall back to the BSE filing. MARUTI went
+    from crashing to 4 calls read.
+
+  That's why 34 not-yet-measurable became 45. I chose fewer correct verdicts
+  over more wrong ones.
+
+  ┌────────────┬──────────┬──────────────────────────────┬──────────────────┐
+  │  Company   │ Promises │           Verdicts           │      Errors      │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ RELIANCE   │ 2        │ 2 not measurable             │ –                │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ HDFCBANK   │ 3        │ 1 hit, 1 behind pace, 1 not  │ –                │
+  │            │          │ measurable                   │                  │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ TCS        │ 2        │ 1 behind pace, 1 moved away  │ –                │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ BHARTIARTL │ 0        │ no numeric guidance given    │ –                │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ ITC        │ 0        │ no transcripts published     │ –                │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ LT         │ 6        │ 3 hit, 1 on track, 2 miss    │ –                │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ SUNPHARMA  │ 4        │ 1 hit, 1 on track, 2 not     │ –                │
+  │            │          │ measurable                   │                  │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ MARUTI     │ 1        │ 1 not measurable             │ fixed (BSE       │
+  │            │          │                              │ fallback)        │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ BAJFINANCE │ 6        │ 2 hit, 1 on track, 3 not     │ –                │
+  │            │          │ measurable                   │                  │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ ASIANPAINT │ 6        │ 1 hit, 1 on track, 1 moved   │ –                │
+  │            │          │ away, 3 not measurable       │                  │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ TRENT      │ 0        │ no transcripts published     │ –                │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ ETERNAL    │ 4        │ 4 not measurable             │ –                │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ DIXON      │ 6        │ 6 not measurable             │ Gemini 503 once; │
+  │            │          │                              │  re-run fine     │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ PERSISTENT │ 3        │ 3 not measurable (USD        │ –                │
+  │            │          │ targets)                     │                  │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ POLYCAB    │ 6        │ 6 not measurable (segment /  │ –                │
+  │            │          │ FY30)                        │                  │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ TATAPOWER  │ 4        │ 2 partial, 2 not measurable  │ –                │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ IRCTC      │ 1        │ 1 miss                       │ –                │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ CDSL       │ 0        │ no numeric guidance given    │ –                │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ KPITTECH   │ 5        │ 1 partial, 1 behind pace, 1  │ –                │
+  │            │          │ moved away, 2 not measurable │                  │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ DEEPAKNTR  │ 1        │ 1 not measurable             │ –                │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ ASTRAL     │ 6        │ 2 hit, 4 not measurable      │ –                │
+  ├────────────┼──────────┼──────────────────────────────┼──────────────────┤
+  │ TITAN      │ 6        │ 1 on track, 5 not measurable │ –                │
+  └────────────┴──────────┴──────────────────────────────┴──────────────────┘
+
+  Why so much is unmeasured: 36 of the 45 are segment or volume targets that no
+  later call puts a number on. The likely fix, not built, is reading segment
+  numbers from the segment page of the same results filings. That's your call. I
+  used ASTRAL and TITAN as the outside tickers because the day-1 plan suggested
+  them. LLM spend to date is $2.40 across 496 calls at list prices (actual cost
+  $0 on free tiers). 92 backend tests pass.
+
+  I hand-checked a sample of verdicts across about 12 companies, not every
+  promise. One weakness remains: the cheap model sometimes misses a target (it
+  found DEEPAKNTR's "14–15% EBIT" only on the second extraction).
+
+  Please /export this session into build-history/.

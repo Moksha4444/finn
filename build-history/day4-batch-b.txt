@@ -1,0 +1,2564 @@
+
+> Read CLAUDE.md, PLAN.md (latest status) and DECISIONS.md. Batch B is the LAST
+  backend batch; the backend freezes at 6 PM IST today.
+  0. FIRST: give me click-by-click steps to deploy web/ to Vercel as it is now
+  (root directory, build settings, any env vars), so I can deploy while you
+  work. Then continue.
+  1. Live research for any NSE symbol (never-cut): a Render endpoint starts a
+  background job and returns a job id; the page polls and shows plain progress
+  stages ("Waking up the research server…", "Finding filings…", "Reading Q2
+  FY27 transcript (2/4)…", "Checking promises…", "Writing bull & bear…"). Cache
+  results so a second visit is instant. Clean failure states (unknown symbol,
+  no transcripts, quota) that still show whatever is available, e.g. the
+  financial snapshot even if PvD fails. One job at a time; time out gracefully.
+  2. Groq/Gemini fallbacks so one provider's quota outage can't break live
+  research. Label the model used.
+  3. Quota protection: read only what's needed (latest 4 transcripts,
+  page-level PDFs), log tokens, and add a daily cap with a polite message so
+  one reviewer can't exhaust the free quotas.
+  4. Wire the Research search to it: an unresearched symbol shows a "Research
+  this company" button → progress → company page. Minimal UI for now.
+  5. Render env vars (GEMINI_API_KEY, GROQ_API_KEY) and the Vercel env var
+  pointing at the Render API: stop and give me click-by-click steps.
+  6. Test end to end FROM the deployed Vercel + Render (not just locally) on 2
+  tickers outside our 22: one mid-cap with transcripts and one bank/NBFC.
+  Report time taken, tokens, and what each page showed.
+  7. Small fixes: promise selection ranks measured promises first, then
+  headline metrics (revenue, margin, profit), so L&T's FY26 8.5% EBITDA target
+  is shown; make sure every margin label states how it's computed (L&T 8.7% vs
+  the old 14.1%).
+  8. Gemini has reset: re-run the 5 quota-hit tickers (PERSISTENT, RELIANCE,
+  SUNPHARMA, TATAPOWER, TITAN), then the final re-ingest + consistency gate at
+  0 problems.
+     Commit and push, update PLAN.md status, and stop by 6 PM with a summary.
+
+● I'll start with the files, then give you the Vercel steps first.
+
+  Ran 4 shell commands (ctrl+o to expand)
+
+● Step 0 is deploying web/ to Vercel with no env vars yet: import the finn repo,
+  set Root Directory to web, and click Deploy. Pushes to main will redeploy
+  automatically after that, and I'm continuing with the backend. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The LLM router already has the Groq↔Gemini fallback chain and model labels, so
+  item 2 is mostly done. Next I'm reading the research pipeline to see where a
+  live job would hook in.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Now pvd.run, to see where progress hooks would go.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● I'm building a background-job API in api.py with stage hooks in the existing
+  pvd.run and research.build, a live mode in llm.run without the long retries, a
+  daily job cap, and a frontend that calls the API only for symbols not already
+  precomputed. I'm checking the clock and earlier Render notes first. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● It's 14:18 IST, so I have about 3h40m until the 18:00 freeze. Render is
+  already live at finn-api-72tc.onrender.com, which means step 5 is only env
+  vars.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Now the frontend side: how the research page loads data and what the search
+  does for an unresearched symbol.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Backend plan is set; the frontend will reuse CompanyResearch for live results.
+  Checking how the page renders missing bull/bear and model labels.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Writing the backend. First the live flag in the router and stage hooks in
+  pvd.run:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && python - <<'EOF'
+      import re,pathlib…)
+  ⎿  2 files changed (binary, mode only or too large to show)
+
+● Now research.build: in live mode, if PvD fails, the page still gets the
+  snapshot, prices and a plain reason.
+
+● Update(backend\finn\pull\research.py)
+  ⎿  Added 19 lines, removed 2 lines
+      310      return src
+      311  
+      312  
+      313 -def build(symbol: str) -> dict:                               
+      313 +def pvd_failure(e: Exception) -> str:                         
+      314 +    """The page's line when the promise check couldn't run (li
+          +ve research shows everything else)."""                        
+      315 +    if isinstance(e, (llm.Exhausted, llm.Retryable)):         
+      316 +        return "The promise check couldn't run: today's free A
+          +I quota is used up or the models are overloaded. The figures b
+          +elow come straight from the filings."                         
+      317 +    return f"The promise check couldn't run ({type(e).__name__
+          +}). The figures below come straight from the filings."        
+      318 +                                                              
+      319 +                                                              
+      320 +def build(symbol: str, live: bool = False) -> dict:           
+      321 +    """live: a first visit from the app. If the promise check 
+          +fails, the page still gets the snapshot, prices and a         
+      322 +    reason (pvd_error) instead of nothing; an unknown symbol s
+          +till raises (screener 404)."""                                
+      323      sym = symbol.upper()
+      324      f = OUT / f"{sym}.json"
+      325      # read before pvd.run(), which rewrites the file without i
+           t
+     ...
+      329          co, reported, texts = out.pop("_company"), out.pop("_r
+           eported"), out.pop("_texts")
+      330          out.pop("_calls")
+      331      except Exception as e:  # e.g. an uncached cheap-model cal
+           l on a quota day: keep last good PvD, rebuild the rest
+      323 -        if not f.exists():                                    
+      332 +        if not f.exists() and live:                           
+      333 +            print(f"  {sym}: PvD failed live ({type(e).__name_
+          +_}: {str(e)[:120]})")                                         
+      334 +            co = pvd.company(sym)  # unknown symbol raises her
+          +e                                                             
+      335 +            out = {"symbol": sym, "name": co["name"], "generat
+          +ed_at": dt.datetime.now().isoformat(timespec="minutes"),      
+      336 +                   "latest_quarter": co["quarters"]["periods"]
+          +[-1] if co["quarters"]["periods"] else None, "calls": [], "ski
+          +pped_calls": [],                                              
+      337 +                   "margin_definition": None, "model_note": No
+          +ne, "score": {}, "promises": [], "pvd_error": pvd_failure(e)} 
+      338 +            reported, texts = [], {}                          
+      339 +            e = None                                          
+      340 +        if e and not f.exists():                              
+      341              raise
+      342          print(f"  {sym}: PvD not re-run ({type(e).__name__}: {
+           str(e)[:100]}); kept the previous promises")
+      343          out = {k: v for k, v in json.loads(f.read_text(encodin
+           g="utf-8")).items() if k not in ("snapshot", "bull_bear", "pri
+           ces", "summary", "sources")}
+
+  Read 1 file (ctrl+o to expand)
+
+● That edit fell through into the "kept previous" path. Restructuring it as an
+  explicit if/elif:
+
+● Update(backend\finn\pull\research.py)
+  ⎿  Added 6 lines, removed 6 lines
+      336                     "latest_quarter": co["quarters"]["periods"]
+           [-1] if co["quarters"]["periods"] else None, "calls": [], "ski
+           pped_calls": [],
+      337                     "margin_definition": None, "model_note": No
+           ne, "score": {}, "promises": [], "pvd_error": pvd_failure(e)}
+      338              reported, texts = [], {}
+      339 -            e = None                                          
+      340 -        if e and not f.exists():                              
+      339 +        elif not f.exists():                                  
+      340              raise
+      342 -        print(f"  {sym}: PvD not re-run ({type(e).__name__}: {
+          -str(e)[:100]}); kept the previous promises")                  
+      343 -        out = {k: v for k, v in json.loads(f.read_text(encodin
+          -g="utf-8")).items() if k not in ("snapshot", "bull_bear", "pri
+          -ces", "summary", "sources")}                                  
+      344 -        co, reported, texts = pvd.company(sym), [], {}        
+      345 -        for c in out["calls"]:                                
+      341 +        else:                                                 
+      342 +          print(f"  {sym}: PvD not re-run ({type(e).__name__}:
+          + {str(e)[:100]}); kept the previous promises")                
+      343 +          out = {k: v for k, v in json.loads(f.read_text(encod
+          +ing="utf-8")).items() if k not in ("snapshot", "bull_bear", "p
+          +rices", "summary", "sources")}                                
+      344 +          co, reported, texts = pvd.company(sym), [], {}      
+      345 +          for c in out["calls"]:                              
+      346              try:
+      347                  texts[c["quarter"]] = pdf.pages(pdf.open_pdf(p
+           vd.transcript(c["transcript"])))
+      348              except Exception:
+
+  Read 1 file (ctrl+o to expand)
+
+● Update(backend\finn\pull\research.py)
+  ⎿  Added 12 lines, removed 10 lines
+      339          elif not f.exists():
+      340              raise
+      341          else:
+      342 -          print(f"  {sym}: PvD not re-run ({type(e).__name__}:
+          - {str(e)[:100]}); kept the previous promises")                
+      343 -          out = {k: v for k, v in json.loads(f.read_text(encod
+          -ing="utf-8")).items() if k not in ("snapshot", "bull_bear", "p
+          -rices", "summary", "sources")}                                
+      344 -          co, reported, texts = pvd.company(sym), [], {}      
+      345 -          for c in out["calls"]:                              
+      346 -            try:                                              
+      347 -                texts[c["quarter"]] = pdf.pages(pdf.open_pdf(p
+          -vd.transcript(c["transcript"])))                              
+      348 -            except Exception:                                 
+      349 -                pass                                          
+      342 +            print(f"  {sym}: PvD not re-run ({type(e).__name__
+          +}: {str(e)[:100]}); kept the previous promises")              
+      343 +            out = {k: v for k, v in json.loads(f.read_text(enc
+          +oding="utf-8")).items() if k not in ("snapshot", "bull_bear", 
+          +"prices", "summary", "sources")}                              
+      344 +            co, reported, texts = pvd.company(sym), [], {}    
+      345 +            for c in out["calls"]:                            
+      346 +                try:                                          
+      347 +                    texts[c["quarter"]] = pdf.pages(pdf.open_p
+          +df(pvd.transcript(c["transcript"])))                          
+      348 +                except Exception:                             
+      349 +                    pass                                      
+      350      urls = {c["quarter"]: c["transcript"] for c in out["calls"
+           ]}
+      351 +    pvd.stage("Building the financial snapshot…")             
+      352      snap = snapshot(co)
+      353      ev = evidence(out["promises"], reported, analyst_questions
+           (texts, urls), snap, urls)
+      353 -    out |= {"sector": co.get("sector"), "summary": summary(out
+          -["promises"], len(out["calls"])), "prices": price_lines(sym), 
+      354 -            "snapshot": snap, "bull_bear": bull_bear(out["name
+          -"], out.get("latest_quarter"), ev, sym, prev, snap), "sources"
+          -: sources(out, co)}                                           
+      354 +    out |= {"sector": co.get("sector"), "summary": summary(out
+          +["promises"], len(out["calls"])), "prices": price_lines(sym), 
+          +"snapshot": snap}                                             
+      355 +    pvd.stage("Writing bull & bear…")                         
+      356 +    out |= {"bull_bear": bull_bear(out["name"], out.get("lates
+          +t_quarter"), ev, sym, prev, snap), "sources": sources(out, co)
+          +}                                                             
+      357      tmp = f.with_suffix(".tmp")
+      358      tmp.write_text(json.dumps(out, ensure_ascii=False, indent=
+           1), encoding="utf-8")
+      359      tmp.replace(f)
+
+● Now the API. Checking how fetch signals a 404 first:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Writing the API: one background job at a time, stage text, a timeout, a daily
+  cap, and a tokens/cost readout per job from the router's log.
+
+● Write(backend\finn\api.py)
+  ⎿  Added 113 lines, removed 3 lines
+       1 -"""HTTP API. For now: health + a BSE reachability probe (tests 
+         -whether BSE answers a cloud IP).                               
+       1 +"""HTTP API: health, a BSE reachability probe, and live researc
+         +h for any NSE symbol.                                          
+       2 +Live research = one background job at a time (POST /research/{s
+         +ymbol} -> job id; GET /jobs/{id} -> stage text),               
+       3 +results cached on disk so a second visit is instant, and a dail
+         +y cap so one visitor can't spend the free AI quotas.           
+       4  Run locally from backend/: ../.venv/Scripts/python -m uvicorn f
+          inn.api:app --reload"""
+       3 -import datetime as dt                                          
+       4 -from fastapi import FastAPI                                    
+       5 +import os, re, json, time, uuid, threading, datetime as dt     
+       6 +import httpx                                                   
+       7 +from fastapi import FastAPI, HTTPException                     
+       8 +from fastapi.middleware.cors import CORSMiddleware             
+       9 +from finn import llm                                           
+      10 +from finn.config import CACHE                                  
+      11 +from finn.pull import pvd, research                            
+      12  from finn.sources import bse
+      13  
+      14 +llm.LIVE = True  # a reader is waiting: short retries, and the 
+         +fast model may answer when both strong ones are down           
+      15  app = FastAPI(title="FINN")
+      16 +app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_m
+         +ethods=["GET", "POST"], allow_headers=["*"])                   
+      17  
+      18 +SYMBOL = re.compile(r"[A-Z0-9&-]{1,20}")                       
+      19 +DAILY_JOBS = int(os.getenv("FINN_DAILY_JOBS", "8"))  # ~20k str
+         +ong-model tokens a company; Groq's free day is 200k            
+      20 +TIMEOUT = int(os.getenv("FINN_JOB_TIMEOUT", "480"))   # seconds
+         + the page waits; the job itself finishes and is cached         
+      21 +LEDGER = CACHE / "live_jobs.jsonl"                             
+      22 +IST = dt.timezone(dt.timedelta(hours=5, minutes=30))           
+      23 +JOBS: dict[str, dict] = {}                                     
+      24 +LOCK = threading.Lock()                                        
+      25  
+      26 +                                                               
+      27  @app.get("/health")
+      28  def health():
+      29      return {"ok": True}
+     ...
+       38          return {"ok": True, "rows": len(rows), "latest": rows[
+           0]["NEWS_DT"] if rows else None}
+       39      except Exception as e:
+       40          return {"ok": False, "error": f"{type(e).__name__}: {e
+           }"[:300]}
+       41 +                                                              
+       42 +                                                              
+       43 +def _sym(symbol: str) -> str:                                 
+       44 +    s = symbol.strip().upper()                                
+       45 +    if not SYMBOL.fullmatch(s):                               
+       46 +        raise HTTPException(400, {"error": "bad_symbol", "mess
+          +age": "That isn't an NSE symbol (letters, digits, & or -)."}) 
+       47 +    return s                                                  
+       48 +                                                              
+       49 +                                                              
+       50 +def _today() -> str:                                          
+       51 +    return dt.datetime.now(IST).date().isoformat()            
+       52 +                                                              
+       53 +                                                              
+       54 +def _used_today() -> int:                                     
+       55 +    """Live research runs started today (IST) that reached the
+          + AI models; an unknown symbol costs nothing."""               
+       56 +    rows = [json.loads(l) for l in LEDGER.read_text(encoding="
+          +utf-8").splitlines()] if LEDGER.exists() else []              
+       57 +    return sum(r["date"] == _today() and r["error"] != "unknow
+          +n_symbol" for r in rows)                                      
+       58 +                                                              
+       59 +                                                              
+       60 +def _cost_since(symbol: str, since: str) -> dict:             
+       61 +    """This run's calls from the router's cost log (llm_calls.
+          +jsonl)."""                                                    
+       62 +    rows = [json.loads(l) for l in llm.LOG.read_text(encoding=
+          +"utf-8").splitlines()] if llm.LOG.exists() else []            
+       63 +    rows = [r for r in rows if r.get("symbol") == symbol and r
+          +["ts"] >= since]                                              
+       64 +    return {"calls": len(rows), "tokens_in": sum(r["tokens_in"
+          +] for r in rows), "tokens_out": sum(r["tokens_out"] for r in r
+          +ows),                                                         
+       65 +            "usd": round(sum(r["usd"] for r in rows), 4), "mod
+          +els": sorted({r["model"] for r in rows})}                     
+       66 +                                                              
+       67 +                                                              
+       68 +def _work(job: dict) -> None:                                 
+       69 +    since = dt.datetime.now().isoformat(timespec="seconds")  #
+          + same clock as the cost log's ts                              
+       70 +    pvd.stage = lambda text: job.update(stage=text)           
+       71 +    try:                                                      
+       72 +        research.build(job["symbol"], live=True)              
+       73 +        job.update(status="done", stage="Done")               
+       74 +    except httpx.HTTPStatusError as e:                        
+       75 +        if e.response.status_code == 404:                     
+       76 +            job.update(status="failed", error="unknown_symbol"
+          +, message=f"No listed company found for {job['symbol']}. Check
+          + the NSE symbol (e.g. TATAMOTORS, not Tata Motors).")         
+       77 +        else:                                                 
+       78 +            job.update(status="failed", error="source", messag
+          +e=f"A data source didn't answer ({e.response.status_code}). Tr
+          +y again in a few minutes.")                                   
+       79 +    except Exception as e:                                    
+       80 +        quota = isinstance(e, (llm.Exhausted, llm.Retryable)) 
+       81 +        job.update(status="failed", error="quota" if quota els
+          +e "error",                                                    
+       82 +                   message="Today's free AI quota is used up. 
+          +Try again tomorrow." if quota else f"Research failed ({type(e)
+          +.__name__}). Try again in a few minutes.")                    
+       83 +        print(f"live research {job['symbol']} failed: {type(e)
+          +.__name__}: {str(e)[:200]}")                                  
+       84 +    finally:                                                  
+       85 +        pvd.stage = lambda text: None                         
+       86 +        job.update(seconds=round(time.time() - job["started"])
+          +, cost=_cost_since(job["symbol"], since))                     
+       87 +        LEDGER.parent.mkdir(parents=True, exist_ok=True)      
+       88 +        with LEDGER.open("a", encoding="utf-8") as fh:        
+       89 +            fh.write(json.dumps({"date": _today(), **{k: job.g
+          +et(k) for k in ("symbol", "status", "error", "seconds", "cost"
+          +)}}) + "\n")                                                  
+       90 +                                                              
+       91 +                                                              
+       92 +def _view(job: dict) -> dict:                                 
+       93 +    out = {k: v for k, v in job.items() if k != "started"}    
+       94 +    if job["status"] == "running":                            
+       95 +        out["seconds"] = round(time.time() - job["started"])  
+       96 +        if out["seconds"] > TIMEOUT:  # the page stops waiting
+          +; the job keeps going and caches its page                     
+       97 +            out |= {"status": "timeout", "message": "This is t
+          +aking longer than usual. The page will be saved when it finish
+          +es: try again in a few minutes."}                             
+       98 +    return out                                                
+       99 +                                                              
+      100 +                                                              
+      101 +@app.get("/research/{symbol}")                                
+      102 +def get_research(symbol: str):                                
+      103 +    f = pvd.OUT / f"{_sym(symbol)}.json"                      
+      104 +    if not f.exists():                                        
+      105 +        raise HTTPException(404, {"error": "not_researched"}) 
+      106 +    return json.loads(f.read_text(encoding="utf-8"))          
+      107 +                                                              
+      108 +                                                              
+      109 +@app.post("/research/{symbol}")                               
+      110 +def start_research(symbol: str):                              
+      111 +    sym = _sym(symbol)                                        
+      112 +    if (pvd.OUT / f"{sym}.json").exists():                    
+      113 +        return {"status": "done", "symbol": sym, "cached": Tru
+          +e}                                                            
+      114 +    with LOCK:                                                
+      115 +        running = [j for j in JOBS.values() if j["status"] == 
+          +"running"]                                                    
+      116 +        if mine := next((j for j in running if j["symbol"] == 
+          +sym), None):                                                  
+      117 +            return _view(mine)                                
+      118 +        if running:                                           
+      119 +            raise HTTPException(409, {"error": "busy", "messag
+          +e": f"Researching {running[0]['symbol']} for someone else righ
+          +t now. Try again in a minute or two."})                       
+      120 +        if _used_today() >= DAILY_JOBS:                       
+      121 +            raise HTTPException(429, {"error": "daily_cap", "m
+          +essage": f"Today's {DAILY_JOBS} on-request research runs are u
+          +sed up (it keeps the demo on free AI quotas). "               
+      122 +                                                              
+          +        "Try again tomorrow, or open one of the researched com
+          +panies."})                                                    
+      123 +        job = {"id": uuid.uuid4().hex[:12], "symbol": sym, "st
+          +atus": "running", "stage": "Starting…", "started": time.time()
+          +}                                                             
+      124 +        JOBS[job["id"]] = job                                 
+      125 +    threading.Thread(target=_work, args=(job,), daemon=True).s
+          +tart()                                                        
+      126 +    return _view(job)                                         
+      127 +                                                              
+      128 +                                                              
+      129 +@app.get("/jobs/{job_id}")                                    
+      130 +def get_job(job_id: str):                                     
+      131 +    if job_id not in JOBS:  # the server restarted (Render fre
+          +e tier sleeps): the page starts a new run                     
+      132 +        raise HTTPException(404, {"error": "unknown_job", "mes
+          +sage": "The research server restarted. Start the research agai
+          +n."})                                                         
+      133 +    return _view(JOBS[job_id])                                
+
+● A race in pvd.run lets a partial file exist before its snapshot is added, so a
+  file's presence shouldn't count as cached while that job runs; I'm also
+  making sure a page that failed its quota check doesn't stay cached forever.
+  · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\api.py (+140 -133)
+        1 -"""HTTP API: health, a BSE reachability probe, and live resear
+          -ch for any NSE symbol.                                        
+        2 -Live research = one background job at a time (POST /research/{
+          -symbol} -> job id; GET /jobs/{id} -> stage text),             
+        3 -results cached on disk so a second visit is instant, and a dai
+          -ly cap so one visitor can't spend the free AI quotas.         
+        4 -Run locally from backend/: ../.venv/Scripts/python -m uvicorn 
+          -finn.api:app --reload"""                                      
+        5 -import os, re, json, time, uuid, threading, datetime as dt    
+        6 -import httpx                                                  
+        7 -from fastapi import FastAPI, HTTPException                    
+        8 -from fastapi.middleware.cors import CORSMiddleware            
+        9 -from finn import llm                                          
+       10 -from finn.config import CACHE                                 
+       11 -from finn.pull import pvd, research                           
+       12 -from finn.sources import bse                                  
+       13 -                                                              
+       14 -llm.LIVE = True  # a reader is waiting: short retries, and the
+          - fast model may answer when both strong ones are down         
+       15 -app = FastAPI(title="FINN")                                   
+       16 -app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_
+          -methods=["GET", "POST"], allow_headers=["*"])                 
+       17 -                                                              
+       18 -SYMBOL = re.compile(r"[A-Z0-9&-]{1,20}")                      
+       19 -DAILY_JOBS = int(os.getenv("FINN_DAILY_JOBS", "8"))  # ~20k st
+          -rong-model tokens a company; Groq's free day is 200k          
+       20 -TIMEOUT = int(os.getenv("FINN_JOB_TIMEOUT", "480"))   # second
+          -s the page waits; the job itself finishes and is cached       
+       21 -LEDGER = CACHE / "live_jobs.jsonl"                            
+       22 -IST = dt.timezone(dt.timedelta(hours=5, minutes=30))          
+       23 -JOBS: dict[str, dict] = {}                                    
+       24 -LOCK = threading.Lock()                                       
+       25 -                                                              
+       26 -                                                              
+       27 -@app.get("/health")                                           
+       28 -def health():                                                 
+       29 -    return {"ok": True}                                       
+       30 -                                                              
+       31 -                                                              
+       32 -@app.get("/health/bse")                                       
+       33 -def health_bse():                                             
+       34 -    """RELIANCE's last 7 days of filings, uncached. ok=false +
+          - error text if BSE blocks us."""                              
+       35 -    t = dt.date.today()                                       
+       36 -    try:                                                      
+       37 -        rows = bse.announcements("500325", t - dt.timedelta(da
+          -ys=7), t, max_age=0)                                          
+       38 -        return {"ok": True, "rows": len(rows), "latest": rows[
+          -0]["NEWS_DT"] if rows else None}                              
+       39 -    except Exception as e:                                    
+       40 -        return {"ok": False, "error": f"{type(e).__name__}: {e
+          -}"[:300]}                                                     
+     … 233 more lines (ctrl+o to expand)
+● The API imports cleanly. I'm starting it locally and running one real unseen
+  mid-cap (KEI Industries) in the background to shake out bugs while I write the
+  frontend.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Unknown symbols fail cleanly in about 7s and cost 0 tokens. Writing the
+  frontend while KEI runs.
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/web" && python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated web\lib\research.ts (+4 -0)
+      28    prices: { closes: [string, number][]; nifty: [string, number]
+          [] } | null;
+      29    snapshot: Snapshot; bull_bear: { bull: Point[]; bear: Point[]
+          ; dropped: number; model: string; model_note: string | null } |
+           null;
+      30    sources: Cite[];
+      31 +  pvd_error?: string; // live research only: why the promise ch
+         +eck couldn't run (the rest of the page still shows)            
+      32  };
+      33  export type IndexRow = { symbol: string; name: string; sector: 
+          string | null; generated_at: string; summary: Counts };
+      34  
+     ...
+      78  
+      79  export const indexUrl = "/data/research/index.json";
+      80  export const researchUrl = (sym: string) => `/data/research/${e
+          ncodeURIComponent(sym.toUpperCase())}.json`;
+      81 +                                                               
+      82 +// Live research for symbols without a precomputed page (backen
+         +d/finn/api.py on Render). Unset = no live research.            
+      83 +export const API = process.env.NEXT_PUBLIC_API_URL?.replace(/\/
+         +$/, "");                                                       
+
+● Now the Research component: the live flow, the search button, and the
+  pvd_error line.
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/web" && python - <<'PYEOF'
+      import pathlib…)
+  ⎿  Updated web\app\research\page.tsx (+15 -14)
+       1 -"use client";                                                  
+       2 -import { useSearchParams } from "next/navigation";             
+       3 -import { Suspense } from "react";                              
+       4 -import { CompanyResearch, ResearchHome } from "@/components/Res
+         -earch";                                                        
+       5 -                                                               
+       6 -// One static route: /research lists researched companies, /res
+         -earch?symbol=TCS opens one (static export, no server).         
+       7 -function Page() {                                              
+       8 -  const sym = useSearchParams().get("symbol")?.trim().toUpperCa
+         -se();                                                          
+       9 -  return sym ? <CompanyResearch key={sym} symbol={sym} /> : <Re
+         -searchHome />;                                                 
+      10 -}                                                              
+      11 -                                                               
+      12 -export default function Research() {                           
+      13 -  return <Suspense><Page /></Suspense>;                        
+      14 -}                                                              
+       1 +"use client";                                                  
+       2 +import { useSearchParams } from "next/navigation";             
+       3 +import { Suspense } from "react";                              
+       4 +import { CompanyResearch, ResearchHome } from "@/components/Res
+         +earch";                                                        
+       5 +                                                               
+       6 +// One static route: /research lists researched companies, /res
+         +earch?symbol=TCS opens one (static export, no server).         
+       7 +function Page() {                                              
+       8 +  const params = useSearchParams();                            
+       9 +  const sym = params.get("symbol")?.trim().toUpperCase();      
+      10 +  return sym ? <CompanyResearch key={sym} symbol={sym} auto={pa
+         +rams.get("run") === "1"} /> : <ResearchHome />;                
+      11 +}                                                              
+      12 +                                                               
+      13 +export default function Research() {                           
+      14 +  return <Suspense><Page /></Suspense>;                        
+      15 +}                                                              
+  ⎿  Updated web\components\Research.tsx (+73 -9)
+      1  "use client";
+      2  import Link from "next/link";
+      3  import { useRouter } from "next/navigation";
+      4 -import { useEffect, useMemo, useState } from "react";           
+      4 +import { useEffect, useMemo, useRef, useState } from "react";   
+      5  import { pct } from "@/lib/rank";
+      6 -import { countsText, indexUrl, KEPT, MISSED, NYM, researchUrl, u
+        -seJson, VERDICT_TEXT, type Cite, type IndexRow, type PromiseRow,
+        - type Research } from "@/lib/research";                         
+      6 +import { API, countsText, indexUrl, KEPT, MISSED, NYM, researchU
+        +rl, useJson, VERDICT_TEXT, type Cite, type IndexRow, type Promis
+        +eRow, type Research } from "@/lib/research";                    
+      7  import { Bars, PathLine, PriceLine } from "./Charts";
+      8  import { Chevron, Collapse } from "./Collapse";
+      9  import { Avatar, shortName } from "./Company";
+     ...
+      111    );
+      112  }
+      113  
+      114 -// ---- a symbol with no research file: calm, says when it wil
+          -l exist ----                                                  
+      114 +// ---- a symbol with no research file: research it now (live)
+          + or say why not ----                                          
+      115 +const BTN = "mt-4 inline-flex h-11 items-center rounded-md bor
+          +der border-ink/70 px-4 text-[0.9375rem] font-medium hover:bg-p
+          +aper-2 disabled:opacity-50";                                  
+      116  function NotResearched({ symbol, inline = false }: { symbol: s
+           tring; inline?: boolean }) {
+      117 +  const ok = API && SYMBOL.test(symbol);                      
+      118    const body = (
+      119      <>
+      120        <p className={inline ? "font-serif text-[1.1875rem] font
+           -semibold" : H1}>{symbol || "This company"} isn&rsquo;t resear
+           ched yet.</p>
+      121        <p className="mt-2 text-[0.9375rem] leading-snug text-in
+           k-2">
+      120 -        Research on request for any NSE symbol (the last four 
+          -call transcripts, the results filings and the promise check) o
+          -pens on 14 Nov.                                               
+      121 -        Until then, the companies listed under Research are re
+          -ady.                                                          
+      122 +        {ok ? "FINN can research it now from its last four cal
+          +l transcripts and its results filings. It takes a few minutes.
+          +"                                                             
+      123 +          : "Research on request isn't available right now. Th
+          +e companies listed under Research are ready."}                
+      124        </p>
+      125 +      {ok && inline && <Link href={`/research?symbol=${encodeU
+          +RIComponent(symbol)}&run=1`} className={BTN}>Research this com
+          +pany</Link>}                                                  
+      126      </>
+      127    );
+      128    if (inline) return <div className="border-t border-rule pt-4
+           ">{body}</div>;
+     ...
+      136    );
+      137  }
+      138  
+      139 +// ---- live research: POST starts a job on the API, then poll
+          + its stage until the page is ready ----                       
+      140 +const saved = (sym: string) => `finn:research:${sym}`;        
+      141 +function readSaved(sym: string): Research | null {            
+      142 +  try { return JSON.parse(localStorage.getItem(saved(sym)) ?? 
+          +"null"); } catch { return null; }                             
+      143 +}                                                             
+     … 78 more lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The frontend typechecks. KEI reached "Checking promises…" at 59s. Meanwhile,
+  item 7: L&T's promises and margin labels.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● L&T's FY26 8.5% EBITDA target isn't among the 6 shown. I'll replay
+  pvd.run('LT') from cache into the scratchpad to see what select() dropped, and
+  look for the 14.1% label.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● select() cut L&T's 8.5% FY26 EBITDA target (#2) and kept "group order inflows"
+  (#0) because that promise is keyed as revenue. Searching for where 14.1%
+  comes from:
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● The L&T margin series mixes two definitions, so the chart shows a fake
+  sawtooth: three filing-based quarters sit among screener's operating-profit
+  figures. I'm reading the margin code next to find where they got mixed.
+  · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The local KEI run finished in 149s with 10 LLM calls and about $0.044 spent.
+  I'm now applying the two item-7 fixes, starting with putting headline metrics
+  after measured ones in select(). · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 5 lines, removed 2 lines
+      526  
+      527  def select(promises: list[dict], judged: dict[int, dict], n: i
+           nt = MAX_PROMISES) -> list[int]:
+      528      """User's rule: financial, checkable promises first; a sof
+           t or operational one stays only if something measured it.
+      529 -    Measured before unmeasured, financial before operational, 
+          -oldest first; at most n."""                                   
+      529 +    Measured before unmeasured, then headline metrics (revenue
+          +, margin, profit; not orders filed under revenue), then       
+      530 +    other financial before operational, oldest first; at most 
+          +n. (14 Nov: L&T's FY26 8.5% EBITDA target lost its            
+      531 +    slot to "group order inflows", which the extractor keyed a
+          +s revenue.)"""                                                
+      532      fin = lambda p: p["metric_key"] in FINANCIAL or p["target_
+           type"] in ("growth_pct", "margin_pct", "amount")
+      533 +    head = lambda p: p["metric_key"] in HEADLINE and not NOT_M
+          +ONEY.search(f"{p['metric']} {p['target']}")                   
+      534      nym = lambda k: judged.get(k, {}).get("verdict", "not-yet-
+           measurable") == "not-yet-measurable"
+      535      keep = [k for k, p in enumerate(promises) if fin(p) or not
+            nym(k)]
+      533 -    return sorted(keep, key=lambda k: (nym(k), not fin(promise
+          -s[k]), _q(promises[k]["said_in"])))[:n]                       
+      536 +    return sorted(keep, key=lambda k: (nym(k), not head(promis
+          +es[k]), not fin(promises[k]), _q(promises[k]["said_in"])))[:n]
+      537  
+      538  
+      539  def period_end(p: dict) -> str | None:
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 1 line
+      35  UNDATED = ("next_few_quarters", "unspecified")
+      36  FINANCIAL = ("revenue", "operating_margin", "net_profit", "cape
+          x", "cd_ratio")
+      37  MAX_PROMISES = 6
+      38 +HEADLINE = ("revenue", "operating_margin", "net_profit")       
+      39  # rules before the LLM: measures that are never the company's t
+          otal revenue / margin / profit, whatever the extractor says
+      40  NOT_TOTAL = re.compile(r"value growth|order|inflow|\baum\b|asse
+          ts under|volume|loan|advances|deposit|\bnov\b|\bgov\b|\bgmv\b|c
+          ustomer|export|payout|disburse|segment", re.I)
+      41  # business metrics no results filing reports in rupees (volumes
+          , NOV/GMV, orders, AUM): never matched to a segment
+
+● Now the margin series. When the filing's EBITDA and screener's operating
+  profit disagree for the same quarter, the margin uses only the filing
+  quarters, and the label says so:
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 9 lines, removed 1 line
+      656              oi = (rows.get("Other Income") or [None] * len(q["
+           periods"]))[k] or 0
+      657              put("Revenue", v["Total income"] - oi if isinstanc
+           e(v.get("Total income"), (int, float)) else None)
+      658          else:
+      659 +            op, sales = rows.get("Operating Profit", [None] * 
+          +len(q["periods"]))[k], rows.get("Sales", [None] * len(q["perio
+          +ds"]))[k]                                                     
+      660              put("Sales", v.get("Revenue"))
+      661              if v["_note"].startswith(("EBITDA = revenue from o
+           perations", "Revenue net of excise duty; EBITDA = revenue from
+            operations")):  # = operating profit
+      661 -                put("Operating Profit", v.get("EBITDA"))      
+      662 +                ebitda = v.get("EBITDA")                      
+      663 +                # screener classifies some costs differently (
+          +L&T: its 14.1% vs the filing's 8.7%, Sep 2026): then one      
+      664 +                # series would mix two definitions, so the mar
+          +gin uses only the quarters read from the filing               
+      665 +                if isinstance(ebitda, (int, float)) and op is 
+          +not None and sales and v.get("Revenue") and abs(ebitda / v["Re
+          +venue"] - op / sales) * 100 > 1:                              
+      666 +                    q["margin_quarters"] = []                 
+      667 +                put("Operating Profit", ebitda)               
+      668          used.append(quarter)
+      669      co["filing_quarters"] = used
+      670 +    if "margin_quarters" in q:                                
+      671 +        q["margin_quarters"] = used                           
+      672      return co
+      673  
+      674  
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 2 lines, removed 1 line
+      297      """EBITDA margin per quarter, other income excluded: opera
+           ting profit over sales. The one definition the results
+      298      card, the snapshot and the promise checks share (ASIANPAIN
+           T Q2 FY27: 15.6%, as the company reports its PBDIT)."""
+      299      sales, op = _row(quarters, ["Sales"]) or {}, _row(quarters
+           , ["Operating Profit"]) or {}
+      300 -    return {q: v / sales[q] * 100 for q, v in op.items() if sa
+          -les.get(q)}                                                   
+      300 +    only = quarters.get("margin_quarters")  # set by company()
+          + when screener's other quarters use another definition        
+      301 +    return {q: v / sales[q] * 100 for q, v in op.items() if sa
+          +les.get(q) and (only is None or q in only)}                   
+      302  
+      303  
+      304  AGREE_PP = 0.15  # management rounds ("about 15.6%"); within t
+           his, its figure and ours are the same number
+
+● Now the labels. Checking how the UI renders the margin name:
+
+  Ran 4 shell commands (ctrl+o to expand)
+
+● I'm putting one wording of the computation in a constant shared by the
+  snapshot, the promise checks and the consistency gate:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\consistency.py (+1 -1)
+      60  
+      61      # 3. PvD rows: margin and revenue-growth paths vs the snaps
+          hot; deadlines
+      62      latest = r.get("latest_quarter")
+      63 -    same_margin = "operating profit over" in ((r.get("margin_de
+         -finition") or {}).get("name") or "")                           
+      63 +    same_margin = pvd.EBITDA_HOW in ((r.get("margin_definition"
+         +) or {}).get("name") or "")                                    
+      64      for p in r.get("promises", []):
+      65          ch = p.get("chart") or {}
+      66          end = ch.get("end")
+  ⎿  Updated backend\finn\pull\pvd.py (+6 -3)
+      36  FINANCIAL = ("revenue", "operating_margin", "net_profit", "cape
+          x", "cd_ratio")
+      37  MAX_PROMISES = 6
+      38  HEADLINE = ("revenue", "operating_margin", "net_profit")
+      39 +# every margin label says how it is computed (user, 14 Nov); co
+         +nsistency.py matches on EBITDA_HOW                             
+      40 +EBITDA_HOW = "revenue minus operating expenses, over revenue; o
+         +ther income excluded"                                          
+      41 +EBIT_HOW = "revenue minus operating expenses and depreciation, 
+         +over revenue; other income excluded"                           
+      42  # rules before the LLM: measures that are never the company's t
+          otal revenue / margin / profit, whatever the extractor says
+      43  NOT_TOTAL = re.compile(r"value growth|order|inflow|\baum\b|asse
+          ts under|volume|loan|advances|deposit|\bnov\b|\bgov\b|\bgmv\b|c
+          ustomer|export|payout|disburse|segment", re.I)
+      44  # business metrics no results filing reports in rupees (volumes
+          , NOV/GMV, orders, AUM): never matched to a segment
+     ...
+      322          cites = {q: {"label": f"{fy_name(q)} call, p.{reported
+           [q]['page']}: “{reported[q]['quote']}”", "url": reported[q]["t
+           ranscript"]} for q in call_qs}
+      323          name = f"{r0['name'][:1].upper()}{r0['name'][1:]}"
+      324          if m and all(q in m and abs(m[q] - reported[q]["value"
+           ]) <= AGREE_PP for q in call_qs):
+      322 -            how = "operating profit less depreciation, over re
+          -venue" if ebit else "operating profit over revenue"  # TCS: EB
+          -IT, not the snapshot's EBITDA                                 
+      325 +            how = EBIT_HOW if ebit else EBITDA_HOW  # TCS: EBI
+          +T, not the snapshot's EBITDA                                  
+      326              return {"q": m, "w": sales, "name": f"{name} ({how
+           }; matches what management reports)",
+      327                      "source": SOURCE, "cites": cites}
+      325 -        return {"q": {q: reported[q]["value"] for q in call_qs
+          -}, "w": sales or {}, "name": f"{name} (as reported)",         
+      328 +        return {"q": {q: reported[q]["value"] for q in call_qs
+          +}, "w": sales or {}, "name": f"{name} (as management reported 
+          +it on each call)",                                            
+      329                  "source": SAID_MARGIN, "cites": cites}
+      330      if not m:
+      331          return None
+      332      return {"q": m, "w": sales, "source": SOURCE, "cites": {},
+      330 -            "name": "EBIT margin (computed: operating profit l
+          -ess depreciation, over sales)" if ebit else "EBITDA margin (co
+          -mputed: operating profit over sales, other income excluded)"} 
+      333 +            "name": f"EBIT margin (computed: {EBIT_HOW})" if e
+          +bit else f"EBITDA margin (computed: {EBITDA_HOW})"}           
+      334  
+      335  
+      336  def segment_series(p: dict, data: dict[str, dict], metric_only
+           : bool = False) -> dict | None:
+  ⎿  Updated backend\finn\pull\research.py (+1 -1)
+      69          m_name = "Net margin (PAT / total income)"
+      70      else:  # one EBITDA definition everywhere: the results card
+          's, the promise checks', and what companies report
+      71          m = pvd.ebitda_margin(q)
+      72 -        m_name = "EBITDA margin (operating profit over revenue,
+         - other income excluded)"                                       
+      72 +        m_name = f"EBITDA margin ({pvd.EBITDA_HOW}" + ("; only 
+         +the quarters read from the results filings, as screener.in coun
+         +ts some costs differently)" if q.get("margin_quarters") is not 
+         +None else ")")                                                 
+      73      mp = [p for p in periods if p in m]
+      74      if len(mp) >= 2:
+      75          last, ago = mp[-1], pvd.shift(mp[-1], -4)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && grep -rln
+      "operating profit less depreciation\|operating profit over\|(as reported)"
+      tests | xargs -r se…)
+  ⎿  Updated backend\tests\test_pvd.py (+2 -2)
+      124      r = prog(P(metric_key="operating_margin", target_type="mar
+           gin_pct", target_low=26, target_high=28, horizon="long_term",
+      125                 margin_basis="ebit", direction="at_least"), "Ju
+           n 2026", q)
+      126      assert r["verdict"] == "moved away" and r["path"] == "26.0
+           % → 25.5% (Q1 FY27 → Q2 FY27)"
+      127 -    assert "EBIT margin (computed: operating profit less depre
+          -ciation" in r["actual"]                                       
+      127 +    assert "EBIT margin (computed: revenue minus operating exp
+          +enses and depreciation" in r["actual"]                        
+      128  
+      129  
+      130  REPORTED_MARGINS = {q: {"name": "operating margin", "basis": "
+           ebit", "value": v, "page": 3, "quote": f"operating margin of {
+           v}%", "transcript": "t.pdf"}
+     ...
+      134  def test_company_reported_margin_wins_and_shows_the_quarterly_
+           path():
+      135      calls = list(REPORTED_MARGINS)
+      136      m = pvd.company_margin(Q, REPORTED_MARGINS, calls, ebit=Tr
+           ue)
+      137 -    assert m["name"] == "Operating margin (as reported)" and m
+          -["source"] == pvd.SAID_MARGIN                                 
+      137 +    assert m["name"] == "Operating margin (as management repor
+          +ted it on each call)" and m["source"] == pvd.SAID_MARGIN      
+      138      r = prog(P(metric_key="operating_margin", target_type="mar
+           gin_pct", target_low=26, target_high=28, horizon="long_term", 
+           direction="at_least"),
+      139               "Mar 2026", margin=m)
+      140      assert r["verdict"] == "moved away" and r["actual"].starts
+           with("Moved away: 24.9% → 24.6% → 24.3% (Q4 FY26 → Q2 FY27) vs
+            target 26–28%")
+
+● 161 pass. Adding tests for the selection rule, the margin restriction, and the
+  job API (fake build, so no network):
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && grep -n "^def P"
+      -A8 tests/*.py | head -12; cat >> tests/test_pvd.py <<'EOF'…)
+  ⎿  Updated backend\tests\test_pvd.py (+15 -0)
+      352      fy = q4 | {"quote": "full year EBITDA margin came in at 10
+           .4%"}
+      353      assert pvd.pace_reported(p, [fy], "Sep 2026")["verdict"] =
+           = "hit"
+      354      assert pvd.pace_reported(p | {"fy": 27}, [q4 | {"said_in":
+            "Jun 2026"}], "Sep 2026")["verdict"] == "on track"  # running
+           : pace
+      355 +                                                              
+      356 +                                                              
+      357 +def test_select_ranks_headline_metrics_after_measured():      
+      358 +    # L&T, 14 Nov: 5 measured promises, then the FY26 8.5% EBI
+          +TDA target must beat "group order inflows" (keyed as revenue) 
+      359 +    measured = [P(metric_key="other", target_type="margin_pct"
+          +, metric="working capital", said_in="Sep 2025") for _ in range
+          +(5)]                                                          
+      360 +    orders = P(metric_key="revenue", target_type="growth_pct",
+          + metric="group order inflows growth", said_in="Sep 2025")     
+      361 +    ebitda = P(metric_key="operating_margin", target_type="mar
+          +gin_pct", metric="EBITDA margin", target="8.5%", said_in="Sep 
+          +2025")                                                        
+      362 +    ps = measured + [orders, ebitda]                          
+      363 +    assert pvd.select(ps, {k: {"verdict": "hit"} for k in rang
+          +e(5)}) == [0, 1, 2, 3, 4, 6]                                  
+      364 +                                                              
+      365 +                                                              
+      366 +def test_margin_uses_only_filing_quarters_when_definitions_dif
+          +fer():                                                        
+      367 +    q = {"periods": ["Jun 2026", "Sep 2026"], "rows": {"Sales"
+          +: [100, 100], "Operating Profit": [14, 9]}, "margin_quarters":
+          + ["Sep 2026"]}                                                
+      368 +    assert pvd.ebitda_margin(q) == {"Sep 2026": 9.0}          
+      369 +    assert pvd.ebitda_margin({k: v for k, v in q.items() if k 
+          +!= "margin_quarters"}) == {"Jun 2026": 14.0, "Sep 2026": 9.0} 
+  Ran 1 shell command (ctrl+o to expand)
+
+● A float artefact (14.000000000000002). Switching that assert to approx:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && sed -i 's/==
+      {"Jun 2026": 14.0, "Sep 2026": 9.0}/== pytest.approx({"Jun 2026": 14.0,
+      "Sep 2026": 9.0})/'…)
+  ⎿  Updated backend\tests\test_pvd.py (+1 -1)
+      366  def test_margin_uses_only_filing_quarters_when_definitions_dif
+           fer():
+      367      q = {"periods": ["Jun 2026", "Sep 2026"], "rows": {"Sales"
+           : [100, 100], "Operating Profit": [14, 9]}, "margin_quarters":
+            ["Sep 2026"]}
+      368      assert pvd.ebitda_margin(q) == {"Sep 2026": 9.0}
+      369 -    assert pvd.ebitda_margin({k: v for k, v in q.items() if k 
+          -!= "margin_quarters"}) == {"Jun 2026": 14.0, "Sep 2026": 9.0} 
+      369 +    assert pvd.ebitda_margin({k: v for k, v in q.items() if k 
+          +!= "margin_quarters"}) == pytest.approx({"Jun 2026": 14.0, "Se
+          +p 2026": 9.0})                                                
+
+● Now the API test, with a fake build so it runs offline:
+
+● Write(backend\tests\test_api.py)
+  ⎿  Wrote 62 lines to backend\tests\test_api.py
+       1 """Live research API: job lifecycle, one job at a time, daily ca
+         p, failures. research.build is faked (no network)."""
+       2 import json, time, threading
+       3 import httpx
+       4 import pytest
+       5 from fastapi.testclient import TestClient
+       6 from finn import api
+       7
+       8
+       9 @pytest.fixture
+     … +53 lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● 3 pass. One catch: importing finn.api sets llm.LIVE = True for the whole test
+  process. Moving that into the job, set at start and reset in finally:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\api.py (+2 -2)
+      11  from finn.pull import pvd, research
+      12  from finn.sources import bse
+      13  
+      14 -llm.LIVE = True  # a reader is waiting: short retries, and the 
+         -fast model may answer when both strong ones are down           
+      14  app = FastAPI(title="FINN")
+      15  app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_m
+          ethods=["GET", "POST"], allow_headers=["*"])
+      16  
+     ...
+      67  def _work(job: dict) -> None:
+      68      since = dt.datetime.now().isoformat(timespec="seconds")  # 
+          same clock as the cost log's ts
+      69      pvd.stage = lambda text: job.update(stage=text)
+      70 +    llm.LIVE = True  # a reader is waiting: short retries, and 
+         +the fast model may answer when both strong ones are down       
+      71      try:
+      72          research.build(job["symbol"], live=True)
+      73          job.update(status="done", stage="Done")
+     ...
+      82                     message="Today's free AI quota is used up. T
+          ry again tomorrow." if quota else f"Research failed ({type(e)._
+          _name__}). Try again in a few minutes.")
+      83          print(f"live research {job['symbol']} failed: {type(e).
+          __name__}: {str(e)[:200]}")
+      84      finally:
+      85 -        pvd.stage = lambda text: None                          
+      85 +        pvd.stage, llm.LIVE = (lambda text: None), False       
+      86          job.update(seconds=round(time.time() - job["started"]),
+           cost=_cost_since(job["symbol"], since))
+      87          LEDGER.parent.mkdir(parents=True, exist_ok=True)
+      88          with LEDGER.open("a", encoding="utf-8") as fh:
+
+● 166 pass. Here's what the local KEI page contains:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The KEI page now runs end to end, but each side repeats one fact twice, so I'm
+  adding a small dedupe in checked() before the re-runs. · summary
+
+● Update(backend\finn\pull\research.py)
+  ⎿  Added 7 lines, removed 2 lines
+      237      """(first 3 points that pass problem() and agree with fact
+           s already used, number rejected).
+      238      facts: {(family, period): figure} shared by both sides, so
+            bull and bear can't quote two numbers for one fact."""
+      239      facts = {} if facts is None else facts
+      240 -    keep, dropped = [], 0                                     
+      240 +    keep, dropped, said = [], 0, set()                        
+      241      for pt in points:
+      242          if not isinstance(pt, dict) or not all(isinstance(pt.g
+           et(k), str) for k in ("claim", "why")) or not isinstance(pt.ge
+           t("cites"), list):
+      243              dropped += 1
+      244              continue
+      245          ids = [i for i in dict.fromkeys(pt["cites"]) if i in b
+           y_id]
+      246          f = fact(pt["claim"])
+      247 -        if problem(pt, ids, by_id) or (f and facts.get(f[:2], 
+          -f[2]) != f[2]):                                               
+      247 +        # one fact said twice in other words (KEI: "Revenue gr
+          +owth +38.5%" and "Net sales growth 38.52%", both Q2 FY27)     
+      248 +        per, pct = NAMED_PERIOD.search(pt["claim"]), re.search
+          +(r"(\d+(?:\.\d+)?)\s?%", pt["claim"])                         
+      249 +        dup = per and pct and (per.group(0), round(float(pct.g
+          +roup(1)), 1))                                                 
+      250 +        if problem(pt, ids, by_id) or (f and facts.get(f[:2], 
+          +f[2]) != f[2]) or (dup and dup in said):                      
+      251              dropped += 1
+      252              continue
+      253 +        if dup:                                               
+      254 +            said.add(dup)                                     
+      255          if f:
+      256              facts[f[:2]] = f[2]
+      257          keep.append({"point": pt["claim"].strip(), "why": pt["
+           why"].strip(), "cites": [by_id[i]["cite"] for i in ids]})
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && cat >>
+      tests/test_research.py <<'EOF'…)
+  ⎿  Updated backend\tests\test_research.py (+8 -0)
+      139      assert research.fact("EPC revenues INR 3,077 million decli
+           ned 11% YoY in Q1 FY27") is None  # a segment
+      140      assert research.fact("PAT margin 10.0% in Q2 FY27") is Non
+           e
+      141      assert research.fact("Revenue +16.9% YoY in Q2 FY27; PAT (
+           to owners) +7.5%") == ("revenue", "Q2 FY27", 16.9)
+      142 +                                                              
+      143 +                                                              
+      144 +def test_checked_drops_one_fact_said_twice():                 
+      145 +    ev = {"S1": {"text": "Revenue growth 38.52% YoY in Q2 FY27
+          +"}}                                                           
+      146 +    pts = [{"claim": "Revenue growth YoY +38.5% in Q2 FY27", "
+          +why": "Demand is strong.", "cites": ["S1"]},                  
+      147 +           {"claim": "Net sales growth 38.52% in Q2 FY27", "wh
+          +y": "Same fact again.", "cites": ["S1"]}]                     
+      148 +    keep, dropped = research.checked(pts, ev)                 
+      149 +    assert len(keep) == 1 and dropped == 1                    
+
+● The test evidence was missing its cite key:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && sed -i 's/ev =
+      {"S1": {"text": "Revenue growth 38.52% YoY in Q2 FY27"}}/ev = {"S1":
+      {"text": "Revenue gr…)
+  ⎿  Updated backend\tests\test_research.py (+1 -1)
+      142  
+      143  
+      144  def test_checked_drops_one_fact_said_twice():
+      145 -    ev = {"S1": {"text": "Revenue growth 38.52% YoY in Q2 FY27
+          -"}}                                                           
+      145 +    ev = {"S1": {"text": "Revenue growth 38.52% YoY in Q2 FY27
+          +", "cite": {"label": "Q2 FY27 call, p.3", "url": None}}}      
+      146      pts = [{"claim": "Revenue growth YoY +38.5% in Q2 FY27", "
+           why": "Demand is strong.", "cites": ["S1"]},
+      147             {"claim": "Net sales growth 38.52% in Q2 FY27", "wh
+           y": "Same fact again.", "cites": ["S1"]}]
+      148      keep, dropped = research.checked(pts, ev)
+
+● 167 pass. I'm deleting the local KEI page (it shouldn't become a 23rd
+  precomputed page), then committing and pushing so Render picks up the new API.
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && rm -f
+      web/public/data/research/KEI.json && git status --short && git add backend
+      web/lib web/components web/app…)
+  ⎿  1 file changed (binary, mode only or too large to show)
+
+● Pushed (c8e9b6d). Checking how the existing Render service was set up so the
+  env-var steps match it:
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Render auto-deploys from main, so the code is already live and only env vars
+  are missing. I'm adding a keys flag to /health that reports which env vars are
+  present, without showing values, so I can check when they land. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\api.py (+3 -1)
+      25  
+      26  @app.get("/health")
+      27  def health():
+      28 -    return {"ok": True}                                        
+      28 +    """keys: whether each provider's key is set (never the key)
+         +, so a deploy can be checked before a research run."""         
+      29 +    return {"ok": True, "keys": {k: bool(os.getenv(f"{k.upper()
+         +}_API_KEY")) for k in ("gemini", "groq")}, "busy": any(j["statu
+         +s"] == "running" for j in JOBS.values()),                      
+      30 +            "runs_left_today": max(0, DAILY_JOBS - _used_today(
+         +))}                                                            
+      31  
+      32  
+      33  @app.get("/health/bse")
+
+● Render needs the GEMINI_API_KEY and GROQ_API_KEY values from your local .env,
+  then a redeploy, and I'll check /health afterward. Once the step-0 Vercel
+  deploy finishes, set NEXT_PUBLIC_API_URL to the Render URL, redeploy, and send
+  me the Vercel link; meanwhile I'm re-running the five Gemini-quota tickers
+  locally. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The re-run is going in the background. Meanwhile, DECISIONS.md:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Update(DECISIONS.md)
+  ⎿  Added 12 lines
+      221  - **Bull/bear prompt: every hit or ahead promise is a bull poi
+           nt, every miss or behind pace a bear point.** L&T's first rege
+           neration had one bull point, although the page shows an ahead,
+            a hit and two on-track promises ("write fewer if the evidence
+            supports fewer" let the model stop early). Now 3+3.
+      222  - **At most 6 promises per page** (unchanged, noted because it
+            looked like a lost row): L&T has 10, and its FY26 8.5% EBITDA
+            target is not among the 6 shown. Measured and finished promis
+           es are picked first.
+      223  
+      224 +## Live research (14 Nov, Batch B: the last backend batch)    
+      225 +- **Background job, polled.** `POST /research/{symbol}` starts
+          + a job and returns its id at once; `GET /jobs/{id}` returns a 
+          +plain stage line ("Finding filings…", "Reading Q2 FY27 transcr
+          +ipt (2/4)…", "Checking promises…", "Building the financial sna
+          +pshot…", "Writing bull & bear…"). The page shows "Waking up th
+          +e research server…" until Render's free tier answers. A run ta
+          +kes ~2.5 min (KEI locally: 149 s). Reason: one HTTP request he
+          +ld open for minutes dies on mobile networks and proxies; polli
+          +ng survives them. Gave up: streaming (SSE): more code for the 
+          +same stage line.                                              
+      226 +- **One job at a time, in a thread, no queue.** A second visit
+          +or sees "Researching X for someone else right now. Try again i
+          +n a minute or two." Reason: the free AI tiers are rate-limited
+          + per minute (Groq: 8k tokens/min), so two parallel runs would 
+          +slow each other into timeouts anyway. Gave up: a job queue (Re
+          +dis/Celery) for a demo with one reviewer.                     
+      227 +- **Timeout is the page's, not the job's.** After 8 min (`FINN
+          +_JOB_TIMEOUT`) the page stops waiting and says the result will
+          + be saved; the job keeps running and caches its page, so the n
+          +ext visit is instant. Python threads can't be killed safely, a
+          +nd killing would throw the paid-for work away.                
+      228 +- **Live jobs aren't patient.** The batch retries strong model
+          +s up to 8 times and never uses the fast model; a live job retr
+          +ies 3 times, then walks the whole chain (cheap: Gemini flash-l
+          +ite → Groq gpt-oss-20b → Gemini flash; strong: Groq gpt-oss-12
+          +0b → Gemini 3.8 flash → Gemini flash), so one provider's quota
+          + day can't break it. Every section names the model that wrote 
+          +it, with a note when it was a fallback.                       
+      229 +- **Failures keep what works.** Unknown symbol (screener 404):
+          + a plain message in ~7 s, no AI calls, doesn't use the day's c
+          +ap. PvD fails (quota, a parse error): the page still shows the
+          + financial snapshot, prices and sources, with "The promise che
+          +ck couldn't run: …" in its place; that page isn't cached as fi
+          +nal, so the next visit tries again. No transcripts: the snapsh
+          +ot plus "No earnings-call transcripts were found".            
+      230 +- **Quota protection.** Reads only the latest 4 results-call t
+          +ranscripts and page-level results PDFs (unchanged from batch).
+          + Daily cap `FINN_DAILY_JOBS` = 8 runs/IST day (≈20k strong-mod
+          +el tokens a company against Groq's 200k free day), with a poli
+          +te message pointing to the 22 researched companies. Tokens, ca
+          +lls, models and estimated cost per run come from the router's 
+          +own log and are returned with the job (and kept in `cache/live
+          +_jobs.jsonl`).                                                
+      231 +- **Cache = Render's disk + the visitor's browser.** Render's 
+          +free disk is wiped on restart, so a finished page is also kept
+          + in localStorage; a second visit from the same phone is instan
+          +t even when the server is asleep. Gave up: a database (Supabas
+          +e) for cross-visitor persistence; the 22 precomputed pages are
+          + static on Vercel anyway.                                     
+      232 +- **Promise selection (user, 14 Nov):** measured first, then h
+          +eadline metrics (revenue, margin, profit), then other financia
+          +l targets. "Group order inflows" keyed as revenue had taken L&
+          +T's FY26 8.5% EBITDA target's slot; order/volume/AUM wording n
+          +ow never counts as headline.                                  
+      233 +- **One margin definition per chart.** For L&T, screener's ope
+          +rating profit gives 14.1% for Sep 2026; the results filing (re
+          +venue from operations minus operating expenses) gives 8.7%. Th
+          +e snapshot had put the filing's three quarters among screener'
+          +s five, a fake 3-4 pp sawtooth. When the two disagree by more 
+          +than 1 pp on a quarter, the margin uses only the quarters read
+          + from the filings, and the label says so. Every margin label n
+          +ow states its computation ("revenue minus operating expenses, 
+          +over revenue; other income excluded", "as management reported 
+          +it on each call"). Gave up: L&T's older quarters on the chart 
+          +(would need their filings read: more calls).                  
+      234 +- **Bull/bear: one fact said twice is dropped** (same period, 
+          +same % to one decimal: KEI's "+38.5% revenue" and "38.52% net 
+          +sales" on one side).                                          
+      235 +                                                              
+      236  ## Feed rules (13 Nov afternoon)
+      237  - **Management change is P1 only when a CEO, MD, CFO or Chairm
+           an joins or leaves.** Decided from the people the filing names
+            (the management card the cheap model already extracts), not t
+           he subject line, which is usually "Change in Management". Re-a
+           ppointments and redesignations, directors (including independe
+           nt directors), a Deputy MD and senior management below the CEO
+            are P2 with a note saying why. No card (extraction failed) ke
+           eps P1: never hide. On the 30-day feed: HDFCBANK MD & CEO, TRE
+           NT and ASIANPAINT Chairman, TATAPOWER CEO-designate stay P1; B
+           ajaj Finance CISO re-appointment, HDFCBANK whole-time director
+            re-appointment, KPIT independent director, CDSL SVP, IRCTC se
+           nior management, HDFCBANK deputy MD and group head go to P2.
+      238  - **Internal restructurings are P2 ("internal restructuring"),
+            not M&A.** A transfer, merger or amalgamation with a wholly o
+           wned subsidiary, or a filing titled restructuring (L&T's busin
+           ess transfer to Vyoma.AI, ITC amalgamating Sproutlife, ETERNAL
+           's restructuring). Buying or selling outside the group stays M
+           &A P1 (TCS buying BBY, TRENT's subsidiary selling Netria).
+
+● Bash(curl -s -m 100 https://finn-api-72tc.onrender.com/health; echo; cat
+      "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/692d7998-cc9
+      c-4913-8026-8aa39b…)
+  ⎿  Updated web\public\data\research\TATAPOWER.json (+3 -3)
+      1  {
+      2   "symbol": "TATAPOWER",
+      3   "name": "Tata Power Company Ltd",
+      4 - "generated_at": "2026-11-14T13:47",                            
+      4 + "generated_at": "2026-11-14T14:30",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+     ...
+      27   ],
+      28   "skipped_calls": [],
+      29   "margin_definition": {
+      30 -  "name": "EBITDA margin (computed: operating profit over sales
+         -, other income excluded)",                                     
+      30 +  "name": "EBITDA margin (computed: revenue minus operating exp
+         +enses, over revenue; other income excluded)",                  
+      31    "source": "screener.in quarterly results table (from the comp
+          any's exchange results filings)"
+      32   },
+      33   "model_note": null,
+     ...
+      717     "claim": "Revenue +26.3% YoY in Q2 FY27; PAT (to owners) +4
+           8.6%."
+      718    },
+      719    "margin": {
+      720 -   "name": "EBITDA margin (operating profit over revenue, othe
+          -r income excluded)",                                          
+      720 +   "name": "EBITDA margin (revenue minus operating expenses, o
+          +ver revenue; other income excluded)",                         
+      721     "periods": [
+      722      "Dec 2024",
+      723      "Mar 2025",
+
+● Render is still serving the old build, likely until you save the env vars;
+  meanwhile I'm checking which e2e candidates beyond our 22 have transcripts on
+  screener. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      PYTHONIOENCODING=utf-8 ../.venv/Scripts/python -c "
+      from finn.sources import screener…)
+  ⎿  Updated web\public\data\research\TITAN.json (+3 -3)
+      1  {
+      2   "symbol": "TITAN",
+      3   "name": "Titan Company Ltd",
+      4 - "generated_at": "2026-11-14T13:48",                            
+      4 + "generated_at": "2026-11-14T14:30",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+     ...
+      27   ],
+      28   "skipped_calls": [],
+      29   "margin_definition": {
+      30 -  "name": "EBIT margin (computed: operating profit less depreci
+         -ation, over sales)",                                           
+      30 +  "name": "EBIT margin (computed: revenue minus operating expen
+         +ses and depreciation, over revenue; other income excluded)",   
+      31    "source": "screener.in quarterly results table (from the comp
+          any's exchange results filings)"
+      32   },
+      33   "model_note": null,
+     ...
+      734     "claim": "Revenue +10.1% YoY in Q2 FY27; PAT (to owners) +1
+           13.7%."
+      735    },
+      736    "margin": {
+      737 -   "name": "EBITDA margin (operating profit over revenue, othe
+          -r income excluded)",                                          
+      737 +   "name": "EBITDA margin (revenue minus operating expenses, o
+          +ver revenue; other income excluded)",                         
+      738     "periods": [
+      739      "Dec 2024",
+      740      "Mar 2025",
+  ⎿  Updated web\public\data\research\index.json (+5 -5)
+      199    "symbol": "PERSISTENT",
+      200    "name": "Persistent Systems Ltd",
+      201    "sector": "Information Technology",
+      202 -  "generated_at": "2026-11-14T13:47",                         
+      202 +  "generated_at": "2026-11-14T14:29",                         
+      203    "summary": {
+      204     "kept": 0,
+      205     "missed": 0,
+     ...
+      227    "symbol": "RELIANCE",
+      228    "name": "Reliance Industries Ltd",
+      229    "sector": "Energy",
+      230 -  "generated_at": "2026-11-14T13:47",                         
+      230 +  "generated_at": "2026-11-14T14:29",                         
+      231    "summary": {
+      232     "kept": 0,
+      233     "missed": 0,
+     ...
+      241    "symbol": "SUNPHARMA",
+      242    "name": "Sun Pharmaceutical Industries Ltd",
+      243    "sector": "Healthcare",
+      244 -  "generated_at": "2026-11-14T13:47",                         
+      244 +  "generated_at": "2026-11-14T14:29",                         
+      245    "summary": {
+      246     "kept": 1,
+      247     "missed": 2,
+     ...
+      255    "symbol": "TATAPOWER",
+      256    "name": "Tata Power Company Ltd",
+      257    "sector": "Utilities",
+      258 -  "generated_at": "2026-11-14T13:47",                         
+      258 +  "generated_at": "2026-11-14T14:30",                         
+      259    "summary": {
+      260     "kept": 1,
+      261     "missed": 1,
+     ...
+      283    "symbol": "TITAN",
+      284    "name": "Titan Company Ltd",
+      285    "sector": "Consumer Discretionary",
+      286 -  "generated_at": "2026-11-14T13:48",                         
+      286 +  "generated_at": "2026-11-14T14:30",                         
+      287    "summary": {
+      288     "kept": 0,
+      289     "missed": 0,
+● Background command "Stop local API, rerun 5 quota-hit tickers" completed (exit
+code 0)
+
+  Searched for 1 pattern (ctrl+o to expand)
+
+● All 5 re-ran and the consistency gate passed (exit 0). Checking which models
+  answered and what it cost:
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Those five calls were all served from cache, and they were already re-run
+  around 13:43 IST. I suspect their cached extractions came from a fallback
+  model used on the quota day, so I'm checking which model produced them.
+  · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The extractions for all 5 are already Gemini flash-lite answers from 12 Nov,
+  so "quota-hit" must mean something else. Checking the Batch A transcript:
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Item 8 is done for those five, re-run at commit 6e2fe48 and passing the gate.
+  Next I'll do the final re-ingest and regenerate all 22 pages, then run the
+  gate. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The last feed was a 30-day window, so I'm keeping --days 30. Ingest, then all
+  research pages, then the gate, in one background chain:
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Render is still on the old build, so auto-deploy may be off or still running.
+  Meanwhile, checking that the static export still builds:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The build is fine. For the deployed test I'll use headless Chrome screenshots
+  of the Vercel page. Finding the Chrome the icon script uses:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Chrome is available, so I'll run the UI test against the deployed stack once
+  Render has its keys, since a local live run now would write into the pages
+  folder during the full regeneration. Checking the time and both background
+  jobs next. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Render now runs the new code (keys: false, so it's waiting for your env vars).
+  One small UI addition while I wait: show elapsed seconds next to the stage,
+  so a long step visibly isn't stuck.
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/web" && python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated web\components\Research.tsx (+3 -2)
+      143  }
+      144  
+      145  function LiveResearch({ symbol, auto, onDone }: { symbol: stri
+           ng; auto: boolean; onDone: (d: Research) => void }) {
+      146 -  const [st, setSt] = useState<{ stage?: string; error?: strin
+          -g }>({});                                                     
+      146 +  const [st, setSt] = useState<{ stage?: string; error?: strin
+          +g; seconds?: number }>({});                                   
+      147    const alive = useRef(true);
+      148    useEffect(() => () => { alive.current = false; }, []);
+      149    const call = async (path: string, init?: RequestInit) => {
+     ...
+      158      try {
+      159        let job = await call(`/research/${symbol}`, { method: "P
+           OST" });
+      160        while (job.status === "running" && alive.current) {
+      161 -        setSt({ stage: job.stage });                          
+      161 +        setSt({ stage: job.stage, seconds: job.seconds });    
+      162          await new Promise((ok) => setTimeout(ok, 2500));
+      163          job = await call(`/jobs/${job.id}`);
+      164        }
+     ...
+      180        {busy ? (
+      181          <>
+      182            <p className="mt-3 text-[1rem] font-medium" role="st
+           atus" aria-live="polite">{st.stage}</p>
+      183 +          {st.seconds != null && <p className="text-[0.8125rem
+          +] text-ink-2 tabular-nums" aria-hidden="true">{Math.floor(st.s
+          +econds / 60)}:{String(st.seconds % 60).padStart(2, "0")} elaps
+          +ed</p>}                                                       
+      184            <p className="mt-1 text-[0.875rem] leading-snug text
+           -ink-2">Reading the last four call transcripts and the results
+            filings. This takes a few minutes; keep this page open.</p>
+      185          </>
+      186        ) : (
+
+● I'm checking whether screener.in can be reached from Render's cloud IP, using
+  an unknown symbol as a free probe that doesn't count toward the AI cap.
+  · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● screener.in answers Render's IP (a clean 404 in 2s, not a block). Committing
+  the elapsed-time line:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Waiting on two things:
+
+  - You (step 5): Render is running the new code, but /health still shows
+    "keys":{"gemini":false,"groq":false}. Please add GEMINI_API_KEY and
+    GROQ_API_KEY on Render. On Vercel, add NEXT_PUBLIC_API_URL and redeploy,
+    then send me the Vercel URL. Instructions are above.
+  - Me (item 8): the final 30-day re-ingest and the rebuild of all 22 pages are
+    running in the background. The consistency gate runs at the end.
+
+  Done so far, pushed in c8e9b6d and two follow-up commits:
+  - Live research works locally. KEI Industries took 149s, 10 LLM calls and
+    ~$0.044. Unknown symbols fail cleanly in 2–7s with 0 tokens, both locally
+    and from Render.
+  - screener.in answers Render's IP, so the live path can work from the cloud.
+  - Item 7: L&T's FY26 8.5% EBITDA target now gets a slot. "Group order
+    inflows", which the extractor had filed as revenue, took it before. The L&T
+    margin chart also mixed two definitions: the filing's 8.7% sat among
+    screener's ~12–14% quarters, drawing a fake sawtooth. It now uses only the
+    filing quarters and says so, and every margin label states how it's
+    computed.
+  - Item 8: the 5 quota-hit tickers had already been re-run after Gemini reset
+    (13:43 IST, Batch A). My re-run confirmed it: every LLM answer came from
+    cache, all 5 pages have their promise check and bull/bear, and the gate
+    passes.
+  - Tests: 167 backend tests pass (new ones cover the job API, the promise
+    ranking, the margin fix and the bull/bear dedupe). The static build is fine.
+
+  I haven't yet tested the browser UI of the live flow; that happens on the
+  deployed Vercel site. A local run would have written into the page data while
+  the rebuild was running.
+
+● Background shell command didn't finish before the previous session ended
+
+> Render deploy failed. Log: "Running 'uvicorn finn.api:app --host 0.0.0.0
+  --port $PORT'" at 02:48:16, then nothing until 03:03:02 "Port scan timeout
+  reached, no open ports detected", then "Timed Out". Uvicorn never logged
+  "Started server process" or "Application startup complete", so the app hangs
+  or dies while importing. This deploy was triggered only by adding
+  GEMINI_API_KEY and GROQ_API_KEY.
+  Fix so the server binds its port within seconds on the free instance (0.1
+  CPU, 512 MB):
+  1. No heavy work at import or startup: lazy-import heavy libraries
+  (pymupdf4llm / pymupdf-layout / onnxruntime / pandas) inside the job
+  function; no network calls, warm-ups or key checks at startup.
+  2. Remove dependencies the server doesn't need (onnxruntime and layout models
+  especially) from backend/requirements.txt.
+  3. Test locally WITH both keys set: uvicorn finn.api:app must print
+  "Application startup complete" within ~5 s, and measure memory during one
+  live research job (must stay well under 512 MB).
+  4. Commit and push (Render redeploys automatically), then confirm /health
+  shows both keys true.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● It's past the 6 PM freeze, so I'll fix the Render issue first and then the
+  half-written data files. Next I'm checking what pymupdf pulls in and how slow
+  its import is. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● finn.api takes 11.6s to import on this laptop, and pymupdf 2.1 depends on
+  onnxruntime and the layout/llm packages. On 0.1 CPU that's minutes. Seeing
+  what pymupdf itself loads:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● API Error: Connection dropped (ECONNRESET). A VPN, firewall, or
+  security software can cause this. Check those or switch networks, then
+  try again.
+
+> Vercel is live at https://finn-coral-eta.vercel.app/. NEXT_PUBLIC_API_URL is
+  set to https://finn-api-72tc.onrender.com. Once the Render startup fix is
+  deployed and /health shows both keys true, test live research end to end from
+  this URL on 2 tickers outside our 22 (one mid-cap, one bank/NBFC) and
+  report.
+
+● The Render import is slow because finn.api pulls in pandas, yfinance and
+  numpy, and pymupdf 2.1 brings onnxruntime with it. I'm checking for a pymupdf
+  build without those dependencies next. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● I'm pinning pymupdf to 1.28.2, the last 1.x release with no dependencies, and
+  removing onnxruntime, pymupdf4llm and pymupdf_layout before running the
+  PDF-fixture tests. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python -m pip uninstall -y -q pymupdf4llm pymupdf_layout
+      pymupdf-layout onnxruntime 2>&…)  ⎿  Updated backend\requirements.txt (+1 -1)
+       4  httpx==0.28.1
+       5  pandas==3.1.1
+       6  pydantic==2.14.3
+       7 -pymupdf==2.1                                                   
+       7 +pymupdf==1.28.2                                                
+       8  pytest==9.2.0
+       9  python-dotenv==1.2.4
+      10  uvicorn==0.54.0
+  ⎿  Updated web\public\data\research\PERSISTENT.json (+1 -1)
+      1  {
+      2   "symbol": "PERSISTENT",
+      3   "name": "Persistent Systems Ltd",
+      4 - "generated_at": "2026-11-14T14:29",                            
+      4 + "generated_at": "2026-11-14T19:16",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+  ⎿  Updated web\public\data\research\POLYCAB.json (+3 -3)
+      1  {
+      2   "symbol": "POLYCAB",
+      3   "name": "Polycab India Ltd",
+      4 - "generated_at": "2026-11-14T13:44",                            
+      4 + "generated_at": "2026-11-14T19:17",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+     ...
+      27   ],
+      28   "skipped_calls": [],
+      29   "margin_definition": {
+      30 -  "name": "EBITDA margins (as reported)",                      
+      30 +  "name": "EBITDA margins (as management reported it on each ca
+         +ll)",                                                          
+      31    "source": "management's reported margin for each quarter, on 
+          that quarter's results call (transcripts)"
+      32   },
+      33   "model_note": null,
+     ...
+      795     "claim": "Revenue +52.8% YoY in Q2 FY27; PAT (to owners) +4
+           2.6%."
+      796    },
+      797    "margin": {
+      798 -   "name": "EBITDA margin (operating profit over revenue, othe
+          -r income excluded)",                                          
+      798 +   "name": "EBITDA margin (revenue minus operating expenses, o
+          +ver revenue; other income excluded)",                         
+      799     "periods": [
+      800      "Dec 2024",
+      801      "Mar 2025",
+  ⎿  Updated web\public\data\research\RELIANCE.json (+1 -1)
+      1  {
+      2   "symbol": "RELIANCE",
+      3   "name": "Reliance Industries Ltd",
+      4 - "generated_at": "2026-11-14T14:29",                            
+      4 + "generated_at": "2026-11-14T19:17",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+  ⎿  Updated web\public\data\research\SUNPHARMA.json (+1 -1)
+      1  {
+      2   "symbol": "SUNPHARMA",
+      3   "name": "Sun Pharmaceutical Industries Ltd",
+      4 - "generated_at": "2026-11-14T14:29",                            
+      4 + "generated_at": "2026-11-14T19:17",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+  ⎿  (timeout 10m)
+
+● All 167 tests pass on pymupdf 1.28.2, PDF fixtures included. Now the lazy
+  imports in api.py: only light modules at import, and the research stack loaded
+  inside the job.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\api.py (+6 -3)
+       7  from fastapi import FastAPI, HTTPException
+       8  from fastapi.middleware.cors import CORSMiddleware
+       9  from finn import llm
+      10 -from finn.config import CACHE                                  
+      11 -from finn.pull import pvd, research                            
+      10 +from finn.config import CACHE, ROOT                            
+      11  from finn.sources import bse
+      12 +# The research stack (pandas, yfinance, numpy, PyMuPDF) is impo
+         +rted inside the job, not here: on Render's free                
+      13 +# instance (0.1 CPU) importing it took minutes and the port sca
+         +n timed out before uvicorn bound (14 Nov).                     
+      14  
+      15  app = FastAPI(title="FINN")
+      16  app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_m
+          ethods=["GET", "POST"], allow_headers=["*"])
+     ...
+      19  DAILY_JOBS = int(os.getenv("FINN_DAILY_JOBS", "8"))  # ~20k str
+          ong-model tokens a company; Groq's free day is 200k
+      20  TIMEOUT = int(os.getenv("FINN_JOB_TIMEOUT", "480"))   # seconds
+           the page waits; the job itself finishes and is cached
+      21  LEDGER = CACHE / "live_jobs.jsonl"
+      22 +OUT = ROOT / "web" / "public" / "data" / "research"  # = pvd.OU
+         +T                                                              
+      23  IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
+      24  JOBS: dict[str, dict] = {}
+      25  LOCK = threading.Lock()
+     ...
+      70  
+      71  def _work(job: dict) -> None:
+      72      since = dt.datetime.now().isoformat(timespec="seconds")  # 
+          same clock as the cost log's ts
+      73 +    from finn.pull import pvd, research                        
+      74      pvd.stage = lambda text: job.update(stage=text)
+      75      llm.LIVE = True  # a reader is waiting: short retries, and 
+          the fast model may answer when both strong ones are down
+      76      try:
+     ...
+      105  
+      106  def _cached(sym: str) -> dict | None:
+      107      """The finished page, if any. pvd.run writes a partial fil
+           e mid-job, so a running job's file doesn't count."""
+      105 -    f = pvd.OUT / f"{sym}.json"                               
+      108 +    f = OUT / f"{sym}.json"                                   
+      109      if not f.exists() or any(j["status"] == "running" and j["s
+           ymbol"] == sym for j in JOBS.values()):
+      110          return None
+      111      return json.loads(f.read_text(encoding="utf-8"))
+  ⎿  Updated backend\tests\test_api.py (+70 -58)
+       1 -"""Live research API: job lifecycle, one job at a time, daily c
+         -ap, failures. research.build is faked (no network)."""         
+       2 -import json, time, threading                                   
+       3 -import httpx                                                   
+       4 -import pytest                                                  
+       5 -from fastapi.testclient import TestClient                      
+       6 -from finn import api                                           
+       1 +"""Live research API: job lifecycle, one job at a time, daily c
+         +ap, failures. research.build is faked (no network)."""         
+       2 +import json, time, threading                                   
+       3 +import httpx                                                   
+       4 +import pytest                                                  
+       5 +from fastapi.testclient import TestClient                      
+       6 +from finn import api                                           
+       7 +from finn.pull import pvd, research                            
+       8 +                                                               
+       9 +                                                               
+      10 +@pytest.fixture                                                
+      11 +def client(tmp_path, monkeypatch):                             
+      12 +    monkeypatch.setattr(api, "OUT", tmp_path)                  
+      13 +    monkeypatch.setattr(api, "LEDGER", tmp_path / "jobs.jsonl")
+      14 +    monkeypatch.setattr(api.llm, "LOG", tmp_path / "llm.jsonl")
+      15 +    monkeypatch.setattr(api, "JOBS", {})                       
+      16 +    return TestClient(api.app)                                 
+      17 +                                                               
+      18 +                                                               
+      19 +def wait(c, job_id):                                           
+      20 +    for _ in range(100):                                       
+      21 +        j = c.get(f"/jobs/{job_id}").json()                    
+      22 +        if j["status"] != "running":                           
+      23 +            return j                                           
+      24 +        time.sleep(0.02)                                       
+      25 +    raise AssertionError("job never finished")                 
+      26 +                                                               
+      27 +                                                               
+      28 +def test_job_runs_reports_stage_and_caches(client, monkeypatch,
+         + tmp_path):                                                    
+      29 +    gate = threading.Event()                                   
+      30 +    def build(sym, live):                                      
+      31 +        pvd.stage("Reading Q2 FY27 transcript (1/4)…")         
+      32 +        gate.wait(2)                                           
+      33 +        (tmp_path / f"{sym}.json").write_text(json.dumps({"symb
+         +ol": sym}), encoding="utf-8")                                  
+      34 +    monkeypatch.setattr(research, "build", build)              
+     … 92 more lines (ctrl+o to expand)
+  ⎿  … 1 more file changed
+  ⎿  (timeout 2m)
+
+● The import test passes. I'm now checking startup timing with both keys loaded
+  from .env, and sampling memory through a full live job using KEI, which is
+  cached locally and costs no quota; I'll delete its file afterwards. · summary
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Two problems with the measurement: the 5 MB reading only covers the venv
+  launcher, since the real Python runs as a child process, and the job hit the
+  8-minute timeout where the cached run took 149s. I'm killing leftovers and
+  re-running with child memory counted and each stage printed. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The log shows L&T and Maruti bull/bear calls at 19:16, so the old
+  full-regeneration run from the previous session is still alive and spending
+  quota. Checking processes:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The old full regeneration is on its last ticker (TITAN), and it has used up
+  today's Groq quota, which is probably why the local KEI job timed out. The
+  startup fix is tested and being pushed so Render can redeploy while I measure
+  memory. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Pushed (56ec7ea). Re-running the memory measurement, this time summing the
+  process tree:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      SP="C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/692d7998-
+      cc9c-4913-8026-8aa39b2867f7/sc…)
+  ⎿  2 files changed (binary, mode only or too large to show)
+  ⎿  (timeout 10m)
+
+● Startup takes 1.2s. Memory is 58 MB idle and 166 MB at peak during a full job
+  (transcripts parsed, snapshot built, bull/bear by gpt-oss-120b), well under
+  512 MB. Cleaning up and checking Render:
+
+● Bash(rm -f "/c/Users/mokshagna/Claude
+      Projects/finn/web/public/data/research/KEI.json"; for i in 1 2 3 4 5 6; do
+      r=$(curl -s -m 90 https://finn-api-72tc.onrender.com…)
+  ⎿  1 file changed (binary, mode only or too large to show)
+  ⎿  (timeout 10m)
+
+● Render is up with both keys set, but my push was around 19:26 so it may still
+  be the old instance, and a redeploy mid-test would wipe the in-memory jobs.
+  I'm giving the deploy a few minutes, then checking whether the regeneration
+  has finished. · summary
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● The regeneration finished. Gemini 3.8 flash is now out of daily quota, and
+  Groq's gpt-oss-120b says retry in ~28 min. Checking whether the run's
+  consistency gate passed:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Item 8 is complete: re-ingest exit 0, all research pages rebuilt with exit 0,
+  consistency gate 0 problems. Checking L&T's page for the item-7 fixes before
+  committing the data:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● L&T now shows the 8.5% target, and its margin is 8.7% with a label stating the
+  computation. KPIT also got the filing-only margin. Committing the data:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● This push also redeploys Render, so I'm leaving a marker job on the current
+  instance to detect the switch. Once /jobs/<marker> returns 404, the new
+  instance is serving. · summary
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Next I'm writing an end-to-end driver that runs headless Chrome at a 390px
+  phone viewport against the Vercel research page, logs each stage, and takes a
+  full-page screenshot. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● While waiting, here's the PLAN.md status section. I'll add the e2e results
+  once they're in.
+
+● Update(PLAN.md)
+  ⎿  Added 8 lines
+      235  - **Spend this round:** $0.23 / 172 calls (121 cheap, 51 gpt-o
+           ss-120b); to date **$2.89 / 935 calls** (list prices; all free
+            tiers).
+      236  - **Next:** no bulk re-runs after Saturday evening (user's rul
+           e). Remaining: writeup, demo pass on the phone.
+      237  
+      238 +## 3m. Status at 14 Nov, evening (Batch B: live research; back
+          +end frozen)                                                   
+      239 +- **Live research for any NSE symbol** (`api.py`): `POST /rese
+          +arch/{symbol}` → job id; `GET /jobs/{id}` → stage line; one jo
+          +b at a time; page-side timeout 8 min (the job still finishes a
+          +nd caches); unknown symbol / busy / daily cap (8 runs a day) /
+          + quota answer in plain words; a failed promise check still ret
+          +urns snapshot + prices with the reason. Live jobs aren't patie
+          +nt, so the Groq ↔ Gemini fallback chain answers; every section
+          + names its model. Tokens and cost per run come back with the j
+          +ob.                                                           
+      240 +- **Web:** an unresearched symbol shows "Research this company
+          +" → stage line with elapsed time → the company page; a finishe
+          +d page is also kept in localStorage. Vercel: https://finn-cora
+          +l-eta.vercel.app (`NEXT_PUBLIC_API_URL` → Render).            
+      241 +- **Render startup fix:** the research stack is imported insid
+          +e the job (API import was 11.6 s on a laptop; at 0.1 CPU the p
+          +ort scan timed out); pymupdf pinned to 1.28.2 (2.1 pulled onnx
+          +runtime + layout models). Locally with both keys: startup comp
+          +lete in 1.2 s, 58 MB idle, 166 MB peak during a full job.     
+      242 +- **Item 7:** promise selection = measured, then headline metr
+          +ics (revenue, margin, profit), so L&T's FY26 8.5% EBITDA targe
+          +t is shown; margin series use only filing quarters when screen
+          +er counts costs differently (L&T 8.7% vs screener's 14.1%; KPI
+          +T too), and every margin label states its computation.        
+      243 +- **Item 8:** the 5 quota-hit tickers were already re-run afte
+          +r Gemini's reset (Batch A, 13:43); final 30-day re-ingest + al
+          +l 22 pages rebuilt; consistency gate 0 problems. 169 backend t
+          +ests pass.                                                    
+      244 +- **Quota note:** the full rebuild used most of today's Groq g
+          +pt-oss-120b cap and Gemini 3.8 flash's daily quota, so live ru
+          +ns today fall through to Gemini 3.5 flash for the strong tasks
+          + (labelled on the page).                                      
+      245 +                                                              
+      246  ## 4. Day-by-day
+      247  
+      248  **Wed 11 (done):** repo init, spikes, decisions. Session expor
+           t.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The marker job is still running after 10 minutes, so Render hasn't swapped
+  instances yet. I'm running the e2e test against the healthy instance now.
+  · summary
+
+● Stop Task
+  ⎿  until [ "$(curl -s -o /dev/null -w '%{http_code}' -m 60
+     https://finn-api-72tc.onrender.com/jobs/0378dc9ad4d6 || true)" = "404"
+     ]; do sleep 15; done; date +%H:%M… · stopped
+
+● Stop Task  ⎿  until [ "$(curl -s -o /dev/null -w '%{http_code}' -m 60
+     https://finn-api-72tc.onrender.com/jobs/0378dc9ad4d6 || true)" = "404"
+     ]; do sleep 20; done; date +%H:%M… · stopped
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Render is healthy, but the API URL wasn't in the Vercel page's first-load
+  scripts, so I'll check the e2e run for the env var. Next I'm starting on the
+  mid-cap, Sona BLW Precision Forgings. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● SONACOMS completed from the Vercel URL in 91s: Render job 83s, 5 LLM calls,
+  72k in / 7.9k out tokens, about $0.036. Checking what the page shows:
+
+  Read 1 file (ctrl+o to expand)
+
+● The SONACOMS page now renders fully on a 390px phone, but its "Built 15:35
+  IST" stamp is really Render's UTC clock, and the snapshot margin (22.5%)
+  differs from management's reported 23.0%. Next I'll move on to Federal Bank.
+  · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The bank run hit the timeout path: bull/bear stalled at the 8-minute limit,
+  but the page showed its planned "taking longer than usual" message instead of
+  breaking. I'm waiting for the Render job to finish so I can cache the page.
+  · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● While that runs, checking whether Render ever swapped to the startup-fix
+  build. The marker job tells us:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The marker job is gone, so the instance restarted at some point after 19:40.
+  If that happened during the bank run, the job died with it. Checking whether
+  the SONACOMS page and the bank job survived:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Both services are running on the same instance, so the restart came before the
+  e2e tests. I'm waiting for the bank job, still at "Writing bull & bear…"
+  after 531s, to finish. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Stop Task
+  ⎿  until curl -s -m 60
+     https://finn-api-72tc.onrender.com/jobs/f6b0427678bb | grep -q -E
+     '"status":"(done|failed)"|unknown_job'; do sleep 20; done; curl -s
+     https:/… · stopped
+
+● The bank job has been in "Writing bull & bear…" for over 18 minutes. I'm
+  recording the e2e results in PLAN.md and committing:
+
+● Update(PLAN.md)
+  ⎿  Added 1 line
+      241  - **Render startup fix:** the research stack is imported insid
+           e the job (API import was 11.6 s on a laptop; at 0.1 CPU the p
+           ort scan timed out); pymupdf pinned to 1.28.2 (2.1 pulled onnx
+           runtime + layout models). Locally with both keys: startup comp
+           lete in 1.2 s, 58 MB idle, 166 MB peak during a full job.
+      242  - **Item 7:** promise selection = measured, then headline metr
+           ics (revenue, margin, profit), so L&T's FY26 8.5% EBITDA targe
+           t is shown; margin series use only filing quarters when screen
+           er counts costs differently (L&T 8.7% vs screener's 14.1%; KPI
+           T too), and every margin label states its computation.
+      243  - **Item 8:** the 5 quota-hit tickers were already re-run afte
+           r Gemini's reset (Batch A, 13:43); final 30-day re-ingest + al
+           l 22 pages rebuilt; consistency gate 0 problems. 169 backend t
+           ests pass.
+      244 +- **E2E from the deployed site** (headless Chrome at 390px on 
+          +finn-coral-eta.vercel.app → Render): **SONACOMS** (mid-cap) fu
+          +ll page in 91 s (job 83 s), 5 calls, 72k in / 7.9k out tokens,
+          + $0.036 (flash-lite + gpt-oss-120b): 1 promise (EBITDA 23–25% 
+          +FY27, on track at 23.0%), snapshot, bull/bear 3+3 cited. **FED
+          +ERALBNK** (bank): 4 transcripts read and promises checked in 5
+          +4 s, then bull/bear stalled (Groq's daily cap spent by the reb
+          +uild → Gemini fallback with no per-call timeout); the page sho
+          +wed the timeout message at 8 min as designed. **Open:** a per-
+          +call timeout on live Gemini calls so a stalled fallback moves 
+          +down the chain; `TZ=Asia/Kolkata` on Render (page stamps show 
+          +UTC as IST).                                                  
+      245  - **Quota note:** the full rebuild used most of today's Groq g
+           pt-oss-120b cap and Gemini 3.8 flash's daily quota, so live ru
+           ns today fall through to Gemini 3.5 flash for the strong tasks
+            (labelled on the page).
+      246  
+      247  ## 4. Day-by-day
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Render is fixed and live research works from the Vercel site on the mid-cap.
+  The bank test stalled at bull/bear: the page showed the planned timeout
+  message, but that page never completed.
+
+  Startup fix (pushed in 56ec7ea):
+  - The API no longer loads pandas, yfinance, numpy or PyMuPDF at startup; the
+    research job loads them when it starts. Importing them took 11.6s on my
+    laptop, which at 0.1 CPU becomes minutes, so Render's port scan timed out.
+  - pymupdf is pinned to 1.28.2, which installs nothing else. Version 2.1 was
+    pulling in onnxruntime and the layout models. All 169 tests pass on it,
+    including the PDF parser tests.
+  - A new test fails if those heavy modules ever load at startup again.
+  - Locally with both keys: "Application startup complete" in 1.2s, 58 MB idle,
+    166 MB at peak during a full research job.
+  - Render /health now shows both keys true.
+
+  End-to-end tests (headless Chrome at phone width on
+  https://finn-coral-eta.vercel.app, against Render):
+
+  Time
+  SONACOMS (mid-cap): 91s to the full page (83s on Render)
+  FEDERALBNK (bank): 54s to finish reading 4 transcripts and checking promises,
+    then stalled on bull/bear
+  ────────────────────────────────────────
+  AI usage
+  SONACOMS (mid-cap): 5 calls, 72k tokens in / 7.9k out, ~$0.036
+  FEDERALBNK (bank): not reported (job never finished)
+  ────────────────────────────────────────
+  What the page showed
+  SONACOMS (mid-cap): Promise check: EBITDA margin 23–25% target for FY27, on
+    track at 23.0%, with chart. Snapshot: revenue +35% YoY, margin, cash flow,
+    debt/equity. Bull/bear 3+3, cited, written by gpt-oss-120b. Sources listed.
+  FEDERALBNK (bank): After 8 min, the planned message: "This is taking longer
+    than usual. The page will be saved when it finishes…" No crash.
+
+  Every progress stage you specified showed on the page for both tickers.
+
+  Why the bank stalled: the full rebuild of the 22 pages (item 8) used up
+  today's Groq gpt-oss-120b quota and Gemini 3.8 flash's daily quota. Bull/bear
+  therefore fell to a Gemini model, and Gemini calls have no time limit. The
+  same fallback took about 40 minutes for L&T in the rebuild. The job is still
+  running on Render and should cache its page when it ends, but I haven't
+  confirmed that it finished.
+
+  Two decisions for you, since the backend is past its freeze:
+  1. Time limit on live Gemini calls. About 3 lines: a ~90s limit per call, so a
+     slow model hands over to the next one instead of stalling. Without it, a
+     reviewer on a quota-heavy day could hit the same timeout. I'd do this.
+  2. Clock on Render. Pages built on Render print UTC labelled as IST (SONACOMS
+     said "Built 15:35 IST" at ~21:05). No code needed: on Render → finn-api →
+     Environment, add TZ = Asia/Kolkata.
+
+  Items 7 and 8:
+  - L&T now shows its FY26 8.5% EBITDA target.
+  - L&T's margin chart was mixing two definitions: the results filing gives
+    8.7%, screener's figure gave 14.1%. It now uses only the filing's quarters.
+    KPIT's chart changed the same way.
+  - Every margin label now says how the number is computed.
+  - The 5 quota-hit tickers had already been re-run after Gemini reset (Batch A,
+    13:43). The final re-ingest and the rebuild of all 22 pages are done, and
+    the consistency check found 0 problems. Data is committed.
+
+  PLAN.md §3m and DECISIONS.md are updated, and everything is pushed. All of
+  this landed after the 6 PM freeze; the session overran.
+
+  My last push only touched PLAN.md, but if Render auto-deploys on every push,
+  it may have restarted the server and lost the Federal Bank job. I also didn't
+  confirm the Vercel "Research this company" button by tapping it; the test
+  opened the page with run=1, which starts research the same way the button
+  does.
+
+  Remember to /export this session into build-history/.
+
+● Background command "Wait for FEDERALBNK job to finish" completed (exit code 0)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The bank job finished and its page is cached on Render, with the bank figures,
+  the Groq→Gemini fallback and model labelling all working; the only problem
+  was speed, since the Gemini call stalled and the job ran 45 minutes. I'm
+  recording this in PLAN.md as a local commit only, because a push could
+  redeploy Render and wipe the cached Federal Bank page. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && python - <<'EOF'
+      import pathlib…)
+  ⎿  1 file changed (binary, mode only or too large to show)
+
+● Both end-to-end tests have now produced complete pages from the Vercel site.
+  The Federal Bank result is committed in PLAN.md locally but not pushed, so the
+  cached bank page on Render survives. Push it whenever you're ready.
+
+  My recommendation stands: add a ~90s limit on live Gemini calls (about 3
+  lines), so a stalled fallback hands over to the next model instead of making a
+  reviewer wait 45 minutes. Say the word and I'll do it, even though the
+  backend is past its freeze. Also set TZ=Asia/Kolkata on Render so the "Built …
+  IST" stamps are correct.
+
+  I haven't checked whether Render redeploys on pushes that only change docs; if
+  it does, the next push will clear Render's cached pages.
+
+> Decisions:
+  1. Yes: add a ~90s timeout per LLM call (Gemini and Groq) so a slow model
+  hands over to the next one.
+  2. Also: live research must save the company page as soon as the promise
+  check + snapshot are done, and add bull/bear later if it completes. If
+  bull/bear can't finish, show a quiet note ("Bull/bear couldn't be generated
+  right now"), never a stalled page. Re-test FEDERALBNK on the deployed site.
+  3. I've set TZ=Asia/Kolkata on Render and a build filter of backend/** so
+  doc-only commits don't restart the server.
+     Then commit, push, and stop. This is the last backend change: backend is
+  frozen after this.
+
+● Three changes, then the deployed re-test:
+  1. A 90s limit per call for both providers. A timeout skips to the next model
+     instead of retrying the same one.
+  2. In live mode the page is saved once the promise check and snapshot are
+     done. The page shows "Writing bull & bear…" and picks up the result, or a
+     quiet note if it fails.
+  3. Tests for both.
+
+  Checking the Gemini SDK's timeout option first:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\llm.py (+10 -3)
+      35      return (PROMPTS / f"{name}.md").read_text(encoding="utf-8")
+      36  
+      37  
+      38 +CALL_TIMEOUT = 90  # seconds per call (user, 14 Nov): Gemini 3.
+         +8 flash once spent 40 min on one bull/bear                     
+      39 +                                                               
+      40 +                                                               
+      41  class Retryable(Exception):
+      42      """Overloaded / rate-limited: worth retrying, then falling 
+          back."""
+      43  
+     ...
+      49  def _gemini(model: str, parts: list, schema: dict) -> tuple[dic
+          t, int, int]:
+      50      from google import genai
+      51      from google.genai import types, errors
+      49 -    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+      52 +    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"],
+         + http_options=types.HttpOptions(timeout=CALL_TIMEOUT * 1000))  
+      53      contents = [types.Part.from_bytes(data=p, mime_type="applic
+          ation/pdf") if isinstance(p, bytes) else p for p in parts]
+      54      try:
+      55          r = client.models.generate_content(model=model, content
+          s=contents, config=types.GenerateContentConfig(
+     ...
+      61              raise Retryable(str(e)) from e
+      62          raise
+      63      except Exception as e:  # dropped connection / timeout mid-
+          request (seen 12 Nov on a long transcript): retry too
+      61 -        if any(k in type(e).__name__ for k in ("ReadError", "Co
+         -nnectError", "Timeout", "RemoteProtocolError")):               
+      64 +        if "Timeout" in type(e).__name__:  # slow, not down: th
+         +e next model, not three more waits on this one                 
+      65 +            raise Exhausted(f"no answer in {CALL_TIMEOUT}s") fr
+         +om e                                                           
+      66 +        if any(k in type(e).__name__ for k in ("ReadError", "Co
+         +nnectError", "RemoteProtocolError")):                          
+      67              raise Retryable(f"{type(e).__name__}: {e}") from e
+      68          raise
+      69      u = r.usage_metadata
+     ...
+      77      if any(isinstance(p, bytes) for p in parts):
+      78          raise ValueError("groq adapter takes text only")
+      79      try:
+      75 -        r = httpx.post("https://api.groq.com/openai/v1/chat/com
+         -pletions", timeout=120,                                        
+      80 +        r = httpx.post("https://api.groq.com/openai/v1/chat/com
+         +pletions", timeout=CALL_TIMEOUT,                               
+      81                         headers={"Authorization": f"Bearer {os.e
+          nviron['GROQ_API_KEY']}"},
+      82                         json={"model": model, "temperature": 0, 
+          "messages": [{"role": "user", "content": "\n\n".join(parts)}],
+      83                               "response_format": {"type": "json_
+          schema", "json_schema": {"name": "out", "schema": schema}}})
+      84 +    except httpx.TimeoutException as e:  # slow, not down: the 
+         +next model, not three more waits on this one                   
+      85 +        raise Exhausted(f"no answer in {CALL_TIMEOUT}s") from e
+      86      except httpx.TransportError as e:
+      87          raise Retryable(f"{type(e).__name__}: {e}") from e
+      88      if r.status_code == 413:  # one request over the free tier'
+          s tokens-a-minute: this model can't take it at all
+
+● Now the early save in research.build (live mode only):
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\finn\api.py (+8 -4)
+       95  
+       96  
+       97  def _view(job: dict) -> dict:
+       98 -    out = {k: v for k, v in job.items() if k != "started"}    
+       98 +    out = {k: v for k, v in job.items() if k != "started"} | {
+          +"page": _cached(job["symbol"]) is not None}                   
+       99      if job["status"] == "running":
+      100          out["seconds"] = round(time.time() - job["started"])
+      101          if out["seconds"] > TIMEOUT:  # the page stops waiting
+           ; the job keeps going and caches its page
+     ...
+      104  
+      105  
+      106  def _cached(sym: str) -> dict | None:
+      107 -    """The finished page, if any. pvd.run writes a partial fil
+          -e mid-job, so a running job's file doesn't count."""          
+      107 +    """The page, if any: finished, or readable with bull/bear 
+          +still pending. pvd.run writes a partial file mid-job          
+      108 +    (promises only, no snapshot), which doesn't count."""     
+      109      f = OUT / f"{sym}.json"
+      109 -    if not f.exists() or any(j["status"] == "running" and j["s
+          -ymbol"] == sym for j in JOBS.values()):                       
+      110 +    d = json.loads(f.read_text(encoding="utf-8")) if f.exists(
+          +) else {}                                                     
+      111 +    if "snapshot" not in d:                                   
+      112          return None
+      111 -    return json.loads(f.read_text(encoding="utf-8"))          
+      113 +    if d.get("bull_bear_pending") and not any(j["status"] == "
+          +running" and j["symbol"] == sym for j in JOBS.values()):      
+      114 +        d["bull_bear_pending"] = False  # the job ended withou
+          +t writing it (server restart): the page shows the quiet note  
+      115 +    return d                                                  
+      116  
+      117  
+      118  @app.get("/research/{symbol}")
+  ⎿  Updated backend\finn\pull\research.py (+11 -5)
+      356      pvd.stage("Building the financial snapshot…")
+      357      snap = snapshot(co)
+      358      ev = evidence(out["promises"], reported, analyst_questions
+           (texts, urls), snap, urls)
+      359 -    out |= {"sector": co.get("sector"), "summary": summary(out
+          -["promises"], len(out["calls"])), "prices": price_lines(sym), 
+          -"snapshot": snap}                                             
+      359 +    out |= {"sector": co.get("sector"), "summary": summary(out
+          +["promises"], len(out["calls"])), "prices": price_lines(sym), 
+          +"snapshot": snap,                                             
+      360 +            "sources": sources(out, co)}                      
+      361 +                                                              
+      362 +    def save(d: dict) -> None:                                
+      363 +        tmp = f.with_suffix(".tmp")                           
+      364 +        tmp.write_text(json.dumps(d, ensure_ascii=False, inden
+          +t=1), encoding="utf-8")                                       
+      365 +        tmp.replace(f)                                        
+      366 +    if live:  # the reader gets the page now; bull/bear (the s
+          +lowest step) is added when it's written (user, 14 Nov)        
+      367 +        save(out | {"bull_bear": None, "bull_bear_pending": Tr
+          +ue})                                                          
+      368      pvd.stage("Writing bull & bear…")
+      361 -    out |= {"bull_bear": bull_bear(out["name"], out.get("lates
+          -t_quarter"), ev, sym, prev, snap), "sources": sources(out, co)
+          -}                                                             
+      362 -    tmp = f.with_suffix(".tmp")                               
+      363 -    tmp.write_text(json.dumps(out, ensure_ascii=False, indent=
+          -1), encoding="utf-8")                                         
+      364 -    tmp.replace(f)                                            
+      369 +    out["bull_bear"] = bull_bear(out["name"], out.get("latest_
+          +quarter"), ev, sym, prev, snap)                               
+      370 +    save(out)                                                 
+      371      return out
+      372  
+      373  
+
+● Now the tests. The fake finished page needs a snapshot, plus a new test for
+  the pending state and the timeouts:
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated backend\tests\test_api.py (+43 -13)
+      30      def build(sym, live):
+      31          pvd.stage("Reading Q2 FY27 transcript (1/4)…")
+      32          gate.wait(2)
+      33 -        (tmp_path / f"{sym}.json").write_text(json.dumps({"symb
+         -ol": sym}), encoding="utf-8")                                  
+      33 +        (tmp_path / f"{sym}.json").write_text(json.dumps({"symb
+         +ol": sym, "snapshot": {}}), encoding="utf-8")                  
+      34      monkeypatch.setattr(research, "build", build)
+      35      job = client.post("/research/kei").json()
+      36      assert job["status"] == "running" and job["symbol"] == "KEI
+          "
+     ...
+      42      gate.set()
+      43      assert wait(client, job["id"])["status"] == "done"
+      44      assert client.post("/research/KEI").json() == {"status": "d
+          one", "symbol": "KEI", "cached": True}
+      45 -    assert client.get("/research/KEI").json() == {"symbol": "KE
+         -I"}                                                            
+      45 +    assert client.get("/research/KEI").json() == {"symbol": "KE
+         +I", "snapshot": {}}                                            
+      46  
+      47  
+      48  def test_unknown_symbol_and_bad_input(client, monkeypatch):
+     ...
+       61      wait(client, client.post("/research/AAA").json()["id"])
+       62      r = client.post("/research/BBB")
+       63      assert r.status_code == 429 and "Try again tomorrow" in r.
+           json()["detail"]["message"]
+       64 -                                                              
+       65 -                                                              
+       66 -def test_api_import_stays_light():                            
+       67 -    # Render's free instance must bind its port in seconds: th
+          -e research stack loads inside the job only                    
+       68 -    import subprocess, sys                                    
+       69 -    code = "import sys, finn.api; print(any(m in sys.modules f
+          -or m in ('pandas', 'yfinance', 'pymupdf', 'numpy')))"         
+       70 -    assert subprocess.run([sys.executable, "-c", code], captur
+          -e_output=True, text=True, check=True).stdout.strip() == "False
+          -"                                                             
+       71 -                                                              
+       72 -                                                              
+       73 -def test_out_matches_pvd():                                   
+       74 -    assert api.OUT == pvd.OUT                                 
+       64 +                                                              
+       65 +                                                              
+       66 +def test_api_import_stays_light():                            
+       67 +    # Render's free instance must bind its port in seconds: th
+          +e research stack loads inside the job only                    
+       68 +    import subprocess, sys                                    
+       69 +    code = "import sys, finn.api; print(any(m in sys.modules f
+          +or m in ('pandas', 'yfinance', 'pymupdf', 'numpy')))"         
+       70 +    assert subprocess.run([sys.executable, "-c", code], captur
+          +e_output=True, text=True, check=True).stdout.strip() == "False
+          +"                                                             
+       71 +                                                              
+       72 +                                                              
+       73 +def test_out_matches_pvd():                                   
+     … 31 more lines (ctrl+o to expand)
+  ⎿  (timeout 5m)
+
+● 172 pass. Now the frontend: show the page as soon as the job says it's ready,
+  then poll the page until bull/bear lands, or show the quiet note.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/web" && python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated web\components\Research.tsx (+20 -4)
+      141  function readSaved(sym: string): Research | null {
+      142    try { return JSON.parse(localStorage.getItem(saved(sym)) ?? 
+           "null"); } catch { return null; }
+      143  }
+      144 +function save(d: Research) { // only a finished page: a failed
+          + promise check or a pending bull/bear is tried again next visi
+          +t                                                             
+      145 +  if (!d.pvd_error && !d.bull_bear_pending) try { localStorage
+          +.setItem(saved(d.symbol), JSON.stringify(d)); } catch { /* sto
+          +rage full: the server cache still has it */ }                 
+      146 +}                                                             
+      147  
+      148  function LiveResearch({ symbol, auto, onDone }: { symbol: stri
+           ng; auto: boolean; onDone: (d: Research) => void }) {
+      149    const [st, setSt] = useState<{ stage?: string; error?: strin
+           g; seconds?: number }>({});
+     ...
+      160      setSt({ stage: "Waking up the research server…" }); // Ren
+           der's free tier sleeps: the first answer can take a minute
+      161      try {
+      162        let job = await call(`/research/${symbol}`, { method: "P
+           OST" });
+      160 -      while (job.status === "running" && alive.current) {     
+      163 +      while (job.status === "running" && !job.page && alive.cu
+          +rrent) { // page: promises + snapshot are in; bull/bear follow
+          +s on the page                                                 
+      164          setSt({ stage: job.stage, seconds: job.seconds });
+      165          await new Promise((ok) => setTimeout(ok, 2500));
+      166          job = await call(`/jobs/${job.id}`);
+      167        }
+      168        if (!alive.current) return;
+      166 -      if (job.status !== "done") throw new Error(job.message ?
+          -? "Research didn't finish. Try again in a few minutes.");     
+      169 +      if (job.status !== "done" && !job.page) throw new Error(
+          +job.message ?? "Research didn't finish. Try again in a few min
+          +utes.");                                                      
+      170        const d: Research = await call(`/research/${symbol}`);
+      168 -      if (!d.pvd_error) try { localStorage.setItem(saved(symbo
+          -l), JSON.stringify(d)); } catch { /* storage full: the server 
+          -cache still has it */ }                                       
+      171 +      save(d);                                                
+      172        if (alive.current) onDone(d);
+      173      } catch (e) {
+      174        if (alive.current) setSt({ error: e instanceof Error ? e
+           .message : String(e) });
+     ...
+      203    const { data: stat, missing, error, retry } = useJson<Resear
+           ch>(SYMBOL.test(symbol) ? researchUrl(symbol) : null);
+      204    const [live, setLive] = useState<Research | null>(() => (typ
+           eof window === "undefined" ? null : readSaved(symbol)));
+      205    const d = stat ?? (missing ? live : undefined);
+      206 +  const pending = !!live?.bull_bear_pending;                  
+      207 +  useEffect(() => { // bull/bear is still being written: re-re
+          +ad the page until it lands; after 6 min, the quiet note       
+      208 +    if (!pending || !API) return;                             
+      209 +    const t0 = Date.now();                                    
+      210 +    const id = setInterval(async () => {                      
+      211 +      const r = await fetch(`${API}/research/${symbol}`).then(
+          +(r) => (r.ok ? r.json() : null)).catch(() => null);           
+      212 +      if (r && !r.bull_bear_pending) { clearInterval(id); save
+          +(r); setLive(r); }                                            
+      213 +      else if (Date.now() - t0 > 6 * 60_000) { clearInterval(i
+          +d); setLive((l) => l && { ...l, bull_bear_pending: false }); }
+      214 +    }, 5000);                                                 
+      215 +    return () => clearInterval(id);                           
+     … 14 more lines (ctrl+o to expand)
+  ⎿  Updated web\lib\research.ts (+1 -0)
+      28    prices: { closes: [string, number][]; nifty: [string, number]
+          [] } | null;
+      29    snapshot: Snapshot; bull_bear: { bull: Point[]; bear: Point[]
+          ; dropped: number; model: string; model_note: string | null } |
+           null;
+      30    sources: Cite[];
+      31 +  bull_bear_pending?: boolean; // live research only: the page 
+         +is shown while bull/bear is still being written                
+      32    pvd_error?: string; // live research only: why the promise ch
+          eck couldn't run (the rest of the page still shows)
+      33  };
+      34  export type IndexRow = { symbol: string; name: string; sector: 
+          string | null; generated_at: string; summary: Counts };
+  ⎿  (timeout 5m)
+
+● The build is clean. Recording the decisions:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated DECISIONS.md (+2 -0)
+      231  - **Cache = Render's disk + the visitor's browser.** Render's 
+           free disk is wiped on restart, so a finished page is also kept
+            in localStorage; a second visit from the same phone is instan
+           t even when the server is asleep. Gave up: a database (Supabas
+           e) for cross-visitor persistence; the 22 precomputed pages are
+            static on Vercel anyway.
+      232  - **Promise selection (user, 14 Nov):** measured first, then h
+           eadline metrics (revenue, margin, profit), then other financia
+           l targets. "Group order inflows" keyed as revenue had taken L&
+           T's FY26 8.5% EBITDA target's slot; order/volume/AUM wording n
+           ow never counts as headline.
+      233  - **One margin definition per chart.** For L&T, screener's ope
+           rating profit gives 14.1% for Sep 2026; the results filing (re
+           venue from operations minus operating expenses) gives 8.7%. Th
+           e snapshot had put the filing's three quarters among screener'
+           s five, a fake 3-4 pp sawtooth. When the two disagree by more 
+           than 1 pp on a quarter, the margin uses only the quarters read
+            from the filings, and the label says so. Every margin label n
+           ow states its computation ("revenue minus operating expenses, 
+           over revenue; other income excluded", "as management reported 
+           it on each call"). Gave up: L&T's older quarters on the chart 
+           (would need their filings read: more calls).
+      234 +- **90 s per LLM call, then the next model (user, 14 Nov).** A
+          + timeout is "slow", not "down": it skips to the next model ins
+          +tead of three more waits on the same one. The bank test (FEDER
+          +ALBNK) took 45 min because the Gemini fallback had no time lim
+          +it.                                                           
+      235 +- **The page before bull/bear (user, 14 Nov).** A live run sav
+          +es the page as soon as the promise check and snapshot are done
+          +; bull/bear (the slowest step, the strong model) is added when
+          + written. Meanwhile the page says "Writing bull & bear…"; if i
+          +t can't finish (all models down, or 6 min), a quiet "Bull/bear
+          + couldn't be generated right now." Never a stalled page.      
+      236  - **Bull/bear: one fact said twice is dropped** (same period, 
+           same % to one decimal: KEI's "+38.5% revenue" and "38.52% net 
+           sales" on one side).
+      237  
+      238  ## Feed rules (13 Nov afternoon)
+  ⎿  (timeout 2m)
+
+● Pushed (725359f). Waiting for Render to switch to the new build (the marker
+  job disappears) and for Vercel to finish:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● While Render redeploys, I'm updating the e2e driver to time two moments: when
+  the page appears, and when bull/bear resolves (written, or the quiet note).
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Background command "Wait for Render to serve the new build" completed (exit
+code 0)
+
+● Render is on the new build (its disk was wiped, so Federal Bank runs fresh).
+  Re-testing FEDERALBNK from the Vercel site:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Federal Bank now completes in 70s: page at 67s, bull/bear written at 70s.
+  Groq's quota has reset, so gpt-oss-120b answered quickly this time. Quick look
+  at what the page shows:
+
+  Searched for 1 pattern (ctrl+o to expand)
+
+● The page checks out: the bank figures, the "No checkable promises" line, cited
+  bull/bear, and the IST build time are all right. I'm recording this in
+  PLAN.md and pushing it as a docs-only commit, so Render won't restart.
+  · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && python - <<'EOF'
+      import pathlib…)
+  ⎿  Updated PLAN.md (+1 -1)
+      241  - **Render startup fix:** the research stack is imported insid
+           e the job (API import was 11.6 s on a laptop; at 0.1 CPU the p
+           ort scan timed out); pymupdf pinned to 1.28.2 (2.1 pulled onnx
+           runtime + layout models). Locally with both keys: startup comp
+           lete in 1.2 s, 58 MB idle, 166 MB peak during a full job.
+      242  - **Item 7:** promise selection = measured, then headline metr
+           ics (revenue, margin, profit), so L&T's FY26 8.5% EBITDA targe
+           t is shown; margin series use only filing quarters when screen
+           er counts costs differently (L&T 8.7% vs screener's 14.1%; KPI
+           T too), and every margin label states its computation.
+      243  - **Item 8:** the 5 quota-hit tickers were already re-run afte
+           r Gemini's reset (Batch A, 13:43); final 30-day re-ingest + al
+           l 22 pages rebuilt; consistency gate 0 problems. 169 backend t
+           ests pass.
+      244 -- **E2E from the deployed site** (headless Chrome at 390px on 
+          -finn-coral-eta.vercel.app → Render): **SONACOMS** (mid-cap) fu
+          -ll page in 91 s (job 83 s), 5 calls, 72k in / 7.9k out tokens,
+          - $0.036 (flash-lite + gpt-oss-120b): 1 promise (EBITDA 23–25% 
+          -FY27, on track at 23.0%), snapshot, bull/bear 3+3 cited. **FED
+          -ERALBNK** (bank): 4 transcripts read and promises checked in 5
+          -4 s, then bull/bear stalled (Groq's daily cap spent by the reb
+          -uild → Gemini fallback with no per-call timeout); the page sho
+          -wed the timeout message at 8 min as designed; the job finished
+          - at 45 min and cached its page: 7 calls, 25k in / 7k out token
+          -s, $0.054; lender snapshot (total income +19.0% YoY, PAT +51.1
+          -%, net margin 15.1%), "No checkable promises found on the last
+          - 4 calls", bull/bear 3+3 by gemini-3.5-flash labelled as the f
+          -allback. **Open:** a per-call timeout on live Gemini calls so 
+          -a stalled fallback moves down the chain; `TZ=Asia/Kolkata` on 
+          -Render (page stamps show UTC as IST).                         
+      244 +- **E2E from the deployed site** (headless Chrome at 390px on 
+          +finn-coral-eta.vercel.app → Render): **SONACOMS** (mid-cap) fu
+          +ll page in 91 s (job 83 s), 5 calls, 72k in / 7.9k out tokens,
+          + $0.036 (flash-lite + gpt-oss-120b): 1 promise (EBITDA 23–25% 
+          +FY27, on track at 23.0%), snapshot, bull/bear 3+3 cited. **FED
+          +ERALBNK** (bank): 4 transcripts read and promises checked in 5
+          +4 s, then bull/bear stalled (Groq's daily cap spent by the reb
+          +uild → Gemini fallback with no per-call timeout); the page sho
+          +wed the timeout message at 8 min as designed; the job finished
+          + at 45 min and cached its page: 7 calls, 25k in / 7k out token
+          +s, $0.054; lender snapshot (total income +19.0% YoY, PAT +51.1
+          +%, net margin 15.1%), "No checkable promises found on the last
+          + 4 calls", bull/bear 3+3 by gemini-3.5-flash labelled as the f
+          +allback. **Fixed (last backend change, then frozen):** 90 s pe
+          +r LLM call, a timeout skips to the next model; a live run show
+          +s the page once promises + snapshot are done and adds bull/bea
+          +r when written (or a quiet note); `TZ=Asia/Kolkata` and a `bac
+          +kend/**` build filter on Render. **FEDERALBNK re-test from the
+          + deployed site:** page at 67 s, bull/bear (gpt-oss-120b) at 70
+          + s; 7 calls, 25k in / 5.3k out tokens, $0.016; lender snapshot
+          +, "No checkable promises found on the last 4 calls", bull 2 + 
+          +bear 3, cited; build time in IST. 172 backend tests pass.     
+      245  - **Quota note:** the full rebuild used most of today's Groq g
+           pt-oss-120b cap and Gemini 3.8 flash's daily quota, so live ru
+           ns today fall through to Gemini 3.5 flash for the strong tasks
+            (labelled on the page).
+      246  
+      247  ## 4. Day-by-day
+
+● I made both changes, pushed them, and re-tested Federal Bank from the Vercel
+  site. It now finishes in 70s instead of 45 minutes. The backend is frozen.
+
+  1. A 90-second limit on every AI call (Gemini and Groq). If a model doesn't
+  answer in time, the job moves straight to the next model in the backup chain
+  instead of waiting on it again.
+
+  2. The page no longer waits for bull/bear. A live run saves the company page
+  as soon as the promise check and financial snapshot are done. Until bull/bear
+  arrives, that section shows "Writing bull & bear…". The page keeps checking
+  for up to 6 minutes. If bull/bear can't be produced, it shows the quiet note
+  "Bull/bear couldn't be generated right now."
+
+  Federal Bank re-test on the deployed site:
+
+  ┌──────────────┬─────────────────────────┬────────────────────────────────┐
+  │              │     Before the fix      │              Now               │
+  ├──────────────┼─────────────────────────┼────────────────────────────────┤
+  │ Page appears │ stalled; timeout        │ 67s                            │
+  │              │ message at 8 min        │                                │
+  ├──────────────┼─────────────────────────┼────────────────────────────────┤
+  │ Bull/bear    │ 45 min (slow Gemini     │ 70s (gpt-oss-120b)             │
+  │ done         │ backup)                 │                                │
+  ├──────────────┼─────────────────────────┼────────────────────────────────┤
+  │ AI usage     │ 7 calls, ~$0.054        │ 7 calls, 25k tokens in / 5.3k  │
+  │              │                         │ out, ~$0.016                   │
+  └──────────────┴─────────────────────────┴────────────────────────────────┘
+
+  The page shows bank figures (total income +19.0% YoY, PAT +51.1%, net margin
+  15.1%), "No checkable promises found on the last 4 calls", cited bull/bear (2
+  bull, 3 bear), and the build time now in real IST.
+
+  One limit on this test: bull/bear finished 3 seconds after the page appeared,
+  because Groq's daily quota had reset. So the deployed run never actually
+  showed "Writing bull & bear…" or the fallback note. Automated tests cover
+  both, but I haven't seen them on the live site.
+
+  There are 172 backend tests passing. Everything is pushed; the last commit
+  only touched PLAN.md, so your build filter kept Render from restarting.
+
+  I left UI_BRIEF.md (untracked; I didn't write it) and the build-history/ files
+  uncommitted. Remember to /export this session into build-history/.

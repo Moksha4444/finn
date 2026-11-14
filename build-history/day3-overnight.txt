@@ -1,0 +1,2913 @@
+
+> Read CLAUDE.md, PLAN.md (latest status) and DECISIONS.md. Overnight round:
+  work unattended, commit as you go, and stop with a summary. Do the items in
+  this order.
+  1. Ingest safety (first): a partial run must never overwrite a good feed. Per
+  ticker, if fetching fails, keep that ticker's last good data and mark it
+  stale ("as of <time>"). Refuse to write feed.json if more than 2 tickers
+  failed, unless forced. Test it by simulating a network failure.
+  2. Classifier mislabels: Dixon's revenue update was tagged as a management
+  change and KPIT's results approval as M&A. Fix the rules generally (not
+  ticker-specific), add test cases from these real snippets, scan the 30-day
+  feed for other material mislabels, and report them.
+  3. UI decisions: (a) "Also" lines: one line per event/category with a count
+  (e.g. "Jio IPO · 4 filings"); opening the card lists them all with sources.
+  (b) The credibility chip needs at least 2 measured promises; below that, no
+  chip on the card (the research page will still show them). Log both in
+  DECISIONS.md.
+  4. PvD segment numbers (time-box to about 2 hours of work; if it isn't
+  reliable by then, stop and report): read segment revenue/results from the
+  segment page of the same quarterly results filings (the cheap model copies
+  numbers, Python computes) and use them to measure segment promises. Volume
+  and USD targets stay "not yet measurable", labelled with the reason. Re-run
+  all 22 tickers and report the new table (promises, verdict counts, errors)
+  and how many "not measurable" remain.
+  5. Check where the emil-design-eng skill got installed (e.g.
+  ~/.claude/skills, ~/.agents/skills) and tell me. Don't change anything.
+     Log decisions, update PLAN.md status, commit and push, then stop.
+
+● I'll start by reading the project docs and current state.
+
+  Ran 4 shell commands (ctrl+o to expand)
+
+● Now the ingest code for item 1.
+
+  Ran 5 shell commands (ctrl+o to expand)
+
+● Root cause is clear: a whole-ticker failure lands in failed and main() writes
+  the feed regardless. Let me check screener caching and the web side that
+  renders failed.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Next I'll carry failed tickers' data over from the previous feed.json, mark
+  them stale, treat empty yfinance history as a failure, and write atomically.
+  · summary
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" && python - <<'EOF'
+      import re,io…)
+  ⎿  Updated backend\finn\ingest.py (+45 -5)
+      55          source, rows = "nse", nse.announcements(sym, start, end
+          )
+      56      lender = "Financing Profit" in co.get("quarters", {}).get("
+          rows", {})  # screener's bank/NBFC table layout
+      57      h = prices.history(sym)
+      58 +    if h.empty:  # yfinance swallows network errors and returns
+         + an empty frame: a fetch failure, not "no prices"              
+      59 +        raise ConnectionError(f"no price history for {sym}")   
+      60      last_bar = h.index[-1].isoformat() if len(h) else None
+      61  
+      62      items, has_results_card = [], False
+     ...
+      112      return c if any(c.values()) else None
+      113  
+      114  
+      113 -def main(argv=None):                                          
+      115 +MAX_FAILED = 2  # more failed tickers than this = the network 
+          +is down, not one bad source: keep the old feed                
+      116 +                                                              
+      117 +                                                              
+      118 +def carry_over(old: dict, sym: str, start: dt.date) -> dict | 
+          +None:                                                         
+      119 +    """Last good data for one ticker from the previous feed, t
+          +rimmed to the new window; None if it has none.                
+      120 +    as_of = when that data was fetched (kept across repeated f
+          +ailures)."""                                                  
+      121 +    co = (old.get("companies") or {}).get(sym)                
+      122 +    if co is None:                                            
+      123 +        return None                                           
+      124 +    s = start.isoformat()                                     
+      125 +    return {"items": [i for i in old["items"] if i["symbol"] =
+          += sym and i["filed"][:10] >= s],                              
+      126 +            "alerts": [x for x in old["alerts"] if x["symbol"]
+          + == sym and x["date"] >= s and x["kind"] != "error"],         
+      127 +            "days": [d for d in old["days"] if d["symbol"] == 
+          +sym and d["date"] >= s],                                      
+      128 +            "company": co | {"stale_as_of": co.get("stale_as_o
+          +f") or old["generated_at"]}}                                  
+      129 +                                                              
+      130 +                                                              
+      131 +def main(argv=None) -> int:                                   
+      132      sys.stdout.reconfigure(encoding="utf-8")
+      133      ap = argparse.ArgumentParser()
+      134      ap.add_argument("--days", type=int, default=7)
+      135 +    ap.add_argument("--force", action="store_true", help=f"wri
+          +te the feed even if more than {MAX_FAILED} tickers failed")   
+      136      ap.add_argument("symbols", nargs="*", default=PORTFOLIO)
+      137      a = ap.parse_args(argv)
+      138      end = dt.datetime.now(rank.IST).date()
+      139      start = end - dt.timedelta(days=a.days)
+      140      nifty = prices.history(prices.NIFTY)
+      141 +    if nifty.empty and not a.force:                           
+      142 +        print("REFUSED: no Nifty history (network down?). feed
+          +.json left as it was; --force to write anyway.", file=sys.stde
+          +rr)                                                           
+     … 51 more lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Now a test that simulates the network drop (getaddrinfo errors for chosen
+  tickers) against a previous good feed.
+
+● Write(backend\tests\test_ingest.py)
+  ⎿  Wrote 72 lines to backend\tests\test_ingest.py
+       1 """Ingest safety: a network drop mid-run must not overwrite a go
+         od feed (13 Nov: a DNS outage wiped 8 tickers)."""
+       2 import json, datetime as dt
+       3 import httpx, pandas as pd, pytest
+       4 from finn import ingest
+       5
+       6 TODAY = dt.datetime.now(ingest.rank.IST).date()
+       7 D = (TODAY - dt.timedelta(days=1)).isoformat()
+       8
+       9
+     … +63 lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Unit tests pass. Now a real end-to-end network failure: run ingest with all
+  traffic pointed at a dead proxy (127.0.0.1:9), so every uncached request fails
+  like the DNS outage did.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The full outage was refused and feed.json is unchanged; yfinance's "possibly
+  delisted" message hides a network error, which is why an empty history now
+  counts as failure. Next I'll run --force against a backup under the same
+  outage to check the carry-over on the real feed. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● All 20 tickers kept their last good data under --force, now marked stale, and
+  the real feed is restored with the hash unchanged. I'm switching the web side
+  to show "as of" in place of "missing". · summary
+
+  Searched for 1 pattern, ran 2 shell commands (ctrl+o to expand)
+
+● Now the type, the banner and the alert text.
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/web" && python - <<'EOF'
+      p="lib/feed.ts"; s=open(p,encoding="utf-8").read()…)
+  ⎿  Updated web\app\page.tsx (+11 -3)
+       5  import { Collapse } from "@/components/Collapse";
+       6  import { FeedRow } from "@/components/FeedRow";
+       7  import { FeedSkeleton, LoadFailed } from "@/components/States";
+       8 -import { WIN_HOURS, WIN_PERIOD, inWindow, istTime, longDate, ra
+         -nked, shortDate, useFeed, useSettings, type Feed, type RankedIt
+         -em, type Win } from "@/lib/feed";                              
+       8 +import { WIN_HOURS, WIN_PERIOD, filedAt, inWindow, istTime, lon
+         +gDate, ranked, shortDate, useFeed, useSettings, type Feed, type
+         + RankedItem, type Win } from "@/lib/feed";                     
+       9  import { group, type Group } from "@/lib/group";
+      10  
+      11  const WINS: Win[] = ["24h", "7d", "30d"];
+     ...
+      68    const coverageDays = Math.round((Date.parse(feed.window[1]) -
+           Date.parse(feed.window[0])) / 864e5);
+      69    const short = WIN_HOURS[win] / 24 > coverageDays + 1;
+      70    const end = feed.generated_at.slice(0, 10);
+      71 +  const missing = feed.failed.filter((f) => !f.as_of).map((f) =
+         +> f.symbol);                                                   
+      72 +  const stale = Object.entries(Object.groupBy(Object.entries(fe
+         +ed.companies ?? {}).filter(([, c]) => c.stale_as_of), ([, c]) =
+         +> c.stale_as_of!))                                             
+      73 +    .map(([asOf, cs]) => [asOf, cs!.map(([sym]) => sym)] as con
+         +st);                                                           
+      74  
+      75    return (
+      76      <>
+     ...
+      144          </button>
+      145        )}
+      146  
+      144 -      {feed.failed.length > 0 && (                            
+      147 +      {missing.length > 0 && (                                
+      148          <p className="mt-4 text-[0.875rem] text-ink-2">
+      146 -          Couldn&rsquo;t fetch filings for {feed.failed.map((f
+          -) => f.symbol).join(", ")}. They are missing from this brief. 
+      149 +          Couldn&rsquo;t fetch filings for {missing.join(", ")
+          +}. They are missing from this brief.                          
+      150          </p>
+      151        )}
+      152 +      {stale.map(([asOf, syms]) => (                          
+      153 +        <p key={asOf} className="mt-4 text-[0.875rem] text-ink
+          +-2">                                                          
+      154 +          Couldn&rsquo;t refresh {syms.join(", ")}. Showing {s
+          +yms.length === 1 ? "its" : "their"} filings as of {filedAt(asO
+          +f)} IST.                                                      
+      155 +        </p>                                                  
+      156 +      ))}                                                     
+      157  
+      158        <footer className="mt-8 text-[0.8125rem] leading-[1.45] 
+           text-ink-2">
+      159          <p className="font-serif text-[1rem] text-ink">That&rs
+           quo;s everything{win === "24h" ? " for today" : ""}.</p>
+  ⎿  Updated web\lib\feed.ts (+4 -3)
+      23  // credibility: measured PvD promises from the last 4 calls (ke
+          pt = hit/ahead, missed = miss/behind/moved away,
+      24  // open = on track); null when nothing was measurable. See DECI
+          SIONS.md.
+      25  export type Credibility = { kept: number; missed: number; open:
+           number };
+      26 -export type Company = { name: string; sector: string | null; cl
+         -oses: [string, number][]; credibility?: Credibility | null };  
+      26 +// stale_as_of: this run couldn't refresh the company, so its f
+         +ilings are the last good fetch from that time                  
+      27 +export type Company = { name: string; sector: string | null; cl
+         +oses: [string, number][]; credibility?: Credibility | null; sta
+         +le_as_of?: string };                                           
+      28  export type Day = Reaction & { symbol: string; date: string };
+      29  export type Feed = {
+      30    generated_at: string; window: [string, string]; thresholds: {
+           volume_multiple: number; excess_move_pct: number };
+      31    portfolio?: string[]; companies?: Record<string, Company>; ni
+          fty?: [string, number][];
+      32    items: Item[]; alerts: { symbol: string; date: string; kind: 
+          string; text: string }[]; days: Day[];
+      32 -  failed: { symbol: string; error: string }[];                 
+      33 +  failed: { symbol: string; error: string; as_of?: string }[]; 
+      34  };
+      35  export type RankedItem = Item & Ranked;
+      36  
+     ...
+      130    for (const a of feed.alerts.filter((a) => a.kind === "error"
+           ))
+      131      out.push({ key: `error|${a.symbol}|${a.date}`, symbol: a.s
+           ymbol, date: a.date, kind: "error", text: a.text });
+      132    for (const f of feed.failed)
+      132 -    out.push({ key: `error|${f.symbol}|failed`, symbol: f.symb
+          -ol, date: feed.window[1], kind: "error", text: `Couldn't fetch
+          - filings: ${f.error}` });                                     
+      133 +    out.push({ key: `error|${f.symbol}|failed`, symbol: f.symb
+          +ol, date: feed.window[1], kind: "error", text: f.as_of ? `Coul
+          +dn't refresh; showing filings as of ${filedAt(f.as_of)}` : `Co
+          +uldn't fetch filings: ${f.error}` });                         
+      134    return out.sort((a, b) => b.date.localeCompare(a.date) || a.
+           symbol.localeCompare(b.symbol));
+      135  }
+      136  
+
+● Typecheck passes, but Object.groupBy needs iOS 17.4+, and a crash on an older
+  phone is the worst outcome. Swapping it for a plain loop:
+
+● Update(web\app\page.tsx)
+  ⎿  Added 4 lines, removed 2 lines
+      69    const short = WIN_HOURS[win] / 24 > coverageDays + 1;
+      70    const end = feed.generated_at.slice(0, 10);
+      71    const missing = feed.failed.filter((f) => !f.as_of).map((f) =
+          > f.symbol);
+      72 -  const stale = Object.entries(Object.groupBy(Object.entries(fe
+         -ed.companies ?? {}).filter(([, c]) => c.stale_as_of), ([, c]) =
+         -> c.stale_as_of!))                                             
+      73 -    .map(([asOf, cs]) => [asOf, cs!.map(([sym]) => sym)] as con
+         -st);                                                           
+      72 +  const staleBy = new Map<string, string[]>(); // as-of time ->
+         + symbols kept from that fetch                                  
+      73 +  for (const [sym, c] of Object.entries(feed.companies ?? {})) 
+      74 +    if (c.stale_as_of) staleBy.set(c.stale_as_of, [...(staleBy.
+         +get(c.stale_as_of) ?? []), sym]);                              
+      75 +  const stale = [...staleBy];                                  
+      76  
+      77    return (
+      78      <>
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Clean. Let me look at the DECISIONS.md format so I can log each item with its
+  commit.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● I'll add a new DECISIONS section for this round, before "Spike findings", and
+  fill it item by item.
+
+● Update(DECISIONS.md)
+  ⎿  Added 7 lines
+      150  
+      151  - **Maruti's parent-company results no longer count as Maruti'
+           s results.** A company's own results are "approved by the boar
+           d", never "issued by" someone, so "results ... issued/released
+           /declared by" turns a results match into a press release (P2) 
+           with a note. Tested on the real row.
+      152  
+      153 +## Overnight round (13 Nov): ingest safety, classifier, Also l
+          +ines, segment PvD                                             
+      154 +                                                              
+      155 +- **A partial ingest never overwrites a good feed.** On 12 Nov
+          + a DNS outage made 8 tickers fail mid-run and the run still wr
+          +ote `feed.json`, wiping them. Now a ticker that fails keeps it
+          +s last good items, alerts and price days from the previous fee
+          +d (trimmed to the new window), and the feed marks it `stale_as
+          +_of` with the time of that fetch. The brief shows "Couldn't re
+          +fresh X. Showing its filings as of 12 Nov 22:24 IST." If more 
+          +than 2 tickers fail, or Nifty has no prices, ingest refuses to
+          + write and exits 1 (a CI run then fails visibly); `--force` ov
+          +errides. Threshold 2: one bad scrip is normal (IRCTC on 11 Nov
+          +), three at once means the network, not the source. Gave up: n
+          +othing, since the stale data is labelled.                     
+      156 +- **An empty yfinance history counts as a fetch failure.** yfi
+          +nance reports a network error as "possibly delisted" and retur
+          +ns an empty frame instead of raising, so a dropped connection 
+          +used to look like "no price data". Every portfolio ticker has 
+          +prices, so empty = failed.                                    
+      157 +- **A single-ticker run (`ingest TCS`) now refreshes only TCS*
+          +* and keeps the rest of the portfolio from the previous feed, 
+          +marked with their as-of time. Before, it rewrote the feed with
+          + TCS alone. Writes are write-then-rename, so a crash can't lea
+          +ve half a file.                                               
+      158 +- Tested with a simulated outage (all traffic through a dead p
+          +roxy): refused, file byte-identical; with `--force`, 20/20 tic
+          +kers kept their data, marked stale.                           
+      159 +                                                              
+      160  ## Spike findings (11 Nov)
+      161  - **BSE API needs full browser headers** (`Origin` + `sec-fetc
+           h-*`), not just User-Agent + Referer. Without them it returns 
+           403. No cookies needed. **Works from a cloud IP:** `/health/bs
+           e` on Render (Singapore, free tier) returned live rows on 11 N
+           ov, so live pull and cloud ingest can call BSE directly. Gave 
+           up: nothing; the local-ingest fallback wasn't needed.
+      162  - **BSE's category alone misses results.** HDFCBANK filed Q2 r
+           esults under "Board Meeting / Outcome of Board Meeting". The c
+           lassifier needs a keyword rule on the subject ("financial resu
+           lts").
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Item 1 committed. Now item 2, the classifier.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Now the actual Dixon and KPIT rows from the feed:
+
+  Ran 1 shell command (ctrl+o to expand)
+● The pattern is visible: KPIT and Dixon filed one board-outcome PDF under
+  several BSE subcategories. Let me read those PDFs and the title code before
+  deciding on the fix.
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+● Both companies filed the same board-outcome PDF several times under different
+  subcategories, so results appeared on non-results copies, and the classifier
+  trusted those subcategories and mislabeled them. I'm scanning the rest of the
+  30-day feed for similar mislabels before fixing anything. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Beyond the Dixon and KPIT cases, Maruti's "Acquisition" is really a foundation
+  incorporated as a subsidiary, Bharti's "Second Reminder Notice" is a
+  call-money reminder wrongly flagged P1, and Polycab's NCLAT stay sits at P2
+  under Press Release. I'm checking the P3 fold for hidden material items next.
+  · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● I've got the P3 fold checked and fixed in five generic ways: subsidiary
+  housekeeping and reminders go to P3, subsidiary board seats drop to P3, press
+  releases defer to the P1 event in the headline, and non-results titles get one
+  retry with a Python check. · summary
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" && python - <<'EOF'
+      p="finn/push/classify.py"; s=open(p,encoding="utf-8").read()…)
+  ⎿  Updated backend\finn\push\classify.py (+27 -2)
+      39                        r"|clarification|rumour|production volume
+          |sales volume|launch"),
+      40  ]
+      41  # Notices and copies of something filed elsewhere: shown, but n
+          ever ranked as the news itself.
+      42 -ROUTINE = r"board meeting intimation|prior intimation|newspaper
+         -|clipping|audio recording|video recording|schedule of"         
+      42 +ROUTINE = r"board meeting intimation|prior intimation|newspaper
+         +|clipping|audio recording|video recording|schedule of|reminder"
+      43  # Results decks / media releases accompany the results filing; 
+          the filing itself stays P1.
+      44  SUPPORTING = r"presentation|press release|media|shareholders'? 
+          letter|quarterly report|analyst|investor meet"
+      45  # A company's own results are "approved by the board", never "i
+          ssued by" someone: this is another company's
+      46  # (MARUTI: "Reference To The Financial Results Issued By Suzuki
+           Motor Corporation", its parent's results).
+      47  OTHERS_RESULTS = r"results?\b.{0,40}\b(issued|released|declared
+          |announced|published) by\b"
+      48 +# One board-outcome PDF is often filed once per decision, each 
+         +copy under its own BSE subcategory ("Acquisition",             
+      49 +# "Scheme of Arrangement"). Setting up, striking off or backing
+         + a subsidiary is housekeeping, not a deal (13 Nov:             
+      50 +# KPIT's Vietnam subsidiary as "Acquisition", a dormant step-do
+         +wn's strike-off as "Scheme of Arrangement").                   
+      51 +SUBSIDIARY_ROUTINE = r"incorporat\w*.{0,60}subsidiar|strike[- ]
+         +?off|struck off|voluntary liquidation|letter of comfort"       
+      52 +DEAL = r"acqui|merger|amalgamat|demerg|joint venture|stake|shar
+         +e purchase|business transfer"                                  
+      53 +# The listed company's director taking a seat on a subsidiary's
+         + board (Reg 24) is not a change in its management.             
+      54 +SUBSIDIARY_BOARD = r"on the board of [^,;]*?(subsidiar|(inc|llc
+         +|gmbh|pte|plc|b\.?v|ag))"                                      
+      55 +# "Press Release" is a carrier, not an event: a P1 event in its
+         + headline wins (POLYCAB: "NCLAT stayed NCLT order              
+      56 +# initiating CIRP" was filed as a press release). Results relea
+         +ses stay with the results filing.                              
+      57 +CARRIED = {"litigation", "m_and_a", "management_change", "fund_
+         +raise", "credit_rating_downgrade", "pledging"}                 
+      58  CATEGORIES = sorted({c for c, _ in RULES} | set(TIER_OF))
+      59  SCHEMA = {"type": "object", "properties": {
+      60      "category": {"type": "string", "enum": CATEGORIES},
+     ...
+      126          cat = sub[0]
+      127      else:  # no or ambiguous subcategory (NSE's "Investor Meet
+           /Con. Call Updates"): decide on subject + headline
+      128          cat = _match(" | ".join(str(row.get(k) or "") for k in
+            ("NEWSSUB", "HEADLINE")).lower()) or (sub or [None])[0]
+      129 +    if cat == "press_release" and (h := _match(_head(row))) in
+          + CARRIED:                                                     
+      130 +        cat = h                                               
+      131      if cat == "fund_raise" and re.search(r"esop|esos|stock opt
+           ion|employee", t):
+      132          cat = "unclassified"  # ESOP allotments are filed as "
+           Allotment of Equity Shares"
+      133      return cat
+      134  
+      135  
+      136 +def _head(row: dict) -> str:                                  
+      137 +    return " | ".join(str(row.get(k) or "") for k in ("NEWSSUB
+          +", "HEADLINE")).lower()                                       
+      138 +                                                              
+      139 +                                                              
+      140 +def _detail(row: dict) -> str:                                
+      141 +    """What the filing says happened: BSE's HEADLINE (its NEWS
+          +SUB just repeats the subcategory), else the subject."""       
+      142 +    return str(row.get("HEADLINE") or row.get("NEWSSUB") or ""
+          +).lower()                                                     
+     … 24 more lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The \b word boundaries got lost in the heredoc. Fixing them directly:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" && sed -i
+      's/\x08/\\b/g' finn/push/classify.py && sed -n 51,54p
+      finn/push/classify.py && grep -c $'\x08' fi…)
+  ⎿  Updated backend\finn\push\classify.py (+180 -180)
+        1 -"""Filing -> category + tier. Rules first (BSE category/subcat
+          -egory + subject keywords); the cheap LLM                      
+        2 -sees page 1-2 of the PDF only when no rule matches (generic su
+          -bjects like "Disclosure under Regulation 30")."""             
+        3 -import re, hashlib                                            
+        4 -from finn import llm                                          
+        5 -from finn.config import TIERS, LITIGATION_MIN_CR, DEBT_MIN_CR 
+        6 -from finn.sources import pdf                                  
+        7 -                                                              
+        8 -TIER_OF = {c: t for t, cs in TIERS.items() for c in cs}       
+        9 -                                                              
+       10 -# First match wins, so order matters: routine paperwork before
+          - management_change ("appointment of                           
+       11 -# statutory auditors"), management_change before results, earn
+          -ings_call before investor_meetings.                           
+       12 -RULES = [                                                     
+       13 -    ("unclassified", r"statutory auditor|secretarial audit|reg
+          -\. 74 ?\(5\)|esop|esps|stock option|iepf|investor education"  
+       14 -                     r"|registrar and share transfer|\brta\b|t
+          -rading window|duplicate share|loss of share|compliance certifi
+          -cate"                                                         
+       15 -                     r"|esg rating|monitoring agency|statement
+          - of deviation|half yearly report|strike off|reg(ulation)? 30 ?
+          -\(5\)"),                                                      
+       16 -    ("management_change", r"change in management|change in dir
+          -ectorate|cessation|retirement|resignation|re-?appointment"    
+       17 -                          r"|appointment of (mr|ms|shri|smt|dr
+          -)|(managing director|chief executive|\bceo\b|\bcfo\b|key manag
+          -erial)"),                                                     
+       18 -    ("results", r"financial results|financial statements|resul
+          -ts presentation|shareholders'? letter|investor presentation"  
+       19 -                r"|earnings presentation|analyst presentation|
+          -presentation for the (quarter|year)|quarterly report w\.r\.t")
+          -,                                                             
+       20 -    ("earnings_call", r"earnings?( conference)? call|concall|c
+          -on\. call|call transcript|audio recording|video recording|inve
+          -stor call"                                                    
+       21 -                      r"|schedule of conference call"),       
+       22 -    ("investor_meetings", r"analyst|investor(s|\(s\))? meet|in
+          -vestor conference|institutional investor|road ?show"),        
+       23 -    ("pledging", r"pledge|encumbrance|reg\. 31"),             
+       24 -    ("insider_trading", r"insider trading|\bsast\b|substantial
+          - acquisition|reg\. 29|regulation 7 ?\(2\)"),                  
+       25 -    ("litigation", r"litigation|penalt|fines? levied|show caus
+          -e|insolvency|\bcirp\b|nclt|tribunal|arbitration|court|tax dema
+          -nd|demand order"),                                            
+       26 -    ("fund_raise", r"\bqip\b|qualified institution|rights issu
+          -e|preferential|warrant|buy-?back|commercial paper|\bncds?\b"  
+       27 -                   r"|non-convertible|debenture|issue of secur
+          -ities|allotment of (equity )?shares|initial public offer|\bipo
+          -\b"                                                           
+       28 -                   r"|red herring|call on partly paid"),      
+       29 -    ("m_and_a", r"acquisition|acquire|merger|amalgamation|deme
+          -rger|joint venture|scheme of arrangement|share purchase"      
+       30 -                r"|business transfer|disinvestment|divest|stak
+          -e sale|sale of (entire )?stake|restructuring"),               
+       31 -    ("credit_rating_downgrade", r"rating.*downgrad|downgrad.*r
+          -ating"),                                                      
+       32 -    ("credit_rating", r"credit rating|\brating"),             
+       33 -    ("dividend", r"dividend|record date"),                    
+       34 -    ("bonus_split", r"bonus|split|sub-?division"),            
+       35 -    ("capex", r"capex|capacity addition|capacity expansion|new
+          - (plant|facility)|commission(ed|ing)|greenfield|brownfield"), 
+       36 -    ("postal_ballot", r"postal ballot"),                      
+       37 -    ("agm_egm", r"\bagm\b|\begm\b|general meeting"),          
+       38 -    ("press_release", r"press release|media release|media stat
+          -ement|bagging|order\(s\)|award of order|receipt of order"     
+       39 -                      r"|clarification|rumour|production volum
+          -e|sales volume|launch"),                                      
+       40 -]                                                             
+     … 320 more lines (ctrl+o to expand)
+
+● Sed ate the backslash too. Writing the two lines with the Edit tool instead:
+
+● Update(backend\finn\push\classify.py)
+  ⎿  Added 1 line, removed 1 line
+      48  # One board-outcome PDF is often filed once per decision, each 
+          copy under its own BSE subcategory ("Acquisition",
+      49  # "Scheme of Arrangement"). Setting up, striking off or backing
+           a subsidiary is housekeeping, not a deal (13 Nov:
+      50  # KPIT's Vietnam subsidiary as "Acquisition", a dormant step-do
+          wn's strike-off as "Scheme of Arrangement").
+      51 -SUBSIDIARY_ROUTINE = r"incorporat\w*b.{0,60}bsubsidiar|bstrike[
+         -- ]?off|struck off|voluntary liquidation|letter of comfort"    
+      51 +SUBSIDIARY_ROUTINE = r"incorporat\w*\b.{0,60}\bsubsidiar|\bstri
+         +ke[- ]?off|struck off|voluntary liquidation|letter of comfort" 
+      52  DEAL = r"acqui|merger|amalgamat|demerg|joint venture|stake|shar
+          e purchase|business transfer"
+      53  # The listed company's director taking a seat on a subsidiary's
+           board (Reg 24) is not a change in its management.
+      54  SUBSIDIARY_BOARD = r"on the board of [^,;]*?(subsidiar|b(inc|ll
+          c|gmbh|pte|plc|b\.?v|ag)b)"
+
+● Update(backend\finn\push\classify.py)
+  ⎿  Added 1 line, removed 1 line
+      51  SUBSIDIARY_ROUTINE = r"incorporat\w*\b.{0,60}\bsubsidiar|\bstri
+          ke[- ]?off|struck off|voluntary liquidation|letter of comfort"
+      52  DEAL = r"acqui|merger|amalgamat|demerg|joint venture|stake|shar
+          e purchase|business transfer"
+      53  # The listed company's director taking a seat on a subsidiary's
+           board (Reg 24) is not a change in its management.
+      54 -SUBSIDIARY_BOARD = r"on the board of [^,;]*?(subsidiar|b(inc|ll
+         -c|gmbh|pte|plc|b\.?v|ag)b)"                                    
+      54 +SUBSIDIARY_BOARD = r"on the board of [^,;]*?(subsidiar|\b(inc|l
+         +lc|gmbh|pte|plc|b\.?v|ag)\b)"                                  
+      55  # "Press Release" is a carrier, not an event: a P1 event in its
+           headline wins (POLYCAB: "NCLAT stayed NCLT order
+      56  # initiating CIRP" was filed as a press release). Results relea
+          ses stay with the results filing.
+      57  CARRIED = {"litigation", "m_and_a", "management_change", "fund_
+          raise", "credit_rating_downgrade", "pledging"}
+
+● Now the title guard. Checking callers of headline.problems/title first:
+
+  Searched for 1 pattern (ctrl+o to expand)
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" && python -
+      <<'PYEOF'
+      p="finn/push/headline.py"; s=open(p,encoding="utf-8").read()…)
+  ⎿  Updated backend\finn\ingest.py (+1 -1)
+      72              "reaction": prices.day_stats(h, nifty, rday) if len
+          (h) else None,
+      73          }
+      74          if item["tier"] in ("P1", "P2") and item["category"] !=
+           "results":
+      75 -            item["title"] = headline.title(row, get_pdf, draft=
+         -c.get("headline"))  # reuses the classifier's headline if it pa
+         -sses                                                           
+      75 +            item["title"] = headline.title(row, get_pdf, draft=
+         +c.get("headline"), category=item["category"])  # reuses the cla
+         +ssifier's headline if it passes                                
+      76          if item["tier"] == "P1" and item["category"] in ("resul
+          ts", "management_change", "fund_raise"):
+      77              if item["category"] == "results" and has_results_ca
+          rd:
+      78                  item["tier"] = "P2"  # same results filed twice
+           (Result + Board Meeting outcome): one card is enough
+  ⎿  Updated backend\finn\push\headline.py (+13 -5)
+      15      return {re.sub(r"[,\s]", "", m).rstrip(".") for m in re.fin
+          dall(r"\d[\d,]*(?:\.\d+)?", s)}
+      16  
+      17  
+      18 -def problems(headline: str, source_text: str) -> list[str]:    
+      19 -    """Why a headline breaks the rules (empty = fine). source_t
+         -ext: the pages the model was given."""                         
+      18 +# A board-outcome PDF lists every decision (results first) and 
+         +is filed once per decision. The copy filed as a                
+      19 +# management change must not be headlined with the results (13 
+         +Nov: Dixon "Reported quarterly revenue ... and appointed").    
+      20 +RESULTS_WORDS = r"results?|revenue|profit|ebitda|pat|earnings" 
+      21 +                                                               
+      22 +                                                               
+      23 +def problems(headline: str, source_text: str, category: str | N
+         +one = None) -> list[str]:                                      
+      24 +    """Why a headline breaks the rules (empty = fine). source_t
+         +ext: the pages the model was given.                            
+      25 +    category: what this copy is filed as; for a non-results eve
+         +nt, results talk is a problem."""                              
+      26      out = []
+      27 +    if category and category not in ("results", "press_release"
+         +, "earnings_call") and re.search(RESULTS_WORDS, headline, re.I)
+         +:                                                              
+      28 +        out.append(f"this copy is filed as a {category.replace(
+         +'_', ' ')}: write only about that decision, leave out the finan
+         +cial results")                                                 
+      29      n = len(headline.split())
+      30      if not 0 < n <= MAX_WORDS:
+      31          out.append(f"it has {n} words; use at most {MAX_WORDS}"
+          )
+     ...
+      36      return out
+      37  
+      38  
+      31 -def title(row: dict, get_pdf, draft: str | None = None) -> str 
+         -| None:                                                        
+      39 +def title(row: dict, get_pdf, draft: str | None = None, categor
+         +y: str | None = None) -> str | None:                           
+      40      """draft: a headline already written (the classifier's); it
+           is checked like any other."""
+      41      subject = row.get("NEWSSUB") or ""
+      42      try:
+     ...
+      47          key = hashlib.sha256(b).hexdigest() + subject
+      48          inputs = [subject, pdf.subset(doc, idx)]
+      49          h = " ".join((draft or llm.run("headline", "headline", 
+          inputs, SCHEMA, key=key, filing=row.get("NEWSID"))["data"]["hea
+          dline"]).split())
+      42 -        if p := problems(h, source):                           
+      50 +        if p := problems(h, source, category):                 
+      51              fix = f"Your headline was: \"{h}\". Rewrite it: {';
+           '.join(p)}."
+      52              h = " ".join(llm.run("headline", "headline", [*inpu
+          ts, fix], SCHEMA, key=key + fix, filing=row.get("NEWSID"), retr
+          y=1)["data"]["headline"].split())
+      45 -            if problems(h, source):                            
+      53 +            if problems(h, source, category):                  
+      54                  return None
+      55          return h
+      56      except Exception:
+
+● Same heredoc escaping issue; fixing via Edit:
+
+● Update(backend\finn\push\headline.py)
+  ⎿  Error editing file
+
+  Made 1 scratchpad edit +6, read 1 file, ran 2 shell commands (ctrl+o to expand)
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0
+      bc94bb048d8/07ce4b9a-0a33-4147…)
+  ⎿  Updated backend\finn\push\headline.py (+1 -1)
+      17  
+      18  # A board-outcome PDF lists every decision (results first) and 
+          is filed once per decision. The copy filed as a
+      19  # management change must not be headlined with the results (13 
+          Nov: Dixon "Reported quarterly revenue ... and appointed").
+      20 -RESULTS_WORDS = r"results?|revenue|profit|ebitda|pat|earnings" 
+      20 +RESULTS_WORDS = r"\bresults?\b|revenue|profit|ebitda|\bpat\b|ea
+         +rnings"                                                        
+      21  
+      22  
+      23  def problems(headline: str, source_text: str, category: str | N
+          one = None) -> list[str]:
+
+● Both regexes are correct now. Next I'm re-running the classifier on last
+  night's cached filings to see exactly which labels change.
+
+  Made 1 scratchpad edit +24 (ctrl+o to expand)
+
+● API Error: Connection lost mid-response. The response above may be
+  incomplete.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Every change checks out as intended, and the P2→P1 results lines are expected
+  since ingest demotes a duplicate after classify. Maruti's foundation
+  subsidiary was caught too; next I'm checking Polycab's raw row, since its
+  NCLAT press release didn't change. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The headline says "NCLAT", and the litigation rule only knew "NCLT". Adding
+  it:
+
+  Read 1 file, ran 2 shell commands (ctrl+o to expand)
+
+● Update(backend\finn\push\classify.py)
+  ⎿  Added 1 line, removed 1 line
+      22      ("investor_meetings", r"analyst|investor(s|\(s\))? meet|inv
+          estor conference|institutional investor|road ?show"),
+      23      ("pledging", r"pledge|encumbrance|reg\. 31"),
+      24      ("insider_trading", r"insider trading|\bsast\b|substantial 
+          acquisition|reg\. 29|regulation 7 ?\(2\)"),
+      25 -    ("litigation", r"litigation|penalt|fines? levied|show cause
+         -|insolvency|\bcirp\b|nclt|tribunal|arbitration|court|tax demand
+         -|demand order"),                                               
+      25 +    ("litigation", r"litigation|penalt|fines? levied|show cause
+         +|insolvency|\bcirp\b|nclt|nclat|tribunal|arbitration|court|tax 
+         +demand|demand order"),                                         
+      26      ("fund_raise", r"\bqip\b|qualified institution|rights issue
+          |preferential|warrant|buy-?back|commercial paper|\bncds?\b"
+      27                     r"|non-convertible|debenture|issue of securi
+          ties|allotment of (equity )?shares|initial public offer|\bipo\b
+          "
+      28                     r"|red herring|call on partly paid"),
+
+● Now test cases from these real rows. Checking the existing test style:
+  Ran 1 shell command (ctrl+o to expand)
+
+● Adding the real rows as cases (full headlines from the cached rows):
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PYEOF'
+      p="tests/test_classify.py"; s=open(p,encoding="utf-8").read()…)
+  ⎿  Updated backend\tests\test_classify.py (+14 -0)
+      20      ((None, "Analysts/Institutional Investor Meet/Con. Call Upd
+          ates", "CDSL has informed the Exchange about Schedule of Analys
+          t Call with J.P. Morgan", None), ("investor_meetings", "P3")),
+      21      # MARUTI: its Japanese parent's results are not Maruti's re
+          sults
+      22      (("Company Update", "General", "Reference To The Financial 
+          Results Issued By Suzuki Motor Corporation", "Reference to the 
+          Financial Results issued by Suzuki Motor Corporation"), ("press
+          _release", "P2")),
+      23 +    # 13 Nov: KPIT filed one board-outcome PDF under 5 subcateg
+         +ories; only the results copy is news                           
+      24 +    (("Company Update", "Acquisition", "Announcement under Regu
+         +lation 30 (LODR)-Acquisition", "KPIT Technologies Limited has i
+         +nformed the Exchange that the Board of Directors of the Company
+         + approved the proposal to incorporate a wholly owned subsidiary
+         + in Vietnam ."), ("unclassified", "P3")),                      
+      25 +    (("Company Update", "Scheme of Arrangement", "Announcement 
+         +under Regulation 30 (LODR)-Scheme of Arrangement", "KPIT Techno
+         +logies Limited has informed the Exchange that the Board of Dire
+         +ctors of the Company approved the Strike-off of Somit Solutions
+         + Limited, wholly owned step-down subsidiary of the Company."), 
+         +("unclassified", "P3")),                                       
+      26 +    (("Company Update", "General", "Issue Of Letter Of Comfort 
+         +In Favor Of KPIT Technologies (UK) Limited", "KPIT Technologies
+         + Limited has informed the Exchange about Issue of Letter of Com
+         +fort in favor of KPIT Technologies (UK) Limited , a wholly-owne
+         +d subsidiary of the Company."), ("unclassified", "P3")),       
+      27 +    (("Company Update", "Change in Management", "Announcement u
+         +nder Regulation 30 (LODR)-Change in Management", "KPIT Technolo
+         +gies Limited has informed the Exchange regarding Appointment of
+         + Independent Director, Mr. Anant Talaulicar - Chairman of the B
+         +oard, on the Board of KPIT Technologies Inc., ...."), ("managem
+         +ent_change", "P3")),                                           
+      28 +    (("Company Update", "Acquisition", "Announcement under Regu
+         +lation 30 (LODR)-Acquisition", "Incorporation of Wholly Owned S
+         +ubsidiary"), ("unclassified", "P3")),  # MARUTI's foundation   
+      29 +    # guard (synthetic): a real deal done through a new subsidi
+         +ary stays M&A                                                  
+      30 +    (("Company Update", "Acquisition", "Announcement under Regu
+         +lation 30 (LODR)-Acquisition", "Acquisition of 100% stake in Al
+         +pha GmbH through a newly incorporated wholly owned subsidiary")
+         +, ("m_and_a", "P1")),                                          
+      31 +    # DIXON's copy of the same kind of PDF is a real appointmen
+         +t (Executive Director): stays P1; its title is fixed in headlin
+         +e.py                                                           
+      32 +    (("Company Update", "Change in Management", "Announcement u
+         +nder Regulation 30 (LODR)-Change in Management", "Announcement 
+         +under Regulation 30 of SEBI LODR- Change in Management"), ("man
+         +agement_change", "P1")),                                       
+      33 +    (("Company Update", "General", "Second Reminder Notice For 
+         +Payment Of First And Final Call On Partly Paid-Up Equity Shares
+         + Of Bharti Airtel Limited ('Company')", "Second Reminder Notice
+         + for payment of First and Final Call on partly paid-up equity s
+         +hares of Bharti Airtel Limited, on which First and Final Call r
+         +emains unpaid."), ("fund_raise", "P3")),                       
+      34 +    # POLYCAB: an insolvency order filed as a press release is 
+         +litigation                                                     
+      35 +    (("Company Update", "Press Release / Media Release", "Annou
+         +ncement under Regulation 30 (LODR)-Press Release / Media Releas
+         +e", "Press Release on receipt of Order dated October 09, 2026 p
+         +assed by the Hon''ble NCLAT"), ("litigation", "P1")),          
+      36 +    (("Company Update", "Press Release / Media Release", "Annou
+         +ncement under Regulation 30 (LODR)-Press Release / Media Releas
+         +e", "Partnered with Quality Council of India for digital food s
+         +afety audits"), ("press_release", "P2")),                      
+      37  ]
+      38  
+      39  
+  ⎿  Updated backend\tests\test_headline.py (+31 -21)
+       1 -"""Headline rules are enforced in Python, not just requested in
+         - the prompt."""                                                
+       2 -from finn.push.headline import problems                        
+       3 -                                                               
+       4 -SRC = "Allotment of 76,83,981 equity shares at Rs. 5,550 per sh
+         -are aggregating to INR 42,646.09 million under the QIP"        
+       5 -                                                               
+       6 -                                                               
+       7 -def test_fine_headline_passes():                               
+       8 -    assert problems("Allotted 76,83,981 shares via QIP at ₹5,55
+         -0 each", SRC) == []                                            
+       9 -                                                               
+      10 -                                                               
+      11 -def test_number_formats_match_across_indian_and_western_groupin
+         -g():                                                           
+      12 -    assert problems("Allotted 7,683,981 shares via QIP", SRC) =
+         -= []                                                           
+      13 -                                                               
+      14 -                                                               
+      15 -def test_over_12_words_fails():                                
+      16 -    p = problems("Allotted 7,683,981 equity shares via QIP at I
+         -NR 5,550.00 per share aggregating INR 42,646.09 million", SRC) 
+      17 -    assert any("words" in x for x in p)                        
+      18 -                                                               
+      19 -                                                               
+      20 -def test_number_not_in_filing_fails():                         
+      21 -    assert problems("Raised ₹7000 crore via QIP", SRC) == ["the
+         -se numbers are not in the filing: 7000"]                       
+       1 +"""Headline rules are enforced in Python, not just requested in
+         + the prompt."""                                                
+       2 +from finn.push.headline import problems                        
+       3 +                                                               
+       4 +SRC = "Allotment of 76,83,981 equity shares at Rs. 5,550 per sh
+         +are aggregating to INR 42,646.09 million under the QIP"        
+       5 +                                                               
+       6 +                                                               
+       7 +def test_fine_headline_passes():                               
+       8 +    assert problems("Allotted 76,83,981 shares via QIP at ₹5,55
+         +0 each", SRC) == []                                            
+       9 +                                                               
+      10 +                                                               
+      11 +def test_number_formats_match_across_indian_and_western_groupin
+         +g():                                                           
+      12 +    assert problems("Allotted 7,683,981 shares via QIP", SRC) =
+         += []                                                           
+      13 +                                                               
+      14 +                                                               
+      15 +def test_over_12_words_fails():                                
+      16 +    p = problems("Allotted 7,683,981 equity shares via QIP at I
+         +NR 5,550.00 per share aggregating INR 42,646.09 million", SRC) 
+      17 +    assert any("words" in x for x in p)                        
+      18 +                                                               
+      19 +                                                               
+     … 12 more lines (ctrl+o to expand)
+
+● All 112 pass. Now a live check that the Dixon title gets rewritten (one cheap
+  model call):
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Dixon now reads "Appointed Prithvi Vachani Executive Director for five years
+  from 30th October, 2026". Logging item 2 and committing:
+
+● Update(DECISIONS.md)
+  ⎿  Added 10 lines
+      156  - **An empty yfinance history counts as a fetch failure.** yfi
+           nance reports a network error as "possibly delisted" and retur
+           ns an empty frame instead of raising, so a dropped connection 
+           used to look like "no price data". Every portfolio ticker has 
+           prices, so empty = failed.
+      157  - **A single-ticker run (`ingest TCS`) now refreshes only TCS*
+           * and keeps the rest of the portfolio from the previous feed, 
+           marked with their as-of time. Before, it rewrote the feed with
+            TCS alone. Writes are write-then-rename, so a crash can't lea
+           ve half a file.
+      158  - Tested with a simulated outage (all traffic through a dead p
+           roxy): refused, file byte-identical; with `--force`, 20/20 tic
+           kers kept their data, marked stale.
+      159 +- **Classifier: one board-outcome PDF, many subcategories.** T
+          +he Dixon and KPIT mislabels had one cause. A company files the
+          + same board-outcome PDF once per decision, each copy under its
+          + own BSE subcategory, and the PDF opens with the results. So K
+          +PIT's "Acquisition" copy (really a new Vietnam subsidiary) and
+          + "Scheme of Arrangement" copy (a dormant step-down subsidiary'
+          +s strike-off) were P1 M&A titled "Approved financial results".
+          + Dixon's management-change copy (a real Executive Director app
+          +ointment) was titled "Reported quarterly revenue of ₹21,863 cr
+          +ore and appointed…". The fixes are general rules, not ticker-s
+          +pecific:                                                      
+      160 +  - Setting up, striking off or liquidating a subsidiary, or a
+          + letter of comfort for one, is housekeeping (P3, with a note),
+          + unless BSE's headline names a deal (acquisition, merger, stak
+          +e, JV, business transfer). This also catches MARUTI's foundati
+          +on subsidiary filed as "Acquisition", and it runs before the L
+          +LM, so it saves those calls.                                  
+      161 +  - A director taking a seat on a subsidiary's board ("on the 
+          +board of … Inc./subsidiary") stays a management change but dro
+          +ps to P3.                                                     
+      162 +  - "Press Release" is a carrier, not an event: a P1 event in 
+          +its headline wins. POLYCAB's NCLAT insolvency order, filed as 
+          +a press release, is now litigation P1 (the rule also learned "
+          +NCLAT").                                                      
+      163 +  - "Reminder" notices are routine (Bharti's second call-money
+          + reminder was a P1 fund-raise alert).                         
+      164 +  - Titles: a non-results P1 copy whose title talks about resu
+          +lts, revenue or profit is retried once with the problem named.
+          + It's a Python check, not a prompt change, so the cached title
+          +s stay valid. Dixon now reads "Appointed Prithvi Vachani Execu
+          +tive Director for five years from 30th October, 2026".        
+      165 +  - Re-classifying the cached 30-day rows changed exactly thes
+          +e 8 filings (KPIT 4, MARUTI 1, BHARTIARTL 1, POLYCAB 1, plus t
+          +he Dixon title).                                              
+      166 +- **Scan of the 30-day feed: judgement calls reported, not cha
+          +nged.** (a) Senior-management moves below KMP are P1 (IRCTC Gr
+          +oup General Manager, CDSL SVP retirement, HDFCBANK group head 
+          +superannuation). A role-based size rule (board/CEO/CFO/MD = P1
+          +, others P2) would fit the existing sizing pattern. (b) Pure r
+          +e-appointments are P1 (Bajaj Finance CISO, HDFCBANK's RBI nod 
+          +for a re-appointment). (c) Internal restructurings into wholly
+          + owned subsidiaries are M&A P1 (ETERNAL's business transfer to
+          + ZEPL, L&T's Vyoma.AI timeline extension). (d) Dixon's US$7m g
+          +uarantee for a subsidiary is P2: the rupee-amount parser doesn
+          +'t read US$. Nothing material was hidden in P3.               
+      167  
+      168  ## Spike findings (11 Nov)
+      169 +                                                              
+      170 +## Spike findings (11 Nov)                                    
+      171  - **BSE API needs full browser headers** (`Origin` + `sec-fetc
+           h-*`), not just User-Agent + Referer. Without them it returns 
+           403. No cookies needed. **Works from a cloud IP:** `/health/bs
+           e` on Render (Singapore, free tier) returned live rows on 11 N
+           ov, so live pull and cloud ingest can call BSE directly. Gave 
+           up: nothing; the local-ingest fallback wasn't needed.
+      172  - **BSE's category alone misses results.** HDFCBANK filed Q2 r
+           esults under "Board Meeting / Outcome of Board Meeting". The c
+           lassifier needs a keyword rule on the subject ("financial resu
+           lts").
+      173  - **Screener resolves symbols programmatically**, including re
+           named ETERNAL (BSE 543320). Concall lists can contain non-resu
+           lts calls (e.g. HDFCBANK "Mar 2026"), so PvD must select the r
+           esults calls, not just the last 4 rows.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Item 2 committed. Item 3 is the UI: Also lines and the credibility chip.
+  Reading the card component:
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Plan for item 3: P1 "Also" filings get grouped by category, so several filings
+  in one category become a single chip showing the count and latest title. The
+  credibility threshold change goes in ingest.credibility(), leaving the
+  research page untouched. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn" && .venv/Scripts/python -
+      <<'PYEOF'
+      p="backend/finn/ingest.py"; s=open(p,encoding="utf-8").read()…)
+  ⎿  Updated backend\finn\ingest.py (+4 -2)
+       99  
+      100  # Credibility chip (user's definition, 13 Nov): only measured 
+           promises count. Partial, moved closer and
+      101  # no change are measured but neither kept nor missed, so the c
+           hip leaves them to the Research page.
+      102 +# At least 2 counted promises (user, 13 Nov): "Kept 1 · Missed
+          + 0" is one data point, not a record.                          
+      103  KEPT, MISSED, OPEN = {"hit", "ahead"}, {"miss", "behind pace",
+            "moved away"}, {"on track"}
+      104 +MIN_PROMISES = 2                                              
+      105  
+      106  
+      107  def credibility(sym: str) -> dict | None:
+      106 -    """{kept, missed, open} from the cached PvD JSON; None whe
+          -n there is no PvD or nothing was measurable."""               
+      108 +    """{kept, missed, open} from the cached PvD JSON; None whe
+          +n there is no PvD or fewer than MIN_PROMISES count."""        
+      109      f = OUT.parent / "research" / f"{sym}.json"
+      110      if not f.exists():
+      111          return None
+      112      v = [p["verdict"] for p in json.loads(f.read_text(encoding
+           ="utf-8"))["promises"]]
+      113      c = {"kept": sum(x in KEPT for x in v), "missed": sum(x in
+            MISSED for x in v), "open": sum(x in OPEN for x in v)}
+      112 -    return c if any(c.values()) else None                     
+      114 +    return c if sum(c.values()) >= MIN_PROMISES else None     
+      115  
+      116  
+      117  MAX_FAILED = 2  # more failed tickers than this = the network 
+           is down, not one bad source: keep the old feed
+  ⎿  Updated backend\tests\test_fund.py (+35 -33)
+       1 -"""Fund-raise size + dilution: the model copies figures, Python
+         - converts and divides. No network."""                          
+       2 -import json                                                    
+       3 -from finn.push.cards import fund_facts                         
+       4 -from finn import ingest                                        
+       5 -                                                               
+       6 -QIP = "allocated 7,683,981 equity shares ... aggregating to INR
+         - 42,646 million ... paid-up capital 158,150,000 Equity Shares" 
+       7 -                                                               
+       8 -                                                               
+       9 -def test_size_in_crore_and_dilution_from_shares_before():      
+      10 -    f = fund_facts({"instrument": "equity", "size_text": "INR 4
+         -2,646 million", "size_page": 2,                                
+      11 -                    "units_issued": "7,683,981", "shares_before
+         -": "158,150,000", "shares_after": None}, QIP)                  
+      12 -    assert f["size_cr"] == 4264.6 and f["size_page"] == 2      
+      13 -    assert f["dilution_pct"] == round(7683981 / (158150000 + 76
+         -83981) * 100, 2)  # 4.63                                       
+      14 -                                                               
+      15 -                                                               
+      16 -def test_debt_has_size_but_no_dilution():                      
+      17 -    f = fund_facts({"instrument": "debt", "size_text": "INR 7,8
+         -16 crore", "units_issued": "7,81,600"}, "INR 7,816 crore 7,81,6
+         -00")                                                           
+      18 -    assert f["size_cr"] == 7816 and f["dilution_pct"] is None  
+      19 -                                                               
+      20 -                                                               
+      21 -def test_figures_not_in_the_filing_are_dropped():              
+      22 -    f = fund_facts({"instrument": "equity", "size_text": "INR 9
+         -,999 crore", "units_issued": "7,683,981", "shares_after": "1,00
+         -0"}, QIP)                                                      
+      23 -    assert f["size_cr"] is None and f["dilution_pct"] is None  
+         -# 9,999 isn't in the text; 1,000 < issued is nonsense          
+      24 -                                                               
+      25 -                                                               
+      26 -def test_credibility_counts_measured_promises_only(tmp_path, mo
+         -nkeypatch):                                                    
+      27 -    (tmp_path / "research").mkdir()                            
+      28 -    monkeypatch.setattr(ingest, "OUT", tmp_path / "feed.json") 
+      29 -    v = ["hit", "ahead", "miss", "behind pace", "moved away", "
+         -on track", "partial", "not-yet-measurable"]                    
+      30 -    (tmp_path / "research" / "X.json").write_text(json.dumps({"
+         -promises": [{"verdict": x} for x in v]}))                      
+      31 -    (tmp_path / "research" / "Y.json").write_text(json.dumps({"
+         -promises": [{"verdict": "not-yet-measurable"}]}))              
+      32 -    assert ingest.credibility("X") == {"kept": 2, "missed": 3, 
+         -"open": 1}                                                     
+      33 -    assert ingest.credibility("Y") is None and ingest.credibili
+         -ty("Z") is None                                                
+       1 +"""Fund-raise size + dilution: the model copies figures, Python
+         + converts and divides. No network."""                          
+       2 +import json                                                    
+       3 +from finn.push.cards import fund_facts                         
+       4 +from finn import ingest                                        
+       5 +                                                               
+       6 +QIP = "allocated 7,683,981 equity shares ... aggregating to INR
+         + 42,646 million ... paid-up capital 158,150,000 Equity Shares" 
+       7 +                                                               
+     … 28 more lines (ctrl+o to expand)
+
+● Now the Also lines in Company.tsx (web/components/Company.tsx):
+
+● Update(web\components\Company.tsx)
+  ⎿  Added 14 lines, removed 10 lines
+      239    );
+      240  }
+      241  
+      242 -// Every material filing that isn't the lead gets its own line
+          -, so a CEO change can't hide under results.                   
+      243 -// The same filing sent twice (BSE meeting outcome + Reg 30 le
+          -tter) shows once.                                             
+      244 -function material(g: Group) {                                 
+      245 -  const seen = new Set<string>();                             
+      246 -  return g.more.filter((i) => i.tier === "P1" && !seen.has(tit
+          -le(i)) && seen.add(title(i)));                                
+      242 +// Every material filing that isn't the lead, grouped by event
+          + type (newest first inside each), so a CEO change             
+      243 +// can't hide under results and a 9-filing QIP doesn't stack 9
+          + lines (user, 13 Nov).                                        
+      244 +function alsoGroups(g: Group): RankedItem[][] {               
+      245 +  const by = new Map<string, RankedItem[]>(); // g.more is alr
+          +eady in lead order, so groups come out ranked                 
+      246 +  for (const i of g.more) if (i.tier === "P1") by.set(i.catego
+          +ry, [...(by.get(i.category) ?? []), i]);                      
+      247 +  return [...by.values()].map((l) => [...l].sort((a, b) => b.f
+          +iled.localeCompare(a.filed)));                                
+      248  }
+      249 +const material = (g: Group) => alsoGroups(g).flat();          
+      250  
+      251 +// One line per event type: "Also · Fund raise · 4 filings · <
+          +latest>". The count leads so it survives truncation.          
+      252  function AlsoMaterial({ g }: { g: Group }) {
+      250 -  const also = material(g);                                   
+      251 -  if (!also.length) return null;                              
+      253 +  const groups = alsoGroups(g);                               
+      254 +  if (!groups.length) return null;                            
+      255    return (
+      256      <ul className="mt-2 space-y-0.5 text-[0.8125rem] leading-[
+           1.35] text-ink-2">
+      254 -      {also.map((i) => (                                      
+      255 -        <li key={i.id} className="truncate">                  
+      256 -          <span className="font-medium">Also</span> · {eventLa
+          -bel(i)} · <Signed text={title(i)} />                          
+      257 +      {groups.map((l) => (                                    
+      258 +        <li key={l[0].category} className="truncate">         
+      259 +          <span className="font-medium">Also</span> · {eventLa
+          +bel(l[0])}                                                    
+      260 +          {l.length > 1 && <> · {l.length} filings</>} · <Sign
+          +ed text={title(l[0])} />                                      
+      261          </li>
+      262        ))}
+      263      </ul>
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Typechecks clean. Let me render it at 390px to verify, checking first for the
+  screenshot setup used in earlier rounds:
+
+  Read 1 file, ran 3 shell commands (ctrl+o to expand)
+
+● Reliance's Jio IPO filings now show as one "Fund raise · 4 filings" line, and
+  KPIT's old M&A lines will refresh after item 4. The right-edge clipping is
+  probably a headless Chrome width artefact, so I'm rechecking it inside a true
+  390px iframe. · summary
+
+  Read 1 file, ran 1 shell command (ctrl+o to expand)
+
+● Stuck on the skeleton, probably because the iframe is third-party (file://
+  parent), where storage is blocked. I'll emulate the viewport properly instead,
+  checking for an installed browser driver:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● No driver installed. A short CDP script with Node's built-in WebSocket gives a
+  true 390px viewport:
+
+  Made 1 scratchpad edit +23, read 1 file, ran 1 shell command (ctrl+o to expand)
+
+● Renders correctly at a true 390px: "Also · Fund raise · 4 filings · …", with
+  all four filings and their sources listed when the card is open. Logging and
+  committing item 3:
+
+● Update(DECISIONS.md)
+  ⎿  Added 2 lines
+      163    - "Reminder" notices are routine (Bharti's second call-money
+            reminder was a P1 fund-raise alert).
+      164    - Titles: a non-results P1 copy whose title talks about resu
+           lts, revenue or profit is retried once with the problem named.
+            It's a Python check, not a prompt change, so the cached title
+           s stay valid. Dixon now reads "Appointed Prithvi Vachani Execu
+           tive Director for five years from 30th October, 2026".
+      165    - Re-classifying the cached 30-day rows changed exactly thes
+           e 8 filings (KPIT 4, MARUTI 1, BHARTIARTL 1, POLYCAB 1, plus t
+           he Dixon title).
+      166 +- **"Also" lines: one per event type, with a count (user, 13 N
+          +ov).** Reliance's Jio IPO stacked four Also lines and Persiste
+          +nt's QIP + NCDs nine. Now P1 filings behind the lead are group
+          +ed by category: one filing keeps its title ("Also · Mgmt chang
+          +e · Prof. Rajiv Lal ceased…"); several become "Also · Fund rai
+          +se · 4 filings · <latest title>". The count comes before the t
+          +itle so it survives truncation at 390px, and the latest title 
+          +says which event it is without an extra LLM call. Opening the 
+          +card lists every one of them with its source, so the count mat
+          +ches what you see; the old title-dedupe is gone for the same r
+          +eason. Gave up: a named event ("Jio IPO") would need an LLM la
+          +bel per group.                                                
+      167 +- **Credibility chip needs at least 2 counted promises (user, 
+          +13 Nov).** Counted = what the chip shows (kept + missed + open
+          +). "Kept 1 · Missed 0" is one data point, not a record. Below 
+          +2, there's no chip on the card; the Research page still lists 
+          +every promise. Enforced in `ingest.credibility()`, so the rese
+          +arch JSON is untouched.                                       
+      168  - **Scan of the 30-day feed: judgement calls reported, not cha
+           nged.** (a) Senior-management moves below KMP are P1 (IRCTC Gr
+           oup General Manager, CDSL SVP retirement, HDFCBANK group head 
+           superannuation). A role-based size rule (board/CEO/CFO/MD = P1
+           , others P2) would fit the existing sizing pattern. (b) Pure r
+           e-appointments are P1 (Bajaj Finance CISO, HDFCBANK's RBI nod 
+           for a re-appointment). (c) Internal restructurings into wholly
+            owned subsidiaries are M&A P1 (ETERNAL's business transfer to
+            ZEPL, L&T's Vyoma.AI timeline extension). (d) Dixon's US$7m g
+           uarantee for a subsidiary is P2: the rupee-amount parser doesn
+           't read US$. Nothing material was hidden in P3.
+      169  
+      170  ## Spike findings (11 Nov)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Item 3 is committed, and I'm starting item 4 (segment PvD, time-boxed),
+  reusing the bank.py pattern. · summary
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Now run(), and the current not-measurable promises to see how many are segment
+  targets:
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● 45 of 72 promises can't be measured yet; a segment page in each results filing
+  could measure several, but I'm reusing bank.py's filing finder to pull those
+  numbers and check them in Python before computing growth and margins.
+  · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The structure is consistent across filings (Polycab even lists FMEG by its
+  acronym). Writing pull/segments.py, modelled on bank.py:
+● Write(backend\finn\prompts\extract_segments.md)
+  ⎿  Wrote 16 lines to backend\finn\prompts\extract_segments.md
+       1 This is an Indian listed company's quarterly results filing. The
+          first line gives a quarter-end date.
+       2
+       3 Find the SEGMENT INFORMATION table (segment revenue and segment
+         results) and copy, for every segment line:
+       4 - `revenue_q`: segment revenue in the column for the 3 months en
+         ded on that quarter-end date.
+       5 - `revenue_yago`: segment revenue in the column for the same 3 m
+         onths one year earlier.
+       6 - `result_q` / `result_yago`: segment result (profit before inte
+     … +11 lines (ctrl+o to expand)
+
+● Write(backend\finn\pull\segments.py)
+  ⎿  Wrote 80 lines to backend\finn\pull\segments.py
+       1 """Segment revenue and results from the company's own quarterly
+         results filings (Ind AS 108 segment page).
+       2 The cheap model only copies numbers; Python checks each one is p
+         rinted on the page, then computes growth and margins."""
+       3 import re, hashlib
+       4 from finn import llm
+       5 from finn.sources import bse, pdf
+       6 from finn.pull.bank import VIEWER, _candidates, quarter_end, sam
+         e_date
+       7
+     … +73 lines (ctrl+o to expand)
+
+● Registering the task with the cheap model in the router:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" && sed -i
+      's/"extract_balance_sheet": "CHEAP",/"extract_balance_sheet": "CHEAP",
+      "extract_segments": "CHEAP…)
+  ⎿  Updated backend\finn\llm.py (+1 -1)
+      10  LOG = CACHE / "llm_calls.jsonl"
+      11  
+      12  TIER = {  # task -> tier; tier -> env var
+      13 -    "classify": "CHEAP", "extract_results": "CHEAP", "extract_g
+         -uidance": "CHEAP", "extract_bio": "CHEAP", "extract_balance_she
+         -et": "CHEAP",                                                  
+      13 +    "classify": "CHEAP", "extract_results": "CHEAP", "extract_g
+         +uidance": "CHEAP", "extract_bio": "CHEAP", "extract_balance_she
+         +et": "CHEAP", "extract_segments": "CHEAP",                     
+      14      "business_snapshot": "CHEAP", "headline": "CHEAP", "extract
+          _fund_raise": "CHEAP", "pvd_verdict": "STRONG", "bull_bear": "S
+          TRONG",
+      15  }
+      16  # STRONG = Groq's free gpt-oss-120b (user's decision 12 Nov: ge
+          mini-3.8-flash was overloaded for 17+ min);
+  ⎿  (timeout 3m)
+
+● TITAN matches the page exactly and CaratLane correctly gets no match, but
+  POLYCAB failed because its dates use a two-digit year that bank.same_date
+  rejects. I'm fixing that in the shared helper next. · summary
+
+  Read 1 file (ctrl+o to expand)
+
+● Update(backend\finn\pull\bank.py)
+  ⎿  Added 2 lines, removed 1 line
+      21  def same_date(as_at: str, qe: dt.date) -> bool:
+      22      """The column the model copied is the quarter-end one: year
+           plus month (number or name) in the printed header."""
+      23      s = as_at.lower()
+      24 -    return str(qe.year) in s and (bool(re.search(rf"\b0?{qe.mon
+         -th}\b", re.sub(r"[./-]", " ", s))) or MON[qe.month - 1] in s)  
+      24 +    year = str(qe.year) in s or re.search(rf"\b{qe.year % 100}\
+         +b", s)  # POLYCAB prints "30 Sep 26"                           
+      25 +    return bool(year) and (bool(re.search(rf"\b0?{qe.month}\b",
+         + re.sub(r"[./-]", " ", s))) or MON[qe.month - 1] in s)         
+      26  
+      27  
+      28  def _candidates(scrip: str, qe: dt.date) -> list[dict]:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● POLYCAB also extracts cleanly, with units in FMEG ₹ million that don't affect
+  the growth and margin ratios. I'm now wiring segment data into PvD, with a
+  labelled reason for each metric that can't be measured. · summary
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● The shell choked on the quoting, so I'll write the patch script with the Write
+  tool instead:
+
+  Made 1 scratchpad edit +124 (ctrl+o to expand)
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0
+      bc94bb048d8/07ce4b9a-0a33-4147…)
+  ⎿  Updated backend\finn\pull\pvd.py (+88 -7)
+       4     and numbers management reports as achieved, each with a verb
+          atim quote + page. Extraction only, no maths.
+       5  3. Python decides every promise it can compute, against one ser
+          ies per metric per company: growth from screener's
+       6     quarterly table, the margin management itself reports on eac
+          h call (else computed from the table, labelled), bank
+       7 -   CD ratio from the bank's own results filings. Deadline passe
+         -d -> hit / miss; running -> on track / ahead / behind          
+       7 +   CD ratio from the bank's own results filings, segment growth
+         + / margin from the results filings' segment table.             
+       8 +   Deadline passed -> hit / miss; running -> on track / ahead /
+         + behind                                                        
+       9     pace; no deadline -> direction of travel since the promise, 
+          with the quarterly path. The LLM never does arithmetic.
+      10  4. Strong model judges only the rest (store counts, CASA, capac
+          ity...) from management's later-reported numbers.
+      11  5. Keep 4-6: financial and measured first; soft / operational p
+          romises only if something measured them.
+     ...
+      15  from finn import llm
+      16  from finn.config import ROOT
+      17  from finn.sources import fetch, bse, screener, pdf
+      17 -from finn.pull import bank                                     
+      18 +from finn.pull import bank, segments                           
+      19  from finn.push.headline import _nums
+      20  
+      21  OUT = ROOT / "web" / "public" / "data" / "research"
+     ...
+      27  SAID = "management's statements on later calls (transcripts)"
+      28  SAID_MARGIN = "management's reported margin for each quarter, o
+          n that quarter's results call (transcripts)"
+      29  BANK_SOURCE = "the bank's results filings on BSE: statement of 
+          assets and liabilities; ratio computed in Python"
+      30 +SEG_SOURCE = "the company's results filings on BSE: segment inf
+         +ormation; growth and margins computed in Python"               
+      31  RULE = "python (computed)"
+      32  DIRECTIONAL = ("next_few_quarters", "unspecified", "long_term")
+            # no deadline: judged by direction of travel
+      33  FINANCIAL = ("revenue", "operating_margin", "net_profit", "cape
+          x", "cd_ratio")
+      34  MAX_PROMISES = 6
+      35  # rules before the LLM: measures that are never the company's t
+          otal revenue / margin / profit, whatever the extractor says
+      36  NOT_TOTAL = re.compile(r"order|inflow|\baum\b|assets under|volu
+          me|loan|advances|deposit|\bnov\b|\bgov\b|\bgmv\b|customer|expor
+          t|payout|disburse|segment", re.I)
+      37 +# business metrics no results filing reports in rupees (volumes
+         +, NOV/GMV, orders, AUM): never matched to a segment            
+      38 +NOT_MONEY = re.compile(r"order|inflow|\baum\b|assets under|volu
+         +me|\bunits?\b|tonn|loan|advances|deposit|\bnov\b|\bgov\b|\bgmv\
+         +b|customer|export|payout|disburse|contribution|share of", re.I)
+      39 +USD = re.compile(r"\$|\busd\b|dollar|constant currency|\bcc\b",
+         + re.I)                                                         
+      40  COST = re.compile(r"cost|opex|expense|\bnpa\b|working capital|\
+          bnwc\b|net debt|leverage", re.I)  # lower is better
+      41  
+      42  KEY = {"type": "string", "enum": ["revenue", "operating_margin"
+          , "net_profit", "capex", "cd_ratio", "other"]}
+     ...
+      266              "source": SOURCE, "cites": {}}
+      267  
+      268  
+      264 -def series(p: dict, quarters: dict, margin: dict | None = None
+          -, bank=None) -> dict | None:                                  
+      265 -    """{q: {quarter: value}, agg(quarters) -> value over a per
+          -iod, name, source, cites, kind} for this promise, or None.""" 
+      269 +def segment_series(p: dict, data: dict[str, dict]) -> dict | N
+          +one:                                                          
+      270 +    """Growth or margin of the one reported segment this promi
+          +se names, per quarter, from the segment tables."""            
+     … 105 more lines (ctrl+o to expand)
+
+● Tests still pass. Trying the real thing on TITAN, POLYCAB and DIXON:
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" && timeout 1200
+      ../.venv/Scripts/python -m finn.pull.pvd TITAN POLYCAB DIXON 2>&1 | grep
+      -E "^\S|PROMISE|AC…)
+  ⎿  Updated web\public\data\research\DIXON.json (+6 -6)
+      1  {
+      2   "symbol": "DIXON",
+      3   "name": "Dixon Technologies (India) Ltd",
+      4 - "generated_at": "2026-11-12T18:02",                            
+      4 + "generated_at": "2026-11-13T01:55",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+     ...
+      59     "actual": "not disclosed",
+      60     "actual_source": null,
+      61     "model": "openai/gpt-oss-120b",
+      62 -   "why": "Jun 2026 margin 3.0% within range; Sep 2026 2.7% bel
+         -ow 2.8%."                                                      
+      62 +   "why": "Not measurable: no segment table found in the result
+         +s filings since this call."                                    
+      63    },
+      64    {
+      65     "metric": "IT hardware revenue",
+     ...
+      93     "actual": "not disclosed",
+      94     "actual_source": null,
+      95     "model": "openai/gpt-oss-120b",
+      96 -   "why": "No reported data on smartphone volumes or selling pr
+         -ices."                                                         
+      96 +   "why": "Not measurable: a volume or business metric (units, 
+         +NOV/GMV, orders, AUM, mix); results filings report money, not t
+         +his."                                                          
+      97    },
+      98    {
+      99     "metric": "telecom and networking products revenue growth",
+     ...
+      110     "actual": "not disclosed",
+      111     "actual_source": null,
+      112     "model": "openai/gpt-oss-120b",
+      113 -   "why": "No reported growth figures for telecom and networki
+          -ng revenue; cannot assess target."                            
+      113 +   "why": "Not measurable: no segment table found in the resul
+          +ts filings since this call."                                  
+      114    },
+      115    {
+      116     "metric": "IT hardware products revenue",
+     ...
+      127     "actual": "not disclosed",
+      128     "actual_source": null,
+      129     "model": "openai/gpt-oss-120b",
+      130 -   "why": "IT hardware revenue reported but no prior-year comp
+          -arison; growth cannot be measured."                           
+      130 +   "why": "Not measurable: no segment table found in the resul
+          +ts filings since this call."                                  
+      131    },
+      132    {
+      133     "metric": "lighting revenues growth",
+     … 8 more lines (ctrl+o to expand)
+  ⎿  Updated web\public\data\research\POLYCAB.json (+69 -47)
+      1  {
+      2   "symbol": "POLYCAB",
+      3   "name": "Polycab India Ltd",
+      4 - "generated_at": "2026-11-12T18:02",                            
+      4 + "generated_at": "2026-11-13T01:53",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+     ...
+      32   },
+      33   "model_note": null,
+      34   "score": {
+      35 -  "hit": 0,                                                    
+      35 +  "hit": 1,                                                    
+      36    "ahead": 0,
+      37    "on track": 0,
+      38    "moved closer": 0,
+      39    "partial": 0,
+      40    "no change": 0,
+      41 -  "behind pace": 0,                                            
+      42 -  "moved away": 0,                                             
+      41 +  "behind pace": 1,                                            
+      42 +  "moved away": 1,                                             
+      43    "miss": 0,
+      44 -  "not-yet-measurable": 6                                      
+      44 +  "not-yet-measurable": 3                                      
+      45   },
+      46   "promises": [
+      47 -  {                                                            
+      48 -   "metric": "Project Spring annual capex",                    
+      49 -   "target": "investing ₹ 12 billion to ₹ 16 billion annually t
+         -hrough FY30",                                                  
+      50 -   "period": "through FY30",                                   
+      51 -   "said_in": "Dec 2025",                                      
+      52 -   "call": "Q3 FY26",                                          
+      53 -   "quote": "in-line with our Project Spring guidance of invest
+         -ing ₹ 12 billion to ₹ 16 billion annually through FY30.",      
+      54 -   "page": 5,                                                  
+      55 -   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen
+         -.aspx?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf",         
+      56 -   "path": null,                                               
+      57 -   "cites": [],                                                
+      58 -   "verdict": "not-yet-measurable",                            
+      59 -   "actual": "not disclosed",                                  
+     … 126 more lines (ctrl+o to expand)
+  ⎿  Updated web\public\data\research\TITAN.json (+29 -24)
+      1  {
+      2   "symbol": "TITAN",
+      3   "name": "Titan Company Ltd",
+      4 - "generated_at": "2026-11-12T18:03",                            
+      4 + "generated_at": "2026-11-13T01:51",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+     ...
+      34   "score": {
+      35    "hit": 0,
+      36    "ahead": 0,
+      37 -  "on track": 1,                                               
+      37 +  "on track": 2,                                               
+      38    "moved closer": 0,
+      39    "partial": 0,
+      40    "no change": 0,
+      41    "behind pace": 0,
+      42    "moved away": 0,
+      43    "miss": 0,
+      44 -  "not-yet-measurable": 5                                      
+      44 +  "not-yet-measurable": 4                                      
+      45   },
+      46   "promises": [
+      47    {
+     ...
+      61     "model": "openai/gpt-oss-120b picked the evidence; python (c
+          omputed)",
+      62     "why": "Reported 11.7% (Q2 FY27 call) against ≥11%; compared
+           in Python."
+      63    },
+      64 +  {                                                            
+      65 +   "metric": "Titan Jewellery business margin",                
+      66 +   "target": "around 11%",                                     
+      67 +   "period": "FY27",                                           
+      68 +   "said_in": "Sep 2026",                                      
+      69 +   "call": "Q2 FY27",                                          
+      70 +   "quote": "I think we still, Mihir, would like to anchor our 
+         +margin target at around 11%... As far as FY27 is concerned, cha
+         +nge our stance on margins.",                                   
+      71 +   "page": 7,                                                  
+      72 +   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen
+         +.aspx?Pname=daa6c172-771a-4af5-b4b3-9813fdf7536a.pdf",         
+      73 +   "path": null,                                               
+      74 +   "cites": [                                                  
+      75 +    {                                                          
+      76 +     "label": "Q2 FY27 results filing, p.14 (consolidated segme
+         +nt table, in crores): Jewellery revenue 17,721.00 (year earlier
+         + 16,522.00), result 2,300.00",                                 
+     … 50 more lines (ctrl+o to expand)
+  ⎿  (timeout 10m)
+
+● Segments now track real promises: TITAN margin is on target at 13.0%, POLYCAB
+  EPC is hit, and Wires & Cables is measured. Next I'm fixing three issues:
+  DIXON's missing segment table, the TITAN watches promise that never reached
+  its segment, and margin bands that read values above the range as falling
+  short. · summary
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● DIXON's filing confirms a single operating segment, so that label stands. Next
+  I'll fix the segment override so it matches only the metric words and drops
+  the company's name first, to avoid false matches like "Airtel revenue" hitting
+  an "Airtel Business" segment. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 5 lines, removed 2 lines
+      211          hi = None  # "15%" extracted as 15-15
+      212      d = p.get("direction") or ("within" if lo is not None and 
+           hi is not None else "at_least" if lo is not None else "at_most
+           ")
+      213      text = f"{p.get('metric', '')} {p.get('target', '')}"
+      214 -    if d == "at_most" and lo is not None and p.get("metric_key
+          -") in ("revenue", "operating_margin", "net_profit"):          
+      215 -        d = "at_least"  # nobody promises a ceiling on their o
+          -wn growth or margin: an extraction slip (L&T "8.5% margin targ
+          -et")                                                          
+      214 +    up = p.get("metric_key") in ("revenue", "operating_margin"
+          +, "net_profit") or p.get("target_type") in ("growth_pct", "mar
+          +gin_pct")                                                     
+      215 +    if d in ("at_most", "within") and lo is not None and up an
+          +d not COST.search(text):                                      
+      216 +        # nobody promises a ceiling on their own growth or mar
+          +gin: above a band is ahead, not a miss                        
+      217 +        # (L&T "8.5% margin target" extracted as at_most; POLY
+          +CAB W&C 14.2% vs an 11-13% band was "moved away")             
+      218 +        d = "at_least"                                        
+      219      elif COST.search(text) and "saving" not in text.lower():
+      220          d = "at_most"  # a cost band is a ceiling: BAJFINANCE 
+           cost of funds 7.41% beats "7.55-7.60%"
+      221      return ("at_most" if lo is None else d), lo, hi
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 2 lines
+      308      key, tt = p["metric_key"], p["target_type"]
+      309      if key != "cd_ratio" and (not p.get("company_total") or NO
+           T_TOTAL.search(f"{p['metric']} {p['target']}")):
+      310          return segment_series(p, seg(p["said_in"])) if seg els
+           e None  # L&T orders, POLYCAB FMEG: not company totals
+      311 +    if seg and key != "cd_ratio" and (s := segment_series(p, s
+          +eg(p["said_in"]), metric_only=True)):                         
+      312 +        return s  # flagged company-wide, but its metric names
+          + a reported segment (TITAN "watch business margins")          
+      313      if key == "cd_ratio" and bank:
+      314          b = bank(p["said_in"])
+      315          if not b:
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 4 lines, removed 3 lines
+      269              "source": SOURCE, "cites": {}}
+      270  
+      271  
+      272 -def segment_series(p: dict, data: dict[str, dict]) -> dict | N
+          -one:                                                          
+      273 -    """Growth or margin of the one reported segment this promi
+          -se names, per quarter, from the segment tables."""            
+      272 +def segment_series(p: dict, data: dict[str, dict], metric_only
+          +: bool = False) -> dict | None:                               
+      273 +    """Growth or margin of the one reported segment this promi
+          +se names, per quarter, from the segment tables.               
+      274 +    metric_only: match on the metric alone (for promises the e
+          +xtractor flagged company-wide)."""                            
+      275      tt, text = p["target_type"], f"{p['metric']} {p['target']}
+           "
+      276      if tt not in ("growth_pct", "margin_pct") or NOT_MONEY.sea
+           rch(text) or not data:
+      277          return None
+      277 -    name = segments.match(text, list(data[max(data, key=_q)]["
+          -segments"]))                                                  
+      278 +    name = segments.match(p["metric"] if metric_only else text
+          +, list(data[max(data, key=_q)]["segments"]), p.get("company_wo
+          +rds", ()))                                                    
+      279      rows = {q: d["segments"][name] | {"d": d} for q, d in data
+           .items() if name and name in d["segments"]}
+      280      if not rows:
+      281          return None
+
+● Now match() takes the company's name words to ignore, and run() supplies them:
+
+● Update(backend\finn\pull\segments.py)
+  ⎿  Added 4 lines, removed 3 lines
+      66      return {w for w in re.findall(r"[a-z]+", s.lower()) if len(
+          w) >= 3 and w not in GENERIC}
+      67  
+      68  
+      69 -def match(text: str, names: list[str]) -> str | None:          
+      69 +def match(text: str, names: list[str], exclude=()) -> str | Non
+         +e:                                                             
+      70      """The one segment a promise is about, by name words ("watc
+          h" ~ "Watches") or acronym ("FMEG" = Fast Moving
+      71 -    Electrical Goods). None when no segment or more than one se
+         -gment matches: an unsure match is no match."""                 
+      72 -    t = _words(text)                                           
+      71 +    Electrical Goods). None when no segment or more than one se
+         +gment matches: an unsure match is no match.                    
+      72 +    exclude: the company's own name words ("Titan Jewellery" is
+         + about Jewellery; "Airtel" alone names no segment)."""         
+      73 +    t = _words(text) - set(exclude)                            
+      74      hits = []
+      75      for n in names:
+      76          w = _words(n)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 1 line, removed 1 line
+      472      if not data:
+      473          return "Not measurable: no segment table found in the 
+           results filings since this call."
+      474      names = list(data[max(data, key=_q)]["segments"])
+      475 -    name = segments.match(text, names)                        
+      475 +    name = segments.match(text, names, p.get("company_words", 
+          +()))                                                          
+      476      if not name:
+      477          return f"Not measurable: not a reported segment (the r
+           esults filings report {', '.join(names)})."
+      478      if p["target_type"] not in ("growth_pct", "margin_pct"):
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 2 lines
+      525              margins[c["quarter"]] = m | {"transcript": c["tran
+           script"]}
+      526  
+      527      promises = dedupe(promises)
+      528 +    for p in promises:                                        
+      529 +        p["company_words"] = segments._words(co["name"])  # ne
+          +ver a segment name: "Titan Jewellery" is Jewellery            
+      530      quarters = co["quarters"]
+      531      latest = quarters["periods"][-1] if quarters["periods"] el
+           se None
+      532      ebit = any(m["basis"] == "ebit" for m in margins.values())
+            or any(p.get("margin_basis") == "ebit" for p in promises)
+● Now tests for the new logic (matcher, the on-page check, the segment series,
+  the EBITDA floor rule, bands above target):
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● CD ratio is a ceiling stored as margin_pct, so widening the flip to every
+  margin_pct target was wrong. Restricting it to the revenue/margin/profit keys,
+  as the original rule did:
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 1 line, removed 1 line
+      211          hi = None  # "15%" extracted as 15-15
+      212      d = p.get("direction") or ("within" if lo is not None and 
+           hi is not None else "at_least" if lo is not None else "at_most
+           ")
+      213      text = f"{p.get('metric', '')} {p.get('target', '')}"
+      214 -    up = p.get("metric_key") in ("revenue", "operating_margin"
+          -, "net_profit") or p.get("target_type") in ("growth_pct", "mar
+          -gin_pct")                                                     
+      214 +    up = p.get("metric_key") in ("revenue", "operating_margin"
+          +, "net_profit")  # not cd_ratio / "other": LDR bands are ceili
+          +ngs                                                           
+      215      if d in ("at_most", "within") and lo is not None and up an
+           d not COST.search(text):
+      216          # nobody promises a ceiling on their own growth or mar
+           gin: above a band is ahead, not a miss
+      217          # (L&T "8.5% margin target" extracted as at_most; POLY
+           CAB W&C 14.2% vs an 11-13% band was "moved away")
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" && cat >>
+      tests/test_pvd.py <<'EOF'…)
+  ⎿  Updated backend\tests\test_pvd.py (+44 -0)
+      253      # a quarter's revenue against a full-year amount while FY2
+           7 runs: not a miss yet
+      254      assert "runs to Mar 2027" in pvd.model_check("miss", "R7 s
+           hows 2,160 crores, below 3,500 crores.", p, said, "Sep 2026")
+      255      assert pvd.model_check("partial", "R7 shows 2,160 crores a
+           gainst 3,500 crores in FY27.", p, said, "Sep 2026") is None
+      256 +                                                              
+      257 +                                                              
+      258 +# ---- segment promises, measured on the segment table of the 
+          +company's own results filings (13 Nov) ----                   
+      259 +from finn.pull import segments                                
+      260 +                                                              
+      261 +                                                              
+      262 +def test_segment_match_by_words_and_acronym_and_unsure_is_none
+          +():                                                           
+      263 +    names = ["Wires and Cables", "FMEG", "EPC"]               
+      264 +    assert segments.match("FMEG EBITDA margins", names) == "FM
+          +EG"                                                           
+      265 +    assert segments.match("Fast moving electrical goods margin
+          +", ["Wires and Cables", "Fast Moving Electrical Goods"]) == "F
+          +ast Moving Electrical Goods"                                  
+      266 +    titan = ["Watches", "Jewellery", "Eyecare", "Others"]     
+      267 +    assert segments.match("watch business margins", titan) == 
+          +"Watches"                                                     
+      268 +    assert segments.match("Titan Jewellery business margin", t
+          +itan, {"titan", "company"}) == "Jewellery"                    
+      269 +    assert segments.match("CaratLane EBIT margin", titan) is N
+          +one  # a subsidiary, not a segment                            
+      270 +    assert segments.match("watches and jewellery growth", tita
+          +n) is None  # two segments: unsure                            
+      271 +                                                              
+      272 +                                                              
+      273 +def test_copied_segment_numbers_must_be_on_the_page():        
+      274 +    page = "fmeg 9,931.13 7,611.53 4,521.84 ... (1,229.00)"   
+      275 +    assert segments._on_page(9931.13, page) and segments._on_p
+          +age(-1229.0, page) and not segments._on_page(9931.31, page)   
+      276 +                                                              
+      277 +                                                              
+      278 +TITAN_Q = {q: {"page": 14, "basis": "consolidated", "unit": "i
+          +n crores", "url": "u", "segments": {                          
+      279 +    "Watches": {"revenue": r, "revenue_yago": y, "result": res
+          +, "result_yago": None}, "Jewellery": {"revenue": 1, "revenue_y
+          +ago": 1, "result": 0, "result_yago": 0}}}                     
+      280 +    for q, (r, y, res) in {"Jun 2026": (1543, 1273, 295), "Sep
+          + 2026": (1881, 1477, 412)}.items()}                           
+      281 +                                                              
+      282 +                                                              
+      283 +def test_segment_margin_and_growth_computed_in_python_with_cit
+          +ations():                                                     
+      284 +    m = pvd.segment_series(P(metric="watch business margins", 
+          +target="15% to 16%", target_type="margin_pct", margin_basis="e
+          +bit"), TITAN_Q)                                               
+      285 +    assert round(m["q"]["Sep 2026"], 1) == 21.9 and round(m["a
+          +gg"](["Jun 2026", "Sep 2026"]), 1) == round(707 / 3424 * 100, 
+          +1)  # revenue-weighted                                        
+      286 +    assert "p.14" in m["cites"]["Sep 2026"]["label"] and not m
+          +["floor_only"]                                                
+      287 +    g = pvd.segment_series(P(metric="watches revenue growth", 
+          +target="20%", target_type="growth_pct"), TITAN_Q)             
+      288 +    assert round(g["agg"](["Jun 2026", "Sep 2026"]), 1) == rou
+          +nd((3424 / 2750 - 1) * 100, 1)                                
+      289 +    assert pvd.segment_series(P(metric="watch volumes", target
+          +="10%", target_type="growth_pct"), TITAN_Q) is None  # volumes
+          + aren't money                                                 
+      290 +                                                              
+      291 +                                                              
+      292 +def test_ebitda_segment_target_is_floor_only_and_bands_are_flo
+          +ors():                                                        
+     … 7 more lines (ctrl+o to expand)
+
+● 28 pass. Re-running TITAN and POLYCAB:
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" && timeout 1200
+      ../.venv/Scripts/python -m finn.pull.pvd TITAN POLYCAB 2>&1 | grep -E
+      "^\S|PROMISE|ACTUAL|V…)
+  ⎿  Updated web\public\data\research\POLYCAB.json (+27 -14)
+      1  {
+      2   "symbol": "POLYCAB",
+      3   "name": "Polycab India Ltd",
+      4 - "generated_at": "2026-11-13T01:53",                            
+      4 + "generated_at": "2026-11-13T01:57",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+     ...
+      32   },
+      33   "model_note": null,
+      34   "score": {
+      35 -  "hit": 1,                                                    
+      35 +  "hit": 3,                                                    
+      36    "ahead": 0,
+      37    "on track": 0,
+      38    "moved closer": 0,
+      39    "partial": 0,
+      40    "no change": 0,
+      41 -  "behind pace": 1,                                            
+      42 -  "moved away": 1,                                             
+      41 +  "behind pace": 0,                                            
+      42 +  "moved away": 0,                                             
+      43    "miss": 0,
+      44    "not-yet-measurable": 3
+      45   },
+     ...
+      53     "quote": "remain on track to achieve our Project Spring targ
+          ets of 1.5x - 2x industry growth and EBITDA margins in the rang
+          e of 8% to 10% by FY30",
+      54     "page": 7,
+      55     "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen
+          .aspx?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf",
+      56 -   "path": null,                                               
+      57 -   "cites": [],                                                
+      58 -   "verdict": "behind pace",                                   
+      59 -   "actual": "Q2 FY27 call, p.7: “The segment also achieved a m
+         -ajor profitability milestone, with EBIT margins crossing the do
+         -uble-digit mark for the first time and recording a 10.1% margin
+         - during the quarter.”; Q1 FY27 call, p.6: “EBIT margins for the
+         - quarter were 8%, very much in line with the milestones laid ou
+         -t under Project Spring...”",                                   
+      60 -   "actual_source": "management's statements on later calls (tr
+         -anscripts)",                                                   
+      61 -   "model": "openai/gpt-oss-120b picked the evidence; python (c
+         -omputed)",                                                     
+      62 -   "why": "Reported 10.1% (Q2 FY27 call) against 8–10%; compare
+         -d in Python."                                                  
+      56 +   "path": "4.4% → 8.0% → 10.1% (Q4 FY26 → Q2 FY27)",          
+      57 +   "cites": [                                                  
+      58 +    {                                                          
+      59 +     "label": "Q4 FY26 results filing, p.9 (consolidated segmen
+         +t table, ₹ Million): FMEG revenue 6,631.36 (year earlier 4,759.
+         +98), result 292.30",                                           
+      60 +     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx
+         +?Pname=1538e3eb-56c6-4ad2-a1ea-a25b2291b09e.pdf"               
+     … 36 more lines (ctrl+o to expand)
+  ⎿  Updated web\public\data\research\TITAN.json (+22 -22)
+      1  {
+      2   "symbol": "TITAN",
+      3   "name": "Titan Company Ltd",
+      4 - "generated_at": "2026-11-13T01:51",                            
+      4 + "generated_at": "2026-11-13T01:57",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+     ...
+      34   "score": {
+      35    "hit": 0,
+      36    "ahead": 0,
+      37 -  "on track": 2,                                               
+      37 +  "on track": 1,                                               
+      38    "moved closer": 0,
+      39    "partial": 0,
+      40    "no change": 0,
+      41    "behind pace": 0,
+      42    "moved away": 0,
+      43    "miss": 0,
+      44 -  "not-yet-measurable": 4                                      
+      44 +  "not-yet-measurable": 5                                      
+      45   },
+      46   "promises": [
+      47 -  {                                                            
+      48 -   "metric": "jewellery business margin center of gravity",    
+      49 -   "target": "11%",                                            
+      50 -   "period": "full year basis",                                
+      51 -   "said_in": "Jun 2026",                                      
+      52 -   "call": "Q1 FY27",                                          
+      53 -   "quote": "In the Investor Day and prior, we have said that m
+         -ore of 11% being the center of gravity for jewellery business m
+         -argin, we would be around that plus/minus something can happen.
+         -",                                                             
+      54 -   "page": 5,                                                  
+      55 -   "transcript": "https://www.bseindia.com/stockinfo/AnnPdfOpen
+         -.aspx?Pname=f70a0a33-43cf-40b6-a753-67b06123e8de.pdf",         
+      56 -   "path": null,                                               
+      57 -   "cites": [],                                                
+      58 -   "verdict": "on track",                                      
+      59 -   "actual": "Q2 FY27 call, p.3: “And if you normalize for that
+         -, then TMZ, which is Titan Jewellery business margin, would be 
+         -11.7%.”; Q2 FY27 call, p.3: “Normalized margin, once you do adj
+         -ustment for this, on Titan Jewellery business would be 11.1%.”"
+         -,                                                              
+      60 -   "actual_source": "management's statements on later calls (tr
+         -anscripts)",                                                   
+      61 -   "model": "openai/gpt-oss-120b picked the evidence; python (c
+         -omputed)",                                                     
+      62 -   "why": "Reported 11.7% (Q2 FY27 call) against ≥11%; compared
+         - in Python."                                                   
+      63 -  },                                                           
+     … 36 more lines (ctrl+o to expand)
+  ⎿  (timeout 10m)
+
+● POLYCAB now has 3 hits from the segment tables, and FMEG's 10.1% EBIT clears
+  the 8% floor, so it's a valid confirmation. TITAN's promises came on the
+  latest call, so there's nothing later to measure them against yet; I'm adding
+  a "promised on the latest call" label and dropping the model's reason on rows
+  without evidence. · summary
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 2 lines, removed 2 lines
+      605          p = promises[k]
+      606          j = {"path": None, "cites": []} | judged.get(k, {"verd
+           ict": "not-yet-measurable", "actual": "not disclosed", "actual
+           _source": None, "model": None,
+      607                                                           "why"
+           : "No reported number yet measures this promise."})
+      608 -        if j["verdict"] == "not-yet-measurable" and j["actual"
+          -] == "not disclosed" and (why := unmeasurable(p, seg_q)):     
+      609 -            j["why"] = why                                    
+      608 +        if j["verdict"] == "not-yet-measurable" and j["actual"
+          +] == "not disclosed":  # no evidence shown: no model reasoning
+          + either                                                       
+      609 +            j["why"] = unmeasurable(p, seg_q, latest) or "Not 
+          +measured yet: no later filing or call statement measures this 
+          +promise."                                                     
+      610          rows.append({"metric": p["metric"], "target": p["targe
+           t"], "period": p["period"], "said_in": p["said_in"],
+      611                       "call": fy_name(p["said_in"]), "quote": p
+           ["quote"], "page": p["page"], "transcript": p["transcript"], *
+           *j})
+      612      rows.sort(key=lambda r: (VERDICTS.index(r["verdict"]) == l
+           en(VERDICTS) - 1, _q(r["said_in"])))  # measurable first, olde
+           st first
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 3 lines, removed 1 line
+      459      return None
+      460  
+      461  
+      462 -def unmeasurable(p: dict, seg) -> str | None:                 
+      462 +def unmeasurable(p: dict, seg, latest: str | None = None) -> s
+          +tr | None:                                                    
+      463      """Why no filing can measure this promise, in words a read
+           er can check (None = no fixed reason; keep the default)."""
+      464      text = f"{p['metric']} {p['target']}"
+      465 +    if latest and _q(p["said_in"]) >= _q(latest):             
+      466 +        return f"Not measurable yet: promised on the latest ca
+          +ll ({fy_name(p['said_in'])}), and no results have come out sin
+          +ce."                                                          
+      467      if p.get("basis") == "constant_currency_or_usd" or USD.sea
+           rch(text):
+      468          return "Not measurable: a US-dollar or constant-curren
+           cy target, and results filings report rupees."
+      469      if NOT_MONEY.search(text):
+
+● USD and volume labels should win over the "latest call" one (the user asked
+  for those specifically), so I'm moving that check below them:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 2 lines, removed 2 lines
+      462  def unmeasurable(p: dict, seg, latest: str | None = None) -> s
+           tr | None:
+      463      """Why no filing can measure this promise, in words a read
+           er can check (None = no fixed reason; keep the default)."""
+      464      text = f"{p['metric']} {p['target']}"
+      465 -    if latest and _q(p["said_in"]) >= _q(latest):             
+      466 -        return f"Not measurable yet: promised on the latest ca
+          -ll ({fy_name(p['said_in'])}), and no results have come out sin
+          -ce."                                                          
+      465      if p.get("basis") == "constant_currency_or_usd" or USD.sea
+           rch(text):
+      466          return "Not measurable: a US-dollar or constant-curren
+           cy target, and results filings report rupees."
+      467      if NOT_MONEY.search(text):
+      468          return "Not measurable: a volume or business metric (u
+           nits, NOV/GMV, orders, AUM, mix); results filings report money
+           , not this."
+      469 +    if latest and _q(p["said_in"]) >= _q(latest):             
+      470 +        return f"Not measurable yet: promised on the latest ca
+          +ll ({fy_name(p['said_in'])}), and no results have come out sin
+          +ce."                                                          
+      471      if p.get("company_total") and not NOT_TOTAL.search(text):
+      472          return None
+      473      data = seg(p["said_in"])
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python -m pytest -q 2>&1 | tail -2 && cat >>
+      tests/test_pvd.py <<'EOF'…)
+  ⎿  Updated backend\tests\test_pvd.py (+10 -0)
+      297      # above a margin band is ahead, not "moved away" (POLYCAB 
+           W&C 14.2% vs 11-13%)
+      298      band = P(metric_key="operating_margin", target_low=11, tar
+           get_high=13, direction="within")
+      299      assert pvd.judge(14.2, band, complete=False)[0] == "ahead"
+            and pvd.gap(14.2, band) == 0
+      300 +                                                              
+      301 +                                                              
+      302 +def test_unmeasurable_reasons_are_labelled():                 
+      303 +    seg = lambda since: {"Sep 2026": {"segments": {"Watches": 
+          +{}, "Jewellery": {}}}}                                        
+      304 +    usd = P(metric="annual revenue aspiration", target="$2 bil
+          +lion", basis="constant_currency_or_usd", said_in="Dec 2025")  
+      305 +    assert "US-dollar" in pvd.unmeasurable(usd, seg, "Sep 2026
+          +")                                                            
+      306 +    assert "volume" in pvd.unmeasurable(P(metric="sales volume
+          + growth", target="over 10%", said_in="Dec 2025"), seg, "Sep 20
+          +26")                                                          
+      307 +    assert "latest call" in pvd.unmeasurable(P(metric="watch m
+          +argins", target="15%", said_in="Sep 2026"), seg, "Sep 2026")  
+      308 +    cl = P(metric="CaratLane EBIT margin", target="double-digi
+          +t", company_total=False, said_in="Dec 2025")                  
+      309 +    assert pvd.unmeasurable(cl, seg, "Sep 2026") == "Not measu
+          +rable: not a reported segment (the results filings report Watc
+          +hes, Jewellery)."                                             
+
+● 116 backend tests pass. Re-running all 22 tickers now in the background (the
+  old JSONs are backed up first so I can compare):
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● While that runs, item 5: where did the emil-design-eng skill get installed?
+
+● Bash(for d in ~/.claude/skills ~/.agents/skills ~/.claude/plugins
+      "/c/Users/mokshagna/Claude Projects/finn/.claude"
+      "/c/Users/mokshagna/Claude Projects/finn/.agents"…)
+  ⎿  Updated web\public\data\research\RELIANCE.json (+2 -2)
+      1  {
+      2   "symbol": "RELIANCE",
+      3   "name": "Reliance Industries Ltd",
+      4 - "generated_at": "2026-11-12T17:53",                            
+      4 + "generated_at": "2026-11-13T01:59",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+     ...
+      76     "actual": "not disclosed",
+      77     "actual_source": null,
+      78     "model": "openai/gpt-oss-120b",
+      79 -   "why": "No reported statements eligible to assess O2C annual
+         -ized EBITDA."                                                  
+      79 +   "why": "Not measurable yet: promised on the latest call (Q2 
+         +FY27), and no results have come out since."                    
+      80    }
+      81   ]
+      82  }
+  ⎿  (timeout 2m)
+
+  Listed 2 directories (ctrl+o to expand)
+
+● Item 5 found, nothing changed. Waiting for the 22-ticker PvD run to finish
+  before the feed re-ingest, since the credibility chip reads its output.
+
+● Monitor(PvD 22-ticker progress and crashes)
+  ⎿  Monitor started · task bh2ic7kuu · timeout 1800s
+
+● The run is going; I'll be notified per ticker and on any crash.
+
+● Background command "Re-run PvD for all 22 tickers" completed (exit code 0)
+
+● The run finished. Comparing before and after:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Monitor event: "PvD 22-ticker progress and crashes"
+  Traceback (most recent call last):
+  errors.APIError.raise_for_response(response)
+  raise ClientError(status_code, response_json, response)
+  google.genai.errors.ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code':
+  429, 'message': 'You exceeded your current quota, please check your plan and
+  billing details. For more information on this error, head to:
+  https://aistudio.google.com/docs/rate-limits. To monitor your current usage,
+  head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric:
+  generativelanguage.googleapis.com/generate_content_free_tier_requests, limit:
+  20, model: gemini-3.6-flash, description: Generate content requ...(truncated)
+  Traceback (most recent call last):
+  Reliance Industries Ltd (RELIANCE) · calls: Q2 FY27, Q1 FY27, Q4 FY26, Q3 FY26
+  · latest results: Sep 2026
+  HDFC Bank Ltd (HDFCBANK) · calls: Q2 FY27, Q1 FY27, Q4 FY26, Q3 FY26 · latest
+  results: Sep 2026
+  Tata Consultancy Services Ltd (TCS) · calls: Q2 FY27, Q1 FY27, Q4 FY26, Q3
+  FY26 · latest results: Sep 2026
+  Bharti Airtel Ltd (BHARTIARTL) · calls: Q1 FY27, Q4 FY26, Q3 FY26, Q2 FY26 ·
+  latest results: Sep 2026
+  ITC Ltd (ITC) · calls:  · latest results: Sep 2026
+
+● The run hit a Gemini free-tier quota (429) and stopped partway: ITC shows no
+  calls. Checking how far it got and what failed:
+
+  Ran 2 shell commands (ctrl+o to expand)
+● The run died at ticker 6 (LT) after Gemini's free-tier daily quota returned a
+  429, and the uncaught error skipped the other 17. Next I'll check whether
+  ITC's zero-call JSON overwrote good data and which quota is used up. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● No regression here, since ITC and BHARTIARTL had zero promises beforehand; the
+  real problems are the quota and a crash. I'm making main() skip per-ticker
+  failures so a failed ticker keeps its last good file. · summary
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 5 lines, removed 1 line
+      626  def main(argv=None):
+      627      sys.stdout.reconfigure(encoding="utf-8")
+      628      for sym in argv or sys.argv[1:]:
+      629 -        out = run(sym)                                        
+      629 +        try:                                                  
+      630 +            out = run(sym)                                    
+      631 +        except Exception as e:  # model quota / source down: t
+          +his ticker keeps its last good JSON (run() writes last)       
+      632 +            print(f"\n{sym} FAILED, kept the previous research
+          + file: {type(e).__name__}: {str(e)[:160]}")                   
+      633 +            continue                                          
+      634          s = {k: v for k, v in out["score"].items() if v}
+      635          print(f"\n{out['name']} ({out['symbol']}) · calls: {',
+            '.join(c['call'] for c in out['calls'])} · latest results: {o
+           ut['latest_quarter']}")
+      636          print(" · ".join(f"{k} {v}" for k, v in s.items()) + (
+           f" · {out['model_note']}" if out["model_note"] else ""))
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Quota is still exhausted, and LT kept its previous file as intended. Checking
+  which quota and when it resets:
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+● The cheap model is working again after its per-minute limit tripped, so
+  segment extraction will now use the router's patient mode (8 tries, up to
+  2-minute backoff), as pvd_verdict already does. · summary
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● patient fits exactly: longer retries, no drop to the 20-a-day model.
+
+● Update(backend\finn\pull\segments.py)
+  ⎿  Added 2 lines, removed 1 line
+      44          if not idx:
+      45              continue
+      46          r = llm.run("extract_segments", "extract_segments", [f"
+          Quarter end: {qe:%d %B %Y}", pdf.subset(doc, idx[:1])], SCHEMA,
+      47 -                    key=f"{hashlib.sha256(b).hexdigest()}:{idx[
+         -0]}:{qe}", symbol=symbol, quarter=q)                           
+      47 +                    key=f"{hashlib.sha256(b).hexdigest()}:{idx[
+         +0]}:{qe}", symbol=symbol, quarter=q,                           
+      48 +                    patient=True)  # batch job: wait out the pe
+         +r-minute limit, never burn the 20-a-day fallback               
+      49          d = r["data"]
+      50          if not (d["found"] and d["segments"] and same_date(d["c
+          ol_q"], qe)):
+      51              continue
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● While that runs, committing the PvD code (tests first):
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● While the rest run, spot-checking the segment verdicts from the tickers
+  already done:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Those TITAN/POLYCAB files predate the reason fix, so they still show the
+  model's reason. I'm rewording the "volume" label and will do a final cached
+  pass over all 22 once the background run finishes. · summary
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 1 line, removed 1 line
+      465      if p.get("basis") == "constant_currency_or_usd" or USD.sea
+           rch(text):
+      466          return "Not measurable: a US-dollar or constant-curren
+           cy target, and results filings report rupees."
+      467      if NOT_MONEY.search(text):
+      468 -        return "Not measurable: a volume or business metric (u
+          -nits, NOV/GMV, orders, AUM, mix); results filings report money
+          -, not this."                                                  
+      468 +        return "Not measurable: results filings don't report t
+          +his figure (volumes, NOV/GMV, orders, AUM, mix or payout)."   
+      469      if latest and _q(p["said_in"]) >= _q(latest):
+      470          return f"Not measurable yet: promised on the latest ca
+           ll ({fy_name(p['said_in'])}), and no results have come out sin
+           ce."
+      471      if p.get("company_total") and not NOT_TOTAL.search(text):
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" && sed -i 's/assert
+      "volume" in pvd.unmeasurable(P(metric="sales volume growth"/assert
+      "volumes" in pvd.unm…)
+  ⎿  1 file changed (binary, mode only or too large to show)
+
+● Waiting for the background PvD run to finish.
+
+● Monitor event: "PvD 22-ticker progress and crashes"
+  [Monitor expired after 30m with 1 event delivered. Re-arm it if you still need
+  the watch.]
+
+● The earlier monitor expired (that run had already ended). Still waiting on the
+  14-ticker run.
+
+● Background command "Re-run PvD for the remaining 14 tickers" completed (exit
+code 0)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Seven tickers failed: six on 429 even with patient retries, and DEEPAKNTR on a
+  DNS error. All seven kept their previous file. Checking whether the cheap
+  model has now hit a daily cap:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The daily free-tier cap of 500 requests for gemini-3.5-flash-lite has been
+  hit, so these 7 tickers will wait for the midnight Pacific reset and keep
+  their earlier files. I'm now running a final pass over the 15 that completed,
+  to apply the reworded labels. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● It's slow, which means some calls aren't cached. Most likely
+  TITAN/POLYCAB/DIXON: they first ran before the segment-override change, so
+  they now need extra segment quarters, and the quota rejects those after
+  patient retries. Any ticker that fails keeps its file. Waiting for it to
+  finish.
+
+● Background command "Cached re-run of the 15 completed tickers" completed (exit
+code 0)
+
+  Read 1 file (ctrl+o to expand)
+
+● 14 of 15 calls are refreshed; ASTRAL needed one new call and keeps its earlier
+  file, which only lacks the label rewording. TRENT has no calls, so I'm
+  checking it against the before state next. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+● Measured promises rose from 27 to 30 and not-measurable fell from 45 to 42,
+  with 4 now measured on segment tables. Before writing up, I'm checking that
+  the 8 "no segment table found" rows are real and not fetch failures, and why
+  BAJFINANCE dropped from 3 measured to 2. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The BAJFINANCE miss is model variance: the band fix made a fresh call that
+  didn't use the earlier 22.4% evidence, so I'll report it as is. ASTRAL does
+  report Plumbing and Paints segments, so the "no segment table" result looks
+  wrong, and I'm debugging it with the cached calls now. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The ASTRAL segment table is there but didn't parse, since the cheap model
+  returned found: false, probably from dates split across lines. A prompt fix
+  has to wait for tomorrow's quota, so for now the label will only say what's
+  true for DIXON and ASTRAL. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Update(backend\finn\pull\pvd.py)
+  ⎿  Added 1 line, removed 1 line
+      472          return None
+      473      data = seg(p["said_in"])
+      474      if not data:
+      475 -        return "Not measurable: no segment table found in the 
+          -results filings since this call."                             
+      475 +        return "Not measured: no segment figures could be read
+          + from the results filings since this call (a single-segment co
+          +mpany, or the table didn't parse)."                           
+      476      names = list(data[max(data, key=_q)]["segments"])
+      477      name = segments.match(text, names, p.get("company_words", 
+           ()))
+      478      if not name:
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn" && .venv/Scripts/python -
+      <<'EOF'
+      # same text the code now emits; ASTRAL can't be re-run tonight (model
+      quota), DIX…)
+  ⎿  Updated web\public\data\research\ASTRAL.json (+4 -4)
+      93     "actual": "not disclosed",
+      94     "actual_source": null,
+      95     "model": "openai/gpt-oss-120b",
+      96 -   "why": "Not measurable: no segment table found in the result
+         -s filings since this call."                                    
+      96 +   "why": "Not measured: no segment figures could be read from 
+         +the results filings since this call (a single-segment company, 
+         +or the table didn't parse)."                                   
+      97    },
+      98    {
+      99     "metric": "paints revenue target",
+     ...
+      110     "actual": "not disclosed",
+      111     "actual_source": null,
+      112     "model": "openai/gpt-oss-120b",
+      113 -   "why": "Not measurable: no segment table found in the resul
+          -ts filings since this call."                                  
+      113 +   "why": "Not measured: no segment figures could be read from
+          + the results filings since this call (a single-segment company
+          +, or the table didn't parse)."                                
+      114    },
+      115    {
+      116     "metric": "UK business EBITDA margin",
+     ...
+      127     "actual": "not disclosed",
+      128     "actual_source": null,
+      129     "model": "openai/gpt-oss-120b",
+      130 -   "why": "Not measurable: no segment table found in the resul
+          -ts filings since this call."                                  
+      130 +   "why": "Not measured: no segment figures could be read from
+          + the results filings since this call (a single-segment company
+          +, or the table didn't parse)."                                
+      131    },
+      132    {
+      133     "metric": "faucet growth rate",
+     ...
+      144     "actual": "not disclosed",
+      145     "actual_source": null,
+      146     "model": "openai/gpt-oss-120b",
+      147 -   "why": "Not measurable: no segment table found in the resul
+          -ts filings since this call."                                  
+      147 +   "why": "Not measured: no segment figures could be read from
+          + the results filings since this call (a single-segment company
+          +, or the table didn't parse)."                                
+      148    }
+      149   ]
+      150  }
+  ⎿  Updated web\public\data\research\DIXON.json (+4 -4)
+      76     "actual": "not disclosed",
+      77     "actual_source": null,
+      78     "model": "openai/gpt-oss-120b",
+      79 -   "why": "Not measurable: no segment table found in the result
+         -s filings since this call."                                    
+      79 +   "why": "Not measured: no segment figures could be read from 
+         +the results filings since this call (a single-segment company, 
+         +or the table didn't parse)."                                   
+      80    },
+      81    {
+      82     "metric": "smartphone volumes and selling prices",
+     ...
+      110     "actual": "not disclosed",
+      111     "actual_source": null,
+      112     "model": "openai/gpt-oss-120b",
+      113 -   "why": "Not measurable: no segment table found in the resul
+          -ts filings since this call."                                  
+      113 +   "why": "Not measured: no segment figures could be read from
+          + the results filings since this call (a single-segment company
+          +, or the table didn't parse)."                                
+      114    },
+      115    {
+      116     "metric": "IT hardware products revenue",
+     ...
+      127     "actual": "not disclosed",
+      128     "actual_source": null,
+      129     "model": "openai/gpt-oss-120b",
+      130 -   "why": "Not measurable: no segment table found in the resul
+          -ts filings since this call."                                  
+      130 +   "why": "Not measured: no segment figures could be read from
+          + the results filings since this call (a single-segment company
+          +, or the table didn't parse)."                                
+      131    },
+      132    {
+      133     "metric": "lighting revenues growth",
+     ...
+      144     "actual": "not disclosed",
+      145     "actual_source": null,
+      146     "model": "openai/gpt-oss-120b",
+      147 -   "why": "Not measurable: no segment table found in the resul
+          -ts filings since this call."                                  
+      147 +   "why": "Not measured: no segment figures could be read from
+          + the results filings since this call (a single-segment company
+          +, or the table didn't parse)."                                
+      148    }
+      149   ]
+      150  }
+
+● 117 tests pass; I'm re-ingesting the feed with the classifier fixes, and any
+  uncached filing will fall back to a raw link since the cheap model is out of
+  quota. I'll back up the current feed and restore it if any previously good
+  item degrades. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● While the ingest runs, the item 4 write-up for DECISIONS.md:
+
+● Update(DECISIONS.md)
+  ⎿  Added 7 lines
+      165    - Re-classifying the cached 30-day rows changed exactly thes
+           e 8 filings (KPIT 4, MARUTI 1, BHARTIARTL 1, POLYCAB 1, plus t
+           he Dixon title).
+      166  - **"Also" lines: one per event type, with a count (user, 13 N
+           ov).** Reliance's Jio IPO stacked four Also lines and Persiste
+           nt's QIP + NCDs nine. Now P1 filings behind the lead are group
+           ed by category: one filing keeps its title ("Also · Mgmt chang
+           e · Prof. Rajiv Lal ceased…"); several become "Also · Fund rai
+           se · 4 filings · <latest title>". The count comes before the t
+           itle so it survives truncation at 390px, and the latest title 
+           says which event it is without an extra LLM call. Opening the 
+           card lists every one of them with its source, so the count mat
+           ches what you see; the old title-dedupe is gone for the same r
+           eason. Gave up: a named event ("Jio IPO") would need an LLM la
+           bel per group.
+      167  - **Credibility chip needs at least 2 counted promises (user, 
+           13 Nov).** Counted = what the chip shows (kept + missed + open
+           ). "Kept 1 · Missed 0" is one data point, not a record. Below 
+           2, there's no chip on the card; the Research page still lists 
+           every promise. Enforced in `ingest.credibility()`, so the rese
+           arch JSON is untouched.
+      168 +- **PvD: segment promises measured on the segment table of the
+          + company's own results filings** (`pull/segments.py`, same pat
+          +tern as the bank CD ratio). For each quarter since the promise
+          +, the cheap model copies each segment's revenue and result for
+          + that quarter and the year-ago quarter from the Ind AS 108 seg
+          +ment page (consolidated first). Python keeps a number only if 
+          +it is printed on that page and the column date is that quarter
+          +, then computes YoY growth and result margin. Each verdict cit
+          +es the filing page. Promise-to-segment matching is plain Pytho
+          +n on words and acronyms ("FMEG", "watch" ~ "Watches"), ignorin
+          +g the company's own name; an unsure match (two segments) is no
+          + match. A metric that names a segment is measured on that segm
+          +ent even if the extractor marked it company-wide.             
+      169 +  - **Segment result is after depreciation**, so it sits below
+          + EBITDA. An EBITDA target can only be confirmed by it (POLYCAB
+          + FMEG: 10.1% at EBIT level clears the 8% EBITDA floor), never 
+          +missed; below the target it stays unmeasured, with that reason
+          +.                                                             
+      170 +  - **A band on growth or margin is a floor** (11–13% → ≥11%, 
+          +above 13% = ahead). POLYCAB Wires & Cables at 14.2% read "move
+          +d away" from 11–13%. Cost and ratio bands (cost of funds, CD/L
+          +DR) stay ceilings.                                            
+      171 +  - **Not-measurable is labelled with its reason** when no evi
+          +dence is shown: US-dollar / constant-currency target; a figure
+          + results filings don't report (volumes, NOV/GMV, orders, AUM, 
+          +mix, payout); promised on the latest call; not a reported segm
+          +ent (lists the segments that are); no segment figures could be
+          + read. A model's reasoning is no longer shown on a row with no
+          + evidence (TITAN showed "margin 14% surpasses the target" next
+          + to "not measurable").                                        
+      172 +  - **Result (22 tickers, 72 promises): 30 measured (was 27), 
+          +42 not measurable (was 45).** Verdicts: hit 12, on track 5, pa
+          +rtial 4, moved away 3, behind pace 3, miss 3. Four verdicts no
+          +w come from segment tables (POLYCAB FMEG, EPC, Wires & Cables;
+          + TITAN Jewellery 13.0% vs ~11%). Full table in PLAN.md §3j.   
+      173 +  - **Not finished, honestly:** 7 tickers (ASIANPAINT, ETERNAL
+          +, PERSISTENT, TATAPOWER, IRCTC, KPITTECH, DEEPAKNTR) were not 
+          +re-run. The cheap model's free tier allows 500 requests a day 
+          +and ran out mid-run (DEEPAKNTR hit a DNS error); each kept its
+          + previous file. ASTRAL's segment table exists but the cheap mo
+          +del returned "not found" (column dates split across lines), so
+          + its 4 segment promises stay unmeasured. One verdict was lost 
+          +to model variance: the band fix changed BAJFINANCE's payload f
+          +or "AUM growth 22–23%", and the fresh strong-model call didn't
+          + use the "AUM grew 22.4%" evidence the old one had. Re-run the
+          + 7 after the quota resets (~13:30 IST).                       
+      174 +  - **Batch safety:** one ticker failing (quota, network) no l
+          +onger stops the batch, and that ticker keeps its last good fil
+          +e. Segment calls use the router's patient mode (wait out the p
+          +er-minute limit; never fall back to the 20-a-day model, which 
+          +is how the fallback got burnt).                               
+      175  - **Scan of the 30-day feed: judgement calls reported, not cha
+           nged.** (a) Senior-management moves below KMP are P1 (IRCTC Gr
+           oup General Manager, CDSL SVP retirement, HDFCBANK group head 
+           superannuation). A role-based size rule (board/CEO/CFO/MD = P1
+           , others P2) would fit the existing sizing pattern. (b) Pure r
+           e-appointments are P1 (Bajaj Finance CISO, HDFCBANK's RBI nod 
+           for a re-appointment). (c) Internal restructurings into wholly
+            owned subsidiaries are M&A P1 (ETERNAL's business transfer to
+            ZEPL, L&T's Vyoma.AI timeline extension). (d) Dixon's US$7m g
+           uarantee for a subsidiary is P2: the rupee-amount parser doesn
+           't read US$. Nothing material was hidden in P3.
+      176  
+      177  ## Spike findings (11 Nov)
+
+● Waiting for the ingest to finish before the comparison.
+
+● Background command "Back up feed and re-run the 30-day ingest" completed (exit
+code 0)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● IRCTC's litigation title was lost because my results-word check matched
+  "profit" inside "profiteered"; I'm fixing that with a word boundary. I'm also
+  changing the stale-marking so only tickers that actually failed get flagged,
+  not the other 19 that weren't re-run. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PYEOF'
+      p="finn/push/headline.py"; s=open(p,encoding="utf-8").read()…)
+  ⎿  Updated backend\finn\ingest.py (+7 -5)
+      117  MAX_FAILED = 2  # more failed tickers than this = the network 
+           is down, not one bad source: keep the old feed
+      118  
+      119  
+      120 -def carry_over(old: dict, sym: str, start: dt.date) -> dict | 
+          -None:                                                         
+      120 +def carry_over(old: dict, sym: str, start: dt.date, stale: boo
+          +l = True) -> dict | None:                                     
+      121      """Last good data for one ticker from the previous feed, t
+           rimmed to the new window; None if it has none.
+      122 -    as_of = when that data was fetched (kept across repeated f
+          -ailures)."""                                                  
+      122 +    stale: mark it with as_of = when that data was fetched (ke
+          +pt across repeated failures). False for tickers               
+      123 +    this run didn't ask for: nothing failed, so the brief must
+          +n't say "couldn't refresh"."""                                
+      124      co = (old.get("companies") or {}).get(sym)
+      125      if co is None:
+      126          return None
+     ...
+      128      return {"items": [i for i in old["items"] if i["symbol"] =
+           = sym and i["filed"][:10] >= s],
+      129              "alerts": [x for x in old["alerts"] if x["symbol"]
+            == sym and x["date"] >= s and x["kind"] != "error"],
+      130              "days": [d for d in old["days"] if d["symbol"] == 
+           sym and d["date"] >= s],
+      130 -            "company": co | {"stale_as_of": co.get("stale_as_o
+          -f") or old["generated_at"]}}                                  
+      131 +            "company": co | {"stale_as_of": co.get("stale_as_o
+          +f") or old["generated_at"]} if stale else co}                 
+      132  
+      133  
+      134  def main(argv=None) -> int:
+     ...
+      165      for f in failed:
+      166          if c := carry_over(old, f["symbol"], start):
+      167              f["as_of"] = c["company"]["stale_as_of"]
+      168 +    failed_syms = {f["symbol"] for f in failed}               
+      169      for sym in symbols:
+      168 -        if sym not in companies and (c := carry_over(old, sym,
+          - start)):                                                     
+      170 +        if sym not in companies and (c := carry_over(old, sym,
+          + start, stale=sym in failed_syms)):                           
+      171              items += c["items"]; alerts += c["alerts"]; days +
+           = c["days"]; companies[sym] = c["company"]
+      170 -            print(f"  {sym:<11} kept data as of {c['company'][
+          -'stale_as_of']}", file=sys.stderr)                            
+      172 +            print(f"  {sym:<11} kept previous data" + (f" as o
+          +f {c['company']['stale_as_of']}" if sym in failed_syms else ""
+          +), file=sys.stderr)                                           
+      173  
+      174      items.sort(key=lambda x: (x["score"], x["filed"]), reverse
+           =True)  # rank, then newest first
+      175      alerts.sort(key=lambda x: x["date"], reverse=True)
+  ⎿  Updated backend\finn\push\headline.py (+1 -1)
+      17  
+      18  # A board-outcome PDF lists every decision (results first) and 
+          is filed once per decision. The copy filed as a
+      19  # management change must not be headlined with the results (13 
+          Nov: Dixon "Reported quarterly revenue ... and appointed").
+      20 -RESULTS_WORDS = r"\bresults?\b|revenue|profit|ebitda|\bpat\b|ea
+         -rnings"                                                        
+      20 +RESULTS_WORDS = r"\bresults?\b|revenue|profits?|ebitda|\bpat\b|
+         +earnings"                                                      
+      21  
+      22  
+      23  def problems(headline: str, source_text: str, category: str | N
+          one = None) -> list[str]:
+  ⎿  Updated backend\tests\test_headline.py (+3 -0)
+      29      assert any("filed as a management change" in x for x in pro
+          blems(h, DIXON, "management_change"))
+      30      assert problems("Appointed Prithvi Vachani Executive Direct
+          or", DIXON, "management_change") == []
+      31      assert problems("Q2 revenue at ₹21,863 crore", DIXON, "pres
+          s_release") == []  # results press releases may
+      32 +                                                               
+      33 +    # IRCTC litigation: "profiteered" is not results talk      
+      34 +    assert problems("GSTAT directed deposit of profiteered amou
+         +nt plus interest", "profiteered amount", "litigation") == []   
+  ⎿  Updated backend\tests\test_ingest.py (+73 -72)
+       1 -"""Ingest safety: a network drop mid-run must not overwrite a g
+         -ood feed (13 Nov: a DNS outage wiped 8 tickers)."""            
+       2 -import json, datetime as dt                                    
+       3 -import httpx, pandas as pd, pytest                             
+       4 -from finn import ingest                                        
+       5 -                                                               
+       6 -TODAY = dt.datetime.now(ingest.rank.IST).date()                
+       7 -D = (TODAY - dt.timedelta(days=1)).isoformat()                 
+       8 -                                                               
+       9 -                                                               
+      10 -def _item(sym, filed=D):                                       
+      11 -    return {"id": f"{sym}-1", "symbol": sym, "filed": f"{filed}
+         -T10:00", "score": 1, "collapsed": False, "tier": "P2",         
+      12 -            "reason": "", "headline": "h", "subject": "s", "not
+         -e": None}                                                      
+      13 -                                                               
+      14 -                                                               
+      15 -def _fresh(sym, *_):                                           
+      16 -    return [_item(sym)], [], [{"symbol": sym, "date": D, "move_
+         -pct": 1.0}], {"name": sym, "closes": []}                       
+      17 -                                                               
+      18 -                                                               
+      19 -@pytest.fixture                                                
+      20 -def run(tmp_path, monkeypatch):                                
+      21 -    out = tmp_path / "feed.json"                               
+      22 -    monkeypatch.setattr(ingest, "OUT", out)                    
+      23 -    monkeypatch.setattr(ingest.prices, "history", lambda s: pd.
+         -DataFrame({"Close": [1.0]}, index=[TODAY]))                    
+      24 -    old_day = (TODAY - dt.timedelta(days=40)).isoformat()  # ou
+         -tside a 7-day window: must be trimmed                          
+      25 -    old = {"generated_at": "2026-11-12T21:05+05:30", "portfolio
+         -": ["A", "B", "C", "D"],                                       
+      26 -           "companies": {s: {"name": s, "closes": []} for s in 
+         -"ABCD"},                                                       
+      27 -           "items": [_item(s) for s in "ABCD"] + [_item("B", ol
+         -d_day)], "alerts": [], "days": [], "failed": []}               
+      28 -    out.write_text(json.dumps(old))                            
+      29 -                                                               
+      30 -    def go(down, *args):                                       
+      31 -        def ticker(sym, *a):                                   
+      32 -            if sym in down:                                    
+      33 -                raise httpx.ConnectError("[Errno 11001] getaddr
+         -info failed")                                                  
+      34 -            return _fresh(sym)                                 
+      35 -        monkeypatch.setattr(ingest, "ticker", ticker)          
+      36 -        code = ingest.main(["--days", "7", *args])             
+      37 -        return code, json.loads(out.read_text())               
+      38 -    return go                                                  
+      39 -                                                               
+      40 -                                                               
+     … 105 more lines (ctrl+o to expand)
+
+● Tests pass, but cat -A shows the heredoc again turned \b into a backspace byte
+  around profits?, so that alternative can never match. Fixing it with a script
+  written by the Write tool:
+
+  Made 1 scratchpad edit +7 (ctrl+o to expand)
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0
+      bc94bb048d8/07ce4b9a-0a33-4147…)
+  ⎿  Updated backend\finn\push\headline.py (+1 -1)
+      17  
+      18  # A board-outcome PDF lists every decision (results first) and 
+          is filed once per decision. The copy filed as a
+      19  # management change must not be headlined with the results (13 
+          Nov: Dixon "Reported quarterly revenue ... and appointed").
+      20 -RESULTS_WORDS = r"\bresults?\b|revenue|profits?|ebitda|\bpat\b|
+         -earnings"                                                      
+      20 +RESULTS_WORDS = r"\bresults?\b|revenue|\bprofits?\b|ebitda|\bpa
+         +t\b|earnings"  # not "profiteered" (IRCTC)                     
+      21  
+      22  
+      23  def problems(headline: str, source_text: str, category: str | N
+          one = None) -> list[str]:
+
+● No backspace bytes anywhere in the code now. Re-running ingest for IRCTC
+  alone; the other 19 tickers should carry over unchanged and unmarked:
+
+● Bash(cd "c:/Users/mokshagna/Claude Projects/finn/backend" &&
+      S="C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/07ce4b9a-0
+      a33-4147-bf1f-4c33461db01c/scr…)
+  ⎿  1 file changed (binary, mode only or too large to show)
+  ⎿  (timeout 10m)
+
+● IRCTC's title is restored and the other 19 tickers carried over unchanged,
+  none marked stale. Next I'll run a final 390px check, rendering the stale
+  banner from a temporary feed copy with one ticker marked stale. · summary
+
+  Read 2 files, ran 1 shell command (ctrl+o to expand)
+
+● Both layouts check out at 390px. KPIT now shows one Also line, the real
+  Independent Director cessation, and the stale banner is fixed. I'm working out
+  this round's cost, then updating PLAN.md. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● This round: $0.08 across 52 logged calls; $2.64 across 736 calls to date. (The
+  500-a-day quota was mostly spent by yesterday evening's runs: Gemini's day
+  resets at 13:30 IST.) Writing PLAN.md §3j:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Update(PLAN.md)
+  ⎿  Added 1 line, removed 1 line
+      1  # FINN — build plan (11–15 Nov 2026)
+      2  
+      3  Single source of truth for the build. Scope and hard rules live 
+         in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.
+      4 -Current status: see §3i (feed UI round 3), §3h (PvD review), §3g
+        - (PvD rework), §3f (PvD backend), §3e (redesign), §3d (feed UI) 
+        -and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at
+        - §4a.                                                           
+      4 +Current status: see §3j (overnight 13 Nov: ingest safety, classi
+        +fier, Also lines, segment PvD), §3i (feed UI round 3), §3h (PvD 
+        +review), §3g (PvD rework), §3f (PvD backend), §3e (redesign), §3
+        +d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD sessi
+        +on: start at §4a.                                               
+      5  
+      6  ---
+      7  
+
+● Update(PLAN.md)
+  ⎿  Added 35 lines
+      182  - **Critique 26/40** (24 before); P0/P1s fixed, two kept by th
+           e user's rule (see DECISIONS.md). 96 backend + 11 web tests pa
+           ss. LLM spend to date **$2.54 / 658 calls** (this round $0.14)
+           .
+      183  - **Open:** ingest overwrites a good feed when the network dro
+           ps (seen tonight, 8 tickers lost; re-run fixed it); Also stack
+           s on busy companies; chip at 1 measured promise; classifier st
+           ill files some results/revenue updates as mgmt change or M&A (
+           Dixon, KPIT).
+      184  
+      185 +## 3j. Status at 13 Nov, ~04:00 (overnight round, unattended) 
+      186 +- **Ingest safety:** a failed ticker keeps its last good data,
+          + marked "as of" (brief: "Couldn't refresh TCS. Showing its fil
+          +ings as of 12 Nov 22:24 IST"). It refuses to write if >2 ticke
+          +rs fail or Nifty has no prices (exit 1, `--force` overrides), 
+          +and an empty yfinance history counts as a failure. `ingest TCS
+          +` refreshes TCS only and keeps the rest; writes are atomic. Te
+          +sted with a dead-proxy outage: refused, file byte-identical.  
+      187 +- **Classifier:** one board-outcome PDF filed under several su
+          +bcategories caused both mislabels. Subsidiary housekeeping (se
+          +t-up, strike-off, letter of comfort) is now P3, subsidiary boa
+          +rd seats P3, "Press Release" yields to a P1 event in its headl
+          +ine (NCLAT), reminders are routine, and non-results copies can
+          +'t be titled with results. 8 filings changed in the 30-day fee
+          +d (KPIT 4, MARUTI, BHARTIARTL, POLYCAB, plus the Dixon title).
+          + Judgement calls reported in DECISIONS, not changed.          
+      188 +- **UI:** one Also line per event type with a count ("Also · F
+          +und raise · 4 filings · …"), all filings with sources in the o
+          +pened card; credibility chip only with ≥2 counted promises (TI
+          +TAN's 1 → no chip).                                           
+      189 +- **PvD segments** (`pull/segments.py`), new table below. Four
+          + verdicts come from segment tables; 30 measured / 42 not measu
+          +rable (was 27 / 45). **Open:** re-run the 7 tickers marked * a
+          +fter the Gemini quota resets (~13:30 IST): `python -m finn.pul
+          +l.pvd ASIANPAINT ETERNAL PERSISTENT TATAPOWER IRCTC KPITTECH D
+          +EEPAKNTR ASTRAL`. Fix ASTRAL's split-date segment header (prom
+          +pt), then re-ingest so the chips update.                      
+      190 +- 117 backend + 11 web tests pass. LLM spend this round **$0.0
+          +8 / 52 calls**; to date **$2.64 / 736 calls**.                
+      191 +                                                              
+      192 +| Ticker | Promises | Measured (before) | Not measurable | Fro
+          +m segments | Verdicts |                                       
+      193 +|---|---|---|---|---|---|                                     
+      194 +| ASIANPAINT* | 6 | 3 (3) | 3 | 0 | hit 1, on track 1, moved a
+          +way 1 |                                                       
+      195 +| ASTRAL | 6 | 2 (2) | 4 | 0 | hit 2 (segment table didn't par
+          +se) |                                                         
+      196 +| BAJFINANCE | 6 | 2 (3) | 4 | 0 | hit 1, on track 1 (AUM hit 
+          +lost to model variance) |                                     
+      197 +| BHARTIARTL | 0 | 0 (0) | 0 | 0 | – |                        
+      198 +| CDSL | 0 | 0 (0) | 0 | 0 | – |                              
+      199 +| DEEPAKNTR* | 1 | 0 (0) | 1 | 0 | – |                        
+      200 +| DIXON | 6 | 1 (0) | 5 | 0 | partial 1 (single segment) |    
+      201 +| ETERNAL* | 4 | 0 (0) | 4 | 0 | – |                          
+      202 +| HDFCBANK | 3 | 2 (2) | 1 | 0 | hit 1, behind pace 1 |       
+      203 +| IRCTC* | 1 | 1 (1) | 0 | 0 | miss 1 |                       
+      204 +| ITC | 0 | 0 (0) | 0 | 0 | – |                               
+      205 +| KPITTECH* | 5 | 3 (3) | 2 | 0 | behind pace 1, partial 1, mo
+          +ved away 1 |                                                  
+      206 +| LT | 6 | 6 (6) | 0 | 0 | hit 3, miss 2, on track 1 |        
+      207 +| MARUTI | 1 | 0 (0) | 1 | 0 | – |                            
+      208 +| PERSISTENT* | 3 | 0 (0) | 3 | 0 | – |                       
+      209 +| POLYCAB | 6 | 3 (0) | 3 | 3 | hit 3 (FMEG, EPC, Wires & Cabl
+          +es) |                                                         
+      210 +| RELIANCE | 2 | 0 (0) | 2 | 0 | – |                          
+      211 +| SUNPHARMA | 4 | 2 (2) | 2 | 0 | hit 1, on track 1 |         
+      212 +| TATAPOWER* | 4 | 2 (2) | 2 | 0 | partial 2 |                
+      213 +| TCS | 2 | 2 (2) | 0 | 0 | behind pace 1, moved away 1 |     
+      214 +| TITAN | 6 | 1 (1) | 5 | 1 | on track 1 (Jewellery 13.0% vs ~
+          +11%) |                                                        
+      215 +| TRENT | 0 | 0 (0) | 0 | 0 | – |                             
+      216 +| **Total** | **72** | **30 (27)** | **42** | **4** | hit 12, 
+          +on track 5, partial 4, moved away 3, behind pace 3, miss 3 |  
+      217 +                                                              
+      218 +\* not re-run this round (Gemini free-tier daily quota; DEEPAK
+          +NTR: DNS error); previous file kept. Not-measurable reasons: n
+          +o segment figures readable 8 (DIXON single segment, ASTRAL par
+          +se), no later evidence 7, figure not in results filings (volum
+          +e/AUM/mix/payout) 5, promised on the latest call 2, plus model
+          +-written reasons in the 7 starred files.                      
+      219 +                                                              
+      220  ## 4. Day-by-day
+      221  
+      222  **Wed 11 (done):** repo init, spikes, decisions. Session expor
+           t.
+● The DECISIONS line about single-ticker runs needs updating, since those runs
+  no longer mark the other tickers:
+
+● Update(DECISIONS.md)
+  ⎿  Added 1 line, removed 1 line
+      154  
+      155  - **A partial ingest never overwrites a good feed.** On 12 Nov
+            a DNS outage made 8 tickers fail mid-run and the run still wr
+           ote `feed.json`, wiping them. Now a ticker that fails keeps it
+           s last good items, alerts and price days from the previous fee
+           d (trimmed to the new window), and the feed marks it `stale_as
+           _of` with the time of that fetch. The brief shows "Couldn't re
+           fresh X. Showing its filings as of 12 Nov 22:24 IST." If more 
+           than 2 tickers fail, or Nifty has no prices, ingest refuses to
+            write and exits 1 (a CI run then fails visibly); `--force` ov
+           errides. Threshold 2: one bad scrip is normal (IRCTC on 11 Nov
+           ), three at once means the network, not the source. Gave up: n
+           othing, since the stale data is labelled.
+      156  - **An empty yfinance history counts as a fetch failure.** yfi
+           nance reports a network error as "possibly delisted" and retur
+           ns an empty frame instead of raising, so a dropped connection 
+           used to look like "no price data". Every portfolio ticker has 
+           prices, so empty = failed.
+      157 -- **A single-ticker run (`ingest TCS`) now refreshes only TCS*
+          -* and keeps the rest of the portfolio from the previous feed, 
+          -marked with their as-of time. Before, it rewrote the feed with
+          - TCS alone. Writes are write-then-rename, so a crash can't lea
+          -ve half a file.                                               
+      157 +- **A single-ticker run (`ingest TCS`) now refreshes only TCS*
+          +* and keeps the rest of the portfolio from the previous feed, 
+          +unmarked: they weren't asked for, so nothing failed, and the b
+          +rief mustn't say "couldn't refresh". Only a ticker that failed
+          + is marked stale. Before, it rewrote the feed with TCS alone. 
+          +Writes are write-then-rename, so a crash can't leave half a fi
+          +le.                                                           
+      158  - Tested with a simulated outage (all traffic through a dead p
+           roxy): refused, file byte-identical; with `--force`, 20/20 tic
+           kers kept their data, marked stale.
+      159  - **Classifier: one board-outcome PDF, many subcategories.** T
+           he Dixon and KPIT mislabels had one cause. A company files the
+            same board-outcome PDF once per decision, each copy under its
+            own BSE subcategory, and the PDF opens with the results. So K
+           PIT's "Acquisition" copy (really a new Vietnam subsidiary) and
+            "Scheme of Arrangement" copy (a dormant step-down subsidiary'
+           s strike-off) were P1 M&A titled "Approved financial results".
+            Dixon's management-change copy (a real Executive Director app
+           ointment) was titled "Reported quarterly revenue of ₹21,863 cr
+           ore and appointed…". The fixes are general rules, not ticker-s
+           pecific:
+      160    - Setting up, striking off or liquidating a subsidiary, or a
+            letter of comfort for one, is housekeeping (P3, with a note),
+            unless BSE's headline names a deal (acquisition, merger, stak
+           e, JV, business transfer). This also catches MARUTI's foundati
+           on subsidiary filed as "Acquisition", and it runs before the L
+           LM, so it saves those calls.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Five commits, no AI attribution lines (per CLAUDE.md). The untracked
+  build-history/ exports are yours, so I've left them alone. Pushing:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Items 1, 2, 3 and 5 are done. Item 4 is only partly done: 7 of the 22 tickers
+  weren't re-run because Gemini's free-tier daily quota ran out. Everything is
+  committed (5 commits) and pushed to main; 117 backend and 11 web tests pass.
+
+  1. Ingest safety. A ticker whose fetch fails now keeps its last good data, and
+  the brief says "Couldn't refresh TCS. Showing its filings as of 12 Nov 22:24
+  IST." If more than 2 tickers fail, or Nifty has no prices, ingest refuses to
+  write feed.json and exits with an error; --force overrides. I tested it with a
+  simulated full outage: it refused and the file stayed byte-identical. With
+  --force, all 20 tickers kept their data, marked stale. Two extra fixes:
+  yfinance hides network errors as "possibly delisted" with no prices, so no
+  prices now counts as a failure. And ingest TCS now refreshes only TCS instead
+  of wiping the other 19.
+
+  2. Classifier. Dixon and KPIT had the same cause: a company files one
+  board-meeting PDF several times, once per BSE subcategory, and the results sit
+  on page 1. The rule fixes are general:
+  - Setting up, striking off or backing a subsidiary is routine (P3), not M&A.
+  - A director joining a subsidiary's board is P3.
+  - A "Press Release" whose headline is a material event takes that event's
+    category.
+  - "Reminder" notices are routine.
+  - Titles of the non-results copies can't lead with results. Dixon's now reads
+    "Appointed Prithvi Vachani Executive Director for five years…".
+
+  The 30-day scan found 3 more mislabels, all fixed: Maruti's new foundation
+  filed as "Acquisition", Bharti's call-money reminder raised as a P1 alert, and
+  Polycab's NCLAT insolvency order sitting as a press release. I reported four
+  judgement calls in DECISIONS.md without changing them: junior management
+  changes at P1, re-appointments at P1, internal restructurings counted as M&A,
+  and Dixon's US$7m guarantee.
+
+  3. UI decisions (both logged in DECISIONS.md). Also lines now show one line
+  per event type with a count, e.g. "Also · Fund raise · 4 filings · <latest
+  title>", and opening the card lists every filing with its source. The
+  credibility chip now needs at least 2 measured promises, so TITAN has none.
+  Both checked at 390px.
+
+  4. Segment numbers. The cheap model copies segment revenue and results from
+  each quarterly results filing. Python keeps a number only if it appears on
+  that page, then computes growth and margin.
+
+  ┌──────────────────────────────┬────────┬───────┐
+  │                              │ Before │ After │
+  ├──────────────────────────────┼────────┼───────┤
+  │ Promises                     │ 72     │ 72    │
+  ├──────────────────────────────┼────────┼───────┤
+  │ Measured                     │ 27     │ 30    │
+  ├──────────────────────────────┼────────┼───────┤
+  │ Not yet measurable           │ 45     │ 42    │
+  ├──────────────────────────────┼────────┼───────┤
+  │ Measured from segment tables │ –      │ 4     │
+  └──────────────────────────────┴────────┴───────┘
+
+  Verdicts now: hit 12, on track 5, partial 4, moved away 3, behind pace 3, miss
+  3. The four segment verdicts are POLYCAB FMEG, EPC and Wires & Cables, and
+  TITAN Jewellery (13.0% vs about 11%). The per-ticker table is in PLAN.md §3j.
+  Volume and USD targets stay "not yet measurable" with the reason shown on the
+  row, as do segments a company doesn't report.
+
+  Two rules changed along the way:
+  - A margin or growth band is now treated as a floor, so beating it counts as
+    ahead. Polycab Wires & Cables at 14.2% against 11–13% used to read "moved
+    away".
+  - Segment profit is after depreciation, so it can confirm an EBITDA target but
+    never count as missing one.
+
+  Errors and loose ends:
+  - 7 tickers kept their old files: ASIANPAINT, ETERNAL, PERSISTENT, TATAPOWER,
+    IRCTC, KPITTECH (quota) and DEEPAKNTR (a DNS error). The quota resets around
+    13:30 IST, and the re-run command is in PLAN.md §3j.
+  - ASTRAL: it does report segments, but the model couldn't read its table
+    because the column dates are split across lines. That needs a prompt fix
+    once the quota is back.
+  - BAJFINANCE lost one correct "hit" (AUM growth 22.4% vs 22–23%). The band
+    change meant a fresh call to the strong model, and that call didn't use the
+    evidence the old one had.
+  - The batch crashed once: a quota error at the 6th ticker stopped the first
+    run. One failed ticker no longer stops the batch, and it keeps its last good
+    file.
+  - Cost: about $0.08 this round, $2.64 to date.
+
+  5. emil-design-eng is installed at ~/.agents/skills/emil-design-eng/SKILL.md,
+  recorded in ~/.agents/.skill-lock.json (installed 11 Nov from
+  github.com/emilkowalski/skills). Claude Code wasn't among the agents chosen at
+  install, and ~/.claude/skills/ only has graphify and synced, so Claude Code
+  can't see it. Nothing changed.
+
+  Remember to /export this session into build-history/.
+
+  Not checked: I haven't re-checked the new segment verdicts by hand against the
+  PDFs beyond TITAN and POLYCAB, and the Also/stale screens weren't tested on a
+  real phone. Run the 7-ticker PvD re-run before re-ingesting the feed, so the
+  credibility chips use the new verdicts.
