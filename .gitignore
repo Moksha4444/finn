@@ -17,10 +17,11 @@ node_modules/
 .next/
 out/
 
-# local data + caches (regenerable)
+# local data + caches (regenerable). LLM answers are committed: the cron reuses them instead of re-paying.
 *.sqlite
 *.db
-cache/
+cache/*
+!cache/llm/
 
 # tools
 graphify-out/
