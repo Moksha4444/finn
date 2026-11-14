@@ -563,12 +563,13 @@ function BullBear({ d }: { d: Research }) {
   return (
     <section aria-labelledby="bb-h" className="mt-9">
       <h2 id="bb-h" className={H2}>Bull and bear</h2>
-      {side("Bull", b.bull)}
-      {side("Bear", b.bear)}
+      {b.bull.length > 0 && side("Bull", b.bull)}
+      {b.bear.length > 0 && side("Bear", b.bear)}
       <p className="mt-2 text-[0.75rem] leading-snug text-ink-2">
         Written by {b.model.split("/").pop()} from the cited statements, questions and figures only.
         {b.dropped > 0 && ` ${b.dropped} ${b.dropped === 1 ? "point" : "points"} failed FINN's checks (numbers not in the source, a generic reason, or a clash with a promise verdict) and ${b.dropped === 1 ? "was" : "were"} dropped.`}
         {b.model_note && ` ${b.model_note}.`}
+        {b.note && ` ${b.note}`}
       </p>
     </section>
   );

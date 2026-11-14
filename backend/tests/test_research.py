@@ -129,7 +129,7 @@ def test_a_second_margin_for_a_quarter_on_the_page_is_dropped(monkeypatch):
     pts = {"bull": [{"claim": "EBITDA margins 10.1% in Q2 FY27", "why": "FMEG pricing holds", "cites": ["P1"]},
                     {"claim": "EBITDA margin 14.4% in Q2 FY27", "why": "Wires price hikes stuck", "cites": ["F2"]}],
            "bear": [{"claim": "EBITDA margin 14.4% in Q2 FY27", "why": "Wires price hikes may reverse", "cites": ["F2"]}]}
-    monkeypatch.setattr(research.llm, "run", lambda *a, **k: {"data": pts, "model": "m"})
+    monkeypatch.setattr(research.llm, "run", lambda *a, **k: {"data": {} if k.get("step") == "repair" else pts, "model": "m"})
     out = research.bull_bear("Co", "Sep 2026", ev, "X", snap={"margin": {"periods": ["Sep 2026"], "values": [14.42]}})
     assert [p["point"] for p in out["bull"]] == ["EBITDA margin 14.4% in Q2 FY27"] and out["dropped"] == 1
 
@@ -180,3 +180,25 @@ def test_part_year_periods_are_named_by_their_quarters():
     a = "FY27 (Apr 2026 – Mar 2027) so far (Q1–Q2, 2 of 4 quarters): PBDIT margin 18.2% vs target 18–20%"
     assert research.part_year(a) == "H1 FY27 (Q1–Q2): PBDIT margin 18.2% vs target 18–20%"
     assert research.fact("15.6% EBITDA margin in Q2 FY27, −2.0 pp YoY") == ("margin", "Q2 FY27", 15.6)  # numbers-first
+
+
+def test_rejected_points_get_one_repair_call_and_a_thin_side_says_so(monkeypatch):
+    ev = [{"id": "F5", "text": "Debt/equity 1.95 at FY26 end (Mar 2026). Gold metal loan borrowings.", "cite": {}},
+          {"id": "S1", "text": "Studded jewellery share 31% in Q2 FY27 on wedding demand", "cite": {}}]
+    first = {"bull": [{"claim": "Studded share 35% in Q2 FY27", "why": "Wedding demand.", "cites": ["S1"]}],  # 35 isn't in S1
+             "bear": [{"claim": "Debt/equity 1.95 at FY26 end.", "why": "Gold metal loan borrowings fund inventory.", "cites": ["F5"]}]}
+    fixed = {"bull": [{"claim": "Studded jewellery share 31% in Q2 FY27", "why": "Wedding demand lifts the studded mix.", "cites": ["S1"]}], "bear": []}
+    calls = []
+    def run(task, prompt, inputs, schema, **k):
+        calls.append(inputs)
+        return {"data": fixed if k.get("step") == "repair" else first, "model": "m"}
+    monkeypatch.setattr(research.llm, "run", run)
+    out = research.bull_bear("Co", "Sep 2026", ev, "X")
+    sent = research.json.loads(calls[1][-1])
+    assert len(calls) == 2 and sent["need"] == {"bull": 3, "bear": 2} and sent["rejected"][0]["reason"] == "a number not in its cited evidence"
+    assert [p["point"] for p in out["bull"]] == ["Studded jewellery share 31% in Q2 FY27"] and len(out["bear"]) == 1
+    assert out["note"] == "Only 1 bull point passed the evidence checks. Only 1 bear point passed the evidence checks."
+    calls.clear()
+    first["bull"] = fixed["bull"]  # nothing rejected: the model just ran out of evidence, so no repair call
+    research.bull_bear("Co", "Sep 2026", ev, "X")
+    assert len(calls) == 1

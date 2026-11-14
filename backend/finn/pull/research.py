@@ -290,11 +290,14 @@ def problem(pt: dict, ids: list[str], by_id: dict[str, dict], side: str | None =
     return None
 
 
-def checked(points: list[dict], by_id: dict[str, dict], facts: dict | None = None, side: str | None = None) -> tuple[list[dict], int]:
+def checked(points: list[dict], by_id: dict[str, dict], facts: dict | None = None, side: str | None = None,
+            rejected: list | None = None, said: set | None = None) -> tuple[list[dict], int]:
     """(first 3 points that pass problem() and agree with facts already used, number rejected).
-    facts: {(family, period): figure} shared by both sides, so bull and bear can't quote two numbers for one fact."""
+    facts: {(family, period): figure} shared by both sides, so bull and bear can't quote two numbers for one fact.
+    rejected: gets {side, claim, reason} per dropped point (the repair pass sends them back). said: facts already on the page."""
     facts = {} if facts is None else facts
-    keep, dropped, said = [], 0, set()
+    said = set() if said is None else said
+    keep, dropped = [], 0
     for pt in points:
         if not isinstance(pt, dict) or not all(isinstance(pt.get(k), str) for k in ("claim", "why")) or not isinstance(pt.get("cites"), list):
             dropped += 1
@@ -304,8 +307,12 @@ def checked(points: list[dict], by_id: dict[str, dict], facts: dict | None = Non
         # one fact said twice in other words (KEI: "Revenue growth +38.5%" and "Net sales growth 38.52%", both Q2 FY27)
         per, pct = NAMED_PERIOD.search(pt["claim"]), re.search(r"(\d+(?:\.\d+)?)\s?%", pt["claim"])
         dup = per and pct and (per.group(0), round(float(pct.group(1)), 1))
-        if problem(pt, ids, by_id, side) or (f and facts.get(f[:2], f[2]) != f[2]) or (dup and dup in said):
+        why = (problem(pt, ids, by_id, side) or (f and facts.get(f[:2], f[2]) != f[2] and "a second figure for a metric and period already on the page")
+               or (dup and dup in said and "the same fact as another point"))
+        if why:
             dropped += 1
+            if rejected is not None:
+                rejected.append({"side": side, "claim": pt["claim"], "why": pt["why"], "reason": why})
             continue
         if dup:
             said.add(dup)
@@ -319,13 +326,13 @@ QUOTA_OUT = False  # set when the strong model answered with a daily cap: --rege
 
 
 def bull_bear(name: str, latest: str | None, ev: list[dict], symbol: str, prev: dict | None = None, snap: dict | None = None) -> dict | None:
-    """None when a side has no point that survives the number check, or the model is unavailable and there is no
-    previous section (page hides it). prev: the page's last checked section, kept when the model is unavailable."""
+    """None when no point survives the checks, or the model is unavailable, and there is no previous section (page
+    hides it). Rejected points get one repair call; a side with fewer than 2 points carries a quiet note. prev: the page's last checked section, kept when the model is unavailable."""
+    global QUOTA_OUT
     payload = {"company": name, "latest_quarter": latest, "evidence": [{"id": e["id"], "text": e["text"]} for e in ev]}
     try:
         r = llm.run("bull_bear", "bull_bear", [json.dumps(payload, ensure_ascii=False)], BB, symbol=symbol, patient=True)
     except Exception as e:  # quota / network: keep the last checked section rather than blank it (14 Nov: Groq's daily cap)
-        global QUOTA_OUT
         QUOTA_OUT = QUOTA_OUT or isinstance(e, llm.Exhausted)
         print(f"  bull/bear unavailable for {symbol}: {type(e).__name__}: {str(e)[:120]}{'; kept the previous one' if prev else ''}")
         return prev
@@ -335,13 +342,30 @@ def bull_bear(name: str, latest: str | None, ev: list[dict], symbol: str, prev: 
     # segment's, with the segment's name dropped: POLYCAB "EBITDA margins 10.1% in Q2 FY27" against 14.4%) is dropped
     m = (snap or {}).get("margin") or {}
     facts: dict = {("margin", pvd.fy_name(q)): round(v, 1) for q, v in zip(m.get("periods", []), m.get("values", []))}
-    bull, d1 = checked(data.get("bull") or [], by_id, facts, "bull")
-    bear, d2 = checked(data.get("bear") or [], by_id, facts, "bear")
-    if not bull or not bear:  # nothing survives on a side: the last checked section, if any, beats a blank
+    rejected, said = [], {"bull": set(), "bear": set()}
+    pts = {s: checked(data.get(s) or [], by_id, facts, s, rejected, said[s]) for s in said}
+    need = {s: 3 - len(pts[s][0]) for s in pts}
+    if rejected and any(need.values()):  # one repair pass (user, 15 Nov): the model sees why its points failed
+        repair = payload | {"kept": {s: [p["point"] for p in pts[s][0]] for s in pts}, "rejected": rejected, "need": need}
+        try:
+            r2 = llm.run("bull_bear", "bull_bear", [llm.prompt("bull_bear_repair"), json.dumps(repair, ensure_ascii=False)], BB,
+                         symbol=symbol, patient=True, step="repair")
+            more = r2["data"] if isinstance(r2["data"], dict) else {}
+            for s in pts:
+                extra, d = checked((more.get(s) or [])[:need[s]], by_id, facts, s, said=said[s])
+                pts[s] = (pts[s][0] + extra, pts[s][1] + d)
+        except Exception as e:  # keep what passed the first time
+            QUOTA_OUT = QUOTA_OUT or isinstance(e, llm.Exhausted)
+            print(f"  bull/bear repair unavailable for {symbol}: {type(e).__name__}: {str(e)[:120]}")
+    (bull, d1), (bear, d2) = pts["bull"], pts["bear"]
+    if not bull and not bear:  # nothing survived: the last checked section, if any, beats a blank
         if prev:
-            print(f"  bull/bear for {symbol}: a side had no point that passed the checks; kept the previous one")
+            print(f"  bull/bear for {symbol}: no point passed the checks; kept the previous one")
         return prev
-    return {"bull": bull, "bear": bear, "dropped": d1 + d2, "model": r["model"], "model_note": r.get("model_note")}
+    # fewer than 2 on a side (user, 15 Nov): show what passed, say so quietly
+    note = " ".join(f"Only 1 {s} point passed the evidence checks." if p else f"No {s} point passed the evidence checks."
+                    for s, p in (("bull", bull), ("bear", bear)) if len(p) < 2) or None
+    return {"bull": bull, "bear": bear, "dropped": d1 + d2, "model": r["model"], "model_note": r.get("model_note"), "note": note}
 
 
 # ---- prices ----

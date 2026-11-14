@@ -26,7 +26,7 @@ export type Research = {
   margin_definition: { name: string; source: string } | null; model_note: string | null;
   summary: Counts & { unmeasured: number; sentence: string }; promises: PromiseRow[];
   prices: { closes: [string, number][]; nifty: [string, number][] } | null;
-  snapshot: Snapshot; bull_bear: { bull: Point[]; bear: Point[]; dropped: number; model: string; model_note: string | null } | null;
+  snapshot: Snapshot; bull_bear: { bull: Point[]; bear: Point[]; dropped: number; model: string; model_note: string | null; note?: string | null } | null;
   sources: Cite[];
   bull_bear_pending?: boolean; // live research only: the page is shown while bull/bear is still being written
   pvd_error?: string; // live research only: why the promise check couldn't run (the rest of the page still shows)
