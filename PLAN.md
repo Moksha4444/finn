@@ -235,6 +235,15 @@ Cheap model reads each transcript once → `{metric, target, period, quote, page
 - **Spend this round:** $0.23 / 172 calls (121 cheap, 51 gpt-oss-120b); to date **$2.89 / 935 calls** (list prices; all free tiers).
 - **Next:** no bulk re-runs after Saturday evening (user's rule). Remaining: writeup, demo pass on the phone.
 
+## 3m. Status at 14 Nov, evening (Batch B: live research; backend frozen)
+- **Live research for any NSE symbol** (`api.py`): `POST /research/{symbol}` → job id; `GET /jobs/{id}` → stage line; one job at a time; page-side timeout 8 min (the job still finishes and caches); unknown symbol / busy / daily cap (8 runs a day) / quota answer in plain words; a failed promise check still returns snapshot + prices with the reason. Live jobs aren't patient, so the Groq ↔ Gemini fallback chain answers; every section names its model. Tokens and cost per run come back with the job.
+- **Web:** an unresearched symbol shows "Research this company" → stage line with elapsed time → the company page; a finished page is also kept in localStorage. Vercel: https://finn-coral-eta.vercel.app (`NEXT_PUBLIC_API_URL` → Render).
+- **Render startup fix:** the research stack is imported inside the job (API import was 11.6 s on a laptop; at 0.1 CPU the port scan timed out); pymupdf pinned to 1.28.2 (2.1 pulled onnxruntime + layout models). Locally with both keys: startup complete in 1.2 s, 58 MB idle, 166 MB peak during a full job.
+- **Item 7:** promise selection = measured, then headline metrics (revenue, margin, profit), so L&T's FY26 8.5% EBITDA target is shown; margin series use only filing quarters when screener counts costs differently (L&T 8.7% vs screener's 14.1%; KPIT too), and every margin label states its computation.
+- **Item 8:** the 5 quota-hit tickers were already re-run after Gemini's reset (Batch A, 13:43); final 30-day re-ingest + all 22 pages rebuilt; consistency gate 0 problems. 169 backend tests pass.
+- **E2E from the deployed site** (headless Chrome at 390px on finn-coral-eta.vercel.app → Render): **SONACOMS** (mid-cap) full page in 91 s (job 83 s), 5 calls, 72k in / 7.9k out tokens, $0.036 (flash-lite + gpt-oss-120b): 1 promise (EBITDA 23–25% FY27, on track at 23.0%), snapshot, bull/bear 3+3 cited. **FEDERALBNK** (bank): 4 transcripts read and promises checked in 54 s, then bull/bear stalled (Groq's daily cap spent by the rebuild → Gemini fallback with no per-call timeout); the page showed the timeout message at 8 min as designed. **Open:** a per-call timeout on live Gemini calls so a stalled fallback moves down the chain; `TZ=Asia/Kolkata` on Render (page stamps show UTC as IST).
+- **Quota note:** the full rebuild used most of today's Groq gpt-oss-120b cap and Gemini 3.8 flash's daily quota, so live runs today fall through to Gemini 3.5 flash for the strong tasks (labelled on the page).
+
 ## 4. Day-by-day
 
 **Wed 11 (done):** repo init, spikes, decisions. Session export.
