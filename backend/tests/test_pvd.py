@@ -124,7 +124,7 @@ def test_long_term_is_direction_of_travel_on_computed_ebit():
     r = prog(P(metric_key="operating_margin", target_type="margin_pct", target_low=26, target_high=28, horizon="long_term",
                margin_basis="ebit", direction="at_least"), "Jun 2026", q)
     assert r["verdict"] == "moved away" and r["path"] == "26.0% → 25.5% (Q1 FY27 → Q2 FY27)"
-    assert "EBIT margin (computed: operating profit less depreciation" in r["actual"]
+    assert "EBIT margin (computed: revenue minus operating expenses and depreciation" in r["actual"]
 
 
 REPORTED_MARGINS = {q: {"name": "operating margin", "basis": "ebit", "value": v, "page": 3, "quote": f"operating margin of {v}%", "transcript": "t.pdf"}
@@ -134,7 +134,7 @@ REPORTED_MARGINS = {q: {"name": "operating margin", "basis": "ebit", "value": v,
 def test_company_reported_margin_wins_and_shows_the_quarterly_path():
     calls = list(REPORTED_MARGINS)
     m = pvd.company_margin(Q, REPORTED_MARGINS, calls, ebit=True)
-    assert m["name"] == "Operating margin (as reported)" and m["source"] == pvd.SAID_MARGIN
+    assert m["name"] == "Operating margin (as management reported it on each call)" and m["source"] == pvd.SAID_MARGIN
     r = prog(P(metric_key="operating_margin", target_type="margin_pct", target_low=26, target_high=28, horizon="long_term", direction="at_least"),
              "Mar 2026", margin=m)
     assert r["verdict"] == "moved away" and r["actual"].startswith("Moved away: 24.9% → 24.6% → 24.3% (Q4 FY26 → Q2 FY27) vs target 26–28%")
@@ -352,3 +352,18 @@ def test_one_quarter_cannot_settle_a_full_year_margin_once_the_year_is_over():
     fy = q4 | {"quote": "full year EBITDA margin came in at 10.4%"}
     assert pvd.pace_reported(p, [fy], "Sep 2026")["verdict"] == "hit"
     assert pvd.pace_reported(p | {"fy": 27}, [q4 | {"said_in": "Jun 2026"}], "Sep 2026")["verdict"] == "on track"  # running: pace
+
+
+def test_select_ranks_headline_metrics_after_measured():
+    # L&T, 14 Nov: 5 measured promises, then the FY26 8.5% EBITDA target must beat "group order inflows" (keyed as revenue)
+    measured = [P(metric_key="other", target_type="margin_pct", metric="working capital", said_in="Sep 2025") for _ in range(5)]
+    orders = P(metric_key="revenue", target_type="growth_pct", metric="group order inflows growth", said_in="Sep 2025")
+    ebitda = P(metric_key="operating_margin", target_type="margin_pct", metric="EBITDA margin", target="8.5%", said_in="Sep 2025")
+    ps = measured + [orders, ebitda]
+    assert pvd.select(ps, {k: {"verdict": "hit"} for k in range(5)}) == [0, 1, 2, 3, 4, 6]
+
+
+def test_margin_uses_only_filing_quarters_when_definitions_differ():
+    q = {"periods": ["Jun 2026", "Sep 2026"], "rows": {"Sales": [100, 100], "Operating Profit": [14, 9]}, "margin_quarters": ["Sep 2026"]}
+    assert pvd.ebitda_margin(q) == {"Sep 2026": 9.0}
+    assert pvd.ebitda_margin({k: v for k, v in q.items() if k != "margin_quarters"}) == pytest.approx({"Jun 2026": 14.0, "Sep 2026": 9.0})

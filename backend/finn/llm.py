@@ -97,6 +97,7 @@ def _groq(model: str, parts: list, schema: dict) -> tuple[dict, int, int]:
 
 
 ADAPTERS = {"gemini": _gemini, "groq": _groq}
+LIVE = False  # api.py sets True: a reader is waiting, so no patient retries and the fast model may answer
 GROQ_CHARS = 16_000  # ~4k tokens a request, prompt and answer fit Groq's free 8k tokens a minute
 
 
@@ -157,6 +158,7 @@ def run(task: str, prompt_name: str, inputs: list, schema: dict, key: str | None
     the fast model; raises if both strong models stay down.
     key: cache key for the inputs (e.g. source-PDF hash + pages) when the input bytes themselves aren't
     stable; PyMuPDF page subsets differ byte-wise between runs. Extra keyword args go into the cost log."""
+    patient = patient and not LIVE
     text = prompt(prompt_name)
     h = hashlib.sha256(f"{task}\0{text}\0{json.dumps(schema, sort_keys=True)}".encode())
     for p in [key] if key else inputs:

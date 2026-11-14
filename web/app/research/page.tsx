@@ -5,8 +5,9 @@ import { CompanyResearch, ResearchHome } from "@/components/Research";
 
 // One static route: /research lists researched companies, /research?symbol=TCS opens one (static export, no server).
 function Page() {
-  const sym = useSearchParams().get("symbol")?.trim().toUpperCase();
-  return sym ? <CompanyResearch key={sym} symbol={sym} /> : <ResearchHome />;
+  const params = useSearchParams();
+  const sym = params.get("symbol")?.trim().toUpperCase();
+  return sym ? <CompanyResearch key={sym} symbol={sym} auto={params.get("run") === "1"} /> : <ResearchHome />;
 }
 
 export default function Research() {

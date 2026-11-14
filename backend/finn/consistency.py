@@ -60,7 +60,7 @@ def check(r: dict, feed: dict | None) -> list[str]:
 
     # 3. PvD rows: margin and revenue-growth paths vs the snapshot; deadlines
     latest = r.get("latest_quarter")
-    same_margin = "operating profit over" in ((r.get("margin_definition") or {}).get("name") or "")
+    same_margin = pvd.EBITDA_HOW in ((r.get("margin_definition") or {}).get("name") or "")
     for p in r.get("promises", []):
         ch = p.get("chart") or {}
         end = ch.get("end")

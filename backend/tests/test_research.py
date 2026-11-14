@@ -139,3 +139,11 @@ def test_fact_reads_company_metrics_only_when_the_claim_starts_with_them():
     assert research.fact("EPC revenues INR 3,077 million declined 11% YoY in Q1 FY27") is None  # a segment
     assert research.fact("PAT margin 10.0% in Q2 FY27") is None
     assert research.fact("Revenue +16.9% YoY in Q2 FY27; PAT (to owners) +7.5%") == ("revenue", "Q2 FY27", 16.9)
+
+
+def test_checked_drops_one_fact_said_twice():
+    ev = {"S1": {"text": "Revenue growth 38.52% YoY in Q2 FY27", "cite": {"label": "Q2 FY27 call, p.3", "url": None}}}
+    pts = [{"claim": "Revenue growth YoY +38.5% in Q2 FY27", "why": "Demand is strong.", "cites": ["S1"]},
+           {"claim": "Net sales growth 38.52% in Q2 FY27", "why": "Same fact again.", "cites": ["S1"]}]
+    keep, dropped = research.checked(pts, ev)
+    assert len(keep) == 1 and dropped == 1

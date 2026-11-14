@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { pct } from "@/lib/rank";
-import { countsText, indexUrl, KEPT, MISSED, NYM, researchUrl, useJson, VERDICT_TEXT, type Cite, type IndexRow, type PromiseRow, type Research } from "@/lib/research";
+import { API, countsText, indexUrl, KEPT, MISSED, NYM, researchUrl, useJson, VERDICT_TEXT, type Cite, type IndexRow, type PromiseRow, type Research } from "@/lib/research";
 import { Bars, PathLine, PriceLine } from "./Charts";
 import { Chevron, Collapse } from "./Collapse";
 import { Avatar, shortName } from "./Company";
@@ -111,15 +111,18 @@ export function ResearchHome() {
   );
 }
 
-// ---- a symbol with no research file: calm, says when it will exist ----
+// ---- a symbol with no research file: research it now (live) or say why not ----
+const BTN = "mt-4 inline-flex h-11 items-center rounded-md border border-ink/70 px-4 text-[0.9375rem] font-medium hover:bg-paper-2 disabled:opacity-50";
 function NotResearched({ symbol, inline = false }: { symbol: string; inline?: boolean }) {
+  const ok = API && SYMBOL.test(symbol);
   const body = (
     <>
       <p className={inline ? "font-serif text-[1.1875rem] font-semibold" : H1}>{symbol || "This company"} isn&rsquo;t researched yet.</p>
       <p className="mt-2 text-[0.9375rem] leading-snug text-ink-2">
-        Research on request for any NSE symbol (the last four call transcripts, the results filings and the promise check) opens on 14 Nov.
-        Until then, the companies listed under Research are ready.
+        {ok ? "FINN can research it now from its last four call transcripts and its results filings. It takes a few minutes."
+          : "Research on request isn't available right now. The companies listed under Research are ready."}
       </p>
+      {ok && inline && <Link href={`/research?symbol=${encodeURIComponent(symbol)}&run=1`} className={BTN}>Research this company</Link>}
     </>
   );
   if (inline) return <div className="border-t border-rule pt-4">{body}</div>;
@@ -133,14 +136,75 @@ function NotResearched({ symbol, inline = false }: { symbol: string; inline?: bo
   );
 }
 
+// ---- live research: POST starts a job on the API, then poll its stage until the page is ready ----
+const saved = (sym: string) => `finn:research:${sym}`;
+function readSaved(sym: string): Research | null {
+  try { return JSON.parse(localStorage.getItem(saved(sym)) ?? "null"); } catch { return null; }
+}
+
+function LiveResearch({ symbol, auto, onDone }: { symbol: string; auto: boolean; onDone: (d: Research) => void }) {
+  const [st, setSt] = useState<{ stage?: string; error?: string }>({});
+  const alive = useRef(true);
+  useEffect(() => () => { alive.current = false; }, []);
+  const call = async (path: string, init?: RequestInit) => {
+    let r: Response;
+    try { r = await fetch(`${API}${path}`, init); } catch { throw new Error("Couldn't reach the research server. Check your connection, then try again."); }
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.detail?.message ?? `The research server answered ${r.status}. Try again in a minute.`);
+    return j;
+  };
+  const run = async () => {
+    setSt({ stage: "Waking up the research server…" }); // Render's free tier sleeps: the first answer can take a minute
+    try {
+      let job = await call(`/research/${symbol}`, { method: "POST" });
+      while (job.status === "running" && alive.current) {
+        setSt({ stage: job.stage });
+        await new Promise((ok) => setTimeout(ok, 2500));
+        job = await call(`/jobs/${job.id}`);
+      }
+      if (!alive.current) return;
+      if (job.status !== "done") throw new Error(job.message ?? "Research didn't finish. Try again in a few minutes.");
+      const d: Research = await call(`/research/${symbol}`);
+      if (!d.pvd_error) try { localStorage.setItem(saved(symbol), JSON.stringify(d)); } catch { /* storage full: the server cache still has it */ }
+      if (alive.current) onDone(d);
+    } catch (e) {
+      if (alive.current) setSt({ error: e instanceof Error ? e.message : String(e) });
+    }
+  };
+  const started = useRef(false);
+  useEffect(() => { if (auto && !started.current) { started.current = true; run(); } }); // eslint-disable-line react-hooks/exhaustive-deps
+  const busy = !!st.stage && !st.error;
+  return (
+    <section className="pt-5">
+      <p className={H1}>{symbol}</p>
+      {busy ? (
+        <>
+          <p className="mt-3 text-[1rem] font-medium" role="status" aria-live="polite">{st.stage}</p>
+          <p className="mt-1 text-[0.875rem] leading-snug text-ink-2">Reading the last four call transcripts and the results filings. This takes a few minutes; keep this page open.</p>
+        </>
+      ) : (
+        <>
+          <p className="mt-2 text-[0.9375rem] leading-snug text-ink-2" role={st.error ? "alert" : undefined}>
+            {st.error ?? "Not researched yet. FINN can research it now from its last four call transcripts and its results filings. It takes a few minutes."}
+          </p>
+          <button type="button" onClick={run} className={BTN}>{st.error ? "Try again" : "Research this company"}</button>
+        </>
+      )}
+    </section>
+  );
+}
+
 // ---- company page ----
-export function CompanyResearch({ symbol }: { symbol: string }) {
-  const { data: d, missing, error, retry } = useJson<Research>(SYMBOL.test(symbol) ? researchUrl(symbol) : null);
+export function CompanyResearch({ symbol, auto = false }: { symbol: string; auto?: boolean }) {
+  const { data: stat, missing, error, retry } = useJson<Research>(SYMBOL.test(symbol) ? researchUrl(symbol) : null);
+  const [live, setLive] = useState<Research | null>(() => (typeof window === "undefined" ? null : readSaved(symbol)));
+  const d = stat ?? (missing ? live : undefined);
   useEffect(() => { // the credibility chip links to #pvd; the section exists only once the data is in
     if (!d || !location.hash) return;
     document.getElementById(location.hash.slice(1))?.scrollIntoView({ block: "start" });
   }, [d]);
-  if (!SYMBOL.test(symbol) || missing) return <><Back /><NotResearched symbol={symbol} /></>;
+  if (!SYMBOL.test(symbol) || (missing && !live && !API)) return <><Back /><NotResearched symbol={symbol} /></>;
+  if (missing && !live) return <><Back /><LiveResearch symbol={symbol} auto={auto} onDone={setLive} /></>;
   if (error) return <><Back /><LoadFailed what="This research page" error={error} retry={retry} /></>;
   if (!d) return <><Back /><PageSkeleton /></>;
   if (!d.summary || !d.snapshot || !Array.isArray(d.promises)) return <><Back /><Rebuilding d={d} /></>;
@@ -172,7 +236,7 @@ export function CompanyResearch({ symbol }: { symbol: string }) {
             {countsText(d.summary)} <span className="font-normal text-ink-2">of {d.summary.measured} measured {d.summary.measured === 1 ? "promise" : "promises"}</span>
           </p>
         )}
-        <p className="mt-1 font-serif text-[1.1875rem] leading-snug font-semibold text-balance">{d.summary.sentence}</p>
+        <p className="mt-1 font-serif text-[1.1875rem] leading-snug font-semibold text-balance">{d.pvd_error ?? d.summary.sentence}</p>
         {d.model_note && <p className="mt-1.5 text-[0.75rem] text-ink-2">{d.model_note}</p>}
         {measured.some((p) => p.chart) && (
           <p className="mt-3 text-[0.8125rem] leading-snug text-pretty text-ink-2">Shaded: the target, up to its deadline. Dots: each quarter since the call.</p>

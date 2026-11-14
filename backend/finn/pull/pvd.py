@@ -35,6 +35,10 @@ DIRECTIONAL = ("long_term",)  # no deadline: judged by direction of travel. Unda
 UNDATED = ("next_few_quarters", "unspecified")
 FINANCIAL = ("revenue", "operating_margin", "net_profit", "capex", "cd_ratio")
 MAX_PROMISES = 6
+HEADLINE = ("revenue", "operating_margin", "net_profit")
+# every margin label says how it is computed (user, 14 Nov); consistency.py matches on EBITDA_HOW
+EBITDA_HOW = "revenue minus operating expenses, over revenue; other income excluded"
+EBIT_HOW = "revenue minus operating expenses and depreciation, over revenue; other income excluded"
 # rules before the LLM: measures that are never the company's total revenue / margin / profit, whatever the extractor says
 NOT_TOTAL = re.compile(r"value growth|order|inflow|\baum\b|assets under|volume|loan|advances|deposit|\bnov\b|\bgov\b|\bgmv\b|customer|export|payout|disburse|segment", re.I)
 # business metrics no results filing reports in rupees (volumes, NOV/GMV, orders, AUM): never matched to a segment
@@ -296,7 +300,8 @@ def ebitda_margin(quarters: dict) -> dict[str, float]:
     """EBITDA margin per quarter, other income excluded: operating profit over sales. The one definition the results
     card, the snapshot and the promise checks share (ASIANPAINT Q2 FY27: 15.6%, as the company reports its PBDIT)."""
     sales, op = _row(quarters, ["Sales"]) or {}, _row(quarters, ["Operating Profit"]) or {}
-    return {q: v / sales[q] * 100 for q, v in op.items() if sales.get(q)}
+    only = quarters.get("margin_quarters")  # set by company() when screener's other quarters use another definition
+    return {q: v / sales[q] * 100 for q, v in op.items() if sales.get(q) and (only is None or q in only)}
 
 
 AGREE_PP = 0.15  # management rounds ("about 15.6%"); within this, its figure and ours are the same number
@@ -317,15 +322,15 @@ def company_margin(quarters: dict, reported: dict[str, dict], call_qs: list[str]
         cites = {q: {"label": f"{fy_name(q)} call, p.{reported[q]['page']}: “{reported[q]['quote']}”", "url": reported[q]["transcript"]} for q in call_qs}
         name = f"{r0['name'][:1].upper()}{r0['name'][1:]}"
         if m and all(q in m and abs(m[q] - reported[q]["value"]) <= AGREE_PP for q in call_qs):
-            how = "operating profit less depreciation, over revenue" if ebit else "operating profit over revenue"  # TCS: EBIT, not the snapshot's EBITDA
+            how = EBIT_HOW if ebit else EBITDA_HOW  # TCS: EBIT, not the snapshot's EBITDA
             return {"q": m, "w": sales, "name": f"{name} ({how}; matches what management reports)",
                     "source": SOURCE, "cites": cites}
-        return {"q": {q: reported[q]["value"] for q in call_qs}, "w": sales or {}, "name": f"{name} (as reported)",
+        return {"q": {q: reported[q]["value"] for q in call_qs}, "w": sales or {}, "name": f"{name} (as management reported it on each call)",
                 "source": SAID_MARGIN, "cites": cites}
     if not m:
         return None
     return {"q": m, "w": sales, "source": SOURCE, "cites": {},
-            "name": "EBIT margin (computed: operating profit less depreciation, over sales)" if ebit else "EBITDA margin (computed: operating profit over sales, other income excluded)"}
+            "name": f"EBIT margin (computed: {EBIT_HOW})" if ebit else f"EBITDA margin (computed: {EBITDA_HOW})"}
 
 
 def segment_series(p: dict, data: dict[str, dict], metric_only: bool = False) -> dict | None:
@@ -526,11 +531,14 @@ def dedupe(promises: list[dict]) -> list[dict]:
 
 def select(promises: list[dict], judged: dict[int, dict], n: int = MAX_PROMISES) -> list[int]:
     """User's rule: financial, checkable promises first; a soft or operational one stays only if something measured it.
-    Measured before unmeasured, financial before operational, oldest first; at most n."""
+    Measured before unmeasured, then headline metrics (revenue, margin, profit; not orders filed under revenue), then
+    other financial before operational, oldest first; at most n. (14 Nov: L&T's FY26 8.5% EBITDA target lost its
+    slot to "group order inflows", which the extractor keyed as revenue.)"""
     fin = lambda p: p["metric_key"] in FINANCIAL or p["target_type"] in ("growth_pct", "margin_pct", "amount")
+    head = lambda p: p["metric_key"] in HEADLINE and not NOT_MONEY.search(f"{p['metric']} {p['target']}")
     nym = lambda k: judged.get(k, {}).get("verdict", "not-yet-measurable") == "not-yet-measurable"
     keep = [k for k, p in enumerate(promises) if fin(p) or not nym(k)]
-    return sorted(keep, key=lambda k: (nym(k), not fin(promises[k]), _q(promises[k]["said_in"])))[:n]
+    return sorted(keep, key=lambda k: (nym(k), not head(promises[k]), not fin(promises[k]), _q(promises[k]["said_in"])))[:n]
 
 
 def period_end(p: dict) -> str | None:
@@ -652,11 +660,19 @@ def company(symbol: str) -> dict:
             oi = (rows.get("Other Income") or [None] * len(q["periods"]))[k] or 0
             put("Revenue", v["Total income"] - oi if isinstance(v.get("Total income"), (int, float)) else None)
         else:
+            op, sales = rows.get("Operating Profit", [None] * len(q["periods"]))[k], rows.get("Sales", [None] * len(q["periods"]))[k]
             put("Sales", v.get("Revenue"))
             if v["_note"].startswith(("EBITDA = revenue from operations", "Revenue net of excise duty; EBITDA = revenue from operations")):  # = operating profit
-                put("Operating Profit", v.get("EBITDA"))
+                ebitda = v.get("EBITDA")
+                # screener classifies some costs differently (L&T: its 14.1% vs the filing's 8.7%, Sep 2026): then one
+                # series would mix two definitions, so the margin uses only the quarters read from the filing
+                if isinstance(ebitda, (int, float)) and op is not None and sales and v.get("Revenue") and abs(ebitda / v["Revenue"] - op / sales) * 100 > 1:
+                    q["margin_quarters"] = []
+                put("Operating Profit", ebitda)
         used.append(quarter)
     co["filing_quarters"] = used
+    if "margin_quarters" in q:
+        q["margin_quarters"] = used
     return co
 
 
@@ -680,13 +696,19 @@ def save_store(store: dict) -> None:
     STORE.write_text(json.dumps(store, ensure_ascii=False, indent=1), encoding="utf-8")
 
 
+stage = lambda text: None  # live research (api.py) replaces this to show its progress line
+
+
 def run(symbol: str) -> dict:
+    stage("Finding filings…")
     co = company(symbol)
     calls, skipped = [], []
     promises, reported, margins, texts_by_q = [], [], {}, {}
-    for c in results_calls(co["concalls"], n=6):
+    wanted = results_calls(co["concalls"], n=6)
+    for c in wanted:
         if len(calls) == 4:
             break
+        stage(f"Reading {fy_name(c['quarter'])} transcript ({len(calls) + 1}/{min(4, len(wanted))})…")
         try:  # a dead link (MARUTI's company-site viewer page): try the BSE filing, else skip that call, not the company
             b = transcript(c["transcript"])
         except Exception as e:
@@ -746,6 +768,7 @@ def run(symbol: str) -> dict:
                 tables[q] = segments.quarter(co["bse_code"], q, symbol)
         return {q: v for q, v in tables.items() if v and _q(q) >= _q(since)}
 
+    stage("Checking promises…")
     promises = [dated(p) for p in promises]
     judged: dict[int, dict] = {}
     for k, p in enumerate(promises):

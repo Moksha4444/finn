@@ -28,6 +28,7 @@ export type Research = {
   prices: { closes: [string, number][]; nifty: [string, number][] } | null;
   snapshot: Snapshot; bull_bear: { bull: Point[]; bear: Point[]; dropped: number; model: string; model_note: string | null } | null;
   sources: Cite[];
+  pvd_error?: string; // live research only: why the promise check couldn't run (the rest of the page still shows)
 };
 export type IndexRow = { symbol: string; name: string; sector: string | null; generated_at: string; summary: Counts };
 
@@ -77,3 +78,6 @@ export function useJson<T>(url: string | null): State<T> & { retry: () => void }
 
 export const indexUrl = "/data/research/index.json";
 export const researchUrl = (sym: string) => `/data/research/${encodeURIComponent(sym.toUpperCase())}.json`;
+
+// Live research for symbols without a precomputed page (backend/finn/api.py on Render). Unset = no live research.
+export const API = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");

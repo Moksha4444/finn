@@ -69,7 +69,7 @@ def snapshot(co: dict) -> dict:
         m_name = "Net margin (PAT / total income)"
     else:  # one EBITDA definition everywhere: the results card's, the promise checks', and what companies report
         m = pvd.ebitda_margin(q)
-        m_name = "EBITDA margin (operating profit over revenue, other income excluded)"
+        m_name = f"EBITDA margin ({pvd.EBITDA_HOW}" + ("; only the quarters read from the results filings, as screener.in counts some costs differently)" if q.get("margin_quarters") is not None else ")")
     mp = [p for p in periods if p in m]
     if len(mp) >= 2:
         last, ago = mp[-1], pvd.shift(mp[-1], -4)
@@ -237,16 +237,21 @@ def checked(points: list[dict], by_id: dict[str, dict], facts: dict | None = Non
     """(first 3 points that pass problem() and agree with facts already used, number rejected).
     facts: {(family, period): figure} shared by both sides, so bull and bear can't quote two numbers for one fact."""
     facts = {} if facts is None else facts
-    keep, dropped = [], 0
+    keep, dropped, said = [], 0, set()
     for pt in points:
         if not isinstance(pt, dict) or not all(isinstance(pt.get(k), str) for k in ("claim", "why")) or not isinstance(pt.get("cites"), list):
             dropped += 1
             continue
         ids = [i for i in dict.fromkeys(pt["cites"]) if i in by_id]
         f = fact(pt["claim"])
-        if problem(pt, ids, by_id) or (f and facts.get(f[:2], f[2]) != f[2]):
+        # one fact said twice in other words (KEI: "Revenue growth +38.5%" and "Net sales growth 38.52%", both Q2 FY27)
+        per, pct = NAMED_PERIOD.search(pt["claim"]), re.search(r"(\d+(?:\.\d+)?)\s?%", pt["claim"])
+        dup = per and pct and (per.group(0), round(float(pct.group(1)), 1))
+        if problem(pt, ids, by_id) or (f and facts.get(f[:2], f[2]) != f[2]) or (dup and dup in said):
             dropped += 1
             continue
+        if dup:
+            said.add(dup)
         if f:
             facts[f[:2]] = f[2]
         keep.append({"point": pt["claim"].strip(), "why": pt["why"].strip(), "cites": [by_id[i]["cite"] for i in ids]})
@@ -310,7 +315,16 @@ def sources(out: dict, co: dict) -> list[dict]:
     return src
 
 
-def build(symbol: str) -> dict:
+def pvd_failure(e: Exception) -> str:
+    """The page's line when the promise check couldn't run (live research shows everything else)."""
+    if isinstance(e, (llm.Exhausted, llm.Retryable)):
+        return "The promise check couldn't run: today's free AI quota is used up or the models are overloaded. The figures below come straight from the filings."
+    return f"The promise check couldn't run ({type(e).__name__}). The figures below come straight from the filings."
+
+
+def build(symbol: str, live: bool = False) -> dict:
+    """live: a first visit from the app. If the promise check fails, the page still gets the snapshot, prices and a
+    reason (pvd_error) instead of nothing; an unknown symbol still raises (screener 404)."""
     sym = symbol.upper()
     f = OUT / f"{sym}.json"
     # read before pvd.run(), which rewrites the file without it
@@ -320,21 +334,31 @@ def build(symbol: str) -> dict:
         co, reported, texts = out.pop("_company"), out.pop("_reported"), out.pop("_texts")
         out.pop("_calls")
     except Exception as e:  # e.g. an uncached cheap-model call on a quota day: keep last good PvD, rebuild the rest
-        if not f.exists():
+        if not f.exists() and live:
+            print(f"  {sym}: PvD failed live ({type(e).__name__}: {str(e)[:120]})")
+            co = pvd.company(sym)  # unknown symbol raises here
+            out = {"symbol": sym, "name": co["name"], "generated_at": dt.datetime.now().isoformat(timespec="minutes"),
+                   "latest_quarter": co["quarters"]["periods"][-1] if co["quarters"]["periods"] else None, "calls": [], "skipped_calls": [],
+                   "margin_definition": None, "model_note": None, "score": {}, "promises": [], "pvd_error": pvd_failure(e)}
+            reported, texts = [], {}
+        elif not f.exists():
             raise
-        print(f"  {sym}: PvD not re-run ({type(e).__name__}: {str(e)[:100]}); kept the previous promises")
-        out = {k: v for k, v in json.loads(f.read_text(encoding="utf-8")).items() if k not in ("snapshot", "bull_bear", "prices", "summary", "sources")}
-        co, reported, texts = pvd.company(sym), [], {}
-        for c in out["calls"]:
-            try:
-                texts[c["quarter"]] = pdf.pages(pdf.open_pdf(pvd.transcript(c["transcript"])))
-            except Exception:
-                pass
+        else:
+            print(f"  {sym}: PvD not re-run ({type(e).__name__}: {str(e)[:100]}); kept the previous promises")
+            out = {k: v for k, v in json.loads(f.read_text(encoding="utf-8")).items() if k not in ("snapshot", "bull_bear", "prices", "summary", "sources")}
+            co, reported, texts = pvd.company(sym), [], {}
+            for c in out["calls"]:
+                try:
+                    texts[c["quarter"]] = pdf.pages(pdf.open_pdf(pvd.transcript(c["transcript"])))
+                except Exception:
+                    pass
     urls = {c["quarter"]: c["transcript"] for c in out["calls"]}
+    pvd.stage("Building the financial snapshot…")
     snap = snapshot(co)
     ev = evidence(out["promises"], reported, analyst_questions(texts, urls), snap, urls)
-    out |= {"sector": co.get("sector"), "summary": summary(out["promises"], len(out["calls"])), "prices": price_lines(sym),
-            "snapshot": snap, "bull_bear": bull_bear(out["name"], out.get("latest_quarter"), ev, sym, prev, snap), "sources": sources(out, co)}
+    out |= {"sector": co.get("sector"), "summary": summary(out["promises"], len(out["calls"])), "prices": price_lines(sym), "snapshot": snap}
+    pvd.stage("Writing bull & bear…")
+    out |= {"bull_bear": bull_bear(out["name"], out.get("latest_quarter"), ev, sym, prev, snap), "sources": sources(out, co)}
     tmp = f.with_suffix(".tmp")
     tmp.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
     tmp.replace(f)
