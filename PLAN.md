@@ -1,7 +1,7 @@
 # FINN — build plan (11–15 Nov 2026)
 
 Single source of truth for the build. Scope and hard rules live in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.
-Current status: see §3l (14 Nov: one number per fact, all 22 regenerated), §3k (13 Nov morning: Research page), §3j (overnight 13 Nov: ingest safety, classifier, Also lines, segment PvD), §3i (feed UI round 3), §3h (PvD review), §3g (PvD rework), §3f (PvD backend), §3e (redesign), §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
+Current status: see §3o (15 Nov: Batch C), §3n, §3m, §3l (14 Nov: one number per fact, all 22 regenerated), §3k (13 Nov morning: Research page), §3j (overnight 13 Nov: ingest safety, classifier, Also lines, segment PvD), §3i (feed UI round 3), §3h (PvD review), §3g (PvD rework), §3f (PvD backend), §3e (redesign), §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
 
 ---
 
@@ -249,6 +249,13 @@ Cheap model reads each transcript once → `{metric, target, period, quote, page
 - **Fixes:** alerts fire on P1 only and once per event across dates (HDFC Bank's re-appointment gone); PvD sentence says "behind on volume growth" like the badge; bull/bear rules + prompt (driver from cited evidence, no filler, H1/9M naming, no low-leverage bears, no clash with verdicts).
 - **Bull/bear regeneration NOT run:** Groq's gpt-oss-120b answered with its daily cap after one call (ASIANPAINT trial, 2 + 1 points). **Sunday morning:** `cd backend && ../.venv/Scripts/python -m finn.pull.research --regen`, then check the consistency gate line it prints (0 problems), commit + push. Consistency gate tonight: 0 problems.
 - 174 backend + 15 web tests pass; static build OK; impeccable detector clean on the changed screens.
+
+## 3o. Status at 15 Nov, ~02:00 (Batch C: all non-UI work done except the regen)
+- **Bull/bear repair:** rejected points go back to the model once with Python's reasons; aim 3 a side; under 2 → what passed + a quiet note. The previous section is kept only when the model is unavailable.
+- **Results cards:** MARUTI (standalone; its consolidated table is an unreadable scan) and TRENT (consolidated) now build. The page finder skipped notes pages, review reports and cash-flow statements. TRENT's research page was rebuilt to match its card; consistency gate 0 problems.
+- **GitHub Actions:** CI on every push (backend + web tests + static build), feed refresh 08:37 / 18:37 IST (commits only when the data changed), keep-warm ping every 10 min. `cache/llm/` is committed so the cron reuses answers. CORS limited to Vercel + localhost. `.env.example` complete (its FINN_STRONG was wrong). README drafted; total cost in DECISIONS ($3.19 / 966 calls locally + ~$0.11 on Render).
+- **Not done: the `--regen`.** Groq's gpt-oss-120b daily token cap was hit on the 2nd company (the probe said 999 requests left; the token cap isn't in the headers). **Morning:** `cd backend && ../.venv/Scripts/python -m finn.pull.research --regen`; it must end without `INCONSISTENT` lines (exit 0), then commit `web/public/data/research` + `cache/llm` and push.
+- 178 backend + 15 web tests pass.
 
 ## 4. Day-by-day
 
