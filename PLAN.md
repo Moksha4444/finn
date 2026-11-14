@@ -1,7 +1,7 @@
 # FINN — build plan (11–15 Nov 2026)
 
 Single source of truth for the build. Scope and hard rules live in `CLAUDE.md`; trade-offs are logged in `DECISIONS.md`.
-Current status: see §3k (13 Nov morning: Research page), §3j (overnight 13 Nov: ingest safety, classifier, Also lines, segment PvD), §3i (feed UI round 3), §3h (PvD review), §3g (PvD rework), §3f (PvD backend), §3e (redesign), §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
+Current status: see §3l (14 Nov: one number per fact, all 22 regenerated), §3k (13 Nov morning: Research page), §3j (overnight 13 Nov: ingest safety, classifier, Also lines, segment PvD), §3i (feed UI round 3), §3h (PvD review), §3g (PvD rework), §3f (PvD backend), §3e (redesign), §3d (feed UI) and §3c. Day plan: §4 (re-planned 12 Nov). PvD session: start at §4a.
 
 ---
 
@@ -226,6 +226,14 @@ Cheap model reads each transcript once → `{metric, target, period, quote, page
 - **Critique** (impeccable, two isolated assessments, 390px): 26/40. P0 (crash on research files in the old shape, seen mid-run) fixed with a rebuilding state + route error boundary; P1s fixed (double-counted promise, band past the deadline, legend over no charts, hero heading), tap targets on citations/sources raised to 44px, placeholder contrast, stragglers. Not changed: see DECISIONS.
 - 125 backend + 11 web tests pass; static build OK. LLM spend this round **$0.022 / 27 calls** (Groq only); to date **$2.66 / 763 calls**.
 - **Next (Sat 14):** re-run PvD for the 9 kept tickers once the Gemini quota resets (`python -m finn.pull.research ASIANPAINT ASTRAL BHARTIARTL DEEPAKNTR ETERNAL IRCTC KPITTECH PERSISTENT TATAPOWER`), then live pull for unseen symbols.
+
+## 3l. Status at 14 Nov, ~14:00 (one number per fact; all 22 regenerated)
+- **Consistency gate green:** `python -m finn.consistency` reports 0 problems across the 22 research pages and the feed; 161 backend tests pass (the gate is one of them). The research batch exits non-zero when it isn't.
+- **What the gate found and fixed at the cause:** results columns printed in another order (ITC: feed YoY was wrong), owners' PAT on the page after the P&L (KPIT), no non-controlling interests (Persistent), TCS's EBIT margin named like EBITDA, bull/bear segment figures read as company figures (POLYCAB, SUNPHARMA). Earlier in the round: bottom-up EBITDA, Bharti's table layout, gross margin, post-deadline evidence, one-quarter rule (DECISIONS, "second pass").
+- **All 22 bull/bear by gpt-oss-120b** (the 14 qwen sections replaced; one batch, cached). Groq's rolling daily cap meant regenerating one ticker at a time and waiting out "retry after" (scratch driver, not committed); a quota failure now keeps the last checked section instead of hiding it.
+- **Charts:** 11 pages, 29 rows. The other 11 have nothing chartable: no transcripts (ITC, TRENT), no checkable promises (BHARTIARTL, CDSL), only not-yet-measurable promises (7 more), or one figure from management's own statement (IRCTC).
+- **Spend this round:** $0.23 / 172 calls (121 cheap, 51 gpt-oss-120b); to date **$2.89 / 935 calls** (list prices; all free tiers).
+- **Next:** no bulk re-runs after Saturday evening (user's rule). Remaining: writeup, demo pass on the phone.
 
 ## 4. Day-by-day
 

@@ -188,8 +188,13 @@ NAMED_PERIOD = re.compile(r"\b(?:Q[1-4]|H[12])\s?FY\d{2}\b|\bFY\d{2}\b|\b(?:Jan|
 # a target is beaten or missed only once its period has ended (user's rule, 13 Nov)
 WIN = re.compile(r"\b(?:beat|beats|beating|beaten|exceed\w*|surpass\w*|outperform\w*|hit|achiev\w*|met)\b", re.I)
 LOSS = re.compile(r"\b(?:miss\w*|fell short|falls? short|short of|failed|fails)\b", re.I)
-FAMILY = (("margin", re.compile(r"margin|pbdit|ebitda", re.I)), ("revenue", re.compile(r"revenue|sales|total income", re.I)),
-          ("pat", re.compile(r"\bpat\b|net profit|profit after tax", re.I)))
+# a company-level fact starts with its metric: "EBITDA margin 15.6% in Q2 FY27". "EPC revenues ..." or "FMEG EBITDA
+# margins ..." are a segment's (another metric); "EBITDA ... up 4.8% YoY" is growth, not a margin (SUNPHARMA, POLYCAB 14 Nov).
+# "Operating margin" is left out: TCS's is EBIT, not the snapshot's EBITDA.
+_LEAD = r"\s*(?:consolidated\s+)?"
+FAMILY = (("margin", re.compile(_LEAD + r"(?:ebitda|pbdit)\s+margins?\b", re.I)),
+          ("revenue", re.compile(_LEAD + r"(?:revenue|sales|total income)\b", re.I)),
+          ("pat", re.compile(_LEAD + r"(?:pat|net profit|profit after tax)\b(?!\s+margin)", re.I)))
 QUALIFIED = re.compile(r"gross|segment|standalone|\bnim\b|net interest", re.I)
 
 
@@ -197,8 +202,8 @@ def fact(text: str) -> tuple[str, str, float] | None:
     """(metric family, period, first % figure) of a sentence about one company metric, for the same-facts check."""
     if QUALIFIED.search(text):  # gross / segment / standalone margins are other metrics, not a second figure for this one
         return None
-    fam = [f for f, rx in FAMILY if rx.search(text)]
-    per, pct =NAMED_PERIOD.search(text), re.search(r"([+−-]?\d+(?:\.\d+)?)\s?%", text)
+    fam = [f for f, rx in FAMILY if rx.match(text)]
+    per, pct = NAMED_PERIOD.search(text), re.search(r"([+−-]?\d+(?:\.\d+)?)\s?%", text)
     if len(fam) != 1 or not per or not pct:
         return None
     return fam[0], per.group(0), float(pct.group(1).replace("−", "-"))
@@ -248,7 +253,7 @@ def checked(points: list[dict], by_id: dict[str, dict], facts: dict | None = Non
     return keep[:3], dropped
 
 
-def bull_bear(name: str, latest: str | None, ev: list[dict], symbol: str, prev: dict | None = None) -> dict | None:
+def bull_bear(name: str, latest: str | None, ev: list[dict], symbol: str, prev: dict | None = None, snap: dict | None = None) -> dict | None:
     """None when a side has no point that survives the number check, or the model is unavailable and there is no
     previous section (page hides it). prev: the page's last checked section, kept when the model is unavailable."""
     payload = {"company": name, "latest_quarter": latest, "evidence": [{"id": e["id"], "text": e["text"]} for e in ev]}
@@ -259,11 +264,16 @@ def bull_bear(name: str, latest: str | None, ev: list[dict], symbol: str, prev: 
         return prev
     by_id = {e["id"]: e for e in ev}
     data = r["data"] if isinstance(r["data"], dict) else {}
-    facts: dict = {}
+    # the snapshot's margins are facts already on the page: a point quoting another margin for the same quarter (a
+    # segment's, with the segment's name dropped: POLYCAB "EBITDA margins 10.1% in Q2 FY27" against 14.4%) is dropped
+    m = (snap or {}).get("margin") or {}
+    facts: dict = {("margin", pvd.fy_name(q)): round(v, 1) for q, v in zip(m.get("periods", []), m.get("values", []))}
     bull, d1 = checked(data.get("bull") or [], by_id, facts)
     bear, d2 = checked(data.get("bear") or [], by_id, facts)
-    if not bull or not bear:
-        return None
+    if not bull or not bear:  # nothing survives on a side: the last checked section, if any, beats a blank
+        if prev:
+            print(f"  bull/bear for {symbol}: a side had no point that passed the checks; kept the previous one")
+        return prev
     return {"bull": bull, "bear": bear, "dropped": d1 + d2, "model": r["model"], "model_note": r.get("model_note")}
 
 
@@ -324,7 +334,7 @@ def build(symbol: str) -> dict:
     snap = snapshot(co)
     ev = evidence(out["promises"], reported, analyst_questions(texts, urls), snap, urls)
     out |= {"sector": co.get("sector"), "summary": summary(out["promises"], len(out["calls"])), "prices": price_lines(sym),
-            "snapshot": snap, "bull_bear": bull_bear(out["name"], out.get("latest_quarter"), ev, sym, prev), "sources": sources(out, co)}
+            "snapshot": snap, "bull_bear": bull_bear(out["name"], out.get("latest_quarter"), ev, sym, prev, snap), "sources": sources(out, co)}
     tmp = f.with_suffix(".tmp")
     tmp.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
     tmp.replace(f)

@@ -119,3 +119,23 @@ def test_an_unavailable_model_keeps_the_previous_bull_bear(monkeypatch):
     prev = {"bull": [{"point": "x", "why": "y", "cites": []}], "bear": [], "model": "openai/gpt-oss-120b"}
     assert research.bull_bear("Co", "Sep 2026", [], "X", prev) is prev
     assert research.bull_bear("Co", "Sep 2026", [], "X") is None
+
+
+def test_a_second_margin_for_a_quarter_on_the_page_is_dropped(monkeypatch):
+    ev = [{"id": "P1", "text": "FMEG EBITDA margins 10.1% (Q2 FY27)", "cite": {}}, {"id": "F2", "text": "EBITDA margin 14.4% in Q2 FY27", "cite": {}}]
+    pts = {"bull": [{"claim": "EBITDA margins 10.1% in Q2 FY27", "why": "Shows pricing power", "cites": ["P1"]},
+                    {"claim": "EBITDA margin 14.4% in Q2 FY27", "why": "Shows pricing power", "cites": ["F2"]}],
+           "bear": [{"claim": "EBITDA margin 14.4% in Q2 FY27", "why": "Leaves less room for price cuts", "cites": ["F2"]}]}
+    monkeypatch.setattr(research.llm, "run", lambda *a, **k: {"data": pts, "model": "m"})
+    out = research.bull_bear("Co", "Sep 2026", ev, "X", snap={"margin": {"periods": ["Sep 2026"], "values": [14.42]}})
+    assert [p["point"] for p in out["bull"]] == ["EBITDA margin 14.4% in Q2 FY27"] and out["dropped"] == 1
+
+
+
+def test_fact_reads_company_metrics_only_when_the_claim_starts_with_them():
+    assert research.fact("EBITDA margin 15.6% in Q2 FY27, down 2.0 pp YoY") == ("margin", "Q2 FY27", 15.6)
+    assert research.fact("EBITDA margins 10.1% in Q2 FY27") == ("margin", "Q2 FY27", 10.1)  # a segment's, name dropped: still checked
+    assert research.fact("EBITDA INR47,439 million in Q2 FY27, up 4.8% YoY") is None  # growth, not a margin
+    assert research.fact("EPC revenues INR 3,077 million declined 11% YoY in Q1 FY27") is None  # a segment
+    assert research.fact("PAT margin 10.0% in Q2 FY27") is None
+    assert research.fact("Revenue +16.9% YoY in Q2 FY27; PAT (to owners) +7.5%") == ("revenue", "Q2 FY27", 16.9)

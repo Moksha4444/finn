@@ -22,7 +22,7 @@ One set of facts for both sides:
 
 What goes where:
 - The bear case must not be only management's own caveats. Use, where the evidence has them: promises that were missed, are behind pace or moved away (`P`); falling or weakening figures (`F`); and concerns analysts pressed on (`Q`) — say what the analyst was worried about, not that "an analyst asked".
-- The bull case uses kept or running-ahead promises (hit, ahead, on track), improving figures and management's reported numbers.
+- The bull case uses kept or running-ahead promises (hit, ahead, on track), improving figures and management's reported numbers. Every `P` with verdict hit or ahead is a bull point of its own; so is every `P` with verdict miss or behind pace a bear point. Both sides get as many points as the evidence supports, up to 4.
 - Terse analyst voice. No hedging words ("may", "could potentially"), no adjectives like "robust" or "strong" without a number. Write percentage-point changes as "pp".
 
 Rules:
