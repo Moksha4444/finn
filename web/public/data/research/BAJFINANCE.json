@@ -1,7 +1,7 @@
 {
  "symbol": "BAJFINANCE",
  "name": "Bajaj Finance Ltd",
- "generated_at": "2026-11-14T16:18",
+ "generated_at": "2026-11-15T08:07",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -755,83 +755,6 @@
    "note": "Not shown for lenders: deposits and loans run through operating cash flow, and borrowing is the business."
   }
  },
- "bull_bear": {
-  "bull": [
-   {
-    "point": "AUM grew 26.5% in Q2 FY27",
-    "why": "Boosts earnings growth and expands market share",
-    "cites": [
-     {
-      "label": "Q2 FY27 call, p.3",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf"
-     },
-     {
-      "label": "Q4 FY26 call, p.7 (promise)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a448b6b0-edb5-4b99-a122-d602950310af.pdf"
-     }
-    ]
-   },
-   {
-    "point": "Net margin 25.5% in Q2 FY27",
-    "why": "Improves profitability and cash generation",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#margin"
-     }
-    ]
-   },
-   {
-    "point": "Total income +22.9% YoY in Q2 FY27",
-    "why": "Drives top‑line expansion and earnings momentum",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#quarters"
-     }
-    ]
-   }
-  ],
-  "bear": [
-   {
-    "point": "ROA 4.6% in Q2 FY27",
-    "why": "Limits earnings upside and pressures margins",
-    "cites": [
-     {
-      "label": "Q4 FY26 call, p.8 (promise)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a448b6b0-edb5-4b99-a122-d602950310af.pdf"
-     }
-    ]
-   },
-   {
-    "point": "GNPA 1.06% in Q2 FY27",
-    "why": "Signals deteriorating asset quality risk",
-    "cites": [
-     {
-      "label": "Q2 FY27 call, p.5",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf"
-     },
-     {
-      "label": "Q2 FY27 call, p.8 (analyst)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf"
-     }
-    ]
-   },
-   {
-    "point": "Net NPA 42 basis points in Q2 FY27",
-    "why": "Elevates credit loss risk and provisioning",
-    "cites": [
-     {
-      "label": "Q2 FY27 call, p.3",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf"
-     }
-    ]
-   }
-  ],
-  "dropped": 1,
-  "model": "openai/gpt-oss-120b",
-  "model_note": null
- },
  "sources": [
   {
    "label": "Q2 FY27 earnings call transcript",
@@ -853,5 +776,99 @@
    "label": "Quarterly and annual tables (consolidated), screener.in, from the exchange filings",
    "url": "https://www.screener.in/company/BAJFINANCE/consolidated/"
   }
- ]
+ ],
+ "bull_bear": {
+  "bull": [
+   {
+    "point": "26.5% AUM growth, Q2 FY27",
+    "why": "gold loan business sustained strong momentum",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.3",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf"
+     },
+     {
+      "label": "Q1 FY27 call, p.4",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b101e24e-b807-4c74-9025-90009f4b47a5.pdf"
+     }
+    ]
+   },
+   {
+    "point": "25.5% Net margin, Q2 FY27",
+    "why": "cost of funds fell, supporting higher net margin",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
+     },
+     {
+      "label": "Q2 FY27 call, p.4",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf"
+     }
+    ]
+   },
+   {
+    "point": "42 basis points Net NPA, Q2 FY27",
+    "why": "loan loss to average AUM improved, indicating better credit quality",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.3",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf"
+     },
+     {
+      "label": "Q2 FY27 call, p.4",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf"
+     }
+    ]
+   }
+  ],
+  "bear": [
+   {
+    "point": "4.6% ROA, Q2 FY27",
+    "why": "analyst worried about GNPA increase",
+    "cites": [
+     {
+      "label": "Q4 FY26 call, p.8 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a448b6b0-edb5-4b99-a122-d602950310af.pdf"
+     },
+     {
+      "label": "Q2 FY27 call, p.8 (analyst)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf"
+     }
+    ]
+   },
+   {
+    "point": "1.01% GNPA, Q4 FY26",
+    "why": "analyst asked about collection staff risk management",
+    "cites": [
+     {
+      "label": "Q4 FY26 call, p.5",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a448b6b0-edb5-4b99-a122-d602950310af.pdf"
+     },
+     {
+      "label": "Q4 FY26 call, p.15 (analyst)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a448b6b0-edb5-4b99-a122-d602950310af.pdf"
+     }
+    ]
+   },
+   {
+    "point": "7.41% cost of funds, Q4 FY26",
+    "why": "analyst concerned about rising token costs affecting opex",
+    "cites": [
+     {
+      "label": "Q4 FY26 call, p.4",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a448b6b0-edb5-4b99-a122-d602950310af.pdf"
+     },
+     {
+      "label": "Q1 FY27 call, p.11 (analyst)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b101e24e-b807-4c74-9025-90009f4b47a5.pdf"
+     }
+    ]
+   }
+  ],
+  "dropped": 1,
+  "model": "openai/gpt-oss-120b",
+  "model_note": null,
+  "note": null
+ }
 }

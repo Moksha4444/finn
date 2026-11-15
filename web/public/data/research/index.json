@@ -3,7 +3,7 @@
   "symbol": "ASIANPAINT",
   "name": "Asian Paints Ltd",
   "sector": "Consumer Discretionary",
-  "generated_at": "2026-11-14T22:29",
+  "generated_at": "2026-11-15T08:04",
   "summary": {
    "kept": 1,
    "missed": 1,
@@ -17,13 +17,13 @@
   "symbol": "ASTRAL",
   "name": "Astral Ltd",
   "sector": "Industrials",
-  "generated_at": "2026-11-14T14:32",
+  "generated_at": "2026-11-15T08:05",
   "summary": {
    "kept": 2,
    "missed": 1,
-   "open": 1,
+   "open": 2,
    "partial": 0,
-   "measured": 4,
+   "measured": 5,
    "total": 6
   }
  },
@@ -31,7 +31,7 @@
   "symbol": "BAJFINANCE",
   "name": "Bajaj Finance Ltd",
   "sector": "Financial Services",
-  "generated_at": "2026-11-14T16:18",
+  "generated_at": "2026-11-15T08:07",
   "summary": {
    "kept": 1,
    "missed": 3,
@@ -45,7 +45,7 @@
   "symbol": "BHARTIARTL",
   "name": "Bharti Airtel Ltd",
   "sector": "Telecommunication",
-  "generated_at": "2026-11-14T16:19",
+  "generated_at": "2026-11-15T08:08",
   "summary": {
    "kept": 0,
    "missed": 0,
@@ -59,7 +59,7 @@
   "symbol": "CDSL",
   "name": "Central Depository Services (India) Ltd",
   "sector": "Financial Services",
-  "generated_at": "2026-11-14T16:19",
+  "generated_at": "2026-11-15T08:09",
   "summary": {
    "kept": 0,
    "missed": 0,

@@ -1,9 +1,14 @@
 {
  "symbol": "ASTRAL",
  "name": "Astral Ltd",
- "generated_at": "2026-11-14T14:32",
+ "generated_at": "2026-11-15T08:05",
  "latest_quarter": "Sep 2026",
  "calls": [
+  {
+   "quarter": "Sep 2026",
+   "call": "Q2 FY27",
+   "transcript": "https://www.astralltd.com/wp-content/uploads/2026/11/Equirus-Astral-Nov05-2026-1.pdf"
+  },
   {
    "quarter": "Jun 2026",
    "call": "Q1 FY27",
@@ -18,11 +23,6 @@
    "quarter": "Dec 2025",
    "call": "Q3 FY26",
    "transcript": "https://nsearchives.nseindia.com/corporate/ASTRAL_05022026201047_Earning_Call.pdf"
-  },
-  {
-   "quarter": "Sep 2025",
-   "call": "Q2 FY26",
-   "transcript": "https://www.astralltd.com/wp-content/uploads/2025/11/Transcript.pdf"
   }
  ],
  "skipped_calls": [],
@@ -34,66 +34,45 @@
  "score": {
   "hit": 0,
   "ahead": 2,
-  "on track": 1,
+  "on track": 2,
   "moved closer": 0,
   "partial": 0,
   "no change": 0,
   "behind pace": 1,
   "moved away": 0,
   "miss": 0,
-  "not-yet-measurable": 2
+  "not-yet-measurable": 1
  },
  "promises": [
   {
-   "metric": "Paint business full year guidance",
-   "target": "20% growth for the full year",
-   "period": "FY26 (Apr 2025 – Mar 2026)",
-   "said_in": "Sep 2025",
-   "call": "Q2 FY26",
-   "quote": "This year we have given a guidance of 20% growth for the full year and we are going to achieve it as per the guidance given by us.",
+   "metric": "UK business EBITDA margin",
+   "target": "8 to 10% plus EBITDA",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
+   "said_in": "Mar 2026",
+   "call": "Q4 FY26",
+   "quote": "So this year UK business will be growing giving 8 to 10% plus EBITDA",
    "page": 3,
-   "transcript": "https://www.astralltd.com/wp-content/uploads/2025/11/Transcript.pdf",
-   "path": "+13.6% → +15.4% → +21.9% (Q2 FY26 → Q4 FY26)",
-   "cites": [
-    {
-     "label": "Q2 FY26 results filing, p.15 (consolidated segment table, Rs. In Million): Paints and Adhesives revenue 4,588.00 (year earlier 4,040.00), result 313.00",
-     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=5e2518cc-2ccf-4463-bbea-990638610a67.pdf"
-    },
-    {
-     "label": "Q3 FY26 results filing, p.8 (consolidated segment table, Rs. In Million): Paints and Adhesives revenue 4,695.00 (year earlier 4,069.00), result 297.00",
-     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a821ddfb-0490-4387-b36b-7c24fb685a55.pdf"
-    },
-    {
-     "label": "Q4 FY26 results filing, p.18 (consolidated segment table, Rs. In Million): Paints and Adhesives revenue 5,543.00 (year earlier 4,548.00), result 228.00",
-     "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=e1ca6824-2ec7-40d5-892d-d3177c9417e0.pdf"
-    }
-   ],
+   "transcript": "https://www.astralltd.com/wp-content/uploads/2026/05/Analysts-Meet-2026-Transcript.pdf",
+   "path": null,
+   "cites": [],
    "chart": {
-    "kind": "growth",
+    "kind": "level",
     "points": [
      [
-      "Q2 FY26",
-      13.56
-     ],
-     [
-      "Q3 FY26",
-      15.38
-     ],
-     [
-      "Q4 FY26",
-      21.88
+      "Q2 FY27",
+      5.6
      ]
     ],
-    "lo": 20,
-    "hi": null,
+    "lo": 8,
+    "hi": 10,
     "direction": "at_least",
-    "end": "Q4 FY26"
+    "end": "Q4 FY27"
    },
-   "actual_source": "the company's results filings on BSE: segment information; growth and margins computed in Python",
-   "model": "python (computed)",
    "verdict": "behind pace",
-   "actual": "FY26 (Apr 2025 – Mar 2026) so far (Q2–Q4, 3 of 4 quarters): Paints and Adhesives segment revenue growth YoY +17.1% vs target ≥20%",
-   "why": "+17.1% against ≥20% with the period still running, so no hit or miss yet; computed in Python."
+   "actual": "Q2 FY27 call, p.4: “H1, we have delivered a robust growth of 28.1% and with the EBITDA of 5.6%.”; Q2 FY27 call, p.4: “This quarter, we have achieved a robust growth of 30.1%, with an EBITDA margin of 6.30%.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b picked the evidence; python (computed)",
+   "why": "Reported 5.6% (Q2 FY27 call) against 8–10%, with the period still running, so no hit or miss yet; compared in Python."
   },
   {
    "metric": "paint industry growth rate",
@@ -233,6 +212,24 @@
    "why": "+29.0% against 15–20% with the period still running, so no hit or miss yet; computed in Python."
   },
   {
+   "metric": "Plumbing volume growth",
+   "target": "minimum double-digit growth for volume",
+   "period": "FY27 (Apr 2026 – Mar 2027)",
+   "said_in": "Jun 2026",
+   "call": "Q1 FY27",
+   "quote": "So we have given the guidance of minimum double-digit growth for volume.",
+   "page": 17,
+   "transcript": "https://www.astralltd.com/wp-content/uploads/2026/08/Equirus-Astral-Aug12-2026-1.pdf",
+   "path": null,
+   "cites": [],
+   "chart": null,
+   "verdict": "on track",
+   "actual": "Q2 FY27 call, p.2: “market share gains, which we have once again demonstrated in this quarter with a 19.10% volume growth and 10.1% volume growth for H1.”",
+   "actual_source": "management's statements on later calls (transcripts)",
+   "model": "openai/gpt-oss-120b",
+   "why": "Plumbing volume growth 19.10% (R1) exceeds 10% target."
+  },
+  {
    "metric": "paints revenue target",
    "target": "reaching 1,000 crores in next 3 to four years",
    "period": "next 3 to 4 years",
@@ -249,531 +246,20 @@
    "actual_source": null,
    "model": "openai/gpt-oss-120b",
    "why": "Not measured: the Paints and Adhesives segment is reported, but only growth and margin targets are checked, not a amount target."
-  },
-  {
-   "metric": "UK business EBITDA margin",
-   "target": "8 to 10% plus EBITDA",
-   "period": "FY27 (Apr 2026 – Mar 2027)",
-   "said_in": "Mar 2026",
-   "call": "Q4 FY26",
-   "quote": "So this year UK business will be growing giving 8 to 10% plus EBITDA",
-   "page": 3,
-   "transcript": "https://www.astralltd.com/wp-content/uploads/2026/05/Analysts-Meet-2026-Transcript.pdf",
-   "path": null,
-   "cites": [],
-   "chart": null,
-   "verdict": "not-yet-measurable",
-   "actual": "not disclosed",
-   "actual_source": null,
-   "model": "openai/gpt-oss-120b",
-   "why": "Not measurable (segment not reported): the results filings report Plumbing, Paints and Adhesives, not this business."
   }
  ],
  "sector": "Industrials",
  "summary": {
   "kept": 2,
   "missed": 1,
-  "open": 1,
+  "open": 2,
   "partial": 0,
-  "unmeasured": 2,
+  "unmeasured": 1,
   "total": 6,
-  "measured": 4,
-  "sentence": "Kept 2 of 4 measured promises from the last 4 calls; behind on paint business full year guidance (Q2 FY26 call); 1 on track."
+  "measured": 5,
+  "sentence": "Kept 2 of 5 measured promises from the last 4 calls; behind on UK business EBITDA margin (Q4 FY26 call); 2 on track."
  },
- "prices": {
-  "closes": [
-   [
-    "2026-08-17",
-    1538.3
-   ],
-   [
-    "2026-08-18",
-    1520.0
-   ],
-   [
-    "2026-08-19",
-    1544.9
-   ],
-   [
-    "2026-08-20",
-    1532.0
-   ],
-   [
-    "2026-08-21",
-    1528.5
-   ],
-   [
-    "2026-08-24",
-    1532.8
-   ],
-   [
-    "2026-08-25",
-    1540.0
-   ],
-   [
-    "2026-08-26",
-    1526.1
-   ],
-   [
-    "2026-08-27",
-    1529.2
-   ],
-   [
-    "2026-08-28",
-    1532.3
-   ],
-   [
-    "2026-08-31",
-    1522.2
-   ],
-   [
-    "2026-09-01",
-    1507.0
-   ],
-   [
-    "2026-09-02",
-    1487.0
-   ],
-   [
-    "2026-09-03",
-    1495.2
-   ],
-   [
-    "2026-09-04",
-    1492.9
-   ],
-   [
-    "2026-09-07",
-    1498.2
-   ],
-   [
-    "2026-09-08",
-    1500.8
-   ],
-   [
-    "2026-09-09",
-    1474.8
-   ],
-   [
-    "2026-09-10",
-    1459.0
-   ],
-   [
-    "2026-09-11",
-    1411.4
-   ],
-   [
-    "2026-09-15",
-    1379.6
-   ],
-   [
-    "2026-09-16",
-    1382.5
-   ],
-   [
-    "2026-09-17",
-    1398.9
-   ],
-   [
-    "2026-09-18",
-    1427.7
-   ],
-   [
-    "2026-09-21",
-    1400.9
-   ],
-   [
-    "2026-09-22",
-    1381.6
-   ],
-   [
-    "2026-09-23",
-    1394.8
-   ],
-   [
-    "2026-09-24",
-    1392.0
-   ],
-   [
-    "2026-09-25",
-    1399.0
-   ],
-   [
-    "2026-09-28",
-    1370.5
-   ],
-   [
-    "2026-09-29",
-    1375.0
-   ],
-   [
-    "2026-09-30",
-    1370.4
-   ],
-   [
-    "2026-10-01",
-    1344.0
-   ],
-   [
-    "2026-10-05",
-    1362.1
-   ],
-   [
-    "2026-10-06",
-    1402.3
-   ],
-   [
-    "2026-10-07",
-    1427.7
-   ],
-   [
-    "2026-10-08",
-    1408.5
-   ],
-   [
-    "2026-10-09",
-    1409.8
-   ],
-   [
-    "2026-10-12",
-    1430.4
-   ],
-   [
-    "2026-10-13",
-    1442.0
-   ],
-   [
-    "2026-10-14",
-    1443.2
-   ],
-   [
-    "2026-10-15",
-    1443.3
-   ],
-   [
-    "2026-10-16",
-    1427.4
-   ],
-   [
-    "2026-10-19",
-    1428.0
-   ],
-   [
-    "2026-10-21",
-    1395.8
-   ],
-   [
-    "2026-10-22",
-    1386.5
-   ],
-   [
-    "2026-10-23",
-    1357.0
-   ],
-   [
-    "2026-10-26",
-    1349.0
-   ],
-   [
-    "2026-10-27",
-    1376.0
-   ],
-   [
-    "2026-10-28",
-    1360.6
-   ],
-   [
-    "2026-10-29",
-    1365.4
-   ],
-   [
-    "2026-10-30",
-    1341.9
-   ],
-   [
-    "2026-11-02",
-    1355.6
-   ],
-   [
-    "2026-11-03",
-    1388.2
-   ],
-   [
-    "2026-11-04",
-    1423.7
-   ],
-   [
-    "2026-11-05",
-    1388.0
-   ],
-   [
-    "2026-11-06",
-    1253.6
-   ],
-   [
-    "2026-11-09",
-    1272.8
-   ],
-   [
-    "2026-11-11",
-    1276.0
-   ],
-   [
-    "2026-11-12",
-    1275.0
-   ],
-   [
-    "2026-11-13",
-    1254.0
-   ]
-  ],
-  "nifty": [
-   [
-    "2026-08-17",
-    24287.65
-   ],
-   [
-    "2026-08-18",
-    24154.9
-   ],
-   [
-    "2026-08-19",
-    24078.3
-   ],
-   [
-    "2026-08-20",
-    24231.85
-   ],
-   [
-    "2026-08-21",
-    24252.0
-   ],
-   [
-    "2026-08-24",
-    24219.05
-   ],
-   [
-    "2026-08-25",
-    24334.55
-   ],
-   [
-    "2026-08-26",
-    24207.75
-   ],
-   [
-    "2026-08-27",
-    24090.85
-   ],
-   [
-    "2026-08-28",
-    24175.65
-   ],
-   [
-    "2026-08-31",
-    24080.4
-   ],
-   [
-    "2026-09-01",
-    24055.8
-   ],
-   [
-    "2026-09-02",
-    23914.45
-   ],
-   [
-    "2026-09-03",
-    23873.45
-   ],
-   [
-    "2026-09-04",
-    23897.7
-   ],
-   [
-    "2026-09-07",
-    23779.15
-   ],
-   [
-    "2026-09-08",
-    23635.1
-   ],
-   [
-    "2026-09-09",
-    23431.5
-   ],
-   [
-    "2026-09-10",
-    23477.8
-   ],
-   [
-    "2026-09-11",
-    23398.1
-   ],
-   [
-    "2026-09-15",
-    23118.6
-   ],
-   [
-    "2026-09-16",
-    23217.6
-   ],
-   [
-    "2026-09-17",
-    23270.6
-   ],
-   [
-    "2026-09-18",
-    23346.4
-   ],
-   [
-    "2026-09-21",
-    23414.3
-   ],
-   [
-    "2026-09-22",
-    23329.0
-   ],
-   [
-    "2026-09-23",
-    23446.8
-   ],
-   [
-    "2026-09-24",
-    23063.1
-   ],
-   [
-    "2026-09-25",
-    23140.5
-   ],
-   [
-    "2026-09-28",
-    22780.25
-   ],
-   [
-    "2026-09-29",
-    22716.2
-   ],
-   [
-    "2026-09-30",
-    22620.45
-   ],
-   [
-    "2026-10-01",
-    22421.95
-   ],
-   [
-    "2026-10-05",
-    22555.75
-   ],
-   [
-    "2026-10-06",
-    22776.1
-   ],
-   [
-    "2026-10-07",
-    22603.05
-   ],
-   [
-    "2026-10-08",
-    22231.8
-   ],
-   [
-    "2026-10-09",
-    22520.45
-   ],
-   [
-    "2026-10-12",
-    22363.35
-   ],
-   [
-    "2026-10-13",
-    22721.95
-   ],
-   [
-    "2026-10-14",
-    22622.7
-   ],
-   [
-    "2026-10-15",
-    22997.35
-   ],
-   [
-    "2026-10-16",
-    23146.15
-   ],
-   [
-    "2026-10-19",
-    22888.95
-   ],
-   [
-    "2026-10-21",
-    22811.35
-   ],
-   [
-    "2026-10-22",
-    22687.65
-   ],
-   [
-    "2026-10-23",
-    22600.0
-   ],
-   [
-    "2026-10-26",
-    22753.2
-   ],
-   [
-    "2026-10-27",
-    22749.75
-   ],
-   [
-    "2026-10-28",
-    22698.85
-   ],
-   [
-    "2026-10-29",
-    22936.75
-   ],
-   [
-    "2026-10-30",
-    23053.1
-   ],
-   [
-    "2026-11-02",
-    23440.8
-   ],
-   [
-    "2026-11-03",
-    23810.85
-   ],
-   [
-    "2026-11-04",
-    23960.6
-   ],
-   [
-    "2026-11-05",
-    24536.6
-   ],
-   [
-    "2026-11-06",
-    25030.35
-   ],
-   [
-    "2026-11-09",
-    25044.65
-   ],
-   [
-    "2026-11-11",
-    25255.05
-   ],
-   [
-    "2026-11-12",
-    25299.35
-   ],
-   [
-    "2026-11-13",
-    25144.3
-   ]
-  ]
- },
+ "prices": null,
  "snapshot": {
   "basis": "consolidated",
   "lender": false,
@@ -881,76 +367,11 @@
    "claim": "Debt/equity 0.06 at FY26 end (Mar 2026), from 0.04 at FY22 end."
   }
  },
- "bull_bear": {
-  "bull": [
-   {
-    "point": "Revenue +26.1% YoY in Q2 FY27.",
-    "why": "boosts earnings and cash generation.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#quarters"
-     }
-    ]
-   },
-   {
-    "point": "Paints and Adhesives revenue growth YoY +29.0% so far in FY27, on track >25% target.",
-    "why": "supports continued earnings momentum.",
-    "cites": [
-     {
-      "label": "Q4 FY26 call, p.11 (promise)",
-      "url": "https://www.astralltd.com/wp-content/uploads/2026/05/Analysts-Meet-2026-Transcript.pdf"
-     }
-    ]
-   },
-   {
-    "point": "Operating cash flow 1.44× PAT over FY22–FY26.",
-    "why": "provides strong liquidity cushion.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#cash"
-     }
-    ]
-   }
-  ],
-  "bear": [
-   {
-    "point": "Paint business FY26 growth 17.1% YoY, behind target ≥20%.",
-    "why": "raises doubts on meeting growth targets.",
-    "cites": [
-     {
-      "label": "Q2 FY26 call, p.3 (promise)",
-      "url": "https://www.astralltd.com/wp-content/uploads/2025/11/Transcript.pdf"
-     }
-    ]
-   },
-   {
-    "point": "EBITDA margin 13.1% in Q2 FY27, down 3.2 pp YoY.",
-    "why": "compresses profitability and cash conversion.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#margin"
-     }
-    ]
-   },
-   {
-    "point": "Debt/equity 0.06 at FY26 end, up from 0.04 at FY22.",
-    "why": "elevates leverage risk.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#leverage"
-     }
-    ]
-   }
-  ],
-  "dropped": 1,
-  "model": "openai/gpt-oss-120b",
-  "model_note": null
- },
  "sources": [
+  {
+   "label": "Q2 FY27 earnings call transcript",
+   "url": "https://www.astralltd.com/wp-content/uploads/2026/11/Equirus-Astral-Nov05-2026-1.pdf"
+  },
   {
    "label": "Q1 FY27 earnings call transcript",
    "url": "https://www.astralltd.com/wp-content/uploads/2026/08/Equirus-Astral-Aug12-2026-1.pdf"
@@ -962,18 +383,6 @@
   {
    "label": "Q3 FY26 earnings call transcript",
    "url": "https://nsearchives.nseindia.com/corporate/ASTRAL_05022026201047_Earning_Call.pdf"
-  },
-  {
-   "label": "Q2 FY26 earnings call transcript",
-   "url": "https://www.astralltd.com/wp-content/uploads/2025/11/Transcript.pdf"
-  },
-  {
-   "label": "Q2 FY26 results filing, p.15",
-   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=5e2518cc-2ccf-4463-bbea-990638610a67.pdf"
-  },
-  {
-   "label": "Q3 FY26 results filing, p.8",
-   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a821ddfb-0490-4387-b36b-7c24fb685a55.pdf"
   },
   {
    "label": "Q4 FY26 results filing, p.18",
@@ -991,5 +400,99 @@
    "label": "Quarterly and annual tables (consolidated), screener.in, from the exchange filings",
    "url": "https://www.screener.in/company/ASTRAL/consolidated/"
   }
- ]
+ ],
+ "bull_bear": {
+  "bull": [
+   {
+    "point": "Revenue +26.1% YoY in Q2 FY27",
+    "why": "plumbing volume growth fuels top line",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     },
+     {
+      "label": "Q2 FY27 call, p.2",
+      "url": "https://www.astralltd.com/wp-content/uploads/2026/11/Equirus-Astral-Nov05-2026-1.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Paint business top line growth +29.0% YoY in H1 FY27",
+    "why": "paint growth rate boosts segment revenue",
+    "cites": [
+     {
+      "label": "Q1 FY27 call, p.17 (promise)",
+      "url": "https://www.astralltd.com/wp-content/uploads/2026/08/Equirus-Astral-Aug12-2026-1.pdf"
+     },
+     {
+      "label": "Q4 FY26 call, p.11",
+      "url": "https://www.astralltd.com/wp-content/uploads/2026/05/Analysts-Meet-2026-Transcript.pdf"
+     }
+    ]
+   },
+   {
+    "point": "EBITDA margin 13.1% in Q2 FY27",
+    "why": "brand ambassador expense impacts margin",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
+     },
+     {
+      "label": "Q4 FY26 call, p.10",
+      "url": "https://www.astralltd.com/wp-content/uploads/2026/05/Analysts-Meet-2026-Transcript.pdf"
+     }
+    ]
+   }
+  ],
+  "bear": [
+   {
+    "point": "PAT (to owners) −5.9% in Q2 FY27",
+    "why": "analyst worries about inventory dent from PVC price",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     },
+     {
+      "label": "Q2 FY27 call, p.9 (analyst)",
+      "url": "https://www.astralltd.com/wp-content/uploads/2026/11/Equirus-Astral-Nov05-2026-1.pdf"
+     }
+    ]
+   },
+   {
+    "point": "EBITDA margin 13.1% in Q2 FY27, down 3.2 pp YoY",
+    "why": "cost inflation on adhesive side pressures margin",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
+     },
+     {
+      "label": "Q4 FY26 call, p.23 (analyst)",
+      "url": "https://www.astralltd.com/wp-content/uploads/2026/05/Analysts-Meet-2026-Transcript.pdf"
+     }
+    ]
+   },
+   {
+    "point": "H1 volume growth 10.1% in H1 FY27",
+    "why": "analyst worries about slowdown in Q2 volume",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.2",
+      "url": "https://www.astralltd.com/wp-content/uploads/2026/11/Equirus-Astral-Nov05-2026-1.pdf"
+     },
+     {
+      "label": "Q2 FY27 call, p.11 (analyst)",
+      "url": "https://www.astralltd.com/wp-content/uploads/2026/11/Equirus-Astral-Nov05-2026-1.pdf"
+     }
+    ]
+   }
+  ],
+  "dropped": 2,
+  "model": "openai/gpt-oss-120b",
+  "model_note": null,
+  "note": null
+ }
 }

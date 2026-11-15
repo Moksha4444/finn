@@ -1,0 +1,1773 @@
+
+> Read CLAUDE.md, PLAN.md, DECISIONS.md and REDESIGN.md. Batch C: finish ALL
+  remaining non-UI work so only the UI redesign is left. Do NOT start the
+  redesign. No bulk LLM jobs except item 2.
+  FIRST: give me click-by-click steps for any GitHub repository secrets you
+  need (GEMINI_API_KEY, GROQ_API_KEY), so I can add them right away. Then
+  continue.
+  1. Bull/bear repair step: when the Python checks reject a point, send the
+  model the rejection reasons once and ask for a replacement; aim for 3 per
+  side; if fewer than 2 per side survive, show what passed plus a quiet note.
+  2. Regeneration: check whether gpt-oss-120b has quota. If yes, run --regen
+  for all 22, then the consistency gate (0 problems), commit, push. If not, say
+  so and leave it; I'll run it in the morning.
+  3. Daily refresh: a GitHub Actions workflow that runs ingest at ~08:30 and
+  ~18:30 IST, uses the existing safety guards (never overwrite a good feed),
+  and commits the feed only if it changed, so Vercel redeploys. Must not
+  trigger a Render restart (build filter is backend/**). No PvD/bull-bear in
+  the cron.
+  4. Keep-warm: a scheduled ping to the Render /health endpoint about every 10
+  minutes.
+  5. CI: run backend and web tests on every push; add the status badge for the
+  README.
+  6. Live research results: also save them in the browser (localStorage) so a
+  researched company reopens instantly on the same device even after Render
+  restarts.
+  7. Restrict the API's CORS to the Vercel production + preview domains and
+  localhost.
+  8. Results cards failing for MARUTI (unknown unit) and TRENT: time-box to 45
+  minutes; if not fixed, leave the raw-link fallback and log it.
+  9. README draft: what FINN is, the live link
+  https://finn-coral-eta.vercel.app, how push/pull work, architecture, model
+  routing and costs, how to run locally, key decisions, known limitations
+  (free-tier quotas, Render cold starts, live-research memory), with screenshot
+  placeholders. Add a total-cost and usage summary to DECISIONS.md.
+  10. Check .env.example lists every variable.
+      Commit and push to main as you go. Stop with a summary listing anything
+  left that isn't UI.
+
+● I'll start by reading the docs and the repo's current state.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● REDESIGN.md doesn't exist in the repo (DESIGN.md and UI_BRIEF.md do). Reading
+  PLAN and DECISIONS now.
+
+  Read 3 files, ran 3 shell commands (ctrl+o to expand)
+
+● Please add GEMINI_API_KEY and GROQ_API_KEY under the repo's Actions secrets,
+  copying the values from your local .env, and set Workflow permissions to read
+  and write so the cron can commit the feed. I'm checking the tooling and the
+  bull/bear code next. · summary
+
+  Read 1 file, ran 4 shell commands (ctrl+o to expand)
+
+● Item 6's localStorage caching is already in place: Research.tsx saves finished
+  pages and reads them back before calling the API. I'm moving on to the
+  bull/bear repair step next. · summary
+
+● Write(backend\finn\prompts\bull_bear_repair.md)
+  ⎿  Wrote 10 lines to backend\finn\prompts\bull_bear_repair.md
+      1 REPAIR PASS. You already wrote bull and bear points for this comp
+        any; FINN's Python checks rejected some of them.
+      2 The JSON now also has:
+      3 - `kept`: the points that passed, per side. Do not repeat them or
+         restate their facts.
+      4 - `rejected`: each rejected point with its side and the reason it
+         failed.
+      5 - `need`: how many replacement points each side needs.
+      6
+      7 Write exactly `need` new points per side (0 means write none for
+     … +4 lines (ctrl+o to expand)
+
+● Now the code: checked() records reasons, and bull_bear() makes one repair call
+  and adds the thin-section note.
+
+● Update(backend\finn\pull\research.py)
+  ⎿  Added 11 lines, removed 4 lines
+      290      return None
+      291  
+      292  
+      293 -def checked(points: list[dict], by_id: dict[str, dict], facts:
+          - dict | None = None, side: str | None = None) -> tuple[list[di
+          -ct], int]:                                                    
+      293 +def checked(points: list[dict], by_id: dict[str, dict], facts:
+          + dict | None = None, side: str | None = None,                 
+      294 +            rejected: list | None = None, said: set | None = N
+          +one) -> tuple[list[dict], int]:                               
+      295      """(first 3 points that pass problem() and agree with fact
+           s already used, number rejected).
+      295 -    facts: {(family, period): figure} shared by both sides, so
+          - bull and bear can't quote two numbers for one fact."""       
+      296 +    facts: {(family, period): figure} shared by both sides, so
+          + bull and bear can't quote two numbers for one fact.          
+      297 +    rejected: gets {side, claim, reason} per dropped point (th
+          +e repair pass sends them back). said: facts already on the pag
+          +e."""                                                         
+      298      facts = {} if facts is None else facts
+      297 -    keep, dropped, said = [], 0, set()                        
+      299 +    said = set() if said is None else said                    
+      300 +    keep, dropped = [], 0                                     
+      301      for pt in points:
+      302          if not isinstance(pt, dict) or not all(isinstance(pt.g
+           et(k), str) for k in ("claim", "why")) or not isinstance(pt.ge
+           t("cites"), list):
+      303              dropped += 1
+     ...
+      307          # one fact said twice in other words (KEI: "Revenue gr
+           owth +38.5%" and "Net sales growth 38.52%", both Q2 FY27)
+      308          per, pct = NAMED_PERIOD.search(pt["claim"]), re.search
+           (r"(\d+(?:\.\d+)?)\s?%", pt["claim"])
+      309          dup = per and pct and (per.group(0), round(float(pct.g
+           roup(1)), 1))
+      307 -        if problem(pt, ids, by_id, side) or (f and facts.get(f
+          -[:2], f[2]) != f[2]) or (dup and dup in said):                
+      310 +        why = (problem(pt, ids, by_id, side) or (f and facts.g
+          +et(f[:2], f[2]) != f[2] and "a second figure for a metric and 
+          +period already on the page")                                  
+      311 +               or (dup and dup in said and "the same fact as a
+          +nother point"))                                               
+      312 +        if why:                                               
+      313              dropped += 1
+      314 +            if rejected is not None:                          
+      315 +                rejected.append({"side": side, "claim": pt["cl
+          +aim"], "why": pt["why"], "reason": why})                      
+      316              continue
+      317          if dup:
+      318              said.add(dup)
+
+● Update(backend\finn\pull\research.py)
+  ⎿  Added 23 lines, removed 5 lines
+      342      # segment's, with the segment's name dropped: POLYCAB "EBI
+           TDA margins 10.1% in Q2 FY27" against 14.4%) is dropped
+      343      m = (snap or {}).get("margin") or {}
+      344      facts: dict = {("margin", pvd.fy_name(q)): round(v, 1) for
+            q, v in zip(m.get("periods", []), m.get("values", []))}
+      345 -    bull, d1 = checked(data.get("bull") or [], by_id, facts, "
+          -bull")                                                        
+      346 -    bear, d2 = checked(data.get("bear") or [], by_id, facts, "
+          -bear")                                                        
+      347 -    if not bull or not bear:  # nothing survives on a side: th
+          -e last checked section, if any, beats a blank                 
+      345 +    rejected, said = [], set()                                
+      346 +    pts = {s: checked(data.get(s) or [], by_id, facts, s, reje
+          +cted, said) for s in ("bull", "bear")}                        
+      347 +    need = {s: 3 - len(pts[s][0]) for s in pts}               
+      348 +    if rejected and any(need.values()):  # one repair pass (us
+          +er, 15 Nov): the model sees why its points failed             
+      349 +        repair = payload | {"kept": {s: [p["point"] for p in p
+          +ts[s][0]] for s in pts}, "rejected": rejected, "need": need}  
+      350 +        try:                                                  
+      351 +            r2 = llm.run("bull_bear", "bull_bear", [llm.prompt
+          +("bull_bear_repair"), json.dumps(repair, ensure_ascii=False)],
+          + BB,                                                          
+      352 +                         symbol=symbol, patient=True, step="re
+          +pair")                                                        
+      353 +            more = r2["data"] if isinstance(r2["data"], dict) 
+          +else {}                                                       
+      354 +            for s in pts:                                     
+      355 +                extra, d = checked((more.get(s) or [])[:need[s
+          +]], by_id, facts, s, said=said)                               
+      356 +                pts[s] = (pts[s][0] + extra, pts[s][1] + d)   
+      357 +        except Exception as e:  # keep what passed the first t
+          +ime                                                           
+      358 +            global QUOTA_OUT                                  
+      359 +            QUOTA_OUT = QUOTA_OUT or isinstance(e, llm.Exhaust
+          +ed)                                                           
+      360 +            print(f"  bull/bear repair unavailable for {symbol
+          +}: {type(e).__name__}: {str(e)[:120]}")                       
+      361 +    (bull, d1), (bear, d2) = pts["bull"], pts["bear"]         
+      362 +    if not bull and not bear:  # nothing survived: the last ch
+          +ecked section, if any, beats a blank                          
+      363          if prev:
+      349 -            print(f"  bull/bear for {symbol}: a side had no po
+          -int that passed the checks; kept the previous one")           
+      364 +            print(f"  bull/bear for {symbol}: no point passed 
+          +the checks; kept the previous one")                           
+      365          return prev
+      351 -    return {"bull": bull, "bear": bear, "dropped": d1 + d2, "m
+          -odel": r["model"], "model_note": r.get("model_note")}         
+      366 +    # fewer than 2 on a side (user, 15 Nov): show what passed,
+          + say so quietly                                               
+      367 +    note = "; ".join(f"{'Only ' + str(len(p)) if p else 'No'} 
+          +{s} point{'' if len(p) == 1 else 's'} passed the evidence chec
+          +ks"                                                           
+      368 +                     for s, p in (("bull", bull), ("bear", bea
+          +r)) if len(p) < 2) or None                                    
+      369 +    return {"bull": bull, "bear": bear, "dropped": d1 + d2, "m
+          +odel": r["model"], "model_note": r.get("model_note"), "note": 
+          +note}                                                         
+      370  
+      371  
+      372  # ---- prices ----
+
+● Two global statements in one function would be a SyntaxError, so I'm moving
+  the declaration to the top.
+
+  Read 1 file, ran 1 shell command (ctrl+o to expand)
+
+● Update(backend\finn\pull\research.py)
+  ⎿  Removed 1 line
+      355                  extra, d = checked((more.get(s) or [])[:need[s
+           ]], by_id, facts, s, said=said)
+      356                  pts[s] = (pts[s][0] + extra, pts[s][1] + d)
+      357          except Exception as e:  # keep what passed the first t
+           ime
+      358 -            global QUOTA_OUT                                  
+      358              QUOTA_OUT = QUOTA_OUT or isinstance(e, llm.Exhaust
+           ed)
+      359              print(f"  bull/bear repair unavailable for {symbol
+           }: {type(e).__name__}: {str(e)[:120]}")
+      360      (bull, d1), (bear, d2) = pts["bull"], pts["bear"]
+
+● Update(backend\finn\pull\research.py)
+  ⎿  Added 1 line, removed 1 line
+      328  def bull_bear(name: str, latest: str | None, ev: list[dict], s
+           ymbol: str, prev: dict | None = None, snap: dict | None = None
+           ) -> dict | None:
+      329      """None when a side has no point that survives the number 
+           check, or the model is unavailable and there is no
+      330      previous section (page hides it). prev: the page's last ch
+           ecked section, kept when the model is unavailable."""
+      331 +    global QUOTA_OUT                                          
+      332      payload = {"company": name, "latest_quarter": latest, "evi
+           dence": [{"id": e["id"], "text": e["text"]} for e in ev]}
+      333      try:
+      334          r = llm.run("bull_bear", "bull_bear", [json.dumps(payl
+           oad, ensure_ascii=False)], BB, symbol=symbol, patient=True)
+      335      except Exception as e:  # quota / network: keep the last c
+           hecked section rather than blank it (14 Nov: Groq's daily cap)
+      335 -        global QUOTA_OUT                                      
+      336          QUOTA_OUT = QUOTA_OUT or isinstance(e, llm.Exhausted)
+      337          print(f"  bull/bear unavailable for {symbol}: {type(e)
+           .__name__}: {str(e)[:120]}{'; kept the previous one' if prev e
+           lse ''}")
+      338          return prev
+
+● Keeping the duplicate-fact set per side, as before, so this change doesn't
+  silently alter the existing rule. Then the tests.
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend/finn/pull" && python
+      - <<'EOF'
+      s=open("research.py",encoding="utf-8").read()…)
+  ⎿  Updated backend\finn\pull\research.py (+7 -7)
+      326  
+      327  
+      328  def bull_bear(name: str, latest: str | None, ev: list[dict], s
+           ymbol: str, prev: dict | None = None, snap: dict | None = None
+           ) -> dict | None:
+      329 -    """None when a side has no point that survives the number 
+          -check, or the model is unavailable and there is no            
+      330 -    previous section (page hides it). prev: the page's last ch
+          -ecked section, kept when the model is unavailable."""         
+      329 +    """None when no point survives the checks, or the model is
+          + unavailable, and there is no previous section (page          
+      330 +    hides it). Rejected points get one repair call; a side wit
+          +h fewer than 2 points carries a quiet note. prev: the page's l
+          +ast checked section, kept when the model is unavailable."""   
+      331      global QUOTA_OUT
+      332      payload = {"company": name, "latest_quarter": latest, "evi
+           dence": [{"id": e["id"], "text": e["text"]} for e in ev]}
+      333      try:
+     ...
+      342      # segment's, with the segment's name dropped: POLYCAB "EBI
+           TDA margins 10.1% in Q2 FY27" against 14.4%) is dropped
+      343      m = (snap or {}).get("margin") or {}
+      344      facts: dict = {("margin", pvd.fy_name(q)): round(v, 1) for
+            q, v in zip(m.get("periods", []), m.get("values", []))}
+      345 -    rejected, said = [], set()                                
+      346 -    pts = {s: checked(data.get(s) or [], by_id, facts, s, reje
+          -cted, said) for s in ("bull", "bear")}                        
+      345 +    rejected, said = [], {"bull": set(), "bear": set()}       
+      346 +    pts = {s: checked(data.get(s) or [], by_id, facts, s, reje
+          +cted, said[s]) for s in said}                                 
+      347      need = {s: 3 - len(pts[s][0]) for s in pts}
+      348      if rejected and any(need.values()):  # one repair pass (us
+           er, 15 Nov): the model sees why its points failed
+      349          repair = payload | {"kept": {s: [p["point"] for p in p
+           ts[s][0]] for s in pts}, "rejected": rejected, "need": need}
+     ...
+      352                           symbol=symbol, patient=True, step="re
+           pair")
+      353              more = r2["data"] if isinstance(r2["data"], dict) 
+           else {}
+      354              for s in pts:
+      355 -                extra, d = checked((more.get(s) or [])[:need[s
+          -]], by_id, facts, s, said=said)                               
+      355 +                extra, d = checked((more.get(s) or [])[:need[s
+          +]], by_id, facts, s, said=said[s])                            
+      356                  pts[s] = (pts[s][0] + extra, pts[s][1] + d)
+      357          except Exception as e:  # keep what passed the first t
+           ime
+      358              QUOTA_OUT = QUOTA_OUT or isinstance(e, llm.Exhaust
+           ed)
+     ...
+      363              print(f"  bull/bear for {symbol}: no point passed 
+           the checks; kept the previous one")
+      364          return prev
+      365      # fewer than 2 on a side (user, 15 Nov): show what passed,
+            say so quietly
+      366 -    note = "; ".join(f"{'Only ' + str(len(p)) if p else 'No'} 
+          -{s} point{'' if len(p) == 1 else 's'} passed the evidence chec
+          -ks"                                                           
+      367 -                     for s, p in (("bull", bull), ("bear", bea
+          -r)) if len(p) < 2) or None                                    
+      366 +    note = " ".join(f"Only 1 {s} point passed the evidence che
+          +cks." if p else f"No {s} point passed the evidence checks."   
+      367 +                    for s, p in (("bull", bull), ("bear", bear
+          +)) if len(p) < 2) or None                                     
+      368      return {"bull": bull, "bear": bear, "dropped": d1 + d2, "m
+           odel": r["model"], "model_note": r.get("model_note"), "note": 
+           note}
+      369  
+      370  
+  ⎿  Updated backend\tests\test_research.py (+23 -1)
+      129      pts = {"bull": [{"claim": "EBITDA margins 10.1% in Q2 FY27
+           ", "why": "FMEG pricing holds", "cites": ["P1"]},
+      130                      {"claim": "EBITDA margin 14.4% in Q2 FY27"
+           , "why": "Wires price hikes stuck", "cites": ["F2"]}],
+      131             "bear": [{"claim": "EBITDA margin 14.4% in Q2 FY27"
+           , "why": "Wires price hikes may reverse", "cites": ["F2"]}]}
+      132 -    monkeypatch.setattr(research.llm, "run", lambda *a, **k: {
+          -"data": pts, "model": "m"})                                   
+      132 +    monkeypatch.setattr(research.llm, "run", lambda *a, **k: {
+          +"data": {} if k.get("step") == "repair" else pts, "model": "m"
+          +})                                                            
+      133      out = research.bull_bear("Co", "Sep 2026", ev, "X", snap={
+           "margin": {"periods": ["Sep 2026"], "values": [14.42]}})
+      134      assert [p["point"] for p in out["bull"]] == ["EBITDA margi
+           n 14.4% in Q2 FY27"] and out["dropped"] == 1
+      135  
+     ...
+      180      a = "FY27 (Apr 2026 – Mar 2027) so far (Q1–Q2, 2 of 4 quar
+           ters): PBDIT margin 18.2% vs target 18–20%"
+      181      assert research.part_year(a) == "H1 FY27 (Q1–Q2): PBDIT ma
+           rgin 18.2% vs target 18–20%"
+      182      assert research.fact("15.6% EBITDA margin in Q2 FY27, −2.0
+            pp YoY") == ("margin", "Q2 FY27", 15.6)  # numbers-first
+      183 +                                                              
+      184 +                                                              
+      185 +def test_rejected_points_get_one_repair_call_and_a_thin_side_s
+          +ays_so(monkeypatch):                                          
+      186 +    ev = [{"id": "F5", "text": "Debt/equity 1.95 at FY26 end (
+          +Mar 2026). Gold metal loan borrowings.", "cite": {}},         
+      187 +          {"id": "S1", "text": "Studded jewellery share 31% in
+          + Q2 FY27 on wedding demand", "cite": {}}]                     
+      188 +    first = {"bull": [{"claim": "Studded share 35% in Q2 FY27"
+          +, "why": "Wedding demand.", "cites": ["S1"]}],  # 35 isn't in 
+          +S1                                                            
+      189 +             "bear": [{"claim": "Debt/equity 1.95 at FY26 end.
+          +", "why": "Gold metal loan borrowings fund inventory.", "cites
+          +": ["F5"]}]}                                                  
+      190 +    fixed = {"bull": [{"claim": "Studded jewellery share 31% i
+          +n Q2 FY27", "why": "Wedding demand lifts the studded mix.", "c
+          +ites": ["S1"]}], "bear": []}                                  
+      191 +    calls = []                                                
+      192 +    def run(task, prompt, inputs, schema, **k):               
+      193 +        calls.append(inputs)                                  
+      194 +        return {"data": fixed if k.get("step") == "repair" els
+          +e first, "model": "m"}                                        
+      195 +    monkeypatch.setattr(research.llm, "run", run)             
+      196 +    out = research.bull_bear("Co", "Sep 2026", ev, "X")       
+      197 +    sent = research.json.loads(calls[1][-1])                  
+      198 +    assert len(calls) == 2 and sent["need"] == {"bull": 3, "be
+          +ar": 2} and sent["rejected"][0]["reason"] == "a number not in 
+          +its cited evidence"                                           
+      199 +    assert [p["point"] for p in out["bull"]] == ["Studded jewe
+          +llery share 31% in Q2 FY27"] and len(out["bear"]) == 1        
+      200 +    assert out["note"] == "Only 1 bull point passed the eviden
+          +ce checks. Only 1 bear point passed the evidence checks."     
+      201 +    calls.clear()                                             
+      202 +    first["bull"] = fixed["bull"]  # nothing rejected: the mod
+          +el just ran out of evidence, so no repair call                
+      203 +    research.bull_bear("Co", "Sep 2026", ev, "X")             
+      204 +    assert len(calls) == 1                                    
+
+● Tests pass. Next, the minimal UI hook: the note line, and an empty side is
+  skipped rather than shown as a bare heading.
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/web" && python - <<'EOF'
+      p="components/Research.tsx"; s=open(p,encoding="utf-8").read()…)
+  ⎿  Updated web\components\Research.tsx (+3 -2)
+      563    return (
+      564      <section aria-labelledby="bb-h" className="mt-9">
+      565        <h2 id="bb-h" className={H2}>Bull and bear</h2>
+      566 -      {side("Bull", b.bull)}                                  
+      567 -      {side("Bear", b.bear)}                                  
+      566 +      {b.bull.length > 0 && side("Bull", b.bull)}             
+      567 +      {b.bear.length > 0 && side("Bear", b.bear)}             
+      568        <p className="mt-2 text-[0.75rem] leading-snug text-ink-
+           2">
+      569          Written by {b.model.split("/").pop()} from the cited s
+           tatements, questions and figures only.
+      570          {b.dropped > 0 && ` ${b.dropped} ${b.dropped === 1 ? "
+           point" : "points"} failed FINN's checks (numbers not in the so
+           urce, a generic reason, or a clash with a promise verdict) and
+            ${b.dropped === 1 ? "was" : "were"} dropped.`}
+      571          {b.model_note && ` ${b.model_note}.`}
+      572 +        {b.note && ` ${b.note}`}                              
+      573        </p>
+      574      </section>
+      575    );
+  ⎿  Updated web\lib\research.ts (+1 -1)
+      26    margin_definition: { name: string; source: string } | null; m
+          odel_note: string | null;
+      27    summary: Counts & { unmeasured: number; sentence: string }; p
+          romises: PromiseRow[];
+      28    prices: { closes: [string, number][]; nifty: [string, number]
+          [] } | null;
+      29 -  snapshot: Snapshot; bull_bear: { bull: Point[]; bear: Point[]
+         -; dropped: number; model: string; model_note: string | null } |
+         - null;                                                         
+      29 +  snapshot: Snapshot; bull_bear: { bull: Point[]; bear: Point[]
+         +; dropped: number; model: string; model_note: string | null; no
+         +te?: string | null } | null;                                   
+      30    sources: Cite[];
+      31    bull_bear_pending?: boolean; // live research only: the page 
+          is shown while bull/bear is still being written
+      32    pvd_error?: string; // live research only: why the promise ch
+          eck couldn't run (the rest of the page still shows)
+
+● Running the full backend suite before I commit item 1.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Item 2: probing Groq gpt-oss-120b with one tiny request (a few tokens). A
+  daily-cap 429 would show up in the reply.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Groq has quota (999 of 1,000 requests left today), so I'm starting the
+  22-company regen in the background and working on the workflows meanwhile.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Now the API (CORS and /health) and the config's paths.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Next: CORS. I need the Vercel preview-domain pattern, so I'm checking the
+  build history for preview URLs, plus the Node version and repo visibility
+  (visibility affects Actions minutes).
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The repo is private, which affects Actions minutes, and I couldn't find any
+  preview URLs, so I'm matching the preview pattern finn-*.vercel.app instead.
+  Applying the CORS change next. · summary
+● Update(backend\finn\api.py)
+  ⎿  Added 5 lines, removed 1 line
+      13  # instance (0.1 CPU) importing it took minutes and the port sca
+          n timed out before uvicorn bound (14 Nov).
+      14  
+      15  app = FastAPI(title="FINN")
+      16 -app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_m
+         -ethods=["GET", "POST"], allow_headers=["*"])                   
+      16 +# The Vercel app (production + preview deploys) and local dev o
+         +nly. shortcut: previews are matched as finn-*.vercel.app       
+      17 +# because the team slug isn't known here; add it to the pattern
+         + to exclude other people's "finn-" projects.                   
+      18 +app.add_middleware(CORSMiddleware, allow_origins=["https://finn
+         +-coral-eta.vercel.app"],                                       
+      19 +                   allow_origin_regex=r"https://finn-[a-z0-9-]+
+         +\.vercel\.app|http://(localhost|127\.0\.0\.1)(:\d+)?",         
+      20 +                   allow_methods=["GET", "POST"], allow_headers
+         +=["*"])                                                        
+      21  
+      22  SYMBOL = re.compile(r"[A-Z0-9&-]{1,20}")
+      23  DAILY_JOBS = int(os.getenv("FINN_DAILY_JOBS", "8"))  # ~20k str
+          ong-model tokens a company; Groq's free day is 200k
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && cat >>
+      tests/test_api.py <<'EOF'…)
+  ⎿  Updated backend\tests\test_api.py (+6 -0)
+      102      monkeypatch.setattr(httpx, "post", slow)
+      103      with pytest.raises(api.llm.Exhausted):
+      104          api.llm._groq("m", ["hi"], {"type": "object"})
+      105 +                                                              
+      106 +                                                              
+      107 +def test_cors_allows_only_the_vercel_app_and_localhost(client)
+          +:                                                             
+      108 +    allowed = lambda o: client.get("/health", headers={"Origin
+          +": o}).headers.get("access-control-allow-origin") == o        
+      109 +    assert allowed("https://finn-coral-eta.vercel.app") and al
+          +lowed("https://finn-git-main-abc.vercel.app") and allowed("htt
+          +p://localhost:3000")                                          
+      110 +    assert not allowed("https://evil.example.com") and not all
+          +owed("https://finn-coral-eta.vercel.app.evil.com")            
+
+● CORS done (Starlette full-matches the pattern, so
+  finn-coral-eta.vercel.app.evil.com is rejected, and the test checks it).
+  Committing, then the three workflows.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Item 10 had a real bug: .env.example sets FINN_STRONG to a Gemini model,
+  overriding the Groq default, so PvD and bull/bear would route to the wrong
+  model. I'm fixing the file to match the code. · summary
+
+● Write(.env.example)
+  ⎿  Added 22 lines, removed 9 lines
+       1 -# Copy this file to .env and fill in. .env is gitignored.      
+       2 -# Get a key at https://aistudio.google.com -> "Get API key"    
+       1 +# Copy this file to .env and fill in the two keys. .env is giti
+         +gnored.                                                        
+       2 +# Gemini (cheap tier: classification, extraction, headlines; re
+         +ads PDFs): https://aistudio.google.com -> "Get API key"        
+       3  GEMINI_API_KEY=
+       4 +# Groq (strong tier: promise verdicts, bull/bear; cheap-tier fa
+         +llback): https://console.groq.com/keys                         
+       5 +GROQ_API_KEY=                                                  
+       6  
+       5 -# Models as provider:model. Defaults below are what llm.py uses
+         - if unset.                                                     
+       6 -FINN_CHEAP=gemini:gemini-3.5-flash-lite                        
+       7 -FINN_STRONG=gemini:gemini-3.8-flash                            
+       8 -FINN_FALLBACK=gemini:gemini-3.5-flash                          
+       9 -# Per-task override, e.g. switch PvD to another provider later:
+      10 -# FINN_TASK_PVD_VERDICT=anthropic:<model>                      
+      11 -# ANTHROPIC_API_KEY=                                           
+       7 +# --- Everything below is optional. Leave it commented out to u
+         +se the defaults in backend/finn/llm.py. ---                    
+       8 +# Models as provider:model.                                    
+       9 +# FINN_CHEAP=gemini:gemini-3.5-flash-lite                      
+      10 +# FINN_STRONG=groq:openai/gpt-oss-120b                         
+      11 +# FINN_CHEAP_FALLBACK=groq:openai/gpt-oss-20b                  
+      12 +# FINN_STRONG_FALLBACK=gemini:gemini-3.8-flash                 
+      13 +# FINN_FALLBACK=gemini:gemini-3.5-flash          # last resort,
+         + live research only                                            
+      14 +# Per-task override: FINN_TASK_<TASK>=provider:model, e.g.     
+      15 +# FINN_TASK_BULL_BEAR=groq:qwen/qwen3.8-27b                    
+      16 +                                                               
+      17 +# Live research API (backend/finn/api.py)                      
+      18 +# FINN_DAILY_JOBS=8        # live research runs per IST day    
+      19 +# FINN_JOB_TIMEOUT=480     # seconds the page waits before sayi
+         +ng the result will be saved                                    
+      20 +# TZ=Asia/Kolkata          # set on Render so build times print
+         + in IST                                                        
+      21 +                                                               
+      22 +# Web app (web/.env.local, or Vercel project settings): the Ren
+         +der API for live research.                                     
+      23 +# Unset = no live research; the 22 precomputed pages and the fe
+         +ed still work.                                                 
+      24 +# NEXT_PUBLIC_API_URL=https://finn-api-72tc.onrender.com       
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Now the three workflows.
+
+● Write(.github\workflows\ingest.yml)
+  ⎿  Wrote 76 lines to .github\workflows\ingest.yml
+       1 # Daily feed refresh: filings + prices for the portfolio -> web/
+         public/data/feed.json, committed only when the data
+       2 # changed, so Vercel redeploys. No PvD or bull/bear here (those
+         are batch jobs run by hand).
+       3 # Render is not touched: its build filter is backend/**, and thi
+         s commits only web/public/data/ and cache/llm/.
+       4 name: Refresh feed
+       5
+       6 on:
+       7   schedule:
+     … +69 lines (ctrl+o to expand)
+
+● Write(.github\workflows\keep-warm.yml)
+  ⎿  Wrote 15 lines to .github\workflows\keep-warm.yml
+       1 # Render's free tier sleeps after 15 idle minutes and takes 30-6
+         0 s to wake; a ping every ~10 min keeps live research
+       2 # responsive. GitHub may delay scheduled runs, so an occasional
+         cold start can still happen.
+       3 name: Keep API warm
+       4
+       5 on:
+       6   schedule:
+       7     - cron: "*/10 * * * *"
+       8   workflow_dispatch:
+     … +7 lines (ctrl+o to expand)
+
+● Write(.github\workflows\ci.yml)
+  ⎿  Wrote 38 lines to .github\workflows\ci.yml
+       1 # Tests on every push. No API keys here: the few live-LLM tests
+         skip themselves, the rest use fixtures and cached answers.
+       2 name: CI
+       3
+       4 on:
+       5   push:
+       6   pull_request:
+       7
+       8 jobs:
+       9   backend:
+     … +29 lines (ctrl+o to expand)
+
+● Swapping the inline python -c for a heredoc (the escaped quotes were hard to
+  read) and pinning Node to 26, the version I run locally.
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && python - <<'PYEOF'
+      p=".github/workflows/ingest.yml"; s=open(p).read()…)
+  ⎿  Updated .github\workflows\ci.yml (+38 -38)
+       1 -# Tests on every push. No API keys here: the few live-LLM tests
+         - skip themselves, the rest use fixtures and cached answers.    
+       2 -name: CI                                                       
+       3 -                                                               
+       4 -on:                                                            
+       5 -  push:                                                        
+       6 -  pull_request:                                                
+       7 -                                                               
+       8 -jobs:                                                          
+       9 -  backend:                                                     
+      10 -    runs-on: ubuntu-latest                                     
+      11 -    timeout-minutes: 15                                        
+      12 -    steps:                                                     
+      13 -      - uses: actions/checkout@v4                              
+      14 -      - uses: actions/setup-python@v5                          
+      15 -        with:                                                  
+      16 -          python-version: "3.13"                               
+      17 -          cache: pip                                           
+      18 -          cache-dependency-path: backend/requirements.txt      
+      19 -      - run: pip install -r backend/requirements.txt           
+      20 -      - run: python -m pytest -q                               
+      21 -        working-directory: backend                             
+      22 -                                                               
+      23 -  web:                                                         
+      24 -    runs-on: ubuntu-latest                                     
+      25 -    timeout-minutes: 15                                        
+      26 -    defaults:                                                  
+      27 -      run:                                                     
+      28 -        working-directory: web                                 
+      29 -    steps:                                                     
+      30 -      - uses: actions/checkout@v4                              
+      31 -      - uses: actions/setup-node@v4                            
+      32 -        with:                                                  
+      33 -          node-version: "24"                                   
+      34 -          cache: npm                                           
+      35 -          cache-dependency-path: web/package-lock.json         
+      36 -      - run: npm ci                                            
+      37 -      - run: npm test                                          
+      38 -      - run: npx tsc --noEmit                                  
+       1 +# Tests on every push. No API keys here: the few live-LLM tests
+         + skip themselves, the rest use fixtures and cached answers.    
+       2 +name: CI                                                       
+     … 36 more lines (ctrl+o to expand)
+  ⎿  Updated .github\workflows\ingest.yml (+81 -76)
+       1 -# Daily feed refresh: filings + prices for the portfolio -> web
+         -/public/data/feed.json, committed only when the data           
+       2 -# changed, so Vercel redeploys. No PvD or bull/bear here (those
+         - are batch jobs run by hand).                                  
+       3 -# Render is not touched: its build filter is backend/**, and th
+         -is commits only web/public/data/ and cache/llm/.               
+       4 -name: Refresh feed                                             
+       5 -                                                               
+       6 -on:                                                            
+       7 -  schedule:                                                    
+       8 -    - cron: "7 3 * * *"   # 08:37 IST: fills yesterday's reacti
+         -on bars (yfinance posts them late)                             
+       9 -    - cron: "7 13 * * *"  # 18:37 IST: today's filings after ma
+         -rket close                                                     
+      10 -  workflow_dispatch:                                           
+      11 -                                                               
+      12 -concurrency:                                                   
+      13 -  group: ingest                                                
+      14 -  cancel-in-progress: false                                    
+      15 -                                                               
+      16 -permissions:                                                   
+      17 -  contents: write                                              
+      18 -                                                               
+      19 -jobs:                                                          
+      20 -  ingest:                                                      
+      21 -    runs-on: ubuntu-latest                                     
+      22 -    timeout-minutes: 30                                        
+      23 -    env:                                                       
+      24 -      TZ: Asia/Kolkata                                         
+      25 -      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}            
+      26 -      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}                
+      27 -    steps:                                                     
+      28 -      - uses: actions/checkout@v4                              
+      29 -                                                               
+      30 -      - uses: actions/setup-python@v5                          
+      31 -        with:                                                  
+      32 -          python-version: "3.13"                               
+      33 -          cache: pip                                           
+      34 -          cache-dependency-path: backend/requirements.txt      
+      35 -                                                               
+      36 -      - run: pip install -r backend/requirements.txt           
+      37 -                                                               
+      38 -      # Downloaded filings and screener pages, so each run does
+         -n't re-fetch 30 days of PDFs.                                  
+      39 -      # The LLM answers (cache/llm/) are committed, so no model
+         - call is repeated across runs.                                 
+      40 -      - uses: actions/cache@v4                                 
+     … 117 more lines (ctrl+o to expand)
+
+● next-env.d.ts isn't tracked, so a bare tsc in CI could fail on Next's ambient
+  types. I'm switching to npm run build, which generates that file and also
+  proves the static export builds. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && sed -i 's/      - run:
+      npx tsc --noEmit/      - run: npm run build  # type-checks and proves the
+      static export b…)
+  ⎿  Updated .github\workflows\ci.yml (+38 -38)
+       1 -# Tests on every push. No API keys here: the few live-LLM tests
+         - skip themselves, the rest use fixtures and cached answers.    
+       2 -name: CI                                                       
+       3 -                                                               
+       4 -on:                                                            
+       5 -  push:                                                        
+       6 -  pull_request:                                                
+       7 -                                                               
+       8 -jobs:                                                          
+       9 -  backend:                                                     
+      10 -    runs-on: ubuntu-latest                                     
+      11 -    timeout-minutes: 15                                        
+      12 -    steps:                                                     
+      13 -      - uses: actions/checkout@v4                              
+      14 -      - uses: actions/setup-python@v5                          
+      15 -        with:                                                  
+      16 -          python-version: "3.13"                               
+      17 -          cache: pip                                           
+      18 -          cache-dependency-path: backend/requirements.txt      
+      19 -      - run: pip install -r backend/requirements.txt           
+      20 -      - run: python -m pytest -q                               
+      21 -        working-directory: backend                             
+      22 -                                                               
+      23 -  web:                                                         
+      24 -    runs-on: ubuntu-latest                                     
+      25 -    timeout-minutes: 15                                        
+      26 -    defaults:                                                  
+      27 -      run:                                                     
+      28 -        working-directory: web                                 
+      29 -    steps:                                                     
+      30 -      - uses: actions/checkout@v4                              
+      31 -      - uses: actions/setup-node@v4                            
+      32 -        with:                                                  
+      33 -          node-version: "26"                                   
+      34 -          cache: npm                                           
+      35 -          cache-dependency-path: web/package-lock.json         
+      36 -      - run: npm ci                                            
+      37 -      - run: npm test                                          
+      38 -      - run: npx tsc --noEmit                                  
+       1 +# Tests on every push. No API keys here: the few live-LLM tests
+         + skip themselves, the rest use fixtures and cached answers.    
+       2 +name: CI                                                       
+     … 36 more lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Web tests 15/15. Committing the workflows, .env.example and .gitignore, then
+  pushing. cache/llm itself gets committed after the regen finishes, well before
+  the first scheduled run at 08:37 IST.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● I can't see the private repo's Actions results from here (no gh, no token), so
+  I'm simulating CI on a fresh clone: no .env, no cache, same commands.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Fresh clone: 170 passed, 6 live-LLM tests skipped, so CI should be green.
+  Moving to item 8 (MARUTI/TRENT results cards, 45-minute time-box; starting at
+  01:33).
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+● Both cached extractions are empty: MARUTI came back with no unit and no
+  columns, TRENT with three columns of nulls. Checking what the page finder sent
+  the model:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The page finder picked the wrong pages: a notes page and an auditor's review
+  report for MARUTI, a ratio-definitions notes page for TRENT. Checking how it
+  scored each page:
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Two root causes: the notes page (p14) outranks the real consolidated P&L (p10)
+  for TRENT, and MARUTI's P&L page (p6) has a garbled text layer that nothing
+  scores on. Next I'll measure number density per page, since tables are dense
+  and notes pages aren't. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Decimal counts are too inconsistent across filers to rely on, so I'll use page
+  structure and line items instead. Before changing anything, I'm recording the
+  current page picks for every results filing in the feed so I can diff them
+  afterward. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && cat >
+      "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/5000c6e3-67e
+      e-4893-afe5-7ed2f59b9d7f/scratch…)
+  ⎿  Created cache\llm\extract_guidance-b8f6a2f350f1fc4ea3622897.json (+1
+     -0)
+      1 +{"data": {"promises": [{"metric": "adhesive EBITDA margin", "met
+        +ric_key": "operating_margin", "target": "13%, 14%, or up to 15%"
+        +, "period": "by the end of this fiscal year", "quote": "bringing
+        + this EBITDA margin back to the normal level in this quarter, an
+        +d by the end of this fiscal year, again, to the margins of 13%, 
+        +14%, or up to 15%.", "page": 3, "target_type": "margin_pct", "ta
+        +rget_low": 13, "target_high": 15, "horizon": "fiscal_year", "fy"
+        +: 27, "quarter_no": null, "half_no": null, "basis": "reported_in
+        +r", "direction": "at_least", "margin_basis": "ebitda", "company_
+        +total": false}, {"metric": "UK adhesive EBITDA margin", "metric_
+        +key": "operating_margin", "target": "9%-10%", "period": "by the 
+        +year-end", "quote": "by the year-end, we also will deliver the g
+        +uided margins for the UK business.", "page": 4, "target_type": "
+        +margin_pct", "target_low": 9, "target_high": 10, "horizon": "fis
+        +cal_year", "fy": 27, "quarter_no": null, "half_no": null, "basis
+        +": "reported_inr", "direction": "within", "margin_basis": "ebitd
+        +a", "company_total": false}, {"metric": "paint business EBITDA m
+        +argin", "metric_key": "operating_margin", "target": "9%-10%", "p
+        +eriod": "not stated", "quote": "our EBITDA at least touches arou
+        +nd 9%-10%.", "page": 4, "target_type": "margin_pct", "target_low
+        +": 9, "target_high": 10, "horizon": "long_term", "fy": null, "qu
+        +arter_no": null, "half_no": null, "basis": "reported_inr", "dire
+        +ction": "at_least", "margin_basis": "ebitda", "company_total": f
+        +alse}, {"metric": "plumbing volume", "metric_key": "other", "tar
+        +get": "290,000-to-300,000-ton", "period": "full year basis", "qu
+        +ote": "ideally, we are targeting anywhere full year basis, anywh
+        +ere between, you can say 290,000-to-300,000-ton type of total vo
+        +lume number.", "page": 7, "target_type": "amount", "target_low":
+        + 290000, "target_high": 300000, "horizon": "fiscal_year", "fy": 
+        +27, "quarter_no": null, "half_no": null, "basis": "not_applicabl
+        +e", "direction": "within", "margin_basis": "not_applicable", "co
+        +mpany_total": fa … [+3413 chars]                                
+  ⎿  Updated web\public\data\research\ASTRAL.json (+43 -43)
+      881     "claim": "Debt/equity 0.06 at FY26 end (Mar 2026), from 0.0
+           4 at FY22 end."
+      882    }
+      883   },
+      884 + "sources": [                                                 
+      885 +  {                                                           
+      886 +   "label": "Q1 FY27 earnings call transcript",               
+      887 +   "url": "https://www.astralltd.com/wp-content/uploads/2026/0
+          +8/Equirus-Astral-Aug12-2026-1.pdf"                            
+      888 +  },                                                          
+      889 +  {                                                           
+      890 +   "label": "Q4 FY26 earnings call transcript",               
+      891 +   "url": "https://www.astralltd.com/wp-content/uploads/2026/0
+          +5/Analysts-Meet-2026-Transcript.pdf"                          
+      892 +  },                                                          
+      893 +  {                                                           
+      894 +   "label": "Q3 FY26 earnings call transcript",               
+      895 +   "url": "https://nsearchives.nseindia.com/corporate/ASTRAL_0
+          +5022026201047_Earning_Call.pdf"                               
+      896 +  },                                                          
+      897 +  {                                                           
+      898 +   "label": "Q2 FY26 earnings call transcript",               
+      899 +   "url": "https://www.astralltd.com/wp-content/uploads/2025/1
+          +1/Transcript.pdf"                                             
+      900 +  },                                                          
+      901 +  {                                                           
+      902 +   "label": "Q2 FY26 results filing, p.15",                   
+      903 +   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?
+          +Pname=5e2518cc-2ccf-4463-bbea-990638610a67.pdf"               
+      904 +  },                                                          
+      905 +  {                                                           
+      906 +   "label": "Q3 FY26 results filing, p.8",                    
+      907 +   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?
+          +Pname=a821ddfb-0490-4387-b36b-7c24fb685a55.pdf"               
+      908 +  },                                                          
+      909 +  {                                                           
+      910 +   "label": "Q4 FY26 results filing, p.18",                   
+      911 +   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?
+          +Pname=e1ca6824-2ec7-40d5-892d-d3177c9417e0.pdf"               
+      912 +  },                                                          
+      913 +  {                                                           
+      914 +   "label": "Q1 FY27 results filing, p.8",                    
+      915 +   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?
+          +Pname=3fca935f-11d0-4885-b0ce-629ae0fe4f6c.pdf"               
+      916 +  },                                                          
+      917 +  {                                                           
+      918 +   "label": "Q2 FY27 results filing, p.15",                   
+      919 +   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?
+          +Pname=a39f8b72-303f-42a4-8750-f413346bd742.pdf"               
+      920 +  },                                                          
+     … 56 more lines (ctrl+o to expand)
+  ⎿  Updated web\public\data\research\index.json (+1 -1)
+      3    "symbol": "ASIANPAINT",
+      4    "name": "Asian Paints Ltd",
+      5    "sector": "Consumer Discretionary",
+      6 -  "generated_at": "2026-11-14T22:29",                           
+      6 +  "generated_at": "2026-11-15T01:28",                           
+      7    "summary": {
+      8     "kept": 1,
+      9     "missed": 1,
+● Background command "Regenerate all research pages with gpt-oss-120b bull/bear"
+completed (exit code 0)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The Groq daily token cap (200k) stopped the ASTRAL regen, and the probe was
+  misleading since Groq's headers don't show the daily budget. I'm leaving the
+  regen for the morning and checking what the two partial rebuilds touched.
+  · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Only timestamps and key order changed, so I'm restoring the committed versions
+  and leaving the whole regen for the morning run.
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && git checkout --
+      web/public/data/research && git status --short | head)
+  ⎿  Updated web\public\data\research\ASIANPAINT.json (+1 -1)
+  ⎿  Updated web\public\data\research\ASTRAL.json (+43 -43)
+  ⎿  Updated web\public\data\research\index.json (+1 -1)
+  ⎿  (a git step in this command can move the working tree, so these may be
+     its changes, not edits) (ctrl+o to expand)
+
+● Back to the page finder: review reports and cash-flow statements no longer
+  count as non-P&L, notes pages are penalised, and the title bonus now needs at
+  least 2 line items. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && python - <<'EOF'
+      p="backend/finn/sources/pdf.py"; s=open(p,encoding="utf-8").read()…)
+  ⎿  Updated backend\finn\sources\pdf.py (+10 -4)
+       5  # Lines of a P&L statement; any 3 on one page means "this is th
+          e results table".
+       6  PNL = ["revenue from operations", "interest earned", "interest 
+          income", "total income", "before tax",
+       7         "tax expense", "net profit", "profit for the period", "p
+          rofit after tax", "exceptional"]
+       8 -NOT_PNL = ["segment revenue", "assets and liabilities", "cash f
+         -lows from operating"]                                          
+       8 +NOT_PNL = ["segment revenue", "assets and liabilities", "cash f
+         +lows from operating", "review report", "cashflow statement",   
+       9 +           "cash flow statement"]                              
+      10 +# a notes page opens as notes ("Notes to the Statement…", "Gene
+         +ral                                                            
+      11 +1. The above … results"): TRENT, MARUTI 15 Nov                 
+      12 +NOTES = re.compile(r"\A\s*(?:general\s+)?(?:notes?|1\.\s+the ab
+         +ove)")                                                         
+      13  
+      14  
+      15  def open_pdf(b: bytes) -> pymupdf.Document:
+     ...
+      26      best = {}
+      27      for i, t in enumerate(texts):
+      28          low = t.lower()
+      25 -        score = sum(k in low for k in PNL) - 3 * sum(k in low f
+         -or k in NOT_PNL)                                               
+      29 +        lines = sum(k in low for k in PNL)                     
+      30 +        score = lines - 3 * sum(k in low for k in NOT_PNL) - 3 
+         +* bool(NOTES.match(low))                                       
+      31          # the SEBI statement's title; survives bad OCR better t
+          han line items, and investor-report
+      27 -        # summary pages (2 columns, no preceding quarter; e.g. 
+         -BHARTIARTL) don't carry it                                     
+      28 -        score += 3 * bool(re.search(r"results for the (quarter|
+         -three months|period)", low))                                   
+      32 +        # summary pages (2 columns, no preceding quarter; e.g. 
+         +BHARTIARTL) don't carry it. Only on a page with                
+      33 +        # line items: notes and review reports repeat the title
+         + (MARUTI's consolidated notes page, 15 Nov)                    
+      34 +        score += 3 * (lines >= 2 and bool(re.search(r"results f
+         +or the (quarter|three months|period)", low)))                  
+      35          if score < 3:
+      36              continue
+      37          basis = "consolidated" if low.count("consolidated") > l
+          ow.count("standalone") else "standalone"
+
+● An escape in my replacement string put a real newline inside the comment.
+  Fixing it by hand:
+
+  Read 1 file (ctrl+o to expand)
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && cat > /tmp/fix.py
+      <<'EOF'
+      p="finn/sources/pdf.py"; L=open(p,encoding="utf-8").read().split("\n")…)
+  ⎿  Updated backend\finn\sources\pdf.py (+2 -3)
+       7         "tax expense", "net profit", "profit for the period", "p
+          rofit after tax", "exceptional"]
+       8  NOT_PNL = ["segment revenue", "assets and liabilities", "cash f
+          lows from operating", "review report", "cashflow statement",
+       9             "cash flow statement"]
+      10 -# a notes page opens as notes ("Notes to the Statement…", "Gene
+         -ral                                                            
+      11 -1. The above … results"): TRENT, MARUTI 15 Nov                 
+      12 -NOTES = re.compile(r"\A\s*(?:general\s+)?(?:notes?|1\.\s+the ab
+         -ove)")                                                         
+      10 +# a notes page opens as notes ("Notes to the Statement…", "Gene
+         +ral / 1. The above … results"): TRENT, MARUTI 15 Nov           
+      11 +NOTES = re.compile(r"\A\s*(?:general\s+)?(?:notes?\b|1\.\s+the 
+         +above\b)")                                                     
+      12  
+      13  
+      14  def open_pdf(b: bytes) -> pymupdf.Document:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● TRENT now gets its real P&L (p10-11) and MARUTI its standalone P&L. Seven
+  other filings lost their match, though, so I'm checking whether any of them
+  had a card:
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+● None of the seven had a card yet. DEEPAKNTR and KPITTECH were wasting model
+  calls on a cover letter that kept failing, so they now show the raw link
+  instead; I'm re-ingesting only MARUTI and TRENT next. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      PYTHONIOENCODING=utf-8 timeout 600 ../.venv/Scripts/python -m finn.ingest
+      --days 30 MARUTI TRENT > ../ca…)
+  ⎿  Created cache\llm\extract_results-ae18a3171f83e23062cfa46a.json (+1
+     -0)
+      1 +{"data": {"basis": "consolidated", "unit": "Rs. In Crore", "is_b
+        +ank_or_nbfc": false, "columns": [{"period_label": "30th Sept, 20
+        +26", "revenue_from_operations": 5873.14, "excise_duty": null, "o
+        +ther_income": 26.11, "total_expenses": 5259.13, "total_income": 
+        +5899.25, "interest_earned": null, "interest_expended": null, "fi
+        +nance_costs": 44.28, "depreciation_amortisation": 419.8, "except
+        +ional_items": null, "profit_before_exceptional_and_tax": 640.12,
+        + "profit_before_tax": 619.06, "profit_after_tax": 468.09, "profi
+        +t_attributable_to_owners": 463.77}, {"period_label": "30th June,
+        + 2026", "revenue_from_operations": 5754.71, "excise_duty": null,
+        + "other_income": 29.83, "total_expenses": 5082.96, "total_income
+        +": 5784.54, "interest_earned": null, "interest_expended": null, 
+        +"finance_costs": 46.99, "depreciation_amortisation": 410.16, "ex
+        +ceptional_items": null, "profit_before_exceptional_and_tax": 701
+        +.58, "profit_before_tax": 691.84, "profit_after_tax": 518.07, "p
+        +rofit_attributable_to_owners": 519.01}, {"period_label": "30th S
+        +ept, 2025", "revenue_from_operations": 4817.6, "excise_duty": nu
+        +ll, "other_income": 27.55, "total_expenses": 4367.15, "total_inc
+        +ome": 4845.23, "interest_earned": null, "interest_expended": nul
+        +l, "finance_costs": 41.62, "depreciation_amortisation": 324.93, 
+        +"exceptional_items": null, "profit_before_exceptional_and_tax": 
+        +478.08, "profit_before_tax": 476.98, "profit_after_tax": 373.42,
+        + "profit_attributable_to_owners": 376.86}]}, "model": "gemini-3.
+        +5-flash-lite", "model_note": null, "tokens_in": 1611, "tokens_ou
+        +t": 745}                                                        
+  ⎿  Created cache\llm\extract_results-b2bd9afd8ff05390725f48a8.json (+1
+     -0)
+      1 +{"data": {"basis": "standalone", "unit": "INR in million", "is_b
+        +ank_or_nbfc": false, "columns": [{"period_label": "September 30,
+        + 2026", "revenue_from_operations": 533402, "excise_duty": null, 
+        +"other_income": 4298, "total_expenses": 506042, "total_income": 
+        +537700, "interest_earned": null, "interest_expended": null, "fin
+        +ance_costs": 677, "depreciation_amortisation": 19596, "exception
+        +al_items": null, "profit_before_exceptional_and_tax": null, "pro
+        +fit_before_tax": 31658, "profit_after_tax": 24149, "profit_attri
+        +butable_to_owners": null}, {"period_label": "June 30, 2026", "re
+        +venue_from_operations": 524551, "excise_duty": null, "other_inco
+        +me": 18737, "total_expenses": 499881, "total_income": 543294, "i
+        +nterest_earned": null, "interest_expended": null, "finance_costs
+        +": 635, "depreciation_amortisation": 17800, "exceptional_items":
+        + null, "profit_before_exceptional_and_tax": null, "profit_before
+        +_tax": 43413, "profit_after_tax": 33521, "profit_attributable_to
+        +_owners": null}, {"period_label": "September 30, 2025", "revenue
+        +_from_operations": 423323, "excise_duty": null, "other_income": 
+        +9661, "total_expenses": 390075, "total_income": 432984, "interes
+        +t_earned": null, "interest_expended": null, "finance_costs": 572
+        +, "depreciation_amortisation": 17028, "exceptional_items": null,
+        + "profit_before_exceptional_and_tax": null, "profit_before_tax":
+        + 42909, "profit_after_tax": 33028, "profit_attributable_to_owner
+        +s": null}]}, "model": "gemini-3.5-flash-lite", "model_note": nul
+        +l, "tokens_in": 1611, "tokens_out": 681}                        
+  ⎿  … 1 more file changed
+  ⎿  (timeout 10m)
+
+● Both cards build now. One MARUTI number looks odd: EBITDA up 10.5% QoQ while
+  PBT is down 27%. Checking it against the filing's own text before trusting it:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The MARUTI figures check out: PBT is ₹3,165.8 cr, down 27.1% QoQ and 26.2%
+  YoY, and the "unknown unit" error came from the page finder sending a notes
+  page. I'm adding a regression test built from the two filings' P&L and notes
+  pages. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && .venv/Scripts/python -
+      <<'EOF'
+      import sys; sys.path.insert(0,"backend")…)
+  ⎿  2 files changed (binary, mode only or too large to show)
+
+● The MARUTI subset is 4.2 MB of scanned images, which is too heavy for a
+  fixture whose test only reads page text. Saving the extracted page text as
+  JSON instead:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && rm
+      backend/tests/fixtures/TRENT_results_p10_p11_p14.pdf
+      backend/tests/fixtures/MARUTI_results_p2_p9_p10.pdf && .…)
+  ⎿  Updated backend\tests\test_results.py (+10 -0)
+      190           "profit for the period attributable to owners of the 
+           company non-controlling interests"]
+      191      assert pdf.find_results_pages(t)[0] == [1, 2]
+      192  
+      193 +                                                              
+      194 +                                                              
+      195 +def test_notes_and_review_pages_never_win_over_the_pnl_table()
+          +:                                                             
+      196 +    """Real page texts (TRENT, MARUTI Q2 FY27). TRENT's notes 
+          +page repeats the SEBI title and mentions 3 P&L lines; MARUTI's
+      197 +    consolidated P&L has a garbled text layer, so only its not
+          +es page and review report said "consolidated"."""             
+      198 +    import json                                               
+      199 +    t = json.loads((FIX / "results_page_texts.json").read_text
+          +(encoding="utf-8"))                                           
+      200 +    assert pdf.find_results_pages(t["TRENT"]["pages"]) == ([9,
+          + 10], "consolidated")  # p10 table + p11 (PAT); not p14 notes 
+      201 +    assert pdf.find_results_pages(t["MARUTI"]["pages"])[1] == 
+          +"standalone"  # readable standalone p2, labelled as such      
+      202 +    assert pdf.find_results_pages(t["MARUTI"]["pages"])[0][0] 
+          +== 1                                                          
+  ⎿  … 3 more files changed
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The gate flagged a real mismatch: TRENT's new card shows an 18.36% EBITDA
+  margin, but its research page says 18.0%. I'm rebuilding TRENT's page alone
+  with --regen so the bull/bear sections don't fall back to Gemini, and Groq
+  being out of quota means it keeps the existing section. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      PYTHONIOENCODING=utf-8 timeout 900 ../.venv/Scripts/python -m
+      finn.pull.research --regen TRENT 2>&1 | ta…)
+  ⎿  Created cache\llm\bull_bear-dc021fa7d71dca0c4469cba9.json (+1 -0)
+      1 +{"data": {"bear": [], "bull": []}, "model": "openai/gpt-oss-120b
+        +", "model_note": null, "tokens_in": 1727, "tokens_out": 1346}   
+  ⎿  Updated web\public\data\research\TRENT.json (+23 -19)
+      1  {
+      2   "symbol": "TRENT",
+      3   "name": "Trent Ltd",
+      4 - "generated_at": "2026-11-14T19:27",                            
+      4 + "generated_at": "2026-11-15T01:37",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [],
+      7   "skipped_calls": [],
+     ...
+      534    "unit": "₹ crore",
+      535    "source": "screener.in quarterly and annual tables (from the
+            company's exchange results filings and annual reports)",
+      536    "pat_name": "PAT (to owners)",
+      537 -  "filing_quarters": [],                                      
+      537 +  "filing_quarters": [                                        
+      538 +   "Sep 2026",                                                
+      539 +   "Jun 2026",                                                
+      540 +   "Sep 2025"                                                 
+      541 +  ],                                                          
+      542    "quarters": {
+      543     "periods": [
+      544      "Dec 2024",
+     ...
+      554      4657.0,
+      555      4217.0,
+      556      4883.0,
+      553 -    4818.0,                                                   
+      557 +    4817.6,                                                   
+      558      5345.0,
+      559      5028.0,
+      556 -    5755.0,                                                   
+      557 -    5873.0                                                    
+      560 +    5754.71,                                                  
+      561 +    5873.14                                                   
+      562     ],
+      563     "pat": [
+      564      497.0,
+      565      318.0,
+      566      430.0,
+      563 -    377.0,                                                    
+      567 +    376.86,                                                   
+      568      513.0,
+      569      400.0,
+     … 48 more lines (ctrl+o to expand)
+  ⎿  Updated web\public\data\research\index.json (+1 -1)
+      297    "symbol": "TRENT",
+      298    "name": "Trent Ltd",
+      299    "sector": "Consumer Discretionary",
+      300 -  "generated_at": "2026-11-14T19:27",                         
+      300 +  "generated_at": "2026-11-15T01:37",                         
+      301    "summary": {
+      302     "kept": 0,
+      303     "missed": 0,
+  ⎿  (timeout 10m)
+
+● The rebuild reused TRENT's old bull/bear section, which still quotes the 18.0%
+  margin, so the gate keeps failing. The batch actually exits 1 (the exit=0
+  above was tail's code), and I'm checking what the model did this time.
+  · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● TRENT's kept section predates the 14 Nov rules, so its "why" lines and its
+  bear point (a 0.37 debt/equity) would fail today's checks. I'm changing the
+  fallback so the previous section only appears when the model is unavailable,
+  and otherwise the page shows the quiet note. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && python - <<'EOF'
+      p="finn/pull/research.py"; s=open(p,encoding="utf-8").read()…)
+  ⎿  Updated backend\finn\pull\research.py (+3 -6)
+      326  
+      327  
+      328  def bull_bear(name: str, latest: str | None, ev: list[dict], s
+           ymbol: str, prev: dict | None = None, snap: dict | None = None
+           ) -> dict | None:
+      329 -    """None when no point survives the checks, or the model is
+          - unavailable, and there is no previous section (page          
+      330 -    hides it). Rejected points get one repair call; a side wit
+          -h fewer than 2 points carries a quiet note. prev: the page's l
+          -ast checked section, kept when the model is unavailable."""   
+      329 +    """None when the model is unavailable and there is no prev
+          +ious section (page hides it). Rejected points get one repair c
+          +all; a side with fewer than 2 points carries a quiet note. pre
+          +v: the page's last checked section, kept when the model is una
+          +vailable."""                                                  
+      330      global QUOTA_OUT
+      331      payload = {"company": name, "latest_quarter": latest, "evi
+           dence": [{"id": e["id"], "text": e["text"]} for e in ev]}
+      332      try:
+     ...
+      357              QUOTA_OUT = QUOTA_OUT or isinstance(e, llm.Exhaust
+           ed)
+      358              print(f"  bull/bear repair unavailable for {symbol
+           }: {type(e).__name__}: {str(e)[:120]}")
+      359      (bull, d1), (bear, d2) = pts["bull"], pts["bear"]
+      361 -    if not bull and not bear:  # nothing survived: the last ch
+          -ecked section, if any, beats a blank                          
+      362 -        if prev:                                              
+      363 -            print(f"  bull/bear for {symbol}: no point passed 
+          -the checks; kept the previous one")                           
+      364 -        return prev                                           
+      360 +    # the model answered: its checked points stand, even none.
+          + The previous section is kept only when the model is          
+      361 +    # unavailable; once it answers, old points may fail today'
+          +s checks or quote a figure the filing has replaced (TRENT, 15 
+          +Nov).                                                         
+      362      # fewer than 2 on a side (user, 15 Nov): show what passed,
+            say so quietly
+      363      note = " ".join(f"Only 1 {s} point passed the evidence che
+           cks." if p else f"No {s} point passed the evidence checks."
+      364                      for s, p in (("bull", bull), ("bear", bear
+           )) if len(p) < 2) or None
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && cat >>
+      tests/test_research.py <<'EOF'…)
+  ⎿  Updated backend\tests\test_research.py (+8 -0)
+      202      first["bull"] = fixed["bull"]  # nothing rejected: the mod
+           el just ran out of evidence, so no repair call
+      203      research.bull_bear("Co", "Sep 2026", ev, "X")
+      204      assert len(calls) == 1
+      205 +                                                              
+      206 +                                                              
+      207 +def test_an_answer_where_nothing_passes_replaces_the_previous_
+          +section(monkeypatch):                                         
+      208 +    bad = {"bull": [{"claim": "Revenue +21.9% YoY in Q2 FY27",
+          + "why": "Boosts top-line growth.", "cites": ["F1"]}], "bear": 
+          +[]}                                                           
+      209 +    monkeypatch.setattr(research.llm, "run", lambda *a, **k: {
+          +"data": {} if k.get("step") == "repair" else bad, "model": "m"
+          +})                                                            
+      210 +    prev = {"bull": [{"point": "EBITDA margin 18.0% in Q2 FY27
+          +", "why": "old", "cites": []}], "bear": [], "model": "m"}     
+      211 +    out = research.bull_bear("Co", "Sep 2026", [{"id": "F1", "
+          +text": "Revenue +21.9% YoY in Q2 FY27", "cite": {}}], "X", pre
+          +v)                                                            
+      212 +    assert out["bull"] == [] and out["note"] == "No bull point
+          + passed the evidence checks. No bear point passed the evidence
+          + checks."                                                     
+  ⎿  Updated web\public\data\research\TRENT.json (+5 -46)
+      1  {
+      2   "symbol": "TRENT",
+      3   "name": "Trent Ltd",
+      4 - "generated_at": "2026-11-15T01:37",                            
+      4 + "generated_at": "2026-11-15T01:39",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [],
+      7   "skipped_calls": [],
+     ...
+      646    }
+      647   ],
+      648   "bull_bear": {
+      649 -  "bull": [                                                   
+      650 -   {                                                          
+      651 -    "point": "Revenue +21.9% YoY in Q2 FY27; PAT +23.1%.",    
+      652 -    "why": "Boosts top‑line growth, supporting earnings expans
+          -ion.",                                                        
+      653 -    "cites": [                                                
+      654 -     {                                                        
+      655 -      "label": "Financial snapshot (results filings)",        
+      656 -      "url": "#quarters"                                      
+      657 -     }                                                        
+      658 -    ]                                                         
+      659 -   },                                                         
+      660 -   {                                                          
+      661 -    "point": "EBITDA margin 18.0% in Q2 FY27, +1.1 pp YoY.",  
+      662 -    "why": "Higher margin improves profitability and cash gene
+          -ration.",                                                     
+      663 -    "cites": [                                                
+      664 -     {                                                        
+      665 -      "label": "Financial snapshot (results filings)",        
+      666 -      "url": "#margin"                                        
+      667 -     }                                                        
+      668 -    ]                                                         
+      669 -   }                                                          
+      670 -  ],                                                          
+      671 -  "bear": [                                                   
+      672 -   {                                                          
+      673 -    "point": "Operating cash flow 1.19× PAT over FY22–FY26 (₹6
+          -,331 cr vs ₹5,305 cr).",                                      
+      674 -    "why": "Modest coverage may limit buffer for earnings vola
+          -tility.",                                                     
+      675 -    "cites": [                                                
+      676 -     {                                                        
+      677 -      "label": "Financial snapshot (results filings)",        
+     … 24 more lines (ctrl+o to expand)
+  ⎿  Updated web\public\data\research\index.json (+1 -1)
+      297    "symbol": "TRENT",
+      298    "name": "Trent Ltd",
+      299    "sector": "Consumer Discretionary",
+      300 -  "generated_at": "2026-11-15T01:37",                         
+      300 +  "generated_at": "2026-11-15T01:39",                         
+      301    "summary": {
+      302     "kept": 0,
+      303     "missed": 0,
+  ⎿  (timeout 10m)
+
+● Exit 0 means the gate is green. But "0+0 (dropped 0)" doesn't add up: the
+  01:38 answer should have had rejected points. Looking closer:
+  Ran 1 shell command (ctrl+o to expand)
+
+● TRENT has no call transcripts, so I can only check its snapshot figures, and
+  the note needs rewording to say so instead of claiming the evidence checks
+  passed. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && sed -i 's/f"Only
+      1 {s} point passed the evidence checks." if p else f"No {s} point passed
+      the evidence c…)
+  ⎿  Updated web\public\data\research\TRENT.json (+1 -1)
+      651    "dropped": 0,
+      652    "model": "openai/gpt-oss-120b",
+      653    "model_note": null,
+      654 -  "note": "No bull point passed the evidence checks. No bear p
+          -oint passed the evidence checks."                             
+      654 +  "note": "No bull point is supported by the cited evidence. N
+          +o bear point is supported by the cited evidence."             
+      655   }
+      656  }
+  ⎿  … 2 more files changed
+  ⎿  (timeout 10m)
+
+● Tests 178/178, gate at 0 problems. The feed diff is large, so I'm making sure
+  it's only the expected window shift plus the two refreshed tickers:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Only the 30-day window moved (24 filings from 15 Oct dropped off, three of
+  which had cards). MARUTI and TRENT gained theirs. Committing the fix, then
+  seeding cache/llm in its own commit:
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Local log shows $3.19 across 966 calls (Nov 11-15), with about $0.11 more from
+  Render's live-research jobs. Next I'll pull up the README and its exact
+  task-to-model map. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Writing the README. The audience is ENAM's reviewers: dense, factual, every
+  claim checkable in the repo.
+
+● Write(README.md)
+  ⎿  Wrote 156 lines to README.md
+      1 # FINN: a morning brief for a 20-stock Indian portfolio
+      2
+      3 [![CI](https://github.com/Moksha4444/finn/actions/workflows/ci.ym
+        l/badge.svg)](https://github.com/Moksha4444/finn/actions/workflow
+        s/ci.yml)
+      4
+      5 **Live:** https://finn-coral-eta.vercel.app (mobile-first; on a d
+        esktop it shows a QR code for your phone)
+      6
+      7 FINN reads every exchange filing across a portfolio, hides the ro
+     … +150 lines (~11 KB) (ctrl+o to expand)
+
+● Before committing, I'm checking the README's PvD numbers against the current
+  research files rather than the 13 Nov table:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Current state: 72 promises, 36 measured, 36 not yet measurable (was 62% on the
+  first run). Fixing that line:
+
+● Update(README.md)
+  ⎿  Added 1 line, removed 1 line
+      132  - **Rank by market reaction too.** A filing the market moved o
+           n (vs Nifty) outranks a quiet one in the same tier.
+      133  - **PvD verdicts are computed, not judged,** wherever a number
+            exists. Segment targets are measured on the filing's
+      134    segment table, bank CD ratios on the balance sheet, and no t
+           arget is called hit or missed before its period ends.
+      135 -  62% of promises were first "not measurable"; after these cha
+          -nges it's 42 of 72, and each says why.                        
+      135 +  On the first 22-company run 62% of promises were "not measur
+          +able"; now it's 36 of 72, and each one says why.              
+      136  - **A thin, true section beats a full, generic one.** Bull/bea
+           r points that fail the checks are dropped, not padded.
+      137  - **No paid APIs, no database.** Free Gemini + Groq tiers with
+            fallbacks; JSON files plus disk caches instead of
+      138    SQLite/Supabase.
+
+● Now DECISIONS.md: a Batch C section plus the cost and usage summary.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The heredoc tripped on shell quoting, so I'm inserting the section with the
+  Edit tool instead:
+
+● Update(DECISIONS.md)
+  ⎿  Added 31 lines
+      254  - **Desktop note with a static QR SVG** (generated once from t
+           he fixed Vercel URL; no QR library shipped). Shown only on wid
+           e screens with a mouse.
+      255  - **First-visit "How FINN works" card** mounts already open (n
+           o entrance animation) and only animates its dismissal; the sam
+           e three lines live under Settings.
+      256  
+      257 +## Batch C (15 Nov, early morning): the last non-UI work      
+      258 +- **Bull/bear repair round (user, 15 Nov).** When Python rejec
+          +ts points, the model gets one more call with the points kept, 
+          +each rejected point with its reason ("a number not in its cite
+          +d evidence", "a generic why", ...) and how many each side stil
+          +l needs (aim: 3). The replacements go through the same checks.
+          + No repair when nothing was rejected (the model simply ran out
+          + of evidence). A side with fewer than 2 points shows what pass
+          +ed plus one quiet line ("Only 1 bear point is supported by the
+          + cited evidence."). The repair instructions are their own prom
+          +pt file (`bull_bear_repair.md`), so `bull_bear.md` and its cac
+          +hed answers are unchanged. Gave up: a second repair round (mor
+          +e quota for little gain).                                     
+      259 +- **The previous bull/bear is kept only when the model is unav
+          +ailable.** Before, "a side came back empty" also restored the 
+          +last section. Once the model answers under the current rules, 
+          +old points can fail those rules or quote a figure a filing has
+          + since replaced (TRENT's kept section said "EBITDA margin 18.0
+          +%" after its first results card gave 18.4%; the gate caught it
+          +). TRENT now shows no bull/bear points: it has no call transcr
+          +ipts, so its only evidence is snapshot figures with no driver 
+          +to name, and the model wrote none.                            
+      260 +- **Regeneration not run.** Groq's gpt-oss-120b answered a pro
+          +be (999 of 1,000 requests left today) but hit its rolling dail
+          +y *token* cap on the second company ("retry after 653 s"). Gro
+          +q's headers show per-minute and per-request limits, not the da
+          +ily token budget, so the only check is trying. The two partial
+          + rebuilds changed only timestamps and were discarded. Run `--r
+          +egen` once the cap has rolled over.                           
+      261 +- **Results page finder: notes pages, review reports and cash-
+          +flow statements no longer win.** TRENT's consolidated notes pa
+          +ge repeats the SEBI title ("results for the quarter") and ment
+          +ions three P&L lines, so it outscored the real table. MARUTI's
+          + consolidated P&L has an unreadable text layer, so only its no
+          +tes page said "consolidated", and the model got a page with no
+          + table ("unknown unit" was the symptom, not the cause). Now th
+          +e title counts only on a page with ≥2 P&L lines, and a page th
+          +at opens as notes ("Notes to…", "1. The above…"), a review rep
+          +ort or a cash-flow statement is penalised. Checked against all
+          + 68 results filings in the feed: TRENT and MARUTI now find the
+          +ir tables. 7 others lost a page match, and none of them had a 
+          +card (decks, newspaper copies, and two cover letters that had 
+          +been sent to the model for nothing). MARUTI's card is **standa
+          +lone** (labelled), because its consolidated table can't be rea
+          +d from text. Hand-checked against the filing (₹ million): PBT 
+          +31,658 → ₹3,165.8 cr, −27.1% QoQ, −26.2% YoY; the fall is othe
+          +r income (18,731 → 4,294). Test on the real page texts (`fixtu
+          +res/results_page_texts.json`; the PDFs are 4 MB of scans).    
+      262 +- **GitHub Actions.** `ingest.yml` runs at 08:37 and 18:37 IST
+          + (odd minutes, because GitHub delays top-of-hour schedules): t
+          +he same `--days 30` ingest with the same refusal rules (>2 fai
+          +led tickers or no Nifty prices → exit 1, feed untouched, run s
+          +hows red). It commits only when the feed differs from the last
+          + commit ignoring `generated_at`, so the Brief's "Last checked"
+          + time is the last time data changed, not the last run. It comm
+          +its only `web/public/data/feed.json` and `cache/llm/`, so Rend
+          +er (build filter `backend/**`) doesn't restart. No PvD or bull
+          +/bear in the cron. `ci.yml` runs backend tests, web tests and 
+          +the static build on every push, with no keys: the 6 live-LLM t
+          +ests skip themselves (checked on a fresh clone: 170 passed, 6 
+          +skipped). `keep-warm.yml` pings `/health` every 10 minutes.   
+      263 +- **The LLM answer cache is committed (`cache/llm/`, ~960 file
+          +s, 3 MB).** A fresh CI runner would otherwise re-ask the model
+          +s for every headline and card in the 30-day window (~200 calls
+          + a run, against free daily caps), and a quota-hit cold run cou
+          +ld commit a feed with worse titles. Answers are keyed by sourc
+          +e-PDF hash, so re-downloaded filings hit the cache. Downloaded
+          + PDFs (`cache/http/`, 1.4 GB) are not committed; the cron keep
+          +s them in the Actions cache. Gave up: a clean "caches are neve
+          +r in git" rule.                                               
+      264 +- **The cron's model spend is printed in its run log** ("N mod
+          +el calls, $X at list prices"); the cost log (`cache/llm_calls.
+          +jsonl`) stays local. Cron calls cover new filings only, so a f
+          +ew cents a day at most.                                       
+      265 +- **CORS: the Vercel production domain, `finn-*.vercel.app` pr
+          +eviews, and localhost / 127.0.0.1 on any port.** Was `*`. Star
+          +lette full-matches the pattern, so `finn-coral-eta.vercel.app.
+          +evil.com` is refused (tested). Previews are matched by project
+          + prefix because the Vercel team slug isn't recorded in the rep
+          +o; adding it would exclude other people's `finn-*` projects. P
+          +hone dev on a LAN IP (`next dev -H 192.168…`) can no longer re
+          +ach the API, so live research there needs the deployed app. Th
+          +e API holds no credentials or user data: CORS limits which pag
+          +es can call it from a browser, not who can call it.           
+      266 +- **`.env.example` was wrong.** It set `FINN_STRONG=gemini:gem
+          +ini-3.8-flash`, which overrides the code default (Groq gpt-oss
+          +-120b), so anyone copying it would have run PvD and bull/bear 
+          +on the overloaded model. It now lists every variable the code 
+          +reads, with the optional ones commented out at their defaults.
+      267 +- **Live research in localStorage was already built** (Batch B
+          +, `Research.tsx`): a finished live page is saved per symbol an
+          +d read before any API call, so it reopens instantly on the sam
+          +e device after a Render restart. Pages with a failed promise c
+          +heck or bull/bear still pending are not saved, so they get ret
+          +ried.                                                         
+      268 +- **Keep-warm costs Actions minutes on a private repo:** 144 r
+          +uns a day at 1 billed minute each is ~4,300 minutes a month, a
+          +gainst 2,000 free (unlimited on a public repo). Fine for the r
+          +eview window; after that, make the repo public or slow the pin
+          +g.                                                            
+      269 +                                                              
+      270 +## Total cost and usage (11–15 Nov, from `cache/llm_calls.json
+          +l`)                                                           
+      271 +All calls ran on free tiers, so actual spend was **$0**. Costs
+          + below are at paid list prices (`llm.PRICE`).                 
+      272 +                                                              
+      273 +| | Calls | Tokens in | Tokens out | List price |             
+      274 +|---|---|---|---|---|                                         
+      275 +| **Total (local log)** | **966** | **4,466,489** | **690,638*
+          +* | **$3.19** |                                               
+      276 +| gemini-3.5-flash-lite (cheap) | 777 | 3,858,044 | 353,840 | 
+          +$2.04 |                                                       
+      277 +| gemini-3.5-flash (last resort) | 16 | 126,282 | 55,454 | $0.
+          +69 |                                                          
+      278 +| gemini-3.8-flash (strong fallback) | 8 | 19,395 | 66,853 | $
+          +0.27 |                                                        
+      279 +| openai/gpt-oss-120b (strong, Groq) | 146 | 420,627 | 209,200
+          + | $0.19 |                                                    
+      280 +| qwen/qwen3.8-27b (13 Nov stand-in) | 19 | 42,141 | 5,291 | $
+          +0.01 |                                                        
+      281 +                                                              
+      282 +- **By task:** guidance extraction $2.13 / 202 calls (re-extra
+          +cting ~90 transcripts after each prompt change: most of the bi
+          +ll), bull/bear $0.32 / 76, results extraction $0.23 / 105, PvD
+          + verdicts $0.16 / 99, headlines $0.14 / 276, segments $0.10 / 
+          +69, bios $0.05 / 35, classification $0.04 / 86 (rules handled 
+          +the rest), fund raise $0.01 / 14, balance sheets $0.01 / 4.   
+      283 +- **By day:** 11 Nov $0.03 (15 calls), 12 Nov $2.52 (669), 13 
+          +Nov $0.30 (226), 14 Nov $0.33 (52), 15 Nov $0.02 (4).         
+      284 +- **Not in the local log:** live-research runs on Render, logg
+          +ed on its own disk: SONACOMS $0.036, FEDERALBNK $0.054 + $0.01
+          +6, about **$0.11**. Build total ≈ **$3.30**.                  
+      285 +- **Unit costs:** results card ≈ $0.002 (1–2 PDF pages, ~830 t
+          +okens); headline ≈ $0.0005; one ambiguous filing classified ≈ 
+          +$0.0005; one company's PvD from scratch ≈ $0.05 (4 transcripts
+          + × ~14k tokens on flash-lite); live research for a new company
+          + $0.02–0.05; a cached re-run of all 22 pages ≈ $0.01.         
+      286 +- **Daily running cost** (cron, new filings only): a few cents
+          + at list prices, $0 on free tiers.                            
+      287 +                                                              
+      288  ## Spike findings (11 Nov)
+      289  - **BSE API needs full browser headers** (`Origin` + `sec-fetc
+           h-*`), not just User-Agent + Referer. Without them it returns 
+           403. No cookies needed. **Works from a cloud IP:** `/health/bs
+           e` on Render (Singapore, free tier) returned live rows on 11 N
+           ov, so live pull and cloud ingest can call BSE directly. Gave 
+           up: nothing; the local-ingest fallback wasn't needed.
+      290  - **BSE's category alone misses results.** HDFCBANK filed Q2 r
+           esults under "Board Meeting / Outcome of Board Meeting". The c
+           lassifier needs a keyword rule on the subject ("financial resu
+           lts").
+
+● Two follow-ups: DECISIONS still says "No CI exists" in the 13 Nov gate entry,
+  and PLAN.md needs today's status section.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Update(DECISIONS.md)
+  ⎿  Added 1 line, removed 1 line
+      195  - **Asian Paints' Q2 FY27 margin appeared as 15.6%, 18.2% and 
+           18.5%; hand-checked, 15.6% is right.** Management said on the 
+           Q2 FY27 call (p.23): "PBDIT margin … about 15.6%, lower by abo
+           ut 202 bps" (consolidated). 18.2% is real but is the *H1* figu
+           re from the same page; the bull point dropped "H1". 18.5% was 
+           ours: (PBT + interest + D&A) / revenue puts ₹290 cr of other i
+           ncome back in. Screener's operating profit / sales gives 1,557
+            / 9,977 = 15.6%, and matches management's PBDIT on all four c
+           alls (17.6/17.7, 20.1, 20.6, 15.6). **Cause fixed, not the tic
+           ker:** EBITDA now excludes other income everywhere: the feed's
+            results card (extraction gained an `other_income` line; card 
+           note "− other income"), the snapshot margin and the promise ch
+           ecks all use one series. Where management's own figure agrees 
+           with it within 0.15 pp on every call, promises are judged on t
+           hat full quarterly series (so FY26 has all four quarters, not 
+           just the call quarters); where it doesn't (TCS's EBIT "operati
+           ng margin"), management's figure stays, labelled. This reverse
+           s the 12 Nov "other income not excluded" choice: what the comp
+           any reports wins.
+      196  - **PAT is to owners everywhere.** Screener's "Net Profit" is 
+           total PAT (minority interest included): Asian Paints Q2 FY27 ₹
+           1,085 cr, +6.6% YoY, against the feed card's owners' ₹1,068 cr
+           , +7.5%. Screener's own breakdown has "Profit for EPS" (the ow
+           ners' share); `screener.company()` swaps it in, so PvD, snapsh
+           ot and cash conversion all use it, labelled "PAT (to owners)".
+      197  - **The filing wins for the quarters it covers.** Screener rou
+           nds to whole crore, so even with one definition the owners' PA
+           T YoY came out +7.4% vs the card's +7.5%. The research page no
+           w takes revenue, EBITDA and PAT for the three quarters on the 
+           feed's latest results card (this quarter, previous, year-ago) 
+           from the card itself. Guards: same basis only (DEEPAKNTR's car
+           d is standalone, research is consolidated: different labelled 
+           metrics, not overridden) and revenue within 2% of the table (I
+           TC's card revenue includes excise duty since Feb 2026: +43.9% 
+           "growth" against screener's net +3.9%). The card now nets out 
+           excise duty when the filing prints it ("Revenue net of excise 
+           duty").
+      198 -- **Consistency gate:** `python -m finn.consistency` (and `tes
+          -ts/test_consistency.py`) checks every research page against th
+          -e feed and itself: card revenue / PAT / their YoY / EBITDA mar
+          -gin vs the snapshot, PvD margin and revenue-growth points vs t
+          -he snapshot, bull/bear margin and YoY figures vs the snapshot,
+          - no hit/miss before a deadline, no chart point after one. The 
+          -research batch exits non-zero if anything disagrees. No CI exi
+          -sts and Vercel builds have no Python, so "fails the build" mea
+          -ns the data build (the research batch) and the backend test su
+          -ite.                                                          
+      198 +- **Consistency gate:** `python -m finn.consistency` (and `tes
+          +ts/test_consistency.py`) checks every research page against th
+          +e feed and itself: card revenue / PAT / their YoY / EBITDA mar
+          +gin vs the snapshot, PvD margin and revenue-growth points vs t
+          +he snapshot, bull/bear margin and YoY figures vs the snapshot,
+          + no hit/miss before a deadline, no chart point after one. The 
+          +research batch exits non-zero if anything disagrees. Vercel bu
+          +ilds have no Python, so "fails the build" means the data build
+          + (the research batch) and the backend test suite, which CI run
+          +s on every push (since 15 Nov).                               
+      199  - **Undated band guidance is judged on the year it was given i
+           n.** "Maintain the 18–20% PBDIT band" on the Q2 FY26 call (no 
+           period) is FY26's guidance: FY26 (Apr 2025 – Mar 2026) as a wh
+           ole decides hit/miss, not the path into FY27. The year is the 
+           one the next quarter falls in, so a Q4 call's undated guidance
+            is about the next year. Only long-term promises ("over the ne
+           xt few years") stay undated and use moved closer / moved away.
+      200  - **No hit or miss before the deadline.** L&T's FY27 order-inf
+           low target (10–12%) was "Hit" on Q1 alone. Now: before the per
+           iod ends, the model's hit / miss / partial become on track / b
+           ehind pace, and a target Python can compare from management's 
+           statement (one % figure) gets ahead / on track / behind pace (
+           L&T: 14% → Ahead). Growth bands of any metric are floors (beat
+           ing 12% is ahead, not out of band). Bull/bear may not call a t
+           arget beaten or missed unless its verdict is hit or miss (Pyth
+           on drops the point).
+      201  - **"Value growth" is a segment metric.** For paint (and consu
+           mer) companies it means one business's sales in value terms (A
+           sian Paints: the domestic decorative business), not consolidat
+           ed revenue, which had made it a "Hit" at +4.9%. It is now meas
+           ured only on a reported segment; Asian Paints' filing says "Th
+           ere is no separate reportable segment as per Ind AS 108", so i
+           t is "Not measurable (segment not reported)". Segment tables s
+           aying they have no segments are now recognised as such.
+
+● Update(PLAN.md)
+  ⎿  Added 7 lines
+      250  - **Bull/bear regeneration NOT run:** Groq's gpt-oss-120b answ
+           ered with its daily cap after one call (ASIANPAINT trial, 2 + 
+           1 points). **Sunday morning:** `cd backend && ../.venv/Scripts
+           /python -m finn.pull.research --regen`, then check the consist
+           ency gate line it prints (0 problems), commit + push. Consiste
+           ncy gate tonight: 0 problems.
+      251  - 174 backend + 15 web tests pass; static build OK; impeccable
+            detector clean on the changed screens.
+      252  
+      253 +## 3o. Status at 15 Nov, ~02:00 (Batch C: all non-UI work done
+          + except the regen)                                            
+      254 +- **Bull/bear repair:** rejected points go back to the model o
+          +nce with Python's reasons; aim 3 a side; under 2 → what passed
+          + + a quiet note. The previous section is kept only when the mo
+          +del is unavailable.                                           
+      255 +- **Results cards:** MARUTI (standalone; its consolidated tabl
+          +e is an unreadable scan) and TRENT (consolidated) now build. T
+          +he page finder skipped notes pages, review reports and cash-fl
+          +ow statements. TRENT's research page was rebuilt to match its 
+          +card; consistency gate 0 problems.                            
+      256 +- **GitHub Actions:** CI on every push (backend + web tests + 
+          +static build), feed refresh 08:37 / 18:37 IST (commits only wh
+          +en the data changed), keep-warm ping every 10 min. `cache/llm/
+          +` is committed so the cron reuses answers. CORS limited to Ver
+          +cel + localhost. `.env.example` complete (its FINN_STRONG was 
+          +wrong). README drafted; total cost in DECISIONS ($3.19 / 966 c
+          +alls locally + ~$0.11 on Render).                             
+      257 +- **Not done: the `--regen`.** Groq's gpt-oss-120b daily token
+          + cap was hit on the 2nd company (the probe said 999 requests l
+          +eft; the token cap isn't in the headers). **Morning:** `cd bac
+          +kend && ../.venv/Scripts/python -m finn.pull.research --regen`
+          +; it must end without `INCONSISTENT` lines (exit 0), then comm
+          +it `web/public/data/research` + `cache/llm` and push.         
+      258 +- 178 backend + 15 web tests pass.                            
+      259 +                                                              
+      260  ## 4. Day-by-day
+      261  
+      262  **Wed 11 (done):** repo init, spikes, decisions. Session expor
+           t.
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && sed -i 's/^Current
+      status: see §3l/Current status: see §3o (15 Nov: Batch C), §3n, §3m, §3l/'
+      PLAN.md && head -4…)
+  ⎿  1 file changed (binary, mode only or too large to show)
+  ⎿  (a git step in this command can move the working tree, so these may be
+     its changes, not edits) (ctrl+o to expand)
+
+● Everything is pushed. One last check: is the deployed API already sending the
+  new CORS headers? (Render redeploys on the backend change, which takes a few
+  minutes.)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Batch C is done except the regen (item 2): Groq's daily token cap ran out.
+  Everything is committed and pushed to main.
+
+  Done
+  1. Bull/bear repair: when the checks reject points, the model gets one more
+     call with the reasons and how many points each side still needs (aim 3). A
+     side left with under 2 points shows what passed plus one quiet line. One
+     related change: the previous section is now kept only when the model is
+     unavailable. TRENT's old section quoted an 18.0% margin its new results
+     card replaces (18.4%), and the consistency gate caught it.
+  2. Regen: not run. A tiny test call said 999 of 1,000 requests were left, but
+     the daily token cap ran out on the 2nd company ("retry after 653 s"). Groq
+     doesn't report that cap until you hit it. I threw away the two partial
+     rebuilds. In the morning, run cd backend && ../.venv/Scripts/python -m
+     finn.pull.research --regen. It must end with no INCONSISTENT lines; then
+     commit web/public/data/research and cache/llm.
+  3. Daily refresh at 08:37 and 18:37 IST, with the existing guards. It commits
+     only when the feed's data changed, and only the feed and cache/llm/, so
+     Render doesn't restart. I committed cache/llm/ (3 MB) so the cron reuses
+     past model answers instead of making ~200 new calls a run.
+  4. Keep-warm: pings /health every 10 min.
+  5. CI on every push: backend tests, web tests and the static build. A
+     fresh-clone run with no keys passed (170 passed, 6 live tests skipped). The
+     README has the badge.
+  6. localStorage was already built in Batch B; I confirmed it.
+  7. CORS is limited to the production domain, finn-*.vercel.app previews and
+     localhost. The deployed API accepts the Vercel origin and rejects others.
+  8. MARUTI and TRENT cards fixed (about 25 min). "Unknown unit" was a symptom:
+     the page finder was sending the model a notes page. MARUTI's card is
+     standalone (labelled) because its consolidated table is an unreadable scan.
+     I checked its numbers by hand against the filing.
+  9. README written with screenshot placeholders. DECISIONS now has a Batch C
+     section and the cost summary: $3.19 for 966 calls locally, plus about $0.11
+     on Render, all at list prices. Actual spend was $0 on free tiers.
+  10. .env.example lists every variable. It had a real bug: it set the strong
+      model to Gemini, overriding the Groq default.
+
+  For you
+  - Add the two secrets and set Actions → General → Read and write permissions
+    (steps at the top).
+  - Then run Actions → Refresh feed → Run workflow once. I couldn't test whether
+    BSE answers GitHub's servers. If it doesn't, the run goes red and the feed
+    is left as it was.
+  - Your repo is private, so the keep-warm ping uses about 4,300 Actions minutes
+    a month against 2,000 free. That's fine for the review window; make the
+    repo public afterwards, or slow the ping.
+
+  Non-UI items left
+  - The regen.
+  - The /export into build-history/ (day4-ui-round.txt there is still
+    uncommitted).
+  - REDESIGN.md doesn't exist in the repo; I worked from DESIGN.md and
+    UI_BRIEF.md.
+
+  For the UI redesign
+  - TRENT's bull/bear section is now just a heading and a note: it has no call
+    transcripts, so there's nothing to cite.
+  - The Brief's "Last checked" time now means the last time the data changed,
+    not the last cron run.
+
+  I didn't watch CI or the cron run on GitHub, only the local fresh-clone run.
+  The cron can't trigger CI on its own commits, which is fine. Phone testing
+  over your laptop's Wi-Fi (next dev -H <IP>) can no longer reach the API, so
+  test live research on the deployed app.

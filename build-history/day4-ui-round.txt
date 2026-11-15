@@ -1,0 +1,2374 @@
+
+> Read CLAUDE.md, PLAN.md (latest status), DECISIONS.md, PRODUCT.md, DESIGN.md
+  and UI_BRIEF.md. The backend is frozen except item 3 below. First commit
+  UI_BRIEF.md and the build-history/ files.
+  Do UI Round 1 from UI_BRIEF.md. Use the impeccable skill, and emil-design-eng
+  for any motion.
+  Also fix these, found on the deployed app:
+  1. Alerts: fire only for P1 items in the chosen categories (HDFC Bank's
+  re-appointment is P2 but still shows as a "New" alert), and dedupe the same
+  filing across dates (it appears on both 13 Nov and 12 Nov).
+  2. PvD summary sentence must use the badge's wording: "behind on volume
+  growth", not "missed on", when the verdict is Behind pace.
+  3. Bull/bear (the one allowed backend exception, prompt + Python rules only):
+     a. "Why it matters" must name a company-specific driver from the cited
+  evidence (a competitor, a segment, a cost item, an analyst's concern). Ban
+  generic filler like "supports profitability", "drives top-line growth",
+  "erodes momentum".
+     b. Every point names the exact metric and period as defined on the page
+  (e.g. "PBDIT margin, H1 FY27, as reported" vs "EBITDA margin ex other income,
+  Q2 FY27"). Never two different numbers under the same name.
+     c. Sanity rules: don't present debt/equity below 0.5 as a leverage risk;
+  no point may contradict a PvD verdict.
+     d. Add a one-command regeneration for all 22. Run it tonight ONLY if
+  gpt-oss-120b has quota (it reset today); otherwise leave it for Sunday
+  morning. Then re-run the consistency gate (0 problems).
+     Commit and push (Vercel redeploys automatically), then stop with a summary
+  and the list of changed screens so I can check them on my phone.
+
+● Starting by reading the brief and project docs.
+
+  Read 1 file, ran 2 shell commands (ctrl+o to expand)
+
+● First step from the brief: commit UI_BRIEF.md and build-history/.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Committed. Loading the impeccable skill now, as the brief asks.
+
+● Skill(impeccable:impeccable)
+  ⎿  Successfully loaded skill
+
+  Read 1 file, ran 5 shell commands (ctrl+o to expand)
+
+● Reading done. Plan: alerts fixes + redesign in lib/feed.ts and the Alerts page
+  first, then the How-FINN-works card, live-research progress view, desktop QR
+  note, then the bull/bear backend item.
+
+  Read 1 file, ran 4 shell commands (ctrl+o to expand)
+
+● Data checked. Now the alerts logic in lib/feed.ts (web/lib/feed.ts): P1-only,
+  cross-date dedupe, and one row per company per day.
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+● Write(web\lib\alerts.ts)
+  ⎿  Wrote 33 lines to web\lib\alerts.ts
+       1 // Pure alert helpers (tested in alerts.test.ts): spotting one e
+         vent filed twice, and folding a day's alerts
+       2 // into one row per company.
+       3 import type { Alert } from "./feed";
+       4
+       5 const words = (s: string) => new Set(s.toLowerCase().match(/[a-z
+         0-9]{4,}/g) ?? []);
+       6
+       7 // Two headlines tell the same event when most words of the shor
+         ter one are in the longer one
+     … +26 lines (ctrl+o to expand)
+
+● Now buildAlerts in feed.ts: P1-only filings, cross-date dedupe, compact market
+  parts with an "extreme" flag.
+
+● Update(web\lib\feed.ts)
+  ⎿  Added 21 lines, removed 7 lines
+      114  // ---- alerts (recomputed here so threshold/category changes 
+           apply immediately) ----
+      115  // sev orders a day's alerts (material filing > price move by 
+           size > volume by multiple > data problem);
+      116  // minor = a volume-only spike under MINOR_VOL, folded behind 
+           "+N smaller volume spikes" (user, 13 Nov)
+      117 -export type Alert = { key: string; symbol: string; date: strin
+          -g; kind: "price" | "filing" | "error"; text: string; url?: str
+          -ing | null; item?: Item; sev: number; minor?: boolean };      
+      117 +// parts: the crossings as short facts ("−3.3% vs Nifty", "2.3
+          +× vol"); strong = extreme (≥5× volume or twice the move thresh
+          +old)                                                          
+      118 +export type Alert = {                                         
+      119 +  key: string; symbol: string; date: string; kind: "price" | "
+          +filing" | "error"; text: string; url?: string | null; item?: I
+          +tem;                                                          
+      120 +  sev: number; minor?: boolean; parts?: { t: string; strong: b
+          +oolean }[];                                                   
+      121 +};                                                            
+      122  export const MINOR_VOL = 3;
+      123  export const ALERT_DAYS = 7;
+      124 +const EXTREME_VOL = 5;                                        
+      125  
+      126  export function buildAlerts(feed: Feed, s: Settings): Alert[] 
+           {
+      127    const out: Alert[] = [];
+     ...
+      130      if (!h.length) continue;
+      131      const move = Math.abs(d.excess_pct ?? d.move_pct);
+      132      const moved = move >= s.moveX, vol = d.vol_ratio ?? 0;
+      128 -    out.push({ key: `price|${d.symbol}|${d.date}`, symbol: d.s
+          -ymbol, date: d.date, kind: "price", text: h.join(" · "),      
+      133 +    const parts = [];                                         
+      134 +    if (moved) parts.push({ t: d.excess_pct != null ? `${pct(d
+          +.excess_pct)} vs Nifty` : pct(d.move_pct), strong: move >= 2 *
+          + s.moveX });                                                  
+      135 +    if (vol >= s.volN) parts.push({ t: `${vol.toFixed(1)}× vol
+          +`, strong: vol >= EXTREME_VOL });                             
+      136 +    out.push({ key: `price|${d.symbol}|${d.date}`, symbol: d.s
+          +ymbol, date: d.date, kind: "price", text: h.join(" · "), parts
+          +,                                                             
+      137        sev: moved ? 200 + move : 100 + vol, minor: !moved && vo
+           l < MINOR_VOL });
+      138    }
+      131 -  const seen = new Set<string>(); // one alert per (symbol, da
+          -y, category): results are often filed twice                   
+      132 -  for (const i of [...feed.items].sort((a, b) => a.tier.locale
+          -Compare(b.tier))) {                                           
+      139 +  // Material (P1) filings in the chosen categories only (user
+          +, 14 Nov). One per (symbol, day, category): results are       
+      140 +  // often filed twice; and a repeat of the same event within 
+          +a week (approval, then the appointment) keeps the first.      
+      141 +  const seen = new Set<string>();                             
+      142 +  const kept: Item[] = [];                                    
+      143 +  for (const i of [...feed.items].sort((a, b) => a.filed.local
+          +eCompare(b.filed))) {                                         
+      144      const key = `filing|${i.symbol}|${i.filed.slice(0, 10)}|${
+           i.category}`;
+      134 -    if (i.tier === "P3" || !s.cats.includes(i.category) || see
+          -n.has(key)) continue;                                         
+      145 +    if (i.tier !== "P1" || !s.cats.includes(i.category) || see
+          +n.has(key)) continue;                                         
+      146 +    const text = i.headline || i.subject || "";               
+      147 +    if (kept.some((k) => k.symbol === i.symbol && k.category =
+          +== i.category && Date.parse(i.filed) - Date.parse(k.filed) <= 
+          +7 * 864e5                                                     
+      148 +      && sameEvent(k.headline || k.subject || "", text))) cont
+          +inue;                                                         
+      149      seen.add(key);
+      136 -    out.push({ key, symbol: i.symbol, date: i.filed.slice(0, 1
+          -0), kind: "filing", text: `${sentence(label(i.category))}: ${i
+          -.headline || i.subject}`, url: i.url, item: i,                
+      137 -      sev: i.tier === "P1" ? 300 : 250 });                    
+      150 +    kept.push(i);                                             
+      151 +    out.push({ key, symbol: i.symbol, date: i.filed.slice(0, 1
+          +0), kind: "filing", text: `${sentence(label(i.category))}: ${t
+          +ext}`, url: i.url, item: i, sev: 300 });                      
+      152    }
+      153    for (const a of feed.alerts.filter((a) => a.kind === "error"
+           ))
+      154      out.push({ key: `error|${a.symbol}|${a.date}`, symbol: a.s
+           ymbol, date: a.date, kind: "error", text: a.text, sev: 0 });
+
+● Update(web\lib\feed.ts)
+  ⎿  Added 2 lines, removed 1 line
+      1  "use client";
+      2  import { useCallback, useEffect, useMemo, useState, useSyncExter
+         nalStore } from "react";
+      3 -import { hits, label, rank, type Ranked, type Reaction, type Tie
+        -r } from "./rank";                                              
+      3 +import { sameEvent } from "./alerts";                           
+      4 +import { hits, label, pct, rank, type Ranked, type Reaction, typ
+        +e Tier } from "./rank";                                         
+      5  
+      6  // ---- shape of web/public/data/feed.json (written by backend/f
+         inn/ingest.py) ----
+      7  export type ResultsLine = { name: string; value: number | null; 
+         qoq_pct: number | null; yoy_pct: number | null };
+
+● Update(web\lib\feed.ts)
+  ⎿  Removed 1 line
+      38  // ---- settings (localStorage) ----
+      39  // Defaults mirror backend/finn/config.py (VOLUME_MULTIPLE, EXC
+          ESS_MOVE_PCT, TIERS["P1"]).
+      40  export const P1_CATS = ["results", "m_and_a", "management_chang
+          e", "fund_raise", "litigation", "credit_rating_downgrade", "ple
+          dging"];
+      41 -export const P2_CATS = ["internal_restructuring", "earnings_cal
+         -l", "dividend", "bonus_split", "capex", "press_release", "credi
+         -t_rating"];                                                    
+      41  export type Settings = { volN: number; moveX: number; cats: str
+          ing[] };
+      42  export const DEFAULTS: Settings = { volN: 2, moveX: 3, cats: P1
+          _CATS };
+      43  
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/web" && python - <<'EOF'
+      p='app/settings/page.tsx'…)
+  ⎿  Updated web\app\settings\page.tsx (+3 -4)
+      1  "use client";
+      2  import { useState } from "react";
+      3 -import { DEFAULTS, P1_CATS, P2_CATS, sentence, useSettings, type
+        - Settings } from "@/lib/feed";                                  
+      3 +import { DEFAULTS, P1_CATS, sentence, useSettings, type Settings
+        + } from "@/lib/feed";                                           
+      4  import { label } from "@/lib/rank";
+      5  
+      6  export default function SettingsPage() {
+     ...
+      23        <NumberField id="move" label="Move vs Nifty" hint="either
+           direction" unit="%" prefix="±" value={s.moveX} min={0.5} step=
+          {0.5} onSave={(v) => update({ moveX: v })} />
+      24  
+      25        <h2 className="mt-8 border-b border-ink/80 pb-1.5 text-[0
+          .8125rem] font-semibold">Alert me on filings about</h2>
+      26 -      <CatGroup title="Material by default" cats={P1_CATS} s={s
+         -} toggle={toggle} />                                           
+      27 -      <CatGroup title="Usually worth a look" cats={P2_CATS} s={
+         -s} toggle={toggle} />                                          
+      28 -      <p className="pt-2 text-[0.8125rem] text-ink-2">Routine p
+         -aperwork (investor meets, postal ballots, small insider trades)
+         - never alerts.</p>                                             
+      26 +      <CatGroup title="Material filings" cats={P1_CATS} s={s} t
+         +oggle={toggle} />                                              
+      27 +      <p className="pt-2 text-[0.8125rem] text-ink-2">Only mate
+         +rial filings alert. Dividends, calls, press releases and routin
+         +e paperwork still show in the brief.</p>                       
+      28  
+      29        <button
+      30          type="button"
+
+● Now the Alerts page rewrite: verdict line, merged rows, severity order, minor
+  fold, tap-through.
+
+● Write(web\app\alerts\page.tsx)
+  ⎿  Added 42 lines, removed 27 lines
+       6  import { eventLabel, keyFact } from "@/components/FeedRow";
+       7  import { Signed } from "@/components/Signed";
+       8  import { FeedSkeleton, LoadFailed } from "@/components/States";
+       9 -import { ALERT_DAYS, buildAlerts, MINOR_VOL, shortDate, useFeed
+         -, useSettings, useUnseen, type Alert, type Feed } from "@/lib/f
+         -eed";                                                          
+       9 +import { alertRows, type AlertRow } from "@/lib/alerts";       
+      10 +import { ALERT_DAYS, buildAlerts, MINOR_VOL, shortDate, useFeed
+         +, useSettings, useUnseen, type Feed } from "@/lib/feed";       
+      11  
+      11 -const KIND: Record<Alert["kind"], string> = { price: "Price", f
+         -iling: "Filing", error: "Data" };                              
+      12 -                                                               
+      12  export default function Alerts() {
+      13    const { feed, error, retry } = useFeed();
+      14    const [s] = useSettings();
+      15    const alerts = useMemo(() => (feed ? buildAlerts(feed, s) : u
+          ndefined), [feed, s]);
+      16 +  const rows = useMemo(() => (alerts ? alertRows(alerts) : []),
+         + [alerts]);                                                    
+      17    const { unseen, markAll, ready } = useUnseen(alerts);
+      18    const [all, setAll] = useState(false); // last 7 days by defa
+          ult (user, 13 Nov); the export holds 30
+      19    // Freeze what was new when the inbox opened, then mark every
+          thing seen so the badge clears.
+     ...
+      27    if (error) return <LoadFailed error={error} retry={retry} />;
+      28    if (!alerts || !feed) return <FeedSkeleton header={false} row
+          s={6} />;
+      29  
+      30 +  const isNew = (r: AlertRow) => r.keys.some((k) => fresh?.has(
+         +k));                                                           
+      31    const since = new Date(Date.parse(feed.generated_at) - ALERT_
+          DAYS * 864e5).toISOString().slice(0, 10);
+      31 -  const shown = all ? alerts : alerts.filter((a) => a.date >= s
+         -ince);                                                         
+      32 -  const older = alerts.length - shown.length;                  
+      33 -  const days = [...new Set(shown.map((a) => a.date))];         
+      32 +  const shown = all ? rows : rows.filter((r) => r.date >= since
+         +);                                                             
+      33 +  const older = rows.length - shown.length;                    
+      34 +  const days = [...new Set(shown.map((r) => r.date))];         
+      35 +  const name = (sym: string) => { const n = shortName(feed.comp
+         +anies?.[sym]?.name ?? sym); return n.length > 24 ? sym : n; }; 
+      36 +  const news = [...new Set(rows.filter((r) => isNew(r) && !r.mi
+         +nor && !r.errors.length).map((r) => r.symbol))];               
+      37 +  const head = news.length === 0 ? "Nothing new since your last
+         + visit."                                                       
+      38 +    : news.length <= 2 ? `${news.map(name).join(" and ")} ${new
+         +s.length === 1 ? "needs" : "need"} a look.`                    
+      39 +    : `${news.length} companies need a look.`;                 
+      40    return (
+      41      <>
+      42        <section className="pt-5 pb-4">
+      37 -        <h1 className="font-serif text-[1.75rem] leading-[1.15]
+         - font-semibold tracking-[-0.015em]">Alerts</h1>                
+      38 -        <p className="mt-1 text-[0.9375rem] text-ink-2">       
+      39 -          {all ? "Last 30 days" : `Last ${ALERT_DAYS} days`}: m
+         -oves of ±{s.moveX}% vs Nifty, volume at {s.volN}× the 20-day av
+         -erage, and material filings in{" "}                            
+      43 +        <h1 className="font-serif text-[1.75rem] leading-[1.15]
+         + font-semibold tracking-[-0.015em] text-balance">{head}</h1>   
+      44 +        <p className="mt-1 text-[0.9375rem] leading-snug text-i
+         +nk-2">                                                         
+      45 +          {shown.length} {shown.length === 1 ? "alert" : "alert
+         +s"} in the {all ? "last 30 days" : `last ${ALERT_DAYS} days`}: 
+         +moves of ±{s.moveX}% vs Nifty,                                 
+      46 +          volume at {s.volN}× the 20-day average, material fili
+         +ngs in{" "}                                                    
+      47            <Link href="/settings" className="text-accent underli
+          ne">your categories</Link>.
+      48          </p>
+      49        </section>
+     ...
+      53            Nothing crossed your thresholds in the last {ALERT_DA
+          YS} days.
+      54          </p>
+      55        ) : (
+      49 -        days.map((d) => <Day key={d} d={d} alerts={shown.filter
+         -((a) => a.date === d)} feed={feed} fresh={fresh} />)           
+      56 +        days.map((d) => <Day key={d} d={d} rows={shown.filter((
+         +r) => r.date === d)} feed={feed} isNew={isNew} />)             
+      57        )}
+      58        {(older > 0 || all) && (
+      59          <button type="button" onClick={() => setAll(!all)} clas
+          sName="mt-2 flex min-h-12 items-center text-[0.875rem] font-med
+          ium text-accent">
+     ...
+      65  }
+      66  
+      67  // One day: most severe first; volume-only spikes under 3× fold
+           behind one line.
+      61 -function Day({ d, alerts, feed, fresh }: { d: string; alerts: A
+         -lert[]; feed: Feed; fresh: Set<string> | null }) {             
+      68 +function Day({ d, rows, feed, isNew }: { d: string; rows: Alert
+         +Row[]; feed: Feed; isNew: (r: AlertRow) => boolean }) {        
+      69    const [open, setOpen] = useState(false);
+      63 -  const main = alerts.filter((a) => !a.minor), minor = alerts.f
+         -ilter((a) => a.minor);                                         
+      70 +  const main = rows.filter((r) => !r.minor), minor = rows.filte
+         +r((r) => r.minor);                                             
+      71    const id = `minor-${d}`;
+      72    return (
+      73      <section aria-labelledby={`d-${d}`}>
+      74        <h2 id={`d-${d}`} className="border-b border-rule pt-5 pb
+          -1.5 font-serif text-[1rem] font-semibold">{shortDate(d)}</h2>
+      68 -      <ul>{main.map((a) => <Row key={a.key} a={a} feed={feed} i
+         -sNew={!!fresh?.has(a.key)} />)}</ul>                           
+      75 +      <ul>{main.map((r) => <Row key={r.key} r={r} feed={feed} i
+         +sNew={isNew(r)} />)}</ul>                                      
+      76        {minor.length > 0 && (
+      77          <>
+      78            <button type="button" aria-expanded={open} aria-contr
+          ols={id} onClick={() => setOpen(!open)}
+     ...
+      81              <Chevron open={open} />
+      82            </button>
+      83            <Collapse open={open} id={id}>
+      77 -            <ul>{minor.map((a) => <Row key={a.key} a={a} feed={
+         -feed} isNew={!!fresh?.has(a.key)} />)}</ul>                    
+      84 +            <ul>{minor.map((r) => <Row key={r.key} r={r} feed={
+         +feed} isNew={isNew(r)} />)}</ul>                               
+      85            </Collapse>
+      86          </>
+      87        )}
+     ...
+       89    );
+       90  }
+       91  
+       85 -function Row({ a, feed, isNew }: { a: Alert; feed: Feed; isNew
+          -: boolean }) {                                                
+       86 -  // the smallest Brief window that still contains the alert's
+          - day                                                          
+       92 +// "Tata Power · −3.3% vs Nifty · 2.3× vol · Results", then th
+          +e filing's fact. Extreme values carry weight, not colour.     
+       93 +function Row({ r, feed, isNew }: { r: AlertRow; feed: Feed; is
+          +New: boolean }) {                                             
+       94 +  const co = feed.companies?.[r.symbol];                      
+       95 +  const lead = r.filings[0]?.item;                            
+       96 +  const facts = [...(r.market?.parts ?? []), ...[...new Set(r.
+          +filings.map((f) => eventLabel(f.item!)))].map((t) => ({ t, str
+          +ong: false }))];                                              
+       97 +  // the smallest Brief window that still contains the filing'
+          +s day                                                         
+       98    const winFor = (filed: string) => {
+       99      const hours = (Date.parse(feed.generated_at) - Date.parse(
+           `${filed}:00+05:30`)) / 36e5;
+      100      return hours <= 24 ? "24h" : hours <= 24 * 7 ? "7d" : "30d
+           ";
+      101    };
+       91 -  const kind = a.item ? eventLabel(a.item) : a.kind === "price
+          -" ? (a.text.includes("%") ? (a.text.includes("volume") ? "Pric
+          -e & volume" : "Price") : "Volume") : KIND[a.kind];            
+       92 -  const co = feed.companies?.[a.symbol];                      
+      102 +  const href = lead ? `/?open=${r.symbol}&w=${winFor(lead.file
+          +d)}` : r.errors.length ? null : `/research?symbol=${r.symbol}`
+          +;                                                             
+      103    const body = (
+      104      <>
+       95 -      <Avatar name={co?.name ?? a.item?.name ?? a.symbol} sect
+          -or={co?.sector} />                                            
+      105 +      <Avatar name={co?.name ?? lead?.name ?? r.symbol} sector
+          +={co?.sector} />                                              
+      106        <span className="min-w-0 flex-1">
+      107          <span className="flex items-baseline gap-2">
+       98 -          <span className="text-[0.875rem] font-semibold">{co 
+          -? shortName(co.name) : a.symbol}</span>                       
+       99 -          <span className="text-[0.8125rem] text-ink-2">{kind}
+          -</span>                                                       
+      100 -          {isNew && <span className="ml-auto text-[0.75rem] fo
+          -nt-semibold text-accent">New</span>}                          
+      108 +          <span className="min-w-0 text-[0.875rem] font-semibo
+          +ld">{co ? shortName(co.name) : r.symbol}</span>               
+      109 +          {isNew && <span className="ml-auto shrink-0 text-[0.
+          +75rem] font-semibold text-accent">New</span>}                 
+      110          </span>
+      102 -        <span className={`mt-0.5 block text-[0.875rem] leading
+          --[1.4] [overflow-wrap:anywhere] ${a.kind === "error" ? "text-i
+          -nk-2" : ""}`}>                                                
+      103 -          <Signed text={a.item ? keyFact(a.item) : a.text} /> 
+      104 -        </span>                                               
+      111 +        {facts.length > 0 && (                                
+      112 +          <span className="mt-0.5 block text-[0.875rem] leadin
+          +g-[1.4]">                                                     
+      113 +            {facts.map((f, k) => (                            
+      114 +              <span key={k}>{k > 0 && <span className="text-in
+          +k-2"> · </span>}<span className={f.strong ? "font-semibold" : 
+          +""}><Signed text={f.t} /></span></span>                       
+      115 +            ))}                                               
+      116 +          </span>                                             
+      117 +        )}                                                    
+      118 +        {lead && <span className="mt-0.5 line-clamp-2 block te
+          +xt-[0.8125rem] leading-[1.4] text-ink-2 [overflow-wrap:anywher
+          +e]">{keyFact(lead)}</span>}                                   
+      119 +        {r.errors.map((e) => <span key={e.key} className="mt-0
+          +.5 block text-[0.8125rem] leading-[1.4] text-ink-2">{e.text}</
+          +span>)}                                                       
+      120        </span>
+      121      </>
+      122    );
+      123    return (
+      124      <li className="border-b border-rule">
+      110 -      {a.item ? (                                             
+      111 -        <Link href={`/?open=${a.symbol}&w=${winFor(a.item.file
+          -d)}`} className="flex items-center gap-3 py-3 active:bg-paper-
+          -2">                                                           
+      125 +      {href ? (                                               
+      126 +        <Link href={href} className="flex items-center gap-3 p
+          +y-3 transition-colors duration-150 ease-out active:bg-paper-2"
+          +>                                                             
+      127            {body}
+      128            <svg viewBox="0 0 16 16" className="size-4 shrink-0 
+           text-ink-2" aria-hidden="true"><path d="M6 4l4 4-4 4" fill="no
+           ne" stroke="currentColor" strokeWidth="1.5" strokeLinecap="rou
+           nd" strokeLinejoin="round" /></svg>
+      129          </Link>
+
+● Badge should count rows, not raw alerts:
+
+● Update(web\components\TabBar.tsx)
+  ⎿  Added 1 line, removed 1 line
+      41        <ul className="mx-auto grid h-14 max-w-[36rem] grid-cols-
+          4">
+      42          {TABS.map((t) => {
+      43            const active = t.href === "/" ? path === "/" : path.s
+          tartsWith(t.href);
+      44 -          const count = t.href === "/alerts" && !active ? unsee
+         -n.length : 0;                                                  
+      44 +          const count = t.href === "/alerts" && !active ? new S
+         +et(unseen.map((a) => `${a.symbol}|${a.date}`)).size : 0; // one
+         + per inbox row                                                 
+      45            return (
+      46              <li key={t.href}>
+      47                <Link
+
+● Write(web\lib\alerts.test.ts)
+  ⎿  Wrote 25 lines to web\lib\alerts.test.ts
+       1 import { test } from "node:test";
+       2 import assert from "node:assert/strict";
+       3 import { alertRows, sameEvent } from "./alerts.ts";
+       4
+       5 test("the same event filed on two days is one event; different e
+         vents are not", () => {
+       6   assert.ok(sameEvent(
+       7     "Approval from the Reserve Bank of India for re-appointment
+         of Mr. V. Srinivasa Rangan as the Whole-time Director (designate
+         d as Executive Director) of HDFC Bank Limited",
+     … +18 lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Alerts done (15 web tests pass). Now fix 2, the PvD sentence wording. Finding
+  where it's built:
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+● Fixing the sentence template at its source (pure Python, no LLM):
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && python - <<'EOF'
+      p='finn/pull/research.py'…)
+  ⎿  Updated backend\finn\pull\research.py (+5 -1)
+       99  
+      100  
+      101  # ---- track record (template sentence, no LLM) ----
+      102 +VERB = {"miss": "missed", "behind pace": "behind", "moved away
+          +": "moved away from target"}                                  
+      103 +                                                              
+      104 +                                                              
+      105  def summary(rows: list[dict], n_calls: int) -> dict:
+      106      v = [r["verdict"] for r in rows]
+      107      c = {"kept": sum(x in KEPT for x in v), "missed": sum(x in
+            MISSED for x in v), "open": sum(x in OPEN for x in v),
+     ...
+      124              words = m["metric"].split()
+      125              # "Operating Margin" -> "operating margin"; keep a
+           cronyms ("EBITDA margin", "FY 26")
+      126              name = m["metric"] if any(len(w) > 1 and w.isupper
+           () for w in words) else m["metric"].lower()
+      124 -            tail.append(f"missed {len(missed)}, the latest on 
+          -{name} ({m['call']} call)" if len(missed) > 1 else f"missed on
+          - {name} ({m['call']} call)")                                  
+      127 +            said = f"{VERB[m['verdict']]} on {name} ({m['call'
+          +]} call)"  # the row's badge wording: "behind on", not "missed
+          + on"                                                          
+      128 +            tail.append(f"{len(missed)} not kept, the latest {
+          +said}" if len(missed) > 1 else said)                          
+      129          if c["open"]:
+      130              tail.append(f"{c['open']} on track")
+      131          if c["partial"]:
+  ⎿  Updated backend\tests\test_research.py (+150 -149)
+        1 -from finn.pull import pvd, research                           
+        2 -                                                              
+        3 -                                                              
+        4 -def test_checked_drops_points_whose_numbers_are_not_in_their_e
+          -vidence():                                                    
+        5 -    by_id = {"S1": {"text": "Revenue: 15.8% (Q2 FY27). “revenu
+          -e grew 15.8% YoY”", "cite": {"label": "Q2 FY27 call, p.4", "ur
+          -l": "u"}},                                                    
+        6 -             "F1": {"text": "Debt/equity 1.15 at FY26 end (Mar
+          - 2026), from 1.52 at FY22 end.", "cite": {"label": "Financial 
+          -snapshot", "url": "#leverage"}}}                              
+        7 -    why = "Growth funds the capex plan without new debt."     
+        8 -    points = [{"claim": "Revenue grew 15.8% YoY in Q2 FY27.", 
+          -"why": why, "cites": ["S1"]},          # number in evidence; F
+          -Y27 is a period                                               
+        9 -              {"claim": "Revenue grew 16% YoY in Q2 FY27.", "w
+          -hy": why, "cites": ["S1"]},            # rounded: not in the e
+          -vidence                                                       
+       10 -              {"claim": "Debt/equity fell to 1.15 at FY26 end 
+          -from 1.52.", "why": "Less debt, less refinancing risk.", "cite
+          -s": ["F1", "X9"]},  # unknown id ignored                      
+       11 -              {"claim": "Margins are healthy.", "why": why, "c
+          -ites": ["X9"]}]                          # no valid citation  
+       12 -    keep, dropped = research.checked(points, by_id)           
+       13 -    assert [k["point"] for k in keep] == ["Revenue grew 15.8% 
+          -YoY in Q2 FY27.", "Debt/equity fell to 1.15 at FY26 end from 1
+          -.52."]                                                        
+       14 -    assert keep[0]["why"] == why and keep[1]["cites"] == [by_i
+          -d["F1"]["cite"]] and dropped == 2                             
+       15 -                                                              
+       16 -                                                              
+       17 -def test_bull_bear_points_are_arguments_that_respect_the_verdi
+          -cts():                                                        
+       18 -    by_id = {"P1": {"verdict": "ahead", "text": "Promised on t
+          -he Q4 FY26 call: order inflows growth: 10% to 12% (FY27). Verd
+          -ict: ahead. Actual: Q1 FY27 call: 14%",                       
+       19 -                    "cite": {"label": "Q4 FY26 call, p.13 (pro
+          -mise)", "url": "u"}},                                         
+       20 -             "P2": {"verdict": "miss", "text": "Promised on th
+          -e Q2 FY26 call: revenue growth: 15% (FY26). Verdict: miss. Act
+          -ual: FY26: +11.8%", "cite": {}},                              
+       21 -             "F1": {"text": "EBITDA margin 15.6% in Q2 FY27, −
+          -2.0 pp YoY.", "cite": {}},                                    
+       22 -             "F2": {"text": "Promised 18–20%; H1 FY27 18.2% an
+          -d Q2 FY27 15.6%.", "cite": {}}}                               
+       23 -    pt = lambda claim, ids, why="Pricing power is holding up."
+          -: {"claim": claim, "why": why, "cites": ids}                  
+       24 -    keep, dropped = research.checked([                        
+       25 -        pt("Order inflows grew 14% in Q1 FY27, beating 10% to 
+          -12% guidance.", ["P1"]),     # beaten before FY27 ends: droppe
+          -d                                                             
+       26 -        pt("Order inflows 14% in Q1 FY27, ahead of the 10% to 
+          -12% FY27 target.", ["P1"]),  # pace words: kept               
+       27 -        pt("FY26 revenue growth of 11.8% missed the 15% target
+          -.", ["P2"]),                 # a real miss: kept              
+       28 -        pt("EBITDA margin 15.6% in Q2 FY27.", ["F1"], "Margin 
+          -fell 2.0 pp, so earnings lag revenue."),  # the why restates n
+          -umbers                                                        
+       29 -        pt("EBITDA margin 15.6% fell 2.0 pp.", ["F1"]),       
+          -                             # numbers without a period       
+       30 -        pt("EBITDA margin 15.6% in Q2 FY27, down 2.0 pp YoY.",
+          - ["F1"]),                    # kept                           
+       31 -        pt("EBITDA margin 18.2% in Q2 FY27.", ["F2"]),        
+          -                             # second figure for the same fact
+          -: dropped                                                     
+       32 -    ], by_id)                                                 
+       33 -    assert [k["point"][:24] for k in keep] == ["Order inflows 
+          -14% in Q1 ", "FY26 revenue growth of 1", "EBITDA margin 15.6% 
+          -in Q"] and dropped == 4                                       
+       34 -                                                              
+       35 -                                                              
+       36 -def row(verdict, metric="revenue growth", said="Sep 2025"):   
+       37 -    return {"verdict": verdict, "metric": metric, "said_in": s
+          -aid, "call": pvd.fy_name(said)}                               
+       38 -                                                              
+       39 -                                                              
+       40 -def test_summary_counts_and_sentence():                       
+     … 259 more lines (ctrl+o to expand)
+  Ran 4 shell commands (ctrl+o to expand)
+
+● Sentence fixed, 13 tests pass. Now the bull/bear item. Looking at the current
+  output to see the failures the user described:
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Most of the 22 failures are margins named the same way but defined differently
+  (ASIANPAINT), and low debt/equity read as leverage risk across several
+  tickers. I'm checking how the margin names are defined in the evidence next.
+  · summary
+
+  Ran 4 shell commands (ctrl+o to expand)
+
+● I'm adding the bull/bear rules to research.py: rejecting filler phrases,
+  requiring a distinctive shared word with the evidence, tagging part-year
+  figures with their quarters, and dropping inconsistent bull/bear claims.
+  · summary
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Writing the rules:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Heredoc tripped on quoting; writing the patch as a scratch script instead.
+
+  Made 1 scratchpad edit +93 (ctrl+o to expand)
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0
+      bc94bb048d8/41ffb8ca-5c7b-4e11…)
+  ⎿  Updated backend\finn\pull\research.py (+56 -8)
+      173      for k, r in enumerate(rows):
+      174          ev.append({"id": f"P{k + 1}", "verdict": r["verdict"],
+      175                     "text": f"Promised on the {r['call']} call:
+            {r['metric']}: {r['target']} ({r['period']}). "
+      176 -                           f"Verdict: {r['verdict']}{RUNNING.g
+          -et(r['verdict'], '')}. Actual: {r['actual']}",                
+      176 +                           f"Verdict: {r['verdict']}{RUNNING.g
+          +et(r['verdict'], '')}. Actual: {part_year(r['actual'])}",     
+      177                     "cite": {"label": f"{r['call']} call, p.{r[
+           'page']} (promise)", "url": r["transcript"]}})
+      178      for k, key in enumerate(("quarters", "margin", "cash", "le
+           verage")):
+      179          if snap.get(key, {}).get("claim"):
+      180 -            ev.append({"id": f"F{k + 1}", "text": snap[key]["c
+          -laim"], "cite": {"label": "Financial snapshot (results filings
+          -)", "url": f"#{key}"}})                                       
+      180 +            text = snap[key]["claim"] + (f" [{snap[key]['name'
+          +]}]" if snap[key].get("name") else "")  # the page's own defin
+          +ition                                                         
+      181 +            ev.append({"id": f"F{k + 1}", "text": text, "cite"
+          +: {"label": "Financial snapshot (results filings)", "url": f"#
+          +{key}"}})                                                     
+      182      return ev
+      183  
+      184  
+      185 +def part_year(actual: str) -> str:                            
+      186 +    """"FY27 (Apr 2026 – Mar 2027) so far (Q1–Q2, 2 of 4 quart
+          +ers)" -> "H1 FY27 (Q1–Q2)": a part-year figure is named by    
+      187 +    its quarters, so "EBITDA margin 18.2%, H1 FY27" can't read
+          + as the same fact as the Q2 figure (ASIANPAINT, 14 Nov)."""   
+      188 +    name = {"Q1": "Q1", "Q1–Q2": "H1", "Q1–Q3": "9M"}         
+      189 +    return re.sub(r"\b(FY\d{2}) \([^)]*\) so far \((Q1(?:–Q[23
+          +])?), \d of 4 quarters\)",                                    
+      190 +                  lambda m: f"{name[m.group(2)]} {m.group(1)} 
+          +({m.group(2)})", actual)                                      
+      191 +                                                              
+      192 +                                                              
+      193  RUNNING = {"on track": " (period still running: no hit or miss
+            yet)", "ahead": " (period still running: no hit or miss yet)"
+           ,
+      194             "behind pace": " (period still running: no hit or m
+           iss yet)"}
+      195  POINT = {"type": "object", "properties": {"claim": {"type": "s
+           tring"}, "why": {"type": "string"},
+     ...
+      204  # a company-level fact starts with its metric: "EBITDA margin 
+           15.6% in Q2 FY27". "EPC revenues ..." or "FMEG EBITDA
+      205  # margins ..." are a segment's (another metric); "EBITDA ... u
+           p 4.8% YoY" is growth, not a margin (SUNPHARMA, POLYCAB 14 Nov
+           ).
+      206  # "Operating margin" is left out: TCS's is EBIT, not the snaps
+           hot's EBITDA.
+      198 -_LEAD = r"\s*(?:consolidated\s+)?"                            
+      207 +_LEAD = r"\s*(?:[+−-]?\d[\d.,]*\s?%\s+)?(?:consolidated\s+)?" 
+          + # numbers-first too: "15.6% EBITDA margin in Q2 FY27"        
+      208  FAMILY = (("margin", re.compile(_LEAD + r"(?:ebitda|pbdit)\s+m
+           argins?\b", re.I)),
+      209            ("revenue", re.compile(_LEAD + r"(?:revenue|sales|to
+           tal income)\b", re.I)),
+      210            ("pat", re.compile(_LEAD + r"(?:pat|net profit|profi
+           t after tax)\b(?!\s+margin)", re.I)))
+     ...
+      226  MACRO = re.compile(r"\b(?:cpi|wpi|gdp|repo rate|headline infla
+           tion|consumer price)\b", re.I)
+      227  
+      228  
+      220 -def problem(pt: dict, ids: list[str], by_id: dict[str, dict]) 
+          --> str | None:                                                
+      229 +# "Why it matters" filler that fits any company (user, 14 Nov)
+          +: the why must name this company's driver instead             
+      230 +FILLER = re.compile(r"\b(?:supports?|boosts?|drives?|improves?
+          +|enhances?|strengthens?|erodes?|compress\w*|reduces?|limits?|p
+          +ressur\w*|"                                                   
+      231 +                    r"raises?|elevates?|increases?|heightens?|
+          +signals?|indicates?|highlights?)\s+(?:[\w’']+[\s‑-]+){0,2}?"  
+     … 69 more lines (ctrl+o to expand)
+
+● The old tests' failures come from whys that cite no evidence driver, so I'll
+  tighten the generic-word list and let credibility whys stand only when they
+  cite a measured promise before fixing them. · summary
+
+  Made 1 scratchpad edit +29, ran 1 shell command (ctrl+o to expand)
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0
+      bc94bb048d8/41ffb8ca-5c7b-4e11…)
+  ⎿  Updated backend\finn\pull\research.py (+14 -9)
+      233                      r"cash\s+generation|shareholder\s+value|(?
+           :leverage|financial|balance[\s‑-]?sheet)\s+risk)\b|"
+      234                      r"\b(?:operating leverage|financial flexib
+           ility|earnings momentum|cash generation)\b", re.I)
+      235  # words any why could use: they name no driver
+      236 -GENERIC = set("""about above after again against also among am
+          -ount annual around based basis below between beyond business  
+      237 -cash change company compared consolidated continue cost costs 
+          -credibility current decline declined deliver delivered demand 
+          -during                                                        
+      238 -earnings ebitda equity expand expansion expected figure figure
+          -s financial flow flows from further gross growth guidance high
+          -er                                                            
+      239 -increase income indicates investor investors latest level leve
+          -ls lower management margin margins market momentum month month
+          -s                                                             
+      240 -operating overall percent period points positive pressure prev
+          -ious price prices profit profitability profits promise        
+      241 -promised quarter quarterly quarters ratio reach reached remain
+          - reported result results return returns revenue revenues rise 
+          -risk                                                          
+      242 -rose sales same share shareholder shows since sheet strong tar
+          -get targets their there these this those through total trend v
+          -alue                                                          
+      243 -verdict versus visibility weak which while within would year y
+          -ears""".split())                                              
+      236 +GENERIC = set("""about above across after again against ahead 
+          +also among amount analyst analysts annual around asked based b
+          +asis                                                          
+      237 +been behind below between beyond billion both business call ca
+          +lls cash change company compared consolidated continue cost   
+      238 +costs could crore crores current decline declined deliver deli
+          +vered demand down during each earnings ebitda equity even     
+      239 +expand expansion expected figure figures financial flow flows 
+          +from further gross growth guidance have higher holding however
+      240 +income increase indicates into investor investors keeps lakh l
+          +atest less level levels lower made make management margin     
+      241 +margins market million momentum month months more most much mu
+          +st operating over overall percent period points positive      
+      242 +pressure previous price prices profit profitability profits pr
+          +omise promised quarter quarterly quarters question questioned 
+      243 +ratio reach reached remain reported result results return retu
+          +rns revenue revenues rise risk rose said sales same says share
+      244 +shareholder shows since sheet some still strong such target ta
+          +rgets than that their them then there these they this those   
+      245 +through total track trend upon value verdict versus very visib
+          +ility weak were what when where which while will with within  
+      246 +would year years your""".split())                             
+      247  
+      248  
+      249  def _stems(text: str) -> set[str]:
+     ...
+      253  DE = re.compile(r"\bdebt[\s/-]*(?:to[\s-]*)?equity\b|\bD/E\b",
+            re.I)
+      254  PACE = (("behind", re.compile(r"\bbehind\b", re.I)), ("on trac
+           k", re.compile(r"\bon track\b", re.I)), ("ahead", re.compile(r
+           "\bahead of\b", re.I)))
+      255  NOT_KEPT, KEPT_V = {"miss", "behind pace", "moved away"}, {"hi
+           t", "ahead"}
+      256 +CREDIBLE = re.compile(r"credib|guidance|track record|delivers?
+          + on|promises?\b", re.I)                                       
+      257  
+      258  
+      259  def problem(pt: dict, ids: list[str], by_id: dict[str, dict], 
+           side: str | None = None) -> str | None:
+     ...
+      284          return "a part-year figure without its quarters (H1 / 
+           9M)"
+      285      if FILLER.search(pt["why"]):
+      286          return "a generic why"
+      283 -    if not _stems(pt["why"]) & _stems(" ".join(by_id[i]["text"
+          -] for i in ids)):                                             
+      287 +    measured = verdicts & (NOT_KEPT | KEPT_V)  # on a kept or 
+          +missed promise, credibility is the driver                     
+      288 +    if not _stems(pt["why"]) & _stems(" ".join(by_id[i]["text"
+          +] for i in ids)) and not (measured and CREDIBLE.search(pt["why
+          +"])):                                                         
+      289          return "the why names no driver from its evidence"
+      290      return None
+     … 1 more lines (ctrl+o to expand)
+
+● Now updating the four tests so their whys name evidence drivers, plus one new
+  test for the new rules:
+
+  Made 1 scratchpad edit +77 (ctrl+o to expand)
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0
+      bc94bb048d8/41ffb8ca-5c7b-4e11…)
+  ⎿  Updated backend\tests\test_research.py (+45 -13)
+       2  
+       3  
+       4  def test_checked_drops_points_whose_numbers_are_not_in_their_ev
+          idence():
+       5 -    by_id = {"S1": {"text": "Revenue: 15.8% (Q2 FY27). “revenue
+         - grew 15.8% YoY”", "cite": {"label": "Q2 FY27 call, p.4", "url"
+         -: "u"}},                                                       
+       5 +    by_id = {"S1": {"text": "Revenue: 15.8% (Q2 FY27). “revenue
+         + grew 15.8% YoY on rural paint demand”", "cite": {"label": "Q2 
+         +FY27 call, p.4", "url": "u"}},                                 
+       6               "F1": {"text": "Debt/equity 1.15 at FY26 end (Mar 
+          2026), from 1.52 at FY22 end.", "cite": {"label": "Financial sn
+          apshot", "url": "#leverage"}}}
+       7 -    why = "Growth funds the capex plan without new debt."      
+       7 +    why = "Rural paint demand is carrying volumes."            
+       8      points = [{"claim": "Revenue grew 15.8% YoY in Q2 FY27.", "
+          why": why, "cites": ["S1"]},          # number in evidence; FY2
+          7 is a period
+       9                {"claim": "Revenue grew 16% YoY in Q2 FY27.", "wh
+          y": why, "cites": ["S1"]},            # rounded: not in the evi
+          dence
+      10                {"claim": "Debt/equity fell to 1.15 at FY26 end f
+          rom 1.52.", "why": "Less debt, less refinancing risk.", "cites"
+          : ["F1", "X9"]},  # unknown id ignored
+     ...
+      19                      "cite": {"label": "Q4 FY26 call, p.13 (prom
+          ise)", "url": "u"}},
+      20               "P2": {"verdict": "miss", "text": "Promised on the
+           Q2 FY26 call: revenue growth: 15% (FY26). Verdict: miss. Actua
+          l: FY26: +11.8%", "cite": {}},
+      21               "F1": {"text": "EBITDA margin 15.6% in Q2 FY27, −2
+          .0 pp YoY.", "cite": {}},
+      22 +             "Q1": {"text": "Analyst on the Q2 FY27 call: “Is c
+         +rude-linked raw material inflation squeezing margins?”", "cite"
+         +: {}},                                                         
+      23               "F2": {"text": "Promised 18–20%; H1 FY27 18.2% and
+           Q2 FY27 15.6%.", "cite": {}}}
+      23 -    pt = lambda claim, ids, why="Pricing power is holding up.":
+         - {"claim": claim, "why": why, "cites": ids}                    
+      24 +    pt = lambda claim, ids, why="Order inflows fund next year's
+         + execution.": {"claim": claim, "why": why, "cites": ids}       
+      25      keep, dropped = research.checked([
+      26          pt("Order inflows grew 14% in Q1 FY27, beating 10% to 1
+          2% guidance.", ["P1"]),     # beaten before FY27 ends: dropped
+      27          pt("Order inflows 14% in Q1 FY27, ahead of the 10% to 1
+          2% FY27 target.", ["P1"]),  # pace words: kept
+      27 -        pt("FY26 revenue growth of 11.8% missed the 15% target.
+         -", ["P2"]),                 # a real miss: kept                
+      28 +        pt("FY26 revenue growth of 11.8% missed the 15% target.
+         +", ["P2"], "Management's growth guidance proved unreliable."), 
+         + # a real miss: kept                                           
+      29          pt("EBITDA margin 15.6% in Q2 FY27.", ["F1"], "Margin f
+          ell 2.0 pp, so earnings lag revenue."),  # the why restates num
+          bers
+      29 -        pt("EBITDA margin 15.6% fell 2.0 pp.", ["F1"]),        
+         -                            # numbers without a period         
+      30 -        pt("EBITDA margin 15.6% in Q2 FY27, down 2.0 pp YoY.", 
+         -["F1"]),                    # kept                             
+      31 -        pt("EBITDA margin 18.2% in Q2 FY27.", ["F2"]),         
+         -                            # second figure for the same fact: 
+         -dropped                                                        
+      30 +        pt("EBITDA margin 15.6% fell 2.0 pp.", ["F1", "Q1"], "C
+         +rude-linked raw material inflation."),  # numbers without a per
+         +iod                                                            
+      31 +        pt("EBITDA margin 15.6% in Q2 FY27, down 2.0 pp YoY.", 
+         +["F1", "Q1"], "Crude-linked raw material inflation is not passe
+         +d on."),  # kept                                               
+      32 +        pt("EBITDA margin 18.2% in Q2 FY27.", ["F2", "Q1"], "Cr
+         +ude-linked raw material inflation."),  # second figure for the 
+         +same fact: dropped                                             
+      33      ], by_id)
+      34      assert [k["point"][:24] for k in keep] == ["Order inflows 1
+          4% in Q1 ", "FY26 revenue growth of 1", "EBITDA margin 15.6% in
+           Q"] and dropped == 4
+      35  
+     ...
+      125  
+      126  def test_a_second_margin_for_a_quarter_on_the_page_is_dropped(
+           monkeypatch):
+      127      ev = [{"id": "P1", "text": "FMEG EBITDA margins 10.1% (Q2 
+           FY27)", "cite": {}}, {"id": "F2", "text": "EBITDA margin 14.4%
+            in Q2 FY27", "cite": {}}]
+      127 -    pts = {"bull": [{"claim": "EBITDA margins 10.1% in Q2 FY27
+          -", "why": "Shows pricing power", "cites": ["P1"]},            
+      128 -                    {"claim": "EBITDA margin 14.4% in Q2 FY27"
+          -, "why": "Shows pricing power", "cites": ["F2"]}],            
+      129 -           "bear": [{"claim": "EBITDA margin 14.4% in Q2 FY27"
+          -, "why": "Leaves less room for price cuts", "cites": ["F2"]}]}
+      128 +    ev[1]["text"] += " [EBITDA margin, wires price hikes]"    
+     … 47 more lines (ctrl+o to expand)
+
+● The rules are right; my test's last case was wrong (its why cites a driver
+  that isn't in P2's evidence, so dropping it is correct). Fixing the test:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PY'
+      p='tests/test_research.py'…)
+  ⎿  Updated backend\tests\test_research.py (+2 -2)
+      164          p("Debt/equity 1.95 at FY26 end.", ["F5"], "Gold metal
+            loan borrowings fund inventory."),  # kept
+      165          p("Volume growth 6.4% in Q2 FY27, behind the 8-10% FY2
+           7 target.", ["P1"], "Supports profitability."),  # generic why
+      166          p("Volume growth 6.4% in Q2 FY27, behind the 8-10% FY2
+           7 target.", ["P1", "Q1"], "Birla Opus discounting takes dealer
+            share."),  # kept
+      167 -        p("EBITDA margin 18.2% in H1 FY27, on track for 18-20%
+          -.", ["P2"], "Birla Opus discounting."),  # on track is not a b
+          -ear (no verdict says so? kept: on track isn't kept)           
+      167 +        p("EBITDA margin 18.2% in H1 FY27, on track for 18-20%
+          +.", ["P2"], "Birla Opus discounting."),  # driver not in the c
+          +ited evidence                                                 
+      168      ], by_id, side="bear")
+      169 -    assert [x["point"][:14] for x in bear] == ["Debt/equity 1.
+          -", "Volume growth ", "EBITDA margin "] and d == 2             
+      169 +    assert [x["point"][:14] for x in bear] == ["Debt/equity 1.
+          +", "Volume growth "] and d == 3                               
+      170      bull, d = research.checked([
+      171          p("Volume growth 6.4% in Q2 FY27.", ["P1", "Q1"], "Bir
+           la Opus discounting takes dealer share."),  # a behind-pace pr
+           omise is no bull point
+      172          p("EBITDA margin 18.2% so far in FY27.", ["P2"], "Pric
+           e hikes held."),                        # part-year without it
+           s quarters
+
+● 174 backend tests pass. Now the prompt:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PY'
+      p='finn/prompts/bull_bear.md'…)
+  ⎿  Updated backend\finn\prompts\bull_bear.md (+33 -30)
+       1 -You write the bull and bear case for an Indian listed company f
+         -or a portfolio manager, from evidence taken out of the company'
+         -s own earnings-call transcripts and results filings.           
+       2 -                                                               
+       3 -You get JSON:                                                  
+       4 -- `company`, `latest_quarter`.                                 
+       5 -- `evidence`: each item has an `id` and a `text`. Kinds, by id 
+         -prefix:                                                        
+       6 -  - `S`: a number management reported on a call (verbatim quote
+         -). Never revenue, profit or margin: those come only from `F` an
+         -d `P`.                                                         
+       7 -  - `Q`: a question an analyst asked on a call (verbatim). Thes
+         -e are the market's concerns.                                   
+       8 -  - `P`: a promise management made on a call, with the verdict 
+         -already computed against the later results (hit, miss, ahead, o
+         -n track, behind pace, moved away, partial, not-yet-measurable).
+       9 -  - `F`: a financial fact computed from the results filings (qu
+         -arterly revenue and profit, margin, cash conversion, debt/equit
+         -y).                                                            
+      10 -                                                               
+      11 -Write 4 bull points and 4 bear points, strongest first. Each po
+         -int is an argument, not a restated number:                     
+      12 -- `claim`: the fact, numbers first, at most 16 words, with its 
+         -period exactly as the evidence names it ("Q2 FY27", "FY26", "FY
+         -27 so far"). Every number must appear, exactly as written, in t
+         -he text of an id it cites. Copy numbers; never compute, round, 
+         -add or compare numbers yourself.                               
+      13 -- `why`: why it matters to an investor, at most 14 words, with 
+         -no numbers: the consequence for earnings, cash, balance-sheet r
+         -isk, pricing power or management's credibility. Not "this is po
+         -sitive", "raises concerns", "signals" or "highlights".         
+      14 -- `cites`: the ids of the evidence the point rests on (1 to 3).
+      15 -                                                               
+      16 -One set of facts for both sides:                               
+      17 -- Bull and bear argue from the same evidence. If both mention t
+         -he same metric for the same period, they use the same number. N
+         -ever put two figures for one metric and period on the page (a q
+         -uarter's margin and a half-year margin are different periods: n
+         -ame them).                                                     
+      18 -- Never contradict a `P` verdict. Only a verdict of hit may be 
+         -called beaten, met or achieved; only a verdict of miss may be c
+         -alled missed or fallen short. For ahead, on track and behind pa
+         -ce the period is still running: say "ahead of", "on track for" 
+         -or "behind pace for" the target, never beaten or missed.       
+      19 -- Do not repeat one fact in both lists. Do not make two points 
+         -from the same fact.                                            
+      20 -- For a metric with figures from several periods, use the newes
+         -t. Never argue from an older figure that a later figure or a `P
+         -` verdict has overturned (a working-capital ratio from an earli
+         -er call when the target has since been hit).                   
+      21 -- Facts about the company only. Economy figures management quot
+         -ed (inflation, CPI, GDP, interest rates) are not points.       
+      22 -                                                               
+      23 -What goes where:                                               
+      24 -- The bear case must not be only management's own caveats. Use,
+         - where the evidence has them: promises that were missed, are be
+         -hind pace or moved away (`P`); falling or weakening figures (`F
+         -`); and concerns analysts pressed on (`Q`) — say what the analy
+         -st was worried about, not that "an analyst asked".             
+      25 -- The bull case uses kept or running-ahead promises (hit, ahead
+         -, on track), improving figures and management's reported number
+         -s. Every `P` with verdict hit or ahead is a bull point of its o
+         -wn; so is every `P` with verdict miss or behind pace a bear poi
+         -nt. Both sides get as many points as the evidence supports, up 
+         -to 4.                                                          
+      26 -- Terse analyst voice. No hedging words ("may", "could potentia
+         -lly"), no adjectives like "robust" or "strong" without a number
+         -. Write percentage-point changes as "pp".                      
+      27 -                                                               
+      28 -Rules:                                                         
+      29 -- Use only the JSON. No outside knowledge about the company, it
+         -s sector, peers, valuation, the economy or later events. If the
+         - evidence supports fewer than 4 points on a side, write fewer. 
+      30 -- No recommendation (buy, sell, hold) and no price targets.    
+       1 +You write the bull and bear case for an Indian listed company f
+         +or a portfolio manager, from evidence taken out of the company'
+         +s own earnings-call transcripts and results filings.           
+       2 +                                                               
+       3 +You get JSON:                                                  
+       4 +- `company`, `latest_quarter`.                                 
+       5 +- `evidence`: each item has an `id` and a `text`. Kinds, by id 
+         +prefix:                                                        
+       6 +  - `S`: a number management reported on a call (verbatim quote
+         +). Never revenue, profit or margin: those come only from `F` an
+         +d `P`.                                                         
+       7 +  - `Q`: a question an analyst asked on a call (verbatim). Thes
+         +e are the market's concerns.                                   
+       8 +  - `P`: a promise management made on a call, with the verdict 
+         +already computed against the later results (hit, miss, ahead, o
+         +n track, behind pace, moved away, partial, not-yet-measurable).
+       9 +  - `F`: a financial fact computed from the results filings (qu
+         +arterly revenue and profit, margin, cash conversion, debt/equit
+         +y).                                                            
+      10 +                                                               
+     … 23 more lines (ctrl+o to expand)
+
+● Swapping my examples for neutral ones, so the prompt doesn't plant real
+  company names:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PY'
+      p='finn/prompts/bull_bear.md'…)
+  ⎿  Updated backend\finn\prompts\bull_bear.md (+1 -1)
+      10  
+      11  Write 4 bull points and 4 bear points, strongest first. Each po
+          int is an argument, not a restated number:
+      12  - `claim`: the fact, numbers first, at most 18 words. Name the 
+          metric exactly as its evidence names it, with its qualifier and
+           period: "EBITDA margin (ex other income), Q2 FY27", "PBDIT mar
+          gin, H1 FY27", "Jewellery segment margin, H1 FY27". An `F` item
+          's definition is in [brackets] at its end: use its short form. 
+          A part-year figure is named by its quarters ("H1 FY27", "9M FY2
+          7"), never "so far". Every number must appear, exactly as writt
+          en, in the text of an id it cites. Copy numbers; never compute,
+           round, add or compare numbers yourself.
+      13 -- `why`: why it matters, at most 16 words, with no numbers. Nam
+         -e the company-specific driver from the cited evidence, in the e
+         -vidence's words: a competitor, a segment or product, a customer
+         - or region, a cost item, a project, or what the analyst was wor
+         -ried about ("Birla Opus discounting takes dealer share", "Odish
+         -a discoms cut AT&C losses"). Cite the item that names the drive
+         -r. For a hit or missed promise, management's credibility on tha
+         -t metric is a driver. Never generic filler that fits any compan
+         -y: "supports profitability", "drives top-line growth", "erodes 
+         -momentum", "boosts earnings", "compresses profitability", "cash
+         - generation", "operating leverage", "balance-sheet risk", "fina
+         -ncial flexibility", "shareholder value", "signals", "highlights
+         -", "raises concerns".                                          
+      13 +- `why`: why it matters, at most 16 words, with no numbers. Nam
+         +e the company-specific driver from the cited evidence, in the e
+         +vidence's words: a competitor, a segment or product, a customer
+         + or region, a cost item, a project, or what the analyst was wor
+         +ried about (e.g. "the new entrant's discounting takes dealer sh
+         +are", "distribution circles cut transmission losses", using the
+         + evidence's own names). Cite the item that names the driver. Fo
+         +r a hit or missed promise, management's credibility on that met
+         +ric is a driver. Never generic filler that fits any company: "s
+         +upports profitability", "drives top-line growth", "erodes momen
+         +tum", "boosts earnings", "compresses profitability", "cash gene
+         +ration", "operating leverage", "balance-sheet risk", "financial
+         + flexibility", "shareholder value", "signals", "highlights", "r
+         +aises concerns".                                               
+      14  - `cites`: the ids of the evidence the point rests on (1 to 3).
+      15  
+      16  One set of facts for both sides:
+
+● Prompt done. Now the one-command regeneration. Checking how Groq signals its
+  daily cap so the command can check quota before it starts:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Groq doesn't expose daily-token headroom in its headers, so I'll pin
+  gpt-oss-120b without a Gemini fallback, stop at the first daily-cap response,
+  and resume from cache on re-run. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" && grep -n
+      "^import\|^from" finn/pull/research.py | head; ../.venv/Scripts/python -
+      <<'PY'
+      p='finn/pull/res…)
+  ⎿  Updated backend\finn\pull\research.py (+18 -2)
+      315      return keep[:3], dropped
+      316  
+      317  
+      318 +QUOTA_OUT = False  # set when the strong model answered with a
+          + daily cap: --regen stops there                               
+      319 +                                                              
+      320 +                                                              
+      321  def bull_bear(name: str, latest: str | None, ev: list[dict], s
+           ymbol: str, prev: dict | None = None, snap: dict | None = None
+           ) -> dict | None:
+      322      """None when a side has no point that survives the number 
+           check, or the model is unavailable and there is no
+      323      previous section (page hides it). prev: the page's last ch
+           ecked section, kept when the model is unavailable."""
+     ...
+      325      try:
+      326          r = llm.run("bull_bear", "bull_bear", [json.dumps(payl
+           oad, ensure_ascii=False)], BB, symbol=symbol, patient=True)
+      327      except Exception as e:  # quota / network: keep the last c
+           hecked section rather than blank it (14 Nov: Groq's daily cap)
+      328 +        global QUOTA_OUT                                      
+      329 +        QUOTA_OUT = QUOTA_OUT or isinstance(e, llm.Exhausted) 
+      330          print(f"  bull/bear unavailable for {symbol}: {type(e)
+           .__name__}: {str(e)[:120]}{'; kept the previous one' if prev e
+           lse ''}")
+      331          return prev
+      332      by_id = {e["id"]: e for e in ev}
+     ...
+      448  
+      449  
+      450  def main(argv=None):
+      451 +    """python -m finn.pull.research [SYMBOL ...] [--regen]    
+      452 +    --regen: rebuild every page with bull/bear by the strong m
+          +odel only (gpt-oss-120b, no Gemini stand-in; user, 14 Nov).   
+      453 +    Everything else comes from the cache. Stops at the first d
+          +aily-cap answer; run it again later to resume (done pages are 
+          +cached)."""                                                   
+      454      sys.stdout.reconfigure(encoding="utf-8")
+      447 -    syms = argv or sys.argv[1:] or sorted({f.stem for f in OUT
+          -.glob("*.json") if f.stem != "index"} | set(PORTFOLIO))       
+      448 -    for sym in syms:                                          
+      455 +    args = argv if argv is not None else sys.argv[1:]         
+      456 +    regen = "--regen" in args                                 
+      457 +    args = [a for a in args if a != "--regen"]                
+      458 +    if regen:                                                 
+      459 +        os.environ["FINN_STRONG_FALLBACK"] = llm.model_for("bu
+          +ll_bear")  # the chain collapses to one model                 
+      460 +    syms = args or sorted({f.stem for f in OUT.glob("*.json") 
+          +if f.stem != "index"} | set(PORTFOLIO))                       
+      461 +    for k, sym in enumerate(syms):                            
+      462 +        if regen and QUOTA_OUT:                               
+      463 +            print(f"{llm.model_for('bull_bear')} is out of quo
+          +ta: stopped before {', '.join(syms[k:])}. Run --regen again on
+          +ce it resets.")                                               
+      464 +            break                                             
+      465          try:
+      466              out = build(sym)
+      467          except Exception as e:
+
+● Next I'm making the sentence fix independent of quota by re-deriving each
+  page's summary from saved promises, so tonight's pages still read correctly if
+  Groq is down. I also still need to add the missing os import. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PY'
+      p='finn/pull/research.py'…)
+  ⎿  Updated backend\finn\pull\research.py (+4 -2)
+       4  are not in the evidence it cites. Every snapshot number is comp
+          uted here from screener's tables.
+       5  Run from backend/:  ../.venv/Scripts/python -m finn.pull.resear
+          ch TCS HDFCBANK   (no args: every researched + portfolio ticker
+          )
+       6  """
+       7 -import re, sys, json, functools, datetime as dt                
+       7 +import os, re, sys, json, functools, datetime as dt            
+       8  from finn import llm
+       9  from finn.config import PORTFOLIO
+      10  from finn.ingest import KEPT, MISSED, OPEN
+     ...
+      440          if f.stem == "index":
+      441              continue
+      442          d = json.loads(f.read_text(encoding="utf-8"))
+      443 -        s = d.get("summary") or summary(d["promises"], len(d["
+          -calls"]))                                                     
+      443 +        s = summary(d["promises"], len(d["calls"]))  # re-deri
+          +ved (pure Python), so a template fix reaches every page       
+      444 +        if d.get("summary") and d["summary"] != s and not d.ge
+          +t("pvd_error"):                                               
+      445 +            f.write_text(json.dumps(d | {"summary": s}, ensure
+          +_ascii=False, indent=1), encoding="utf-8")                    
+      446          rows.append({"symbol": d["symbol"], "name": d["name"],
+            "sector": d.get("sector"), "generated_at": d["generated_at"],
+      447                       "summary": {k: s[k] for k in ("kept", "mi
+           ssed", "open", "partial", "measured", "total")}})
+      448      (OUT / "index.json").write_text(json.dumps(rows, ensure_as
+           cii=False, indent=1), encoding="utf-8")
+  ⎿  Updated web\public\data\research\ASIANPAINT.json (+1 -1)
+      220    "unmeasured": 3,
+      221    "total": 6,
+      222    "measured": 3,
+      223 -  "sentence": "Kept 1 of 3 measured promises from the last 4 c
+          -alls; missed on volume growth (Q1 FY27 call); 1 on track."    
+      223 +  "sentence": "Kept 1 of 3 measured promises from the last 4 c
+          +alls; behind on volume growth (Q1 FY27 call); 1 on track."    
+      224   },
+      225   "prices": {
+      226    "closes": [
+  ⎿  Updated web\public\data\research\ASTRAL.json (+1 -1)
+      278    "unmeasured": 2,
+      279    "total": 6,
+      280    "measured": 4,
+      281 -  "sentence": "Kept 2 of 4 measured promises from the last 4 c
+          -alls; missed on paint business full year guidance (Q2 FY26 cal
+          -l); 1 on track."                                              
+      281 +  "sentence": "Kept 2 of 4 measured promises from the last 4 c
+          +alls; behind on paint business full year guidance (Q2 FY26 cal
+          +l); 1 on track."                                              
+      282   },
+      283   "prices": {
+      284    "closes": [
+  ⎿  Updated web\public\data\research\BAJFINANCE.json (+1 -1)
+      183    "unmeasured": 2,
+      184    "total": 6,
+      185    "measured": 4,
+      186 -  "sentence": "Kept 1 of 4 measured promises from the last 4 c
+          -alls; missed 3, the latest on AUM (Q1 FY27 call)."            
+      186 +  "sentence": "Kept 1 of 4 measured promises from the last 4 c
+          +alls; 3 not kept, the latest behind on AUM (Q1 FY27 call)."   
+      187   },
+      188   "prices": {
+      189    "closes": [
+  ⎿  Updated web\public\data\research\HDFCBANK.json (+1 -1)
+      171    "unmeasured": 1,
+      172    "total": 3,
+      173    "measured": 2,
+      174 -  "sentence": "Kept 1 of 2 measured promises from the last 4 c
+          -alls; missed on loan-to-deposit ratio (Q3 FY26 call)."        
+      174 +  "sentence": "Kept 1 of 2 measured promises from the last 4 c
+          +alls; behind on loan-to-deposit ratio (Q3 FY26 call)."        
+      175   },
+      176   "prices": {
+      177    "closes": [
+  ⎿  … 5 more files changed
+
+● index.json lost 14 lines; checking that before going on:
+
+  Ran 2 shell commands (ctrl+o to expand)
+● Removed KEI, a stale live-test page wrongly still listed in index.json that
+  linked to a missing page. Next I'm checking whether gpt-oss-120b has quota
+  tonight with one small call. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Quota is there (999 of 1,000 daily requests left), so tonight's run is
+  allowed. Trying one ticker first to check how many points survive the stricter
+  rules before spending quota on all 22:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      PYTHONIOENCODING=utf-8 timeout 600 ../.venv/Scripts/python -m
+      finn.pull.research --regen ASIANPAINT 2>&1…)
+  ⎿  Updated web\public\data\research\ASIANPAINT.json (+37 -63)
+      1  {
+      2   "symbol": "ASIANPAINT",
+      3   "name": "Asian Paints Ltd",
+      4 - "generated_at": "2026-11-14T14:32",                            
+      4 + "generated_at": "2026-11-14T22:28",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+     ...
+      827     "claim": "Debt/equity 0.18 at FY26 end (Mar 2026), from 0.1
+           1 at FY22 end."
+      828    }
+      829   },
+      830 + "sources": [                                                 
+      831 +  {                                                           
+      832 +   "label": "Q2 FY27 earnings call transcript",               
+      833 +   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?
+          +Pname=ee7e6efe-1f9b-4b5e-bff7-1da18902ffeb.pdf"               
+      834 +  },                                                          
+      835 +  {                                                           
+      836 +   "label": "Q1 FY27 earnings call transcript",               
+      837 +   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?
+          +Pname=6e0d5627-2b8b-4bf1-a7ce-9d0160833a0f.pdf"               
+      838 +  },                                                          
+      839 +  {                                                           
+      840 +   "label": "Q3 FY26 earnings call transcript",               
+      841 +   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?
+          +Pname=8bc8c7dd-23d0-4cf2-bcdf-620769ed0d1a.pdf"               
+      842 +  },                                                          
+      843 +  {                                                           
+      844 +   "label": "Q2 FY26 earnings call transcript",               
+      845 +   "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?
+          +Pname=99e65c90-6bb0-4984-ac71-2a0f0eb4cc7f.pdf"               
+      846 +  },                                                          
+      847 +  {                                                           
+      848 +   "label": "Quarterly and annual tables (consolidated), scree
+          +ner.in, from the exchange filings",                           
+      849 +   "url": "https://www.screener.in/company/ASIANPAINT/consolid
+          +ated/"                                                        
+      850 +  }                                                           
+      851 + ],                                                           
+      852   "bull_bear": {
+      853    "bull": [
+      854     {
+      833 -    "point": "PBDIT margin 18.8% in FY26, within 18‑20% target
+          -.",                                                           
+      834 -    "why": "supports earnings stability and profitability.",  
+      855 +    "point": "PBDIT margin, FY26 18.8%",                      
+      856 +    "why": "management credibility on PBDIT margin",          
+     … 97 more lines (ctrl+o to expand)
+  ⎿  Updated web\public\data\research\index.json (+1 -1)
+      3    "symbol": "ASIANPAINT",
+      4    "name": "Asian Paints Ltd",
+      5    "sector": "Consumer Discretionary",
+      6 -  "generated_at": "2026-11-14T14:32",                           
+      6 +  "generated_at": "2026-11-14T22:28",                           
+      7    "summary": {
+      8     "kept": 1,
+      9     "missed": 1,
+  ⎿  (timeout 10m)
+
+● Rules hold but only 2+1 survived, and the whys are still thin. Looking at what
+  the model wrote and why points were dropped (from the cached answer, no new
+  call):
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The model wrote only 5 points, mostly from bare F figures, and those carry no
+  driver. Checking which drivers the evidence actually holds:
+
+  Made 1 scratchpad edit +17, ran 3 shell commands (ctrl+o to expand)
+
+● The evidence offers plenty of drivers (a competitor's 10% free grammage,
+  input-cost pressure, a 6.8% price rise, 3,500–4,000 new retailers), but the
+  model was leaning on bare figures. I'm adding an explicit instruction to the
+  prompt to pair each figure with its driver. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/backend" &&
+      ../.venv/Scripts/python - <<'PY'
+      p='finn/prompts/bull_bear.md'…)
+  ⎿  Updated backend\finn\prompts\bull_bear.md (+3 -1)
+       8    - `P`: a promise management made on a call, with the verdict 
+          already computed against the later results (hit, miss, ahead, o
+          n track, behind pace, moved away, partial, not-yet-measurable).
+       9    - `F`: a financial fact computed from the results filings (qu
+          arterly revenue and profit, margin, cash conversion, debt/equit
+          y).
+      10  
+      11 -Write 4 bull points and 4 bear points, strongest first. Each po
+         -int is an argument, not a restated number:                     
+      11 +Write 4 bull points and 4 bear points, strongest first (fewer o
+         +nly if the evidence runs out; analysts' questions are bear mate
+         +rial). Each point is an argument, not a restated number:       
+      12  - `claim`: the fact, numbers first, at most 18 words. Name the 
+          metric exactly as its evidence names it, with its qualifier and
+           period: "EBITDA margin (ex other income), Q2 FY27", "PBDIT mar
+          gin, H1 FY27", "Jewellery segment margin, H1 FY27". An `F` item
+          's definition is in [brackets] at its end: use its short form. 
+          A part-year figure is named by its quarters ("H1 FY27", "9M FY2
+          7"), never "so far". Every number must appear, exactly as writt
+          en, in the text of an id it cites. Copy numbers; never compute,
+           round, add or compare numbers yourself.
+      13  - `why`: why it matters, at most 16 words, with no numbers. Nam
+          e the company-specific driver from the cited evidence, in the e
+          vidence's words: a competitor, a segment or product, a customer
+           or region, a cost item, a project, or what the analyst was wor
+          ried about (e.g. "the new entrant's discounting takes dealer sh
+          are", "distribution circles cut transmission losses", using the
+           evidence's own names). Cite the item that names the driver. Fo
+          r a hit or missed promise, management's credibility on that met
+          ric is a driver. Never generic filler that fits any company: "s
+          upports profitability", "drives top-line growth", "erodes momen
+          tum", "boosts earnings", "compresses profitability", "cash gene
+          ration", "operating leverage", "balance-sheet risk", "financial
+           flexibility", "shareholder value", "signals", "highlights", "r
+          aises concerns".
+      14  - `cites`: the ids of the evidence the point rests on (1 to 3).
+      15  
+      16 +How to build a point: take a fact (an `F` figure, a `P` verdict
+         + or an `S` number), then find the `S` or `Q` item that explains
+         + it (the competitor, cost, price increase, segment, channel or 
+         +analyst worry behind it) and cite both. The why comes from that
+         + second item. A figure with nothing in the evidence explaining 
+         +it is a weak point: prefer one that has a driver.              
+      17 +                                                               
+      18  One set of facts for both sides:
+      19  - Bull and bear argue from the same evidence. If both mention t
+          he same metric for the same period, they use the same number. N
+          ever put two figures for one metric and period on the page (a q
+          uarter's margin and a half-year margin are different periods: n
+          ame them).
+      20  - Never contradict a `P` verdict. Only a verdict of hit may be 
+          called beaten, met or achieved; only a verdict of miss may be c
+          alled missed or fallen short. For ahead, on track and behind pa
+          ce the period is still running: say "ahead of", "on track for" 
+          or "behind pace for" the target, never beaten or missed.
+  ⎿  Updated web\public\data\research\ASIANPAINT.json (+1 -1)
+      1  {
+      2   "symbol": "ASIANPAINT",
+      3   "name": "Asian Paints Ltd",
+      4 - "generated_at": "2026-11-14T22:28",                            
+      4 + "generated_at": "2026-11-14T22:29",                            
+      5   "latest_quarter": "Sep 2026",
+      6   "calls": [
+      7    {
+  ⎿  Updated web\public\data\research\index.json (+1 -1)
+      3    "symbol": "ASIANPAINT",
+      4    "name": "Asian Paints Ltd",
+      5    "sector": "Consumer Discretionary",
+      6 -  "generated_at": "2026-11-14T22:28",                           
+      6 +  "generated_at": "2026-11-14T22:29",                           
+      7    "summary": {
+      8     "kept": 1,
+      9     "missed": 1,
+  ⎿  (timeout 10m)
+
+● Groq's daily token quota ran out after one call, so the 22-page run is stuck
+  until Sunday morning; I'm running the consistency gate on the thin ASIANPAINT
+  section from my first trial. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Gate: 0 problems. Type-checking the web app before committing:
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Both commits are in; next I'm tackling the How-FINN-works card, the
+  live-research checklist, and the desktop QR note, starting with a static SVG
+  of the fixed Vercel URL for the QR code. · summary
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Installing segno (a small pure-Python QR library, no dependencies) into the
+  scratchpad only, not the project, to write one SVG:
+
+● Bash(S="C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/41ffb8ca-
+      5c7b-4e11-8488-f6bc114d1b29/scratchpad" && cd "/c/Users/mokshagna/Claude
+      Projects/finn"…)
+  ⎿  Created web\public\qr.svg (+1 -0)
+      1 +<svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" c
+        +lass="segno"><title>FINN: finn-coral-eta.vercel.app</title><path
+        + class="qrline" stroke="#2b2724" d="M2 2.5h7m4 0h2m2 0h2m1 0h1m1
+        + 0h1m1 0h7m-29 1h1m5 0h1m1 0h1m1 0h5m1 0h2m2 0h1m1 0h1m5 0h1m-29
+        + 1h1m1 0h3m1 0h1m1 0h1m3 0h2m1 0h1m2 0h1m3 0h1m1 0h3m1 0h1m-29 1
+        +h1m1 0h3m1 0h1m1 0h3m5 0h2m2 0h1m1 0h1m1 0h3m1 0h1m-29 1h1m1 0h3
+        +m1 0h1m2 0h1m1 0h1m3 0h2m2 0h2m1 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m4
+        + 0h2m2 0h1m1 0h1m4 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0
+        +h1m1 0h1m1 0h1m1 0h7m-21 1h2m4 0h3m1 0h1m1 0h1m-21 1h1m5 0h1m1 0
+        +h1m3 0h1m4 0h1m2 0h3m2 0h3m-26 1h1m4 0h2m1 0h2m1 0h1m2 0h1m1 0h2
+        +m4 0h1m1 0h2m-25 1h5m5 0h3m4 0h1m1 0h1m-18 1h1m1 0h1m1 0h2m1 0h2
+        +m6 0h2m1 0h1m1 0h1m-23 1h4m1 0h4m1 0h1m1 0h2m2 0h2m1 0h2m4 0h1m-
+        +29 1h2m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m6 0h2m1 0h3m2 0h2m-28 1h1m4
+        + 0h1m1 0h1m2 0h2m2 0h1m1 0h2m1 0h2m3 0h2m-26 1h1m2 0h1m2 0h1m3 0
+        +h1m4 0h1m1 0h1m2 0h1m1 0h1m2 0h1m1 0h1m-28 1h2m3 0h1m1 0h1m1 0h1
+        +m4 0h3m1 0h1m5 0h2m-27 1h3m1 0h2m3 0h8m1 0h2m2 0h3m1 0h3m-29 1h2
+        +m1 0h1m2 0h4m1 0h1m3 0h2m1 0h3m3 0h2m2 0h1m-29 1h1m6 0h1m1 0h5m6
+        + 0h3m-23 1h1m1 0h2m1 0h3m1 0h1m1 0h2m1 0h4m1 0h6m1 0h3m-21 1h1m2
+        + 0h1m2 0h2m2 0h1m1 0h1m3 0h2m-26 1h7m4 0h2m2 0h2m2 0h2m1 0h1m1 0
+        +h3m-27 1h1m5 0h1m2 0h3m2 0h1m4 0h2m3 0h1m2 0h1m-28 1h1m1 0h3m1 0
+        +h1m2 0h3m1 0h4m2 0h7m1 0h2m-29 1h1m1 0h3m1 0h1m2 0h11m1 0h1m3 0h
+        +2m1 0h1m-29 1h1m1 0h3m1 0h1m3 0h1m4 0h1m6 0h6m-28 1h1m5 0h1m2 0h
+        +1m2 0h1m1 0h2m2 0h1m3 0h1m2 0h2m1 0h1m-29 1h7m1 0h1m2 0h4m2 0h3m
+        +1 0h4m1 0h1"/></svg>                                            
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn" && sed -i 's|width="33"
+      height="33" class="segno"|viewBox="0 0 33 33" width="33" height="33"
+      shape-rendering="crisp…)
+  ⎿  Updated web\public\qr.svg (+1 -1)
+      1 -<svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" c
+        -lass="segno"><title>FINN: finn-coral-eta.vercel.app</title><path
+        - class="qrline" stroke="#2b2724" d="M2 2.5h7m4 0h2m2 0h2m1 0h1m1
+        - 0h1m1 0h7m-29 1h1m5 0h1m1 0h1m1 0h5m1 0h2m2 0h1m1 0h1m5 0h1m-29
+        - 1h1m1 0h3m1 0h1m1 0h1m3 0h2m1 0h1m2 0h1m3 0h1m1 0h3m1 0h1m-29 1
+        -h1m1 0h3m1 0h1m1 0h3m5 0h2m2 0h1m1 0h1m1 0h3m1 0h1m-29 1h1m1 0h3
+        -m1 0h1m2 0h1m1 0h1m3 0h2m2 0h2m1 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m4
+        - 0h2m2 0h1m1 0h1m4 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0
+        -h1m1 0h1m1 0h1m1 0h7m-21 1h2m4 0h3m1 0h1m1 0h1m-21 1h1m5 0h1m1 0
+        -h1m3 0h1m4 0h1m2 0h3m2 0h3m-26 1h1m4 0h2m1 0h2m1 0h1m2 0h1m1 0h2
+        -m4 0h1m1 0h2m-25 1h5m5 0h3m4 0h1m1 0h1m-18 1h1m1 0h1m1 0h2m1 0h2
+        -m6 0h2m1 0h1m1 0h1m-23 1h4m1 0h4m1 0h1m1 0h2m2 0h2m1 0h2m4 0h1m-
+        -29 1h2m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m6 0h2m1 0h3m2 0h2m-28 1h1m4
+        - 0h1m1 0h1m2 0h2m2 0h1m1 0h2m1 0h2m3 0h2m-26 1h1m2 0h1m2 0h1m3 0
+        -h1m4 0h1m1 0h1m2 0h1m1 0h1m2 0h1m1 0h1m-28 1h2m3 0h1m1 0h1m1 0h1
+        -m4 0h3m1 0h1m5 0h2m-27 1h3m1 0h2m3 0h8m1 0h2m2 0h3m1 0h3m-29 1h2
+        -m1 0h1m2 0h4m1 0h1m3 0h2m1 0h3m3 0h2m2 0h1m-29 1h1m6 0h1m1 0h5m6
+        - 0h3m-23 1h1m1 0h2m1 0h3m1 0h1m1 0h2m1 0h4m1 0h6m1 0h3m-21 1h1m2
+        - 0h1m2 0h2m2 0h1m1 0h1m3 0h2m-26 1h7m4 0h2m2 0h2m2 0h2m1 0h1m1 0
+        -h3m-27 1h1m5 0h1m2 0h3m2 0h1m4 0h2m3 0h1m2 0h1m-28 1h1m1 0h3m1 0
+        -h1m2 0h3m1 0h4m2 0h7m1 0h2m-29 1h1m1 0h3m1 0h1m2 0h11m1 0h1m3 0h
+        -2m1 0h1m-29 1h1m1 0h3m1 0h1m3 0h1m4 0h1m6 0h6m-28 1h1m5 0h1m2 0h
+        -1m2 0h1m1 0h2m2 0h1m3 0h1m2 0h2m1 0h1m-29 1h7m1 0h1m2 0h4m2 0h3m
+        -1 0h4m1 0h1"/></svg>                                            
+      1 +<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 33" widt
+        +h="33" height="33" shape-rendering="crispEdges"><title>FINN: fin
+        +n-coral-eta.vercel.app</title><path class="qrline" stroke="#2b27
+        +24" d="M2 2.5h7m4 0h2m2 0h2m1 0h1m1 0h1m1 0h7m-29 1h1m5 0h1m1 0h
+        +1m1 0h5m1 0h2m2 0h1m1 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m3 0h2m
+        +1 0h1m2 0h1m3 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h3m5 0h2m2 
+        +0h1m1 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m2 0h1m1 0h1m3 0h2m2 0h
+        +2m1 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m4 0h2m2 0h1m1 0h1m4 0h1m5 0h1m
+        +-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-21 1h2m
+        +4 0h3m1 0h1m1 0h1m-21 1h1m5 0h1m1 0h1m3 0h1m4 0h1m2 0h3m2 0h3m-2
+        +6 1h1m4 0h2m1 0h2m1 0h1m2 0h1m1 0h2m4 0h1m1 0h2m-25 1h5m5 0h3m4 
+        +0h1m1 0h1m-18 1h1m1 0h1m1 0h2m1 0h2m6 0h2m1 0h1m1 0h1m-23 1h4m1 
+        +0h4m1 0h1m1 0h2m2 0h2m1 0h2m4 0h1m-29 1h2m1 0h1m1 0h1m2 0h1m1 0h
+        +1m1 0h1m6 0h2m1 0h3m2 0h2m-28 1h1m4 0h1m1 0h1m2 0h2m2 0h1m1 0h2m
+        +1 0h2m3 0h2m-26 1h1m2 0h1m2 0h1m3 0h1m4 0h1m1 0h1m2 0h1m1 0h1m2 
+        +0h1m1 0h1m-28 1h2m3 0h1m1 0h1m1 0h1m4 0h3m1 0h1m5 0h2m-27 1h3m1 
+        +0h2m3 0h8m1 0h2m2 0h3m1 0h3m-29 1h2m1 0h1m2 0h4m1 0h1m3 0h2m1 0h
+        +3m3 0h2m2 0h1m-29 1h1m6 0h1m1 0h5m6 0h3m-23 1h1m1 0h2m1 0h3m1 0h
+        +1m1 0h2m1 0h4m1 0h6m1 0h3m-21 1h1m2 0h1m2 0h2m2 0h1m1 0h1m3 0h2m
+        +-26 1h7m4 0h2m2 0h2m2 0h2m1 0h1m1 0h3m-27 1h1m5 0h1m2 0h3m2 0h1m
+        +4 0h2m3 0h1m2 0h1m-28 1h1m1 0h3m1 0h1m2 0h3m1 0h4m2 0h7m1 0h2m-2
+        +9 1h1m1 0h3m1 0h1m2 0h11m1 0h1m3 0h2m1 0h1m-29 1h1m1 0h3m1 0h1m3
+        + 0h1m4 0h1m6 0h6m-28 1h1m5 0h1m2 0h1m2 0h1m1 0h2m2 0h1m3 0h1m2 0
+        +h2m1 0h1m-29 1h7m1 0h1m2 0h4m2 0h3m1 0h4m1 0h1"/></svg>         
+
+● QR asset ready. The user asked for emil-design-eng on motion; loading it
+  before the motion bits (dismiss collapse, stage transitions):
+
+● Skill(emil-design-eng)
+  ⎿  Successfully loaded skill
+
+● Dismissing the card gets the existing Collapse animation, while checklist rows
+  use interruptible CSS transitions with the done tick revealed by clip-path.
+  I'm skipping entrances and stagger, since reduced motion is already handled
+  globally. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/web" && sed -i 's/^function
+      localStore(key: string) {/export function localStore(key: string) {/'
+      lib/feed.ts && gre…)
+  ⎿  Updated web\lib\feed.ts (+184 -184)
+        1 -"use client";                                                 
+        2 -import { useCallback, useEffect, useMemo, useState, useSyncExt
+          -ernalStore } from "react";                                    
+        3 -import { sameEvent } from "./alerts";                         
+        4 -import { hits, label, pct, rank, type Ranked, type Reaction, t
+          -ype Tier } from "./rank";                                     
+        5 -                                                              
+        6 -// ---- shape of web/public/data/feed.json (written by backend
+          -/finn/ingest.py) ----                                         
+        7 -export type ResultsLine = { name: string; value: number | null
+          -; qoq_pct: number | null; yoy_pct: number | null };           
+        8 -export type ResultsCard = {                                   
+        9 -  type: "results"; basis: string; unit: string; note: string |
+          - null; periods: string[];                                     
+       10 -  lines: ResultsLine[]; one_offs: string[]; pages: number[]; m
+          -odel_note: string | null;                                     
+       11 -};                                                            
+       12 -export type Person = { name: string; change: string; role: str
+          -ing | null; effective: string | null; bio: string | null; bio_
+          -page: number | null; profile_ref: string | null };            
+       13 -export type MgmtCard = { type: "management_change"; people: Pe
+          -rson[]; model_note: string | null };                          
+       14 -// size and dilution as the filing states them (Python convert
+          -s units and divides; null when not stated)                    
+       15 -export type FundCard = {                                      
+       16 -  type: "fund_raise"; instrument: "equity" | "warrants" | "deb
+          -t" | "other";                                                 
+       17 -  size_cr: number | null; size_page: number | null; dilution_p
+          -ct: number | null; model_note: string | null;                 
+       18 -};                                                            
+       19 -export type Item = {                                          
+       20 -  id: string; symbol: string; name: string; filed: string; sub
+          -ject: string | null; headline: string | null; note: string | n
+          -ull;                                                          
+       21 -  category: string; tier: Tier; classify_error: string | null;
+          - card_error?: string; url: string | null; source: string;     
+       22 -  reaction_day: string; last_bar: string | null; reaction: Rea
+          -ction | null; card?: ResultsCard | MgmtCard | FundCard; title?
+          -: string | null;                                              
+       23 -};                                                            
+       24 -// credibility: measured PvD promises from the last 4 calls (k
+          -ept = hit/ahead, missed = miss/behind/moved away,             
+       25 -// open = on track); null when nothing was measurable. See DEC
+          -ISIONS.md.                                                    
+       26 -export type Credibility = { kept: number; missed: number; open
+          -: number };                                                   
+       27 -// stale_as_of: this run couldn't refresh the company, so its 
+          -filings are the last good fetch from that time                
+       28 -export type Company = { name: string; sector: string | null; c
+          -loses: [string, number][]; credibility?: Credibility | null; s
+          -tale_as_of?: string };                                        
+       29 -export type Day = Reaction & { symbol: string; date: string };
+       30 -export type Feed = {                                          
+       31 -  generated_at: string; window: [string, string]; thresholds: 
+          -{ volume_multiple: number; excess_move_pct: number };         
+       32 -  portfolio?: string[]; companies?: Record<string, Company>; n
+          -ifty?: [string, number][];                                    
+       33 -  items: Item[]; alerts: { symbol: string; date: string; kind:
+          - string; text: string }[]; days: Day[];                       
+       34 -  failed: { symbol: string; error: string; as_of?: string }[];
+       35 -};                                                            
+       36 -export type RankedItem = Item & Ranked;                       
+       37 -                                                              
+       38 -// ---- settings (localStorage) ----                          
+       39 -// Defaults mirror backend/finn/config.py (VOLUME_MULTIPLE, EX
+          -CESS_MOVE_PCT, TIERS["P1"]).                                  
+       40 -export const P1_CATS = ["results", "m_and_a", "management_chan
+          -ge", "fund_raise", "litigation", "credit_rating_downgrade", "p
+          -ledging"];                                                    
+     … 328 more lines (ctrl+o to expand)
+
+● Write(web\components\HowItWorks.tsx)
+  ⎿  Wrote 45 lines to web\components\HowItWorks.tsx
+       1 "use client";
+       2 import { useSyncExternalStore } from "react";
+       3 import { localStore } from "@/lib/feed";
+       4 import { Collapse } from "./Collapse";
+       5
+       6 // What FINN does, in three lines. Shown once at the top of the
+         Brief (dismissed for good on this device);
+       7 // always readable under Settings.
+       8 const LINES: [string, string][] = [
+       9   ["Filter", "Every filing across your portfolio; routine paperw
+     … +37 lines (~1 KB) (ctrl+o to expand)
+
+● The card would grow open on first load, which the "nothing enters from
+  nothing" rule forbids. So the card mounts already open, and only the dismiss
+  animates:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/web" && python - <<'PY'
+      p='components/HowItWorks.tsx'…)
+  ⎿  Updated web\app\page.tsx (+2 -0)
+       4  import { CompanyCard, CompanyRow, shortName } from "@/component
+          s/Company";
+       5  import { Collapse } from "@/components/Collapse";
+       6  import { FeedRow } from "@/components/FeedRow";
+       7 +import { HowItWorksCard } from "@/components/HowItWorks";      
+       8  import { FeedSkeleton, LoadFailed } from "@/components/States";
+       9  import { WIN_HOURS, WIN_PERIOD, filedAt, inWindow, istTime, lon
+          gDate, ranked, shortDate, useFeed, useSettings, type Feed, type
+           RankedItem, type Win } from "@/lib/feed";
+      10  import { group, type Group } from "@/lib/group";
+     ...
+      77  
+      78    return (
+      79      <>
+      80 +      <HowItWorksCard />                                       
+      81        <section className="pt-5">
+      82          <p className="text-[0.8125rem] text-ink-2">
+      83            {longDate(feed.generated_at)} · Last checked {istTime
+          (feed.generated_at)} IST
+  ⎿  Updated web\app\settings\page.tsx (+4 -0)
+      2  import { useState } from "react";
+      3  import { DEFAULTS, P1_CATS, sentence, useSettings, type Settings
+          } from "@/lib/feed";
+      4  import { label } from "@/lib/rank";
+      5 +import { HowItWorksList } from "@/components/HowItWorks";       
+      6  
+      7  export default function SettingsPage() {
+      8    const [s, update] = useSettings();
+     ...
+      27        <CatGroup title="Material filings" cats={P1_CATS} s={s} t
+          oggle={toggle} />
+      28        <p className="pt-2 text-[0.8125rem] text-ink-2">Only mate
+          rial filings alert. Dividends, calls, press releases and routin
+          e paperwork still show in the brief.</p>
+      29  
+      30 +      <h2 className="mt-8 border-b border-ink/80 pb-1.5 text-[0
+         +.8125rem] font-semibold">How FINN works</h2>                   
+      31 +      <div className="pt-3"><HowItWorksList /></div>           
+      32 +                                                               
+      33        <button
+      34          type="button"
+      35          disabled={isDefault}
+  ⎿  Updated web\components\HowItWorks.tsx (+49 -45)
+       1 -"use client";                                                  
+       2 -import { useSyncExternalStore } from "react";                  
+       3 -import { localStore } from "@/lib/feed";                       
+       4 -import { Collapse } from "./Collapse";                         
+       5 -                                                               
+       6 -// What FINN does, in three lines. Shown once at the top of the
+         - Brief (dismissed for good on this device);                    
+       7 -// always readable under Settings.                             
+       8 -const LINES: [string, string][] = [                            
+       9 -  ["Filter", "Every filing across your portfolio; routine paper
+         -work hidden."],                                                
+      10 -  ["Rank", "What matters first, and why, with the market’s reac
+         -tion vs Nifty."],                                              
+      11 -  ["Verify", "Did management deliver what it promised? Tap any 
+         -company."],                                                    
+      12 -];                                                             
+      13 -                                                               
+      14 -export function HowItWorksList() {                             
+      15 -  return (                                                     
+      16 -    <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 
+         -text-[0.875rem] leading-[1.4]">                                
+      17 -      {LINES.map(([k, v]) => (                                 
+      18 -        <div key={k} className="contents">                     
+      19 -          <dt className="font-semibold">{k}</dt>               
+      20 -          <dd className="text-ink-2">{v}</dd>                  
+      21 -        </div>                                                 
+      22 -      ))}                                                      
+      23 -    </dl>                                                      
+      24 -  );                                                           
+      25 -}                                                              
+      26 -                                                               
+      27 -const intro = localStore("finn.intro");                        
+      28 -                                                               
+      29 -export function HowItWorksCard() {                             
+      30 -  const seen = useSyncExternalStore(intro.subscribe, intro.get,
+         - () => "ssr"); // hidden until we know                         
+      31 -  return (                                                     
+      32 -    <Collapse open={seen === null}>                            
+      33 -      <section aria-labelledby="how-h" className="mt-4 rounded-
+         -xl border border-rule bg-card px-4 pt-3 pb-1">                 
+      34 -        <h2 id="how-h" className="font-serif text-[1.0625rem] f
+         -ont-semibold">How FINN works</h2>                              
+      35 -        <div className="mt-2"><HowItWorksList /></div>         
+      36 -        <div className="flex justify-end">                     
+      37 -          <button type="button" onClick={() => intro.set("seen"
+         -)}                                                             
+      38 -            className="-mr-2 min-h-11 px-2 text-[0.875rem] font
+         --medium text-accent transition-transform duration-150 ease-out 
+         -active:scale-[0.97]">                                          
+      39 -            Got it                                             
+      40 -          </button>                                            
+     … 54 more lines (ctrl+o to expand)
+
+● Now the desktop side note in the layout (shown only at ≥1024px with a fine
+  pointer):
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/web" && python - <<'PY'
+      p='app/layout.tsx'…)
+  ⎿  Updated web\app\layout.tsx (+6 -0)
+      30            <main className="mx-auto max-w-[36rem] px-5 pb-[calc(
+          6rem+env(safe-area-inset-bottom))]">{children}</main>
+      31          </ViewTransition>
+      32          <TabBar />
+      33 +        {/* laptops only (a wide screen with a mouse): the colu
+         +mn stays phone-sized, this says why */}                        
+      34 +        <aside className="fixed top-20 left-[calc(50%+18rem+2.5
+         +rem)] hidden w-44 text-[0.8125rem] leading-snug text-ink-2 lg:b
+         +lock [@media(pointer:coarse)]:hidden">                         
+      35 +          <p className="font-serif text-[1rem] font-semibold te
+         +xt-ink">FINN is built for your phone.</p>                      
+      36 +          <p className="mt-1">Scan to open it there, or add it 
+         +to your home screen.</p>                                       
+      37 +          <img src="/qr.svg" alt="QR code for finn-coral-eta.ve
+         +rcel.app" width={132} height={132} className="mt-3 size-[8.25re
+         +m] rounded-md border border-rule bg-card p-2" />               
+      38 +        </aside>                                               
+      39        </body>
+      40      </html>
+      41    );
+
+● Now the live-research flow in Research.tsx (web/components/Research.tsx):
+  intro line with timing, a stage checklist with elapsed time, and failure
+  states that say what you can still do.
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/web" && python - <<'PY'
+      p='components/Research.tsx'…)
+  ⎿  Updated web\components\Research.tsx (+97 -24)
+      145    if (!d.pvd_error && !d.bull_bear_pending) try { localStorage
+           .setItem(saved(d.symbol), JSON.stringify(d)); } catch { /* sto
+           rage full: the server cache still has it */ }
+      146  }
+      147  
+      148 +// The backend's stages (pvd.stage / research.py), in order; t
+          +he job's stage line says which one is running.                
+      149 +const STEPS: [RegExp, string][] = [                           
+      150 +  [/waking/i, "Wake the research server"],                    
+      151 +  [/starting|finding/i, "Find the call transcripts and results
+          +"],                                                           
+      152 +  [/reading/i, "Read the last four call transcripts"],        
+      153 +  [/checking/i, "Check each promise against the results"],    
+      154 +  [/snapshot/i, "Build the financial snapshot"],              
+      155 +  [/bull/i, "Write bull & bear (shown on the page when ready)"
+          +],                                                            
+      156 +];                                                            
+      157 +const clock = (s: number) => `${Math.floor(s / 60)}:${String(s
+          + % 60).padStart(2, "0")}`;                                    
+      158 +type Fail = { message: string; code?: string };               
+      159 +                                                              
+      160  function LiveResearch({ symbol, auto, onDone }: { symbol: stri
+           ng; auto: boolean; onDone: (d: Research) => void }) {
+      149 -  const [st, setSt] = useState<{ stage?: string; error?: strin
+          -g; seconds?: number }>({});                                   
+      161 +  const [st, setSt] = useState<{ stage?: string; fail?: Fail; 
+          +t0?: number }>({});                                           
+      162 +  const [now, setNow] = useState(0);                          
+      163    const alive = useRef(true);
+      164    useEffect(() => () => { alive.current = false; }, []);
+      165 +  useEffect(() => { // elapsed time, counted here so it includ
+          +es the server waking up                                       
+      166 +    if (!st.t0 || st.fail) return;                            
+      167 +    const id = setInterval(() => setNow(Date.now()), 1000);   
+      168 +    return () => clearInterval(id);                           
+      169 +  }, [st.t0, st.fail]);                                       
+      170    const call = async (path: string, init?: RequestInit) => {
+      171      let r: Response;
+      154 -    try { r = await fetch(`${API}${path}`, init); } catch { th
+          -row new Error("Couldn't reach the research server. Check your 
+          -connection, then try again."); }                              
+      172 +    try { r = await fetch(`${API}${path}`, init); } catch { th
+          +row { message: "Couldn't reach the research server. Check your
+          + connection, then try again." }; }                            
+      173      const j = await r.json().catch(() => ({}));
+      156 -    if (!r.ok) throw new Error(j.detail?.message ?? `The resea
+          -rch server answered ${r.status}. Try again in a minute.`);    
+      174 +    if (!r.ok) throw { message: j.detail?.message ?? `The rese
+          +arch server answered ${r.status}. Try again in a minute.`, cod
+          +e: j.detail?.error };                                         
+      175      return j;
+      176    };
+      177    const run = async () => {
+      160 -    setSt({ stage: "Waking up the research server…" }); // Ren
+          -der's free tier sleeps: the first answer can take a minute    
+      178 +    const t0 = Date.now();                                    
+      179 +    setNow(t0);                                               
+      180 +    setSt({ stage: "Waking up the research server…", t0 }); //
+          + Render's free tier sleeps: the first answer can take a minute
+     … 112 more lines (ctrl+o to expand)
+  ⎿  (timeout 3m)
+  Ran 1 shell command (ctrl+o to expand)
+
+● The regex survived escaping. Now the partial-result notes on the company page,
+  so a missing section says what's missing and why:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/web" && python - <<'PY'
+      p='components/Research.tsx'…)
+  ⎿  Updated web\components\Research.tsx (+6 -2)
+      490    const cash = s.cash && "years" in s.cash ? s.cash : null;
+      491    const lev = s.leverage && "years" in s.leverage ? s.leverage
+            : null;
+      492    const note = (s.cash && "note" in s.cash && s.cash.note) || 
+           null;
+      493 -  if (!q && !m && !cash && !lev) return null;                 
+      493 +  if (!q && !m && !cash && !lev) return (                     
+      494 +    <section className="mt-9 border-t border-rule pt-3">      
+      495 +      <p className="text-[0.8125rem] text-ink-2">No financial 
+          +snapshot: screener.in has no results tables for this company y
+          +et.</p>                                                       
+      496 +    </section>                                                
+      497 +  );                                                          
+      498    return (
+      499      <section aria-labelledby="snap-h" className="mt-9">
+      500        <h2 id="snap-h" className={H2}>Financial snapshot</h2>
+     ...
+      543    if (!b) return (
+      544      <section className="mt-9 border-t border-rule pt-3">
+      545        <p className="text-[0.8125rem] text-ink-2" role="status"
+            aria-live="polite">
+      542 -        {d.bull_bear_pending ? "Writing bull & bear…" : "Bull/
+          -bear couldn’t be generated right now."}                       
+      546 +        {d.bull_bear_pending ? "Writing bull & bear…" : "No bu
+          +ll & bear: the AI models were unavailable when this page was b
+          +uilt. Everything above comes straight from the filings."}     
+      547        </p>
+      548      </section>
+      549    );
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/web" && sed -i 's/FINN can
+      research it now from its last four call transcripts and its results
+      filings. It takes a f…)
+  ⎿  1 file changed (binary, mode only or too large to show)
+  ⎿  (timeout 5m)
+
+● Build passes. Rendering at 390px with local headless Chrome to check the
+  screens:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● No .env.local, so the local build has no API. To see the checklist and the
+  failure screen, I'll point a scratch build at a small mock API (stage stuck
+  mid-read; one symbol answers "unknown").
+
+  Made 1 scratchpad edit +32, read 2 files, ran 2 shell commands (ctrl+o to expand)
+
+● Headless Chrome won't go below about 500px, so the current screenshots are cut
+  off on the right; I'm switching to true 390px device emulation over DevTools
+  instead. Two findings so far: the Alerts verdict wrongly says "since your last
+  visit" on a first visit, and HDFC Bank's P2 re-appointment no longer triggers
+  an alert. · summary
+
+  Made 1 scratchpad edit +35, ran 1 shell command (ctrl+o to expand)
+
+● Fixing the first-visit verdict before re-shooting:
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/web" && sed -i 's/const head
+      = news.length === 0 ? "Nothing new since your last visit."/const head =
+      news.length ===…)
+  ⎿  Updated web\app\alerts\page.tsx (+1 -1)
+      34    const days = [...new Set(shown.map((r) => r.date))];
+      35    const name = (sym: string) => { const n = shortName(feed.comp
+          anies?.[sym]?.name ?? sym); return n.length > 24 ? sym : n; };
+      36    const news = [...new Set(rows.filter((r) => isNew(r) && !r.mi
+          nor && !r.errors.length).map((r) => r.symbol))];
+      37 -  const head = news.length === 0 ? "Nothing new since your last
+         - visit."                                                       
+      37 +  const head = news.length === 0 ? "No new alerts."            
+      38      : news.length <= 2 ? `${news.map(name).join(" and ")} ${new
+          s.length === 1 ? "needs" : "need"} a look.`
+      39      : `${news.length} companies need a look.`;
+      40    return (
+  ⎿  (timeout 6m 40s)
+
+  Read 2 files (ctrl+o to expand)
+
+● The Brief card renders cleanly at 390px. The research URLs landed on the
+  Research list, though, so checking how that page reads its query:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The router doesn't match /research.html. Serving out/ with clean URLs instead
+  (a tiny Python static server that maps /research to research.html):
+
+  Made 1 scratchpad edit +19, read 1 file, ran 1 shell command (ctrl+o to expand)
+
+● My screenshot script split the URL at every =, which dropped the query. Fixing
+  that:
+
+  Read 3 files, ran 1 shell command (ctrl+o to expand)
+
+● Checklist, failure and intro states read cleanly. Checking Alerts and the
+  desktop note:
+
+  Read 2 files (ctrl+o to expand)
+
+● The Alerts screenshot was stale because that server still held the deleted
+  out/ folder, and the badge disagrees with the inbox (showing 1 for a minor
+  spike while the inbox says no new alerts). I'm making the badge and inbox
+  follow one shared rule next. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/web" && python - <<'PY'
+      p='lib/alerts.ts'…)
+  ⎿  Updated web\app\alerts\page.tsx (+135 -135)
+        1 -"use client";                                                 
+        2 -import Link from "next/link";                                 
+        3 -import { useEffect, useMemo, useState } from "react";         
+        4 -import { Chevron, Collapse } from "@/components/Collapse";    
+        5 -import { Avatar, shortName } from "@/components/Company";     
+        6 -import { eventLabel, keyFact } from "@/components/FeedRow";   
+        7 -import { Signed } from "@/components/Signed";                 
+        8 -import { FeedSkeleton, LoadFailed } from "@/components/States"
+          -;                                                             
+        9 -import { alertRows, type AlertRow } from "@/lib/alerts";      
+       10 -import { ALERT_DAYS, buildAlerts, MINOR_VOL, shortDate, useFee
+          -d, useSettings, useUnseen, type Feed } from "@/lib/feed";     
+       11 -                                                              
+       12 -export default function Alerts() {                            
+       13 -  const { feed, error, retry } = useFeed();                   
+       14 -  const [s] = useSettings();                                  
+       15 -  const alerts = useMemo(() => (feed ? buildAlerts(feed, s) : 
+          -undefined), [feed, s]);                                       
+       16 -  const rows = useMemo(() => (alerts ? alertRows(alerts) : [])
+          -, [alerts]);                                                  
+       17 -  const { unseen, markAll, ready } = useUnseen(alerts);       
+       18 -  const [all, setAll] = useState(false); // last 7 days by def
+          -ault (user, 13 Nov); the export holds 30                      
+       19 -  // Freeze what was new when the inbox opened, then mark ever
+          -ything seen so the badge clears.                              
+       20 -  const [fresh, setFresh] = useState<Set<string> | null>(null)
+          -;                                                             
+       21 -  useEffect(() => {                                           
+       22 -    if (!alerts || !ready || fresh) return;                   
+       23 -    setFresh(new Set(unseen.map((a) => a.key)));              
+       24 -    markAll();                                                
+       25 -  }, [alerts, ready, unseen, fresh, markAll]);                
+       26 -                                                              
+       27 -  if (error) return <LoadFailed error={error} retry={retry} />
+          -;                                                             
+       28 -  if (!alerts || !feed) return <FeedSkeleton header={false} ro
+          -ws={6} />;                                                    
+       29 -                                                              
+       30 -  const isNew = (r: AlertRow) => r.keys.some((k) => fresh?.has
+          -(k));                                                         
+       31 -  const since = new Date(Date.parse(feed.generated_at) - ALERT
+          -_DAYS * 864e5).toISOString().slice(0, 10);                    
+       32 -  const shown = all ? rows : rows.filter((r) => r.date >= sinc
+          -e);                                                           
+       33 -  const older = rows.length - shown.length;                   
+       34 -  const days = [...new Set(shown.map((r) => r.date))];        
+       35 -  const name = (sym: string) => { const n = shortName(feed.com
+          -panies?.[sym]?.name ?? sym); return n.length > 24 ? sym : n; }
+          -;                                                             
+       36 -  const news = [...new Set(rows.filter((r) => isNew(r) && !r.m
+          -inor && !r.errors.length).map((r) => r.symbol))];             
+       37 -  const head = news.length === 0 ? "No new alerts."           
+       38 -    : news.length <= 2 ? `${news.map(name).join(" and ")} ${ne
+          -ws.length === 1 ? "needs" : "need"} a look.`                  
+       39 -    : `${news.length} companies need a look.`;                
+       40 -  return (                                                    
+     … 230 more lines (ctrl+o to expand)
+  ⎿  Updated web\components\TabBar.tsx (+7 -1)
+      2  import Link from "next/link";
+      3  import { usePathname } from "next/navigation";
+      4  import { useMemo } from "react";
+      5 +import { alertRows, needsLook } from "@/lib/alerts";            
+      6  import { buildAlerts, useFeed, useSettings, useUnseen } from "@/
+         lib/feed";
+      7  import { Wordmark } from "./Logo";
+      8  
+     ...
+      36    const [s] = useSettings();
+      37    const alerts = useMemo(() => (feed ? buildAlerts(feed, s) : u
+          ndefined), [feed, s]);
+      38    const { unseen } = useUnseen(alerts);
+      39 +  // one per inbox row that needs a look, as the inbox headline
+         + counts them                                                   
+      40 +  const fresh = useMemo(() => {                                
+      41 +    const keys = new Set(unseen.map((a) => a.key));            
+      42 +    return alerts ? alertRows(alerts).filter((r) => needsLook(r
+         +) && r.keys.some((k) => keys.has(k))).length : 0;              
+      43 +  }, [alerts, unseen]);                                        
+      44  
+      45    return (
+      46      <nav aria-label="Main" className="fixed inset-x-0 bottom-0 
+          z-20 border-t border-rule bg-paper pb-[env(safe-area-inset-bott
+          om)]">
+      47        <ul className="mx-auto grid h-14 max-w-[36rem] grid-cols-
+          4">
+      48          {TABS.map((t) => {
+      49            const active = t.href === "/" ? path === "/" : path.s
+          tartsWith(t.href);
+      44 -          const count = t.href === "/alerts" && !active ? new S
+         -et(unseen.map((a) => `${a.symbol}|${a.date}`)).size : 0; // one
+         - per inbox row                                                 
+      50 +          const count = t.href === "/alerts" && !active ? fresh
+         + : 0;                                                          
+      51            return (
+      52              <li key={t.href}>
+      53                <Link
+  ⎿  Updated web\lib\alerts.ts (+36 -33)
+       1 -// Pure alert helpers (tested in alerts.test.ts): spotting one 
+         -event filed twice, and folding a day's alerts                  
+       2 -// into one row per company.                                   
+       3 -import type { Alert } from "./feed";                           
+       4 -                                                               
+       5 -const words = (s: string) => new Set(s.toLowerCase().match(/[a-
+         -z0-9]{4,}/g) ?? []);                                           
+       6 -                                                               
+       7 -// Two headlines tell the same event when most words of the sho
+         -rter one are in the longer one                                 
+       8 -// (HDFC Bank, Nov 2026: RBI's approval of a re-appointment on 
+         -the 12th, the re-appointment itself on the 13th).              
+       9 -export function sameEvent(a: string, b: string): boolean {     
+      10 -  const [s, l] = [words(a), words(b)].sort((x, y) => x.size - y
+         -.size);                                                        
+      11 -  if (s.size < 4) return false; // "Outcome of board meeting" i
+         -s too generic to call a repeat                                 
+      12 -  let n = 0;                                                   
+      13 -  for (const w of s) if (l.has(w)) n++;                        
+      14 -  return n / s.size >= 0.7;                                    
+      15 -}                                                              
+      16 -                                                               
+      17 -// One row per company per day: the market move, its filings an
+         -d any data problem together.                                   
+      18 -export type AlertRow = { key: string; symbol: string; date: str
+         -ing; keys: string[]; market?: Alert; filings: Alert[]; errors: 
+         -Alert[]; sev: number; minor: boolean };                        
+      19 -                                                               
+      20 -export function alertRows(alerts: Alert[]): AlertRow[] {       
+      21 -  const by = new Map<string, AlertRow>();                      
+      22 -  for (const a of alerts) {                                    
+      23 -    const key = `${a.symbol}|${a.date}`;                       
+      24 -    let r = by.get(key);                                       
+      25 -    if (!r) by.set(key, (r = { key, symbol: a.symbol, date: a.d
+         -ate, keys: [], filings: [], errors: [], sev: 0, minor: true }))
+         -;                                                              
+      26 -    r.keys.push(a.key);                                        
+      27 -    r.sev += a.sev; // a filing with a move outranks either alo
+         -ne                                                             
+      28 -    r.minor &&= !!a.minor; // folded only when everything on it
+         - is a small volume spike                                       
+      29 -    if (a.kind === "price") r.market = a;                      
+      30 -    else (a.kind === "filing" ? r.filings : r.errors).push(a); 
+      31 -  }                                                            
+      32 -  return [...by.values()].sort((a, b) => b.date.localeCompare(a
+         -.date) || b.sev - a.sev || a.symbol.localeCompare(b.symbol));  
+      33 -}                                                              
+       1 +// Pure alert helpers (tested in alerts.test.ts): spotting one 
+         +event filed twice, and folding a day's alerts                  
+       2 +// into one row per company.                                   
+       3 +import type { Alert } from "./feed";                           
+       4 +                                                               
+       5 +const words = (s: string) => new Set(s.toLowerCase().match(/[a-
+         +z0-9]{4,}/g) ?? []);                                           
+       6 +                                                               
+       7 +// Two headlines tell the same event when most words of the sho
+         +rter one are in the longer one                                 
+     … 29 more lines (ctrl+o to expand)
+  ⎿  (timeout 2m)
+
+● Rebuilding, then restarting the local servers (they hold the old out/ folder)
+  and re-shooting Alerts, Settings and the ASIANPAINT page:
+
+  Read 2 files, ran 2 shell commands (ctrl+o to expand)
+
+● Alerts and Settings look right; the badge no longer counts the minor spike.
+  Checking the regenerated ASIANPAINT bull/bear section:
+
+  Read 1 file (ctrl+o to expand)
+
+● The page works, though the bull/bear section is thin and its reasoning weak,
+  as expected from the trial prompt. I'm fixing the footnote's claim that points
+  were dropped only for missing source numbers, then running the impeccable
+  detector. · summary
+
+● Bash(cd "/c/Users/mokshagna/Claude Projects/finn/web" && python - <<'PY'
+      p='components/Research.tsx'…)
+  ⎿  1 file changed (binary, mode only or too large to show)
+
+● Detector came back clean, and my 390px visual pass fixed four layout issues;
+  I'm now documenting the changes in DESIGN.md, DECISIONS.md and PLAN.md.
+  · summary
+
+  Made 1 scratchpad edit +59, ran 2 shell commands (ctrl+o to expand)
+
+● Correcting the test counts in the status text (174 backend, 15 web), then
+  writing the docs:
+
+● Bash(S="C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/41ffb8ca-
+      5c7b-4e11-8488-f6bc114d1b29/scratchpad"; cd "/c/Users/mokshagna/Claude
+      Projects/finn" &…)
+  ⎿  Updated DECISIONS.md (+11 -0)
+      243  - **Alerts default to the last 7 days**, most severe first wit
+           hin a day (P1 filing, price move by size, volume by multiple, 
+           data problems last), with volume-only spikes under 3× folded b
+           ehind "+N smaller volume spikes". The 30-day export stays one 
+           tap away.
+      244  - **Groq is the cheap tier's fallback** (gpt-oss-20b, its own 
+           daily cap), so a Gemini quota day can't stop headlines, classi
+           fication or extraction: PDFs go as page-marked text ([p.N], so
+            citations hold) and long list-shaped extractions (transcript 
+           guidance) are split into ~4k-token page chunks and joined. Lim
+           its: a scanned PDF with no text layer still needs Gemini; a wh
+           ole transcript through Groq's free 8k tokens a minute takes se
+           veral minutes.
+      245  
+      246 +## UI round 1 and fixes from the deployed app (14 Nov, evening
+          +)                                                             
+      247 +- **Only material (P1) filings alert** (user, 14 Nov). HDFC Ba
+          +nk's director re-appointment is P2 and showed as a "New" alert
+          +; P2 categories left Settings, since a toggle that can never f
+          +ire is a lie. P2/P3 still show in the brief.                  
+      248 +- **One event filed twice alerts once.** Same company and cate
+          +gory within 7 days, and at least 70% of the shorter headline's
+          + words (4+ letters) in the longer one, keeps the first filing 
+          +(RBI's approval on 12 Nov, then the re-appointment on 13 Nov).
+          + Headlines under 4 such words ("Outcome of board meeting") nev
+          +er count as repeats. Gave up: fuzzy matching across categories
+          +.                                                             
+      249 +- **Alerts inbox = one row per company per day** (move vs Nift
+          +y, volume multiple and filings merged), ordered by summed seve
+          +rity, so a results filing with a move outranks either alone. "
+          +Extreme" (≥5× volume, or twice the move threshold) is bold, no
+          +t a new colour. The badge and the headline count the same thin
+          +g: rows with a move or a filing, not small volume spikes or da
+          +ta notes.                                                     
+      250 +- **The PvD sentence uses the badge's words:** "behind on volu
+          +me growth", "moved away from target on…"; with several, "3 not
+          + kept, the latest behind on AUM". Re-derived from saved promis
+          +es (pure Python) whenever the index is built, so the wording r
+          +eaches every page without an LLM call.                        
+      251 +- **Bull/bear rules (Python, not prompt wishes):** the why mus
+          +t share a distinctive word (6-letter stem, generic finance voc
+          +abulary excluded) with its cited evidence, i.e. name a driver 
+          +from it; fixed filler ("supports profitability", "drives top-l
+          +ine growth", "cash generation", ...) is rejected; part-year fi
+          +gures are named by their quarters (the evidence says "H1 FY27 
+          +(Q1–Q2)", and a claim saying "so far" is dropped); the snapsho
+          +t's margin carries its definition into the evidence; numbers-f
+          +irst claims ("15.6% EBITDA margin in Q2 FY27") are now caught 
+          +by the one-number-per-fact check; no bear point on debt/equity
+          + below 0.5; a bull point can't cite a missed/behind promise, n
+          +or a bear point a hit/ahead one; "behind", "on track" and "ahe
+          +ad of" need a cited promise with that verdict. On a kept or mi
+          +ssed promise, credibility counts as the driver. Trade-off: str
+          +icter checks drop more points (ASIANPAINT's trial run kept 2 +
+          + 1); a thin, true section beats a full, generic one.          
+      252 +- **`python -m finn.pull.research --regen`** rebuilds all page
+          +s with bull/bear on gpt-oss-120b only (no Gemini stand-in), ev
+          +erything else from cache, and stops at the first daily-cap ans
+          +wer; re-running resumes (finished pages are cached). Groq repo
+          +rts per-minute limits in headers but not the daily token cap, 
+          +so the only quota check is trying.                            
+      253 +- **Live research shows the backend's own stages as a checklis
+          +t** (wake server, find filings, read transcripts n/4, check pr
+          +omises, snapshot, bull/bear), with elapsed time counted on the
+          + phone so it includes the server waking. Failures name what ha
+          +ppened and what still works: unknown symbol → search again; da
+          +ily cap or AI quota → the 22 researched companies; busy/timeou
+          +t/network → try again.                                        
+      254 +- **Desktop note with a static QR SVG** (generated once from t
+          +he fixed Vercel URL; no QR library shipped). Shown only on wid
+          +e screens with a mouse.                                       
+      255 +- **First-visit "How FINN works" card** mounts already open (n
+          +o entrance animation) and only animates its dismissal; the sam
+          +e three lines live under Settings.                            
+      256 +                                                              
+      257  ## Spike findings (11 Nov)
+      258  - **BSE API needs full browser headers** (`Origin` + `sec-fetc
+           h-*`), not just User-Agent + Referer. Without them it returns 
+           403. No cookies needed. **Works from a cloud IP:** `/health/bs
+           e` on Render (Singapore, free tier) returned live rows on 11 N
+           ov, so live pull and cloud ingest can call BSE directly. Gave 
+           up: nothing; the local-ingest fallback wasn't needed.
+      259  - **BSE's category alone misses results.** HDFCBANK filed Q2 r
+           esults under "Board Meeting / Outcome of Board Meeting". The c
+           lassifier needs a keyword rule on the subject ("financial resu
+           lts").
+  ⎿  Updated DESIGN.md (+12 -0)
+      230  ### Window control
+      231  Three-segment control on a shaded paper track; selected segmen
+           t is card stock, ink-blue, 600, with the one lift shadow. 44px
+            tall.
+      232  
+      233 +### Alerts inbox row                                          
+      234 +One row per company per day: avatar, short name (+ "New" in in
+          +k-blue), one facts line ("−3.3% vs Nifty · 2.3× vol · Results"
+          +; signed figures coloured, extreme values 600 weight), then th
+          +e filing's key fact in ink-2, clamped to 2 lines. The headline
+          + above names who needs a look, like the Brief's verdict. Rows 
+          +with a filing open it in the Brief; market-only rows open the 
+          +company page.                                                 
+      235 +                                                              
+      236 +### How FINN works                                            
+      237 +Card stock, hairline, 12px radius, at the top of the Brief on 
+          +first visit: serif title, a two-column list (Filter / Rank / V
+          +erify in 600, the line in ink-2), "Got it" bottom right. Mount
+          +s open; dismissal collapses (200ms). The list repeats under Se
+          +ttings.                                                       
+      238 +                                                              
+      239 +### Live research checklist                                   
+      240 +Serif "Researching SYMBOL", elapsed time, then the backend's s
+          +tages as hairline rows: done = filled ink circle with a paper 
+          +tick drawn in (clip reveal), current = ring with an ink dot, l
+          +abel 600 and a quiet detail line ("Q1 FY27 call, 2 of 4"), pen
+          +ding = faint ring, ink-2 label. Weight, not colour.           
+      241 +                                                              
+      242 +### Desktop note                                              
+      243 +At ≥1024px with a fine pointer only: beside the column, a seri
+          +f "FINN is built for your phone.", one ink-2 line and a QR cod
+          +e on card stock. The column itself never widens.              
+      244 +                                                              
+      245  ### Buttons
+      246  - **Secondary** ("Try again", "Reset to defaults"): 40px, 6px 
+           radius, ink border at 70%, paper-2 on hover; disabled falls ba
+           ck to hairline and ink-2.
+      247  - **Text toggles** ("Show", "+2 more filings", "Show 4 more co
+           mpanies"): ink-blue medium text, at least 44px tall; the "show
+            more companies" toggle is full width inside a hairline 12px b
+           ox.
+  ⎿  Updated PLAN.md (+6 -0)
+      244  - **E2E from the deployed site** (headless Chrome at 390px on 
+           finn-coral-eta.vercel.app → Render): **SONACOMS** (mid-cap) fu
+           ll page in 91 s (job 83 s), 5 calls, 72k in / 7.9k out tokens,
+            $0.036 (flash-lite + gpt-oss-120b): 1 promise (EBITDA 23–25% 
+           FY27, on track at 23.0%), snapshot, bull/bear 3+3 cited. **FED
+           ERALBNK** (bank): 4 transcripts read and promises checked in 5
+           4 s, then bull/bear stalled (Groq's daily cap spent by the reb
+           uild → Gemini fallback with no per-call timeout); the page sho
+           wed the timeout message at 8 min as designed; the job finished
+            at 45 min and cached its page: 7 calls, 25k in / 7k out token
+           s, $0.054; lender snapshot (total income +19.0% YoY, PAT +51.1
+           %, net margin 15.1%), "No checkable promises found on the last
+            4 calls", bull/bear 3+3 by gemini-3.5-flash labelled as the f
+           allback. **Fixed (last backend change, then frozen):** 90 s pe
+           r LLM call, a timeout skips to the next model; a live run show
+           s the page once promises + snapshot are done and adds bull/bea
+           r when written (or a quiet note); `TZ=Asia/Kolkata` and a `bac
+           kend/**` build filter on Render. **FEDERALBNK re-test from the
+            deployed site:** page at 67 s, bull/bear (gpt-oss-120b) at 70
+            s; 7 calls, 25k in / 5.3k out tokens, $0.016; lender snapshot
+           , "No checkable promises found on the last 4 calls", bull 2 + 
+           bear 3, cited; build time in IST. 172 backend tests pass.
+      245  - **Quota note:** the full rebuild used most of today's Groq g
+           pt-oss-120b cap and Gemini 3.8 flash's daily quota, so live ru
+           ns today fall through to Gemini 3.5 flash for the strong tasks
+            (labelled on the page).
+      246  
+      247 +## 3n. Status at 14 Nov, night (UI round 1 + fixes from the de
+          +ployed app)                                                   
+      248 +- **UI round 1 (UI_BRIEF.md):** first-visit "How FINN works" c
+          +ard (also in Settings); live research as a stage checklist wit
+          +h elapsed time and plain failure states; Alerts redesigned (he
+          +adline, one row per company per day, extreme values bold, rows
+          + open the filing or company); desktop side note with a QR code
+          +.                                                             
+      249 +- **Fixes:** alerts fire on P1 only and once per event across 
+          +dates (HDFC Bank's re-appointment gone); PvD sentence says "be
+          +hind on volume growth" like the badge; bull/bear rules + promp
+          +t (driver from cited evidence, no filler, H1/9M naming, no low
+          +-leverage bears, no clash with verdicts).                     
+      250 +- **Bull/bear regeneration NOT run:** Groq's gpt-oss-120b answ
+          +ered with its daily cap after one call (ASIANPAINT trial, 2 + 
+          +1 points). **Sunday morning:** `cd backend && ../.venv/Scripts
+          +/python -m finn.pull.research --regen`, then check the consist
+          +ency gate line it prints (0 problems), commit + push. Consiste
+          +ncy gate tonight: 0 problems.                                 
+      251 +- 174 backend + 15 web tests pass; static build OK; impeccable
+          + detector clean on the changed screens.                       
+      252 +                                                              
+      253  ## 4. Day-by-day
+      254  
+      255  **Wed 11 (done):** repo init, spikes, decisions. Session expor
+           t.
+  ⎿  (timeout 5m)
+
+● Build clean. Stopping the local mock servers, then committing and pushing:
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Round 1 and all three fixes are pushed to main, so Vercel is redeploying. The
+  bull/bear regeneration did not run tonight: Groq's gpt-oss-120b quota ran out
+  after one call. It's left for Sunday morning.
+
+  Round 1:
+  - How FINN works: a card at the top of the Brief on first visit with three
+    lines (Filter / Rank / Verify). "Got it" dismisses it for good on that
+    device. The same lines also live under Settings.
+  - Live research: an unresearched symbol now shows what happens and how long it
+    takes (about 1–2 minutes). While it runs, you see the backend's stages as a
+    checklist with the time elapsed. Failures say what happened and what you
+    can still do: an unknown symbol offers "Search again", a used-up daily limit
+    points to the researched companies, anything else offers "Try again". If a
+    section is missing, the page says why.
+  - Alerts: the top line names who needs a look ("No new alerts." if nothing is
+    new). There is one row per company per day ("−3.3% vs Nifty · 2.3× vol ·
+    Results"), sorted by severity. Extreme values (5× volume or more, or a move
+    of twice your threshold) are bold. Small volume spikes fold away, and every
+    row opens the filing or the company page.
+  - Laptop visits: on a wide screen a side note says "FINN is built for your
+    phone" with a QR code to the Vercel link.
+
+  Fixes:
+  1. Alerts: only material (P1) filings alert now, so HDFC Bank's re-appointment
+     is gone. The same event filed on two different days alerts once. The P2
+     category switches came out of Settings because they could no longer trigger
+     an alert.
+  2. PvD sentence: it now uses the badge's words, e.g. "behind on volume
+     growth". All 22 pages are updated; this needed no AI calls.
+  3. Bull/bear: the code now drops a point if:
+     - its "why it matters" doesn't name something specific from its cited
+       evidence, or uses filler like "supports profitability";
+     - it says "so far" instead of naming the quarters (H1 FY27, 9M FY27);
+     - it's a bear point on debt/equity below 0.5;
+     - it contradicts a promise verdict.
+
+     The snapshot's margin definition now goes into the evidence the AI sees,
+     and a check catches two different numbers for the same metric and period.
+     The one-command regeneration is --regen.
+
+  Sunday morning: run cd backend && ../.venv/Scripts/python -m
+  finn.pull.research --regen. Check that its last line says 0 problems, then
+  commit and push. If the quota runs out midway, it stops and the same command
+  resumes later.
+
+  ASIANPAINT was my trial run. It now has only 2 bull points and 1 bear, with
+  weak "why it matters" lines. That run used the prompt before my last
+  improvement; Sunday's run will replace it. The other 21 pages still have the
+  old bull/bear text until Sunday. The stricter checks will drop more points, so
+  some pages may end up thin.
+
+  Consistency check: 0 problems. 174 backend and 15 web tests pass, and
+  impeccable's automated design check found nothing. I couldn't run the full
+  impeccable critique; I checked each screen myself at 390px in headless Chrome
+  and fixed what I found.
+
+  Screens to check on your phone:
+  - Brief: the How FINN works card at the top (check that "Got it" dismisses it
+    for good).
+  - Alerts: the new layout and the tab badge count.
+  - Settings: fewer category switches; How FINN works at the bottom.
+  - Research → a new symbol: the intro, the stage checklist, and the "can't
+    find" page (try a made-up symbol).
+  - Research → ASIANPAINT, TCS, BAJFINANCE, HDFCBANK: the new sentence wording,
+    and ASIANPAINT's thinner bull/bear.
+  - Laptop: the QR side note.
+
+  Not checked: the live checklist against the real Render server (I used a mock
+  locally), and the install on a real phone. Pushing also redeploys Render, so
+  the new bull/bear rules apply to live research runs from now on.
+
+  Remember to /export this session into build-history/.

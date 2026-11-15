@@ -1,7 +1,7 @@
 {
  "symbol": "BHARTIARTL",
  "name": "Bharti Airtel Ltd",
- "generated_at": "2026-11-14T16:19",
+ "generated_at": "2026-11-15T08:08",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -660,55 +660,6 @@
    "claim": "Debt/equity 1.31 at FY26 end (Mar 2026), from 2.55 at FY22 end."
   }
  },
- "bull_bear": {
-  "bull": [
-   {
-    "point": "Revenue +16.7% YoY in Q2 FY27.",
-    "why": "Boosts earnings growth trajectory.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#quarters"
-     }
-    ]
-   },
-   {
-    "point": "EBITDA margin 57.4% in Q2 FY27, +0.7 pp YoY.",
-    "why": "Improves profitability per rupee of sales.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#margin"
-     }
-    ]
-   },
-   {
-    "point": "Debt/equity 1.31 at FY26 end, down from 2.55.",
-    "why": "Reduces financial risk and interest burden.",
-    "cites": [
-     {
-      "label": "Financial snapshot (results filings)",
-      "url": "#leverage"
-     }
-    ]
-   }
-  ],
-  "bear": [
-   {
-    "point": "Capex Rs12,500 Crores in Q2 FY27.",
-    "why": "Strains cash generation and may limit returns.",
-    "cites": [
-     {
-      "label": "Q2 FY27 call, p.3",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1ff3e14f-7e97-4074-89c7-049408721c5e.pdf"
-     }
-    ]
-   }
-  ],
-  "dropped": 4,
-  "model": "openai/gpt-oss-120b",
-  "model_note": null
- },
  "sources": [
   {
    "label": "Q2 FY27 earnings call transcript",
@@ -730,5 +681,71 @@
    "label": "Quarterly and annual tables (consolidated), screener.in, from the exchange filings",
    "url": "https://www.screener.in/company/BHARTIARTL/consolidated/"
   }
- ]
+ ],
+ "bull_bear": {
+  "bull": [
+   {
+    "point": "Revenue +16.7% YoY, Q2 FY27",
+    "why": "Mobile ARPU increase",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#quarters"
+     },
+     {
+      "label": "Q2 FY27 call, p.4",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1ff3e14f-7e97-4074-89c7-049408721c5e.pdf"
+     }
+    ]
+   },
+   {
+    "point": "EBITDA margin 57.4% in Q2 FY27, +0.7 pp YoY",
+    "why": "Consolidated EBITDAaL growth",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
+     },
+     {
+      "label": "Q2 FY27 call, p.3",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1ff3e14f-7e97-4074-89c7-049408721c5e.pdf"
+     }
+    ]
+   }
+  ],
+  "bear": [
+   {
+    "point": "Debt/equity 1.31 at FY26 end",
+    "why": "Analyst concern over debt repayment",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#leverage"
+     },
+     {
+      "label": "Q2 FY27 call, p.9 (analyst)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1ff3e14f-7e97-4074-89c7-049408721c5e.pdf"
+     }
+    ]
+   },
+   {
+    "point": "Capex Rs.12,500 Crores, Q2 FY27",
+    "why": "Analyst worry about data center financing",
+    "cites": [
+     {
+      "label": "Q2 FY27 call, p.3",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1ff3e14f-7e97-4074-89c7-049408721c5e.pdf"
+     },
+     {
+      "label": "Q2 FY27 call, p.10 (analyst)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1ff3e14f-7e97-4074-89c7-049408721c5e.pdf"
+     }
+    ]
+   }
+  ],
+  "dropped": 6,
+  "model": "openai/gpt-oss-120b",
+  "model_note": null,
+  "note": null
+ }
 }

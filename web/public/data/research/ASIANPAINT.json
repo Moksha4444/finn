@@ -1,7 +1,7 @@
 {
  "symbol": "ASIANPAINT",
  "name": "Asian Paints Ltd",
- "generated_at": "2026-11-14T22:29",
+ "generated_at": "2026-11-15T08:04",
  "latest_quarter": "Sep 2026",
  "calls": [
   {
@@ -852,19 +852,41 @@
  "bull_bear": {
   "bull": [
    {
-    "point": "PBDIT margin, FY26 18.8%",
-    "why": "management credibility on PBDIT margin",
+    "point": "EBITDA margin 18.2% (H1 FY27)",
+    "why": "weighted price increase supports margin expansion",
     "cites": [
      {
-      "label": "Q2 FY26 call, p.27 (promise)",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=99e65c90-6bb0-4984-ac71-2a0f0eb4cc7f.pdf"
+      "label": "Q2 FY27 call, p.28 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ee7e6efe-1f9b-4b5e-bff7-1da18902ffeb.pdf"
+     },
+     {
+      "label": "Q1 FY27 call, p.10",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e0d5627-2b8b-4bf1-a7ce-9d0160833a0f.pdf"
      }
     ]
    },
    {
-    "point": "New products revenue contribution, Q1 FY27 17%",
-    "why": "new products drive revenue mix",
+    "point": "PPGAP PBT growth 5% (Q1 FY27)",
+    "why": "new products revenue contribution drives profit growth",
     "cites": [
+     {
+      "label": "Q1 FY27 call, p.12",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e0d5627-2b8b-4bf1-a7ce-9d0160833a0f.pdf"
+     },
+     {
+      "label": "Q1 FY27 call, p.11",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e0d5627-2b8b-4bf1-a7ce-9d0160833a0f.pdf"
+     }
+    ]
+   },
+   {
+    "point": "PBDIT margin 18.8% (FY26)",
+    "why": "new products revenue contribution drives margin",
+    "cites": [
+     {
+      "label": "Q2 FY26 call, p.27 (promise)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=99e65c90-6bb0-4984-ac71-2a0f0eb4cc7f.pdf"
+     },
      {
       "label": "Q1 FY27 call, p.11",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e0d5627-2b8b-4bf1-a7ce-9d0160833a0f.pdf"
@@ -874,22 +896,51 @@
   ],
   "bear": [
    {
-    "point": "Volume growth, Q2 FY27 6.4%",
-    "why": "volume growth target shortfall raises credibility concerns",
+    "point": "decorative volume growth 6.4% (Q2 FY27)",
+    "why": "analyst worries volume growth on soft base",
     "cites": [
      {
       "label": "Q2 FY27 call, p.14",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ee7e6efe-1f9b-4b5e-bff7-1da18902ffeb.pdf"
      },
      {
-      "label": "Q1 FY27 call, p.20 (promise)",
+      "label": "Q1 FY27 call, p.19 (analyst)",
       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6e0d5627-2b8b-4bf1-a7ce-9d0160833a0f.pdf"
+     }
+    ]
+   },
+   {
+    "point": "EBITDA margin 15.6% (Q2 FY27)",
+    "why": "analyst fears margin may slip below target band",
+    "cites": [
+     {
+      "label": "Financial snapshot (results filings)",
+      "url": "#margin"
+     },
+     {
+      "label": "Q2 FY27 call, p.28 (analyst)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ee7e6efe-1f9b-4b5e-bff7-1da18902ffeb.pdf"
+     }
+    ]
+   },
+   {
+    "point": "decorative volume growth 7.9% (Q3 FY26)",
+    "why": "analyst doubts competitive environment erodes market share",
+    "cites": [
+     {
+      "label": "Q3 FY26 call, p.14",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=8bc8c7dd-23d0-4cf2-bcdf-620769ed0d1a.pdf"
+     },
+     {
+      "label": "Q3 FY26 call, p.34 (analyst)",
+      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=8bc8c7dd-23d0-4cf2-bcdf-620769ed0d1a.pdf"
      }
     ]
    }
   ],
   "dropped": 2,
   "model": "openai/gpt-oss-120b",
-  "model_note": null
+  "model_note": null,
+  "note": null
  }
 }

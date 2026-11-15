@@ -1,0 +1,1 @@
+{"data": {"bear": [], "bull": [{"claim": "PBDIT margin 18.8% (FY26)", "why": "new products revenue contribution drives margin", "cites": ["P1", "S5"]}]}, "model": "openai/gpt-oss-120b", "model_note": null, "tokens_in": 3980, "tokens_out": 1124}
