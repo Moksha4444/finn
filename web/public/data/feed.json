@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-15T01:36+05:30",
+ "generated_at": "2026-11-15T08:15+05:30",
  "window": [
   "2026-10-16",
   "2026-11-15"
@@ -9,8 +9,6 @@
   "excess_move_pct": 3.0
  },
  "portfolio": [
-  "MARUTI",
-  "TRENT",
   "RELIANCE",
   "HDFCBANK",
   "TCS",
@@ -18,8 +16,10 @@
   "ITC",
   "LT",
   "SUNPHARMA",
+  "MARUTI",
   "BAJFINANCE",
   "ASIANPAINT",
+  "TRENT",
   "ETERNAL",
   "DIXON",
   "PERSISTENT",
@@ -31,348 +31,6 @@
   "DEEPAKNTR"
  ],
  "companies": {
-  "MARUTI": {
-   "name": "Maruti Suzuki India Ltd",
-   "sector": "Consumer Discretionary",
-   "closes": [
-    [
-     "2026-09-15",
-     12231.0
-    ],
-    [
-     "2026-09-16",
-     12166.0
-    ],
-    [
-     "2026-09-17",
-     12338.0
-    ],
-    [
-     "2026-09-18",
-     12103.0
-    ],
-    [
-     "2026-09-21",
-     12153.0
-    ],
-    [
-     "2026-09-22",
-     12190.0
-    ],
-    [
-     "2026-09-23",
-     12230.0
-    ],
-    [
-     "2026-09-24",
-     11990.0
-    ],
-    [
-     "2026-09-25",
-     12065.0
-    ],
-    [
-     "2026-09-28",
-     12008.0
-    ],
-    [
-     "2026-09-29",
-     11877.0
-    ],
-    [
-     "2026-09-30",
-     11967.0
-    ],
-    [
-     "2026-10-01",
-     11386.0
-    ],
-    [
-     "2026-10-05",
-     11532.0
-    ],
-    [
-     "2026-10-06",
-     11625.0
-    ],
-    [
-     "2026-10-07",
-     11450.0
-    ],
-    [
-     "2026-10-08",
-     11228.0
-    ],
-    [
-     "2026-10-09",
-     11420.0
-    ],
-    [
-     "2026-10-12",
-     11315.0
-    ],
-    [
-     "2026-10-13",
-     11245.0
-    ],
-    [
-     "2026-10-14",
-     11178.0
-    ],
-    [
-     "2026-10-15",
-     11445.0
-    ],
-    [
-     "2026-10-16",
-     11489.0
-    ],
-    [
-     "2026-10-19",
-     11475.0
-    ],
-    [
-     "2026-10-21",
-     11200.0
-    ],
-    [
-     "2026-10-22",
-     11170.0
-    ],
-    [
-     "2026-10-23",
-     11230.0
-    ],
-    [
-     "2026-10-26",
-     11220.0
-    ],
-    [
-     "2026-10-27",
-     11450.0
-    ],
-    [
-     "2026-10-28",
-     11579.0
-    ],
-    [
-     "2026-10-29",
-     11426.0
-    ],
-    [
-     "2026-10-30",
-     11397.0
-    ],
-    [
-     "2026-11-02",
-     11672.0
-    ],
-    [
-     "2026-11-03",
-     11869.0
-    ],
-    [
-     "2026-11-04",
-     11995.0
-    ],
-    [
-     "2026-11-05",
-     12652.0
-    ],
-    [
-     "2026-11-06",
-     12750.0
-    ],
-    [
-     "2026-11-09",
-     12928.0
-    ],
-    [
-     "2026-11-11",
-     13185.0
-    ],
-    [
-     "2026-11-12",
-     13024.0
-    ],
-    [
-     "2026-11-13",
-     12854.0
-    ]
-   ],
-   "credibility": null
-  },
-  "TRENT": {
-   "name": "Trent Ltd",
-   "sector": "Consumer Discretionary",
-   "closes": [
-    [
-     "2026-09-15",
-     2730.0
-    ],
-    [
-     "2026-09-16",
-     2769.7
-    ],
-    [
-     "2026-09-17",
-     2789.0
-    ],
-    [
-     "2026-09-18",
-     2824.0
-    ],
-    [
-     "2026-09-21",
-     2815.5
-    ],
-    [
-     "2026-09-22",
-     2782.9
-    ],
-    [
-     "2026-09-23",
-     2774.0
-    ],
-    [
-     "2026-09-24",
-     2700.0
-    ],
-    [
-     "2026-09-25",
-     2669.3
-    ],
-    [
-     "2026-09-28",
-     2626.0
-    ],
-    [
-     "2026-09-29",
-     2635.0
-    ],
-    [
-     "2026-09-30",
-     2621.6
-    ],
-    [
-     "2026-10-01",
-     2580.0
-    ],
-    [
-     "2026-10-05",
-     2580.0
-    ],
-    [
-     "2026-10-06",
-     2906.0
-    ],
-    [
-     "2026-10-07",
-     2890.3
-    ],
-    [
-     "2026-10-08",
-     2876.3
-    ],
-    [
-     "2026-10-09",
-     2918.2
-    ],
-    [
-     "2026-10-12",
-     2913.0
-    ],
-    [
-     "2026-10-13",
-     2987.8
-    ],
-    [
-     "2026-10-14",
-     2971.0
-    ],
-    [
-     "2026-10-15",
-     2949.7
-    ],
-    [
-     "2026-10-16",
-     2958.7
-    ],
-    [
-     "2026-10-19",
-     2891.6
-    ],
-    [
-     "2026-10-21",
-     2822.0
-    ],
-    [
-     "2026-10-22",
-     2775.8
-    ],
-    [
-     "2026-10-23",
-     2727.5
-    ],
-    [
-     "2026-10-26",
-     2754.0
-    ],
-    [
-     "2026-10-27",
-     2820.6
-    ],
-    [
-     "2026-10-28",
-     2913.9
-    ],
-    [
-     "2026-10-29",
-     2861.7
-    ],
-    [
-     "2026-10-30",
-     3017.3
-    ],
-    [
-     "2026-11-02",
-     3046.4
-    ],
-    [
-     "2026-11-03",
-     3036.5
-    ],
-    [
-     "2026-11-04",
-     3060.0
-    ],
-    [
-     "2026-11-05",
-     3055.0
-    ],
-    [
-     "2026-11-06",
-     3079.0
-    ],
-    [
-     "2026-11-09",
-     3119.2
-    ],
-    [
-     "2026-11-11",
-     3222.7
-    ],
-    [
-     "2026-11-12",
-     3180.0
-    ],
-    [
-     "2026-11-13",
-     3165.2
-    ]
-   ],
-   "credibility": null
-  },
   "RELIANCE": {
    "name": "Reliance Industries Ltd",
    "sector": "Energy",
@@ -1586,6 +1244,177 @@
     "open": 1
    }
   },
+  "MARUTI": {
+   "name": "Maruti Suzuki India Ltd",
+   "sector": "Consumer Discretionary",
+   "closes": [
+    [
+     "2026-09-15",
+     12231.0
+    ],
+    [
+     "2026-09-16",
+     12166.0
+    ],
+    [
+     "2026-09-17",
+     12338.0
+    ],
+    [
+     "2026-09-18",
+     12103.0
+    ],
+    [
+     "2026-09-21",
+     12153.0
+    ],
+    [
+     "2026-09-22",
+     12190.0
+    ],
+    [
+     "2026-09-23",
+     12230.0
+    ],
+    [
+     "2026-09-24",
+     11990.0
+    ],
+    [
+     "2026-09-25",
+     12065.0
+    ],
+    [
+     "2026-09-28",
+     12008.0
+    ],
+    [
+     "2026-09-29",
+     11877.0
+    ],
+    [
+     "2026-09-30",
+     11967.0
+    ],
+    [
+     "2026-10-01",
+     11386.0
+    ],
+    [
+     "2026-10-05",
+     11532.0
+    ],
+    [
+     "2026-10-06",
+     11625.0
+    ],
+    [
+     "2026-10-07",
+     11450.0
+    ],
+    [
+     "2026-10-08",
+     11228.0
+    ],
+    [
+     "2026-10-09",
+     11420.0
+    ],
+    [
+     "2026-10-12",
+     11315.0
+    ],
+    [
+     "2026-10-13",
+     11245.0
+    ],
+    [
+     "2026-10-14",
+     11178.0
+    ],
+    [
+     "2026-10-15",
+     11445.0
+    ],
+    [
+     "2026-10-16",
+     11489.0
+    ],
+    [
+     "2026-10-19",
+     11475.0
+    ],
+    [
+     "2026-10-21",
+     11200.0
+    ],
+    [
+     "2026-10-22",
+     11170.0
+    ],
+    [
+     "2026-10-23",
+     11230.0
+    ],
+    [
+     "2026-10-26",
+     11220.0
+    ],
+    [
+     "2026-10-27",
+     11450.0
+    ],
+    [
+     "2026-10-28",
+     11579.0
+    ],
+    [
+     "2026-10-29",
+     11426.0
+    ],
+    [
+     "2026-10-30",
+     11397.0
+    ],
+    [
+     "2026-11-02",
+     11672.0
+    ],
+    [
+     "2026-11-03",
+     11869.0
+    ],
+    [
+     "2026-11-04",
+     11995.0
+    ],
+    [
+     "2026-11-05",
+     12652.0
+    ],
+    [
+     "2026-11-06",
+     12750.0
+    ],
+    [
+     "2026-11-09",
+     12928.0
+    ],
+    [
+     "2026-11-11",
+     13185.0
+    ],
+    [
+     "2026-11-12",
+     13024.0
+    ],
+    [
+     "2026-11-13",
+     12854.0
+    ]
+   ],
+   "credibility": null
+  },
   "BAJFINANCE": {
    "name": "Bajaj Finance Ltd",
    "sector": "Financial Services",
@@ -1757,7 +1586,7 @@
    ],
    "credibility": {
     "kept": 1,
-    "missed": 2,
+    "missed": 3,
     "open": 0
    }
   },
@@ -1935,6 +1764,177 @@
     "missed": 1,
     "open": 1
    }
+  },
+  "TRENT": {
+   "name": "Trent Ltd",
+   "sector": "Consumer Discretionary",
+   "closes": [
+    [
+     "2026-09-15",
+     2730.0
+    ],
+    [
+     "2026-09-16",
+     2769.7
+    ],
+    [
+     "2026-09-17",
+     2789.0
+    ],
+    [
+     "2026-09-18",
+     2824.0
+    ],
+    [
+     "2026-09-21",
+     2815.5
+    ],
+    [
+     "2026-09-22",
+     2782.9
+    ],
+    [
+     "2026-09-23",
+     2774.0
+    ],
+    [
+     "2026-09-24",
+     2700.0
+    ],
+    [
+     "2026-09-25",
+     2669.3
+    ],
+    [
+     "2026-09-28",
+     2626.0
+    ],
+    [
+     "2026-09-29",
+     2635.0
+    ],
+    [
+     "2026-09-30",
+     2621.6
+    ],
+    [
+     "2026-10-01",
+     2580.0
+    ],
+    [
+     "2026-10-05",
+     2580.0
+    ],
+    [
+     "2026-10-06",
+     2906.0
+    ],
+    [
+     "2026-10-07",
+     2890.3
+    ],
+    [
+     "2026-10-08",
+     2876.3
+    ],
+    [
+     "2026-10-09",
+     2918.2
+    ],
+    [
+     "2026-10-12",
+     2913.0
+    ],
+    [
+     "2026-10-13",
+     2987.8
+    ],
+    [
+     "2026-10-14",
+     2971.0
+    ],
+    [
+     "2026-10-15",
+     2949.7
+    ],
+    [
+     "2026-10-16",
+     2958.7
+    ],
+    [
+     "2026-10-19",
+     2891.6
+    ],
+    [
+     "2026-10-21",
+     2822.0
+    ],
+    [
+     "2026-10-22",
+     2775.8
+    ],
+    [
+     "2026-10-23",
+     2727.5
+    ],
+    [
+     "2026-10-26",
+     2754.0
+    ],
+    [
+     "2026-10-27",
+     2820.6
+    ],
+    [
+     "2026-10-28",
+     2913.9
+    ],
+    [
+     "2026-10-29",
+     2861.7
+    ],
+    [
+     "2026-10-30",
+     3017.3
+    ],
+    [
+     "2026-11-02",
+     3046.4
+    ],
+    [
+     "2026-11-03",
+     3036.5
+    ],
+    [
+     "2026-11-04",
+     3060.0
+    ],
+    [
+     "2026-11-05",
+     3055.0
+    ],
+    [
+     "2026-11-06",
+     3079.0
+    ],
+    [
+     "2026-11-09",
+     3119.2
+    ],
+    [
+     "2026-11-11",
+     3222.7
+    ],
+    [
+     "2026-11-12",
+     3180.0
+    ],
+    [
+     "2026-11-13",
+     3165.2
+    ]
+   ],
+   "credibility": null
   },
   "ETERNAL": {
    "name": "Eternal Ltd",
@@ -3312,7 +3312,7 @@
    ],
    "credibility": {
     "kept": 0,
-    "missed": 4,
+    "missed": 3,
     "open": 0
    }
   },
@@ -3840,7 +3840,7 @@
    "tier": "P1",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.com/corporate/CDSL_31102026141138_OutcomeBM31102026_Signed.pdf",
+   "url": "https://nsearchives.nseindia.in/corporate/CDSL_31102026141138_OutcomeBM31102026_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-10-31",
    "last_bar": "2026-11-13",
@@ -4020,7 +4020,7 @@
    "tier": "P1",
    "classified_by": "llm",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.com/corporate/CDSL_30102026191314_IntimationofPenalty30102026_sd.pdf",
+   "url": "https://nsearchives.nseindia.in/corporate/CDSL_30102026191314_IntimationofPenalty30102026_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-10-31",
    "last_bar": "2026-11-13",
@@ -4243,7 +4243,6 @@
     "excess_pct": 2.41,
     "vol_ratio": 24.07
    },
-   "card_error": "ValueError: need current, previous and year-ago columns with PBT and PAT",
    "score": 450,
    "reason": "Ranked high: results · 24.1× volume",
    "boosted": true,
@@ -4617,7 +4616,6 @@
     "excess_pct": 4.1,
     "vol_ratio": 2.98
    },
-   "card_error": "ValueError: need current, previous and year-ago columns with PBT and PAT",
    "score": 450,
    "reason": "Ranked high: results · +3.9% (+4.1% vs Nifty) · 3.0× volume",
    "boosted": true,
@@ -5272,7 +5270,7 @@
    "tier": "P2",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.com/corporate/CDSL_03112026125814_NSEIntimation_PressRelease_finalsd.pdf",
+   "url": "https://nsearchives.nseindia.in/corporate/CDSL_03112026125814_NSEIntimation_PressRelease_finalsd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-03",
    "last_bar": "2026-11-13",
@@ -5359,7 +5357,7 @@
    "tier": "P2",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.com/corporate/CDSL_31102026155542_CDSL_InvestorPresentation_Signed.pdf",
+   "url": "https://nsearchives.nseindia.in/corporate/CDSL_31102026155542_CDSL_InvestorPresentation_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-11-01",
    "last_bar": "2026-11-13",
@@ -5387,7 +5385,7 @@
    "tier": "P2",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.com/corporate/CDSL_31102026142410_Press_release_Signed.pdf",
+   "url": "https://nsearchives.nseindia.in/corporate/CDSL_31102026142410_Press_release_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-10-31",
    "last_bar": "2026-11-13",
@@ -5859,7 +5857,7 @@
    "tier": "P2",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.com/corporate/CDSL_28102026180148_Retirement_Ashish_Bhatt_Signed.pdf",
+   "url": "https://nsearchives.nseindia.in/corporate/CDSL_28102026180148_Retirement_Ashish_Bhatt_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-10-29",
    "last_bar": "2026-11-13",
@@ -7470,7 +7468,7 @@
    "tier": "P2",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.com/corporate/CDSL_05112026164633_NSEIntimationTranscript02112026Sd.pdf",
+   "url": "https://nsearchives.nseindia.in/corporate/CDSL_05112026164633_NSEIntimationTranscript02112026Sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-06",
    "last_bar": "2026-11-13",
@@ -8868,6 +8866,28 @@
    "collapsed": false
   },
   {
+   "id": "31275412-5df1-4bf8-9c4f-731ef6d33956",
+   "symbol": "BHARTIARTL",
+   "name": "Bharti Airtel Ltd",
+   "filed": "2026-11-14T16:01",
+   "subject": "Announcement under Regulation 30 (LODR)-Newspaper Publication",
+   "headline": "Publication of Newspaper Advertisements w.r.t. claiming proceeds of fractional entitlements of the Company.",
+   "note": null,
+   "category": "unclassified",
+   "tier": "P3",
+   "classified_by": "default",
+   "classify_error": "ValueError: No API key was provided. Please pass a valid API key. Learn how to create an API key at https://aistudio.google.com/docs/api-key.",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a68bf781-d41a-4320-a9f5-2d8d4c8a08a3.pdf",
+   "source": "bse",
+   "reaction_day": "2026-11-15",
+   "last_bar": "2026-11-13",
+   "reaction": null,
+   "score": 100,
+   "reason": "unclassified · Reaction pending",
+   "boosted": false,
+   "collapsed": true
+  },
+  {
    "id": "5fd0fe11-f12c-44ab-8be0-16d1748e154e",
    "symbol": "RELIANCE",
    "name": "Reliance Industries Ltd",
@@ -9293,7 +9313,7 @@
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.com/corporate/CDSL_09112026180719_ConCallInvite_Nov19_2026_sd.pdf",
+   "url": "https://nsearchives.nseindia.in/corporate/CDSL_09112026180719_ConCallInvite_Nov19_2026_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-10",
    "last_bar": "2026-11-13",
@@ -9321,7 +9341,7 @@
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.com/corporate/CDSL_09112026180456_ConCallInvite_Nov18_2026_Sd.pdf",
+   "url": "https://nsearchives.nseindia.in/corporate/CDSL_09112026180456_ConCallInvite_Nov18_2026_Sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-10",
    "last_bar": "2026-11-13",
@@ -9377,7 +9397,7 @@
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.com/corporate/CDSL_09112026180247_ConCallInvite_Nov17_2026_sd.pdf",
+   "url": "https://nsearchives.nseindia.in/corporate/CDSL_09112026180247_ConCallInvite_Nov17_2026_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-10",
    "last_bar": "2026-11-13",
@@ -9405,7 +9425,7 @@
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.com/corporate/CDSL_09112026175741_ConCallInvite_Nov13_2026_sd.pdf",
+   "url": "https://nsearchives.nseindia.in/corporate/CDSL_09112026175741_ConCallInvite_Nov13_2026_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-10",
    "last_bar": "2026-11-13",
@@ -10385,7 +10405,7 @@
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.com/corporate/CDSL_03112026152936_ConCallInvite_Nov06_2026_sd.pdf",
+   "url": "https://nsearchives.nseindia.in/corporate/CDSL_03112026152936_ConCallInvite_Nov06_2026_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-04",
    "last_bar": "2026-11-13",
@@ -10469,7 +10489,7 @@
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.com/corporate/CDSL_02112026174345_NSEIntimation_Concall_02Nov2026_sd.pdf",
+   "url": "https://nsearchives.nseindia.in/corporate/CDSL_02112026174345_NSEIntimation_Concall_02Nov2026_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-03",
    "last_bar": "2026-11-13",
@@ -10553,7 +10573,7 @@
    "tier": "P3",
    "classified_by": "llm",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.com/corporate/CDSL_01112026143902_Newspaper_31102026_Final_Signed.pdf",
+   "url": "https://nsearchives.nseindia.in/corporate/CDSL_01112026143902_Newspaper_31102026_Final_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-11-01",
    "last_bar": "2026-11-13",
@@ -11477,7 +11497,7 @@
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.com/corporate/CDSL_27102026172744_NSEIntimation_Concall_02112026_Signed.pdf",
+   "url": "https://nsearchives.nseindia.in/corporate/CDSL_27102026172744_NSEIntimation_Concall_02112026_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-10-28",
    "last_bar": "2026-11-13",
@@ -12719,12 +12739,6 @@
    "text": "−3.3% (−5.3% vs Nifty) · 2.3× volume"
   },
   {
-   "symbol": "MARUTI",
-   "date": "2026-11-05",
-   "kind": "price",
-   "text": "+5.5% (+3.1% vs Nifty) · 2.6× volume"
-  },
-  {
    "symbol": "HDFCBANK",
    "date": "2026-11-05",
    "kind": "price",
@@ -12742,6 +12756,12 @@
    "date": "2026-11-05",
    "kind": "price",
    "text": "2.0× volume"
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-05",
+   "kind": "price",
+   "text": "+5.5% (+3.1% vs Nifty) · 2.6× volume"
   },
   {
    "symbol": "BAJFINANCE",
@@ -12867,12 +12887,6 @@
    "text": "results: CDSL has submitted to the Exchange, the financial results for the quarter and half year ended September 30, 2026."
   },
   {
-   "symbol": "TRENT",
-   "date": "2026-10-30",
-   "kind": "price",
-   "text": "+5.4% (+4.9% vs Nifty) · 3.9× volume"
-  },
-  {
    "symbol": "RELIANCE",
    "date": "2026-10-30",
    "kind": "filing",
@@ -12891,6 +12905,12 @@
    "kind": "filing",
    "id": "7bbcaf67-e404-4ffb-b7fd-07ff385fdb0a",
    "text": "results: Unaudited Financial Results for the quarter and half year ended 30 September 2026"
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-30",
+   "kind": "price",
+   "text": "+5.4% (+4.9% vs Nifty) · 3.9× volume"
   },
   {
    "symbol": "DIXON",
@@ -12926,6 +12946,19 @@
    "text": "24.1× volume"
   },
   {
+   "symbol": "ASIANPAINT",
+   "date": "2026-10-29",
+   "kind": "price",
+   "text": "3.7× volume"
+  },
+  {
+   "symbol": "ASIANPAINT",
+   "date": "2026-10-29",
+   "kind": "filing",
+   "id": "1f0df7d6-ab0a-4d13-b4e7-5f477f62005d",
+   "text": "results: Find enclosed the audited standalone and unaudited consolidated financial results of the Company for the quarter and half year ended 30th September 2026"
+  },
+  {
    "symbol": "TRENT",
    "date": "2026-10-29",
    "kind": "filing",
@@ -12938,19 +12971,6 @@
    "kind": "filing",
    "id": "d53eaf45-b3a2-4b76-95c4-35d69f117a62",
    "text": "results: Board approved standalone and consolidated financial results for the second quarter ended September 30, 2026"
-  },
-  {
-   "symbol": "ASIANPAINT",
-   "date": "2026-10-29",
-   "kind": "price",
-   "text": "3.7× volume"
-  },
-  {
-   "symbol": "ASIANPAINT",
-   "date": "2026-10-29",
-   "kind": "filing",
-   "id": "1f0df7d6-ab0a-4d13-b4e7-5f477f62005d",
-   "text": "results: Find enclosed the audited standalone and unaudited consolidated financial results of the Company for the quarter and half year ended 30th September 2026"
   },
   {
    "symbol": "CDSL",
@@ -12966,16 +12986,16 @@
    "text": "results: Unaudited Financial Result for the quarter and half year ended 30th September, 2026"
   },
   {
-   "symbol": "TRENT",
-   "date": "2026-10-28",
-   "kind": "price",
-   "text": "+3.3% (+3.5% vs Nifty)"
-  },
-  {
    "symbol": "LT",
    "date": "2026-10-28",
    "kind": "price",
    "text": "+3.7% (+3.9% vs Nifty) · 3.2× volume"
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-28",
+   "kind": "price",
+   "text": "+3.3% (+3.5% vs Nifty)"
   },
   {
    "symbol": "POLYCAB",
@@ -13004,13 +13024,6 @@
    "text": "+4.0% (+4.2% vs Nifty)"
   },
   {
-   "symbol": "MARUTI",
-   "date": "2026-10-27",
-   "kind": "filing",
-   "id": "ed51c226-e785-4389-a0e9-7160e6eb21fb",
-   "text": "results:  Un-audited financial results for the quarter ended on 30th September 2026"
-  },
-  {
    "symbol": "RELIANCE",
    "date": "2026-10-27",
    "kind": "filing",
@@ -13036,6 +13049,13 @@
    "kind": "filing",
    "id": "84f672d2-60a7-4cef-adec-3711a9c76668",
    "text": "results: Outcome of Board Meeting of Larsen & Toubro Limited held on October 27,2026"
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-27",
+   "kind": "filing",
+   "id": "ed51c226-e785-4389-a0e9-7160e6eb21fb",
+   "text": "results:  Un-audited financial results for the quarter ended on 30th September 2026"
   },
   {
    "symbol": "SUNPHARMA",
@@ -13199,310 +13219,6 @@
   }
  ],
  "days": [
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-16",
-   "move_pct": 0.38,
-   "nifty_pct": 0.65,
-   "excess_pct": -0.26,
-   "vol_ratio": 0.91
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-19",
-   "move_pct": -0.12,
-   "nifty_pct": -1.11,
-   "excess_pct": 0.99,
-   "vol_ratio": 0.99
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-21",
-   "move_pct": -2.4,
-   "nifty_pct": -0.34,
-   "excess_pct": -2.06,
-   "vol_ratio": 0.88
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-22",
-   "move_pct": -0.27,
-   "nifty_pct": -0.54,
-   "excess_pct": 0.27,
-   "vol_ratio": 0.9
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-23",
-   "move_pct": 0.54,
-   "nifty_pct": -0.39,
-   "excess_pct": 0.92,
-   "vol_ratio": 0.72
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-26",
-   "move_pct": -0.09,
-   "nifty_pct": 0.68,
-   "excess_pct": -0.77,
-   "vol_ratio": 1.05
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-27",
-   "move_pct": 2.05,
-   "nifty_pct": -0.02,
-   "excess_pct": 2.07,
-   "vol_ratio": 0.91
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-28",
-   "move_pct": 1.13,
-   "nifty_pct": -0.22,
-   "excess_pct": 1.35,
-   "vol_ratio": 1.96
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-29",
-   "move_pct": -1.32,
-   "nifty_pct": 1.05,
-   "excess_pct": -2.37,
-   "vol_ratio": 0.62
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-30",
-   "move_pct": -0.25,
-   "nifty_pct": 0.51,
-   "excess_pct": -0.76,
-   "vol_ratio": 0.56
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-02",
-   "move_pct": 2.41,
-   "nifty_pct": 1.68,
-   "excess_pct": 0.73,
-   "vol_ratio": 0.84
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-03",
-   "move_pct": 1.69,
-   "nifty_pct": 1.58,
-   "excess_pct": 0.11,
-   "vol_ratio": 0.78
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-04",
-   "move_pct": 1.06,
-   "nifty_pct": 0.63,
-   "excess_pct": 0.43,
-   "vol_ratio": 1.3
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-05",
-   "move_pct": 5.48,
-   "nifty_pct": 2.4,
-   "excess_pct": 3.07,
-   "vol_ratio": 2.59
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-06",
-   "move_pct": 0.77,
-   "nifty_pct": 2.01,
-   "excess_pct": -1.24,
-   "vol_ratio": 1.87
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-09",
-   "move_pct": 1.4,
-   "nifty_pct": 0.06,
-   "excess_pct": 1.34,
-   "vol_ratio": 1.08
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-11",
-   "move_pct": 1.99,
-   "nifty_pct": 0.84,
-   "excess_pct": 1.15,
-   "vol_ratio": 1.83
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-12",
-   "move_pct": -1.22,
-   "nifty_pct": 0.18,
-   "excess_pct": -1.4,
-   "vol_ratio": 1.29
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-13",
-   "move_pct": -1.31,
-   "nifty_pct": -0.61,
-   "excess_pct": -0.69,
-   "vol_ratio": 0.88
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-16",
-   "move_pct": 0.31,
-   "nifty_pct": 0.65,
-   "excess_pct": -0.34,
-   "vol_ratio": 0.45
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-19",
-   "move_pct": -2.27,
-   "nifty_pct": -1.11,
-   "excess_pct": -1.16,
-   "vol_ratio": 0.71
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-21",
-   "move_pct": -2.41,
-   "nifty_pct": -0.34,
-   "excess_pct": -2.07,
-   "vol_ratio": 0.68
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-22",
-   "move_pct": -1.64,
-   "nifty_pct": -0.54,
-   "excess_pct": -1.09,
-   "vol_ratio": 1.22
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-23",
-   "move_pct": -1.74,
-   "nifty_pct": -0.39,
-   "excess_pct": -1.35,
-   "vol_ratio": 0.65
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-26",
-   "move_pct": 0.97,
-   "nifty_pct": 0.68,
-   "excess_pct": 0.29,
-   "vol_ratio": 0.7
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-27",
-   "move_pct": 2.42,
-   "nifty_pct": -0.02,
-   "excess_pct": 2.43,
-   "vol_ratio": 0.45
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-28",
-   "move_pct": 3.31,
-   "nifty_pct": -0.22,
-   "excess_pct": 3.53,
-   "vol_ratio": 0.72
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-29",
-   "move_pct": -1.79,
-   "nifty_pct": 1.05,
-   "excess_pct": -2.84,
-   "vol_ratio": 0.64
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-30",
-   "move_pct": 5.44,
-   "nifty_pct": 0.51,
-   "excess_pct": 4.93,
-   "vol_ratio": 3.86
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-02",
-   "move_pct": 0.96,
-   "nifty_pct": 1.68,
-   "excess_pct": -0.72,
-   "vol_ratio": 0.75
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-03",
-   "move_pct": -0.32,
-   "nifty_pct": 1.58,
-   "excess_pct": -1.9,
-   "vol_ratio": 0.64
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-04",
-   "move_pct": 0.77,
-   "nifty_pct": 0.63,
-   "excess_pct": 0.15,
-   "vol_ratio": 0.47
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-05",
-   "move_pct": -0.16,
-   "nifty_pct": 2.4,
-   "excess_pct": -2.57,
-   "vol_ratio": 0.94
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-06",
-   "move_pct": 0.79,
-   "nifty_pct": 2.01,
-   "excess_pct": -1.23,
-   "vol_ratio": 0.57
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-09",
-   "move_pct": 1.31,
-   "nifty_pct": 0.06,
-   "excess_pct": 1.25,
-   "vol_ratio": 0.98
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-11",
-   "move_pct": 3.32,
-   "nifty_pct": 0.84,
-   "excess_pct": 2.48,
-   "vol_ratio": 1.58
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-12",
-   "move_pct": -1.32,
-   "nifty_pct": 0.18,
-   "excess_pct": -1.5,
-   "vol_ratio": 0.59
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-13",
-   "move_pct": -0.47,
-   "nifty_pct": -0.61,
-   "excess_pct": 0.15,
-   "vol_ratio": 0.57
-  },
   {
    "symbol": "RELIANCE",
    "date": "2026-10-16",
@@ -14568,6 +14284,158 @@
    "vol_ratio": 0.88
   },
   {
+   "symbol": "MARUTI",
+   "date": "2026-10-16",
+   "move_pct": 0.38,
+   "nifty_pct": 0.65,
+   "excess_pct": -0.26,
+   "vol_ratio": 0.91
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-19",
+   "move_pct": -0.12,
+   "nifty_pct": -1.11,
+   "excess_pct": 0.99,
+   "vol_ratio": 0.99
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-21",
+   "move_pct": -2.4,
+   "nifty_pct": -0.34,
+   "excess_pct": -2.06,
+   "vol_ratio": 0.88
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-22",
+   "move_pct": -0.27,
+   "nifty_pct": -0.54,
+   "excess_pct": 0.27,
+   "vol_ratio": 0.9
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-23",
+   "move_pct": 0.54,
+   "nifty_pct": -0.39,
+   "excess_pct": 0.92,
+   "vol_ratio": 0.72
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-26",
+   "move_pct": -0.09,
+   "nifty_pct": 0.68,
+   "excess_pct": -0.77,
+   "vol_ratio": 1.05
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-27",
+   "move_pct": 2.05,
+   "nifty_pct": -0.02,
+   "excess_pct": 2.07,
+   "vol_ratio": 0.91
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-28",
+   "move_pct": 1.13,
+   "nifty_pct": -0.22,
+   "excess_pct": 1.35,
+   "vol_ratio": 1.96
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-29",
+   "move_pct": -1.32,
+   "nifty_pct": 1.05,
+   "excess_pct": -2.37,
+   "vol_ratio": 0.62
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-10-30",
+   "move_pct": -0.25,
+   "nifty_pct": 0.51,
+   "excess_pct": -0.76,
+   "vol_ratio": 0.56
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-02",
+   "move_pct": 2.41,
+   "nifty_pct": 1.68,
+   "excess_pct": 0.73,
+   "vol_ratio": 0.84
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-03",
+   "move_pct": 1.69,
+   "nifty_pct": 1.58,
+   "excess_pct": 0.11,
+   "vol_ratio": 0.78
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-04",
+   "move_pct": 1.06,
+   "nifty_pct": 0.63,
+   "excess_pct": 0.43,
+   "vol_ratio": 1.3
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-05",
+   "move_pct": 5.48,
+   "nifty_pct": 2.4,
+   "excess_pct": 3.07,
+   "vol_ratio": 2.59
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-06",
+   "move_pct": 0.77,
+   "nifty_pct": 2.01,
+   "excess_pct": -1.24,
+   "vol_ratio": 1.87
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-09",
+   "move_pct": 1.4,
+   "nifty_pct": 0.06,
+   "excess_pct": 1.34,
+   "vol_ratio": 1.08
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-11",
+   "move_pct": 1.99,
+   "nifty_pct": 0.84,
+   "excess_pct": 1.15,
+   "vol_ratio": 1.83
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-12",
+   "move_pct": -1.22,
+   "nifty_pct": 0.18,
+   "excess_pct": -1.4,
+   "vol_ratio": 1.29
+  },
+  {
+   "symbol": "MARUTI",
+   "date": "2026-11-13",
+   "move_pct": -1.31,
+   "nifty_pct": -0.61,
+   "excess_pct": -0.69,
+   "vol_ratio": 0.88
+  },
+  {
    "symbol": "BAJFINANCE",
    "date": "2026-10-16",
    "move_pct": 1.75,
@@ -14870,6 +14738,158 @@
    "nifty_pct": -0.61,
    "excess_pct": 1.15,
    "vol_ratio": 0.56
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-16",
+   "move_pct": 0.31,
+   "nifty_pct": 0.65,
+   "excess_pct": -0.34,
+   "vol_ratio": 0.45
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-19",
+   "move_pct": -2.27,
+   "nifty_pct": -1.11,
+   "excess_pct": -1.16,
+   "vol_ratio": 0.71
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-21",
+   "move_pct": -2.41,
+   "nifty_pct": -0.34,
+   "excess_pct": -2.07,
+   "vol_ratio": 0.68
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-22",
+   "move_pct": -1.64,
+   "nifty_pct": -0.54,
+   "excess_pct": -1.09,
+   "vol_ratio": 1.22
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-23",
+   "move_pct": -1.74,
+   "nifty_pct": -0.39,
+   "excess_pct": -1.35,
+   "vol_ratio": 0.65
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-26",
+   "move_pct": 0.97,
+   "nifty_pct": 0.68,
+   "excess_pct": 0.29,
+   "vol_ratio": 0.7
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-27",
+   "move_pct": 2.42,
+   "nifty_pct": -0.02,
+   "excess_pct": 2.43,
+   "vol_ratio": 0.45
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-28",
+   "move_pct": 3.31,
+   "nifty_pct": -0.22,
+   "excess_pct": 3.53,
+   "vol_ratio": 0.72
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-29",
+   "move_pct": -1.79,
+   "nifty_pct": 1.05,
+   "excess_pct": -2.84,
+   "vol_ratio": 0.64
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-10-30",
+   "move_pct": 5.44,
+   "nifty_pct": 0.51,
+   "excess_pct": 4.93,
+   "vol_ratio": 3.86
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-11-02",
+   "move_pct": 0.96,
+   "nifty_pct": 1.68,
+   "excess_pct": -0.72,
+   "vol_ratio": 0.75
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-11-03",
+   "move_pct": -0.32,
+   "nifty_pct": 1.58,
+   "excess_pct": -1.9,
+   "vol_ratio": 0.64
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-11-04",
+   "move_pct": 0.77,
+   "nifty_pct": 0.63,
+   "excess_pct": 0.15,
+   "vol_ratio": 0.47
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-11-05",
+   "move_pct": -0.16,
+   "nifty_pct": 2.4,
+   "excess_pct": -2.57,
+   "vol_ratio": 0.94
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-11-06",
+   "move_pct": 0.79,
+   "nifty_pct": 2.01,
+   "excess_pct": -1.23,
+   "vol_ratio": 0.57
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-11-09",
+   "move_pct": 1.31,
+   "nifty_pct": 0.06,
+   "excess_pct": 1.25,
+   "vol_ratio": 0.98
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-11-11",
+   "move_pct": 3.32,
+   "nifty_pct": 0.84,
+   "excess_pct": 2.48,
+   "vol_ratio": 1.58
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-11-12",
+   "move_pct": -1.32,
+   "nifty_pct": 0.18,
+   "excess_pct": -1.5,
+   "vol_ratio": 0.59
+  },
+  {
+   "symbol": "TRENT",
+   "date": "2026-11-13",
+   "move_pct": -0.47,
+   "nifty_pct": -0.61,
+   "excess_pct": 0.15,
+   "vol_ratio": 0.57
   },
   {
    "symbol": "ETERNAL",
