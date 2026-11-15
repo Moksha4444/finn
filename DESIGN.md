@@ -2,13 +2,14 @@
 name: FINN
 description: A morning portfolio brief for NSE holdings, typeset as a newspaper front page.
 colors:
-  paper: "#F5F1E8"
+  paper: "#F2EDE2"
   paper-raised: "#FBF9F4"
-  press: "#EFEBE0"
+  press: "#ECE7DB"
   ink: "#16161A"
   ink-2: "#46464C"
   ink-3: "#6B675F"
   rule: "#DDD7CC"
+  edge: "#E4DED2"
   rule-strong: "#16161A"
   accent: "#243F63"
   up: "#16653F"
@@ -37,14 +38,14 @@ motion:
   entrance: "240ms + 40ms stagger, once per session"
   chart-draw: "400ms, once, on first view"
   stamp: "180ms"
-  splash: "880ms, launch only"
+  splash: "1400ms, launch only"
 ---
 
 # Design System: FINN (as built, redesign of 15 Nov 2026; interaction pass the same day)
 
 ## Overview
 A portfolio front page, not a dashboard. Newsprint paper, near-black ink, one navy accent. Section heads keep their
-strong rules; the content under them sits on **quiet cards**: raised paper, a 1px warm edge, 6px radius, no shadow. Typography does the work: a newspaper serif for what happened, a quiet sans for the explanation,
+strong rules; the content under them sits on **quiet cards**: raised paper, a 1px #E4DED2 edge, 6px radius, 12px padding, no shadow. Typography does the work: a newspaper serif for what happened, a quiet sans for the explanation,
 a mono with tabular figures for every number and ticker, so figures align on their decimals everywhere.
 
 Source of truth: `web/app/tokens.css` (values) mapped into Tailwind in `web/app/globals.css`. Tailwind's default
@@ -59,6 +60,7 @@ palette is switched off (`--color-*: initial`), so a colour outside the tokens c
 - Logo greens live only in the rays mark.
 
 ## Type rules
+- Timestamps: "11 Nov, 5:29 pm" (`lib/time.ts`), never 24h database format.
 - Fixed scale 28/24/20/17/15/13/11 (`text-28` … `text-11` utilities); 34 is the wordmark only. Nothing else.
 - Faces: Lora (wordmark only), Newsreader (h1–h3 by default), Source Sans 3 (body, kickers, section heads), Plex Mono.
 - CSS layering: base rules in `@layer base`, `.kicker`/`.section-head`/`.card`/`.wordmark` in `@layer components`, so a
@@ -98,7 +100,7 @@ palette is switched off (`--color-*: initial`), so a colour outside the tokens c
 - **Alerts wire**: mono dateline over a strong rule, the day's rows on a card; ticker column + serif name; signals in mono,
   event names as kickers; severity as a small-caps word on the right (HIGH bold, WATCH medium, INFO grey). With nothing
   new, the headline is one line: "No new alerts · 9 in the last 7 days".
-- **Tab bar**: a filled pill behind the active tab (navy 10%, 10px radius) with navy icon + label; warm grey otherwise.
+- **Tab bar**: a filled pill behind the active tab (navy 16%, 10px radius) with navy icon + label; warm grey otherwise.
   The pill slides between tabs (220ms ease-out); the bar itself never leaves the page or the view transition. Press 0.96
   for 90ms; top hairline; safe-area padding; content ends 16px above it.
 - **Search**: one input, 48px, full width, 1px `rule`, 6px radius; focus is a 2px navy ring (border + shadow), no size change.
@@ -108,12 +110,12 @@ palette is switched off (`--color-*: initial`), so a colour outside the tokens c
 
 ## Charts (`web/components/charts/Charts.tsx`)
 - One family, one alignment rule: left edge flush with the text column; labels 11px mono `ink-3`.
-- Lines get a soft area fill: navy 7% at the top fading to 0 at the baseline (company lines and margin only; never bars,
+- Lines are smoothed (monotone cubic: through every point, no overshoot) and get a soft area fill: navy 7% at the top fading to 0 at the baseline (company lines and margin only; never bars,
   Nifty or promise charts).
 - Touch: tap or drag for a crosshair, a snapped dot and a value tip (date, value, Nifty on comparison lines, the target
   on promise charts); release dismisses (a quick tap lingers 1.6s). The tip stays 8px inside the screen. Vertical scroll
   still works over charts (`touch-action: pan-y`).
-- Sparkline: always 120×36, right-aligned on the numbers row's baseline, label hanging beneath, right-aligned.
+- Sparkline: always 120×36, right-aligned on the numbers row; its "30 days +4.3%" label at its top-right, 2px above.
 - Promise chart: full width, 96px, shaded target band to the deadline, padded so the band never runs through a label.
 - Bars: 88px; single series `accent` at 35%, latest two full `accent`; values on the first and last only; past 6
   periods, every other period label. Paired (CFO vs PAT): accent vs accent 35%, labelled directly.

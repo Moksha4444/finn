@@ -92,7 +92,7 @@ export function FeedRow({ item: i }: { item: RankedItem }) {
         </span>
         <span className="mt-1 flex items-start gap-3 text-15 leading-[1.4] text-ink-2">
           <span className="line-clamp-2 min-w-0"><Signed text={keyFact(i)} /></span>
-          <span className="ml-auto shrink-0 pt-0.5 font-mono text-11 whitespace-nowrap text-ink-3">{filedAt(i.filed).toUpperCase()}</span>
+          <span className="ml-auto shrink-0 pt-0.5 font-mono text-11 whitespace-nowrap text-ink-3">{filedAt(i.filed)}</span>
         </span>
       </button>
       <Collapse open={open} id={id}><div className="pb-4"><Detail i={i} /></div></Collapse>

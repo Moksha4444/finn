@@ -84,7 +84,7 @@ function Day({ d, rows, feed, isNew }: { d: string; rows: AlertRow[]; feed: Feed
   return (
     <section aria-labelledby={`d-${d}`} className="mt-6">
       <h2 id={`d-${d}`} className="section-head font-mono tracking-[0.08em]">{shortDate(d).toUpperCase()}</h2>
-      <div className="card mt-2 px-4">
+      <div className="card mt-2 px-3">
       <ul>{main.map((r) => <Row key={r.key} r={r} feed={feed} isNew={isNew(r)} />)}</ul>
       {minor.length > 0 && (
         <>

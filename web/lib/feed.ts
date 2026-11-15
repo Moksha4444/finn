@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { sameEvent } from "./alerts";
 import { hits, label, pct, rank, type Ranked, type Reaction, type Tier } from "./rank";
+import { clock, stamp } from "./time";
 
 // ---- shape of web/public/data/feed.json (written by backend/finn/ingest.py) ----
 export type ResultsLine = { name: string; value: number | null; qoq_pct: number | null; yoy_pct: number | null };
@@ -185,7 +186,8 @@ export function useUnseen(alerts: Alert[] | undefined) {
 export const sentence = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 export const shortDate = (iso: string) => `${+iso.slice(8, 10)} ${MON[+iso.slice(5, 7) - 1]}`;
-export const filedAt = (filed: string) => `${shortDate(filed)} ${filed.slice(11, 16)}`;
-export const istTime = (iso: string) => iso.slice(11, 16);
+// "11 Nov, 5:29 pm" (lib/time.ts); feed timestamps are IST wall-clock strings
+export const filedAt = stamp;
+export const istTime = (iso: string) => clock(iso.slice(11, 16));
 export const longDate = (iso: string) =>
   new Intl.DateTimeFormat("en-IN", { weekday: "long", day: "numeric", month: "long", timeZone: "Asia/Kolkata" }).format(ist(iso));

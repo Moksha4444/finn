@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { pct } from "@/lib/rank";
+import { istStamp } from "@/lib/time";
 import { API, indexUrl, KEPT, MISSED, NYM, researchUrl, useJson, VERDICT_TEXT, type Cite, type IndexRow, type PromiseRow, type Research } from "@/lib/research";
 import { Bars, PathLine, PriceLine } from "./charts/Charts";
 import { Chevron, Collapse } from "./Collapse";
@@ -69,7 +70,7 @@ export function ResearchHome() {
         </div>
       </form>
       {!rows ? (
-        <ol className="card mt-8 px-4">
+        <ol className="card mt-8 px-3">
           {Array.from({ length: 6 }, (_, k) => (
             <li key={k} className="flex items-center gap-3 border-b border-rule py-4 last:border-b-0"><Bar w="w-16" /><Bar w="w-36" h="h-4" /></li>
           ))}
@@ -82,7 +83,7 @@ export function ResearchHome() {
               return rows.length > 0 && (
                 <section key={head} className="mt-8">
                   <h2 className="section-head flex justify-between">{head}<span className="font-mono font-normal tracking-normal text-ink-3">{rows.length}</span></h2>
-                  <ol className="card mt-2 px-4">{rows.map((r) => <IndexItem key={r.symbol} r={r} />)}</ol>
+                  <ol className="card mt-2 px-3">{rows.map((r) => <IndexItem key={r.symbol} r={r} />)}</ol>
                 </section>
               );
             })
@@ -319,7 +320,7 @@ export function CompanyResearch({ symbol, auto = false }: { symbol: string; auto
         <h1 className="mt-1 font-serif text-28 leading-[1.05] font-semibold tracking-[-0.01em] text-balance">{shortName(d.name)}</h1>
         <p className="mt-1 text-13 text-pretty text-ink-3">{d.sector}{d.sector && d.latest_quarter && " · "}{d.latest_quarter && <>results to <span className="font-mono">{d.latest_quarter}</span></>}</p>
         {d.prices && d.prices.closes.length > 4 && (
-          <div className="card mt-4 px-4 pt-3 pb-2">
+          <div className="card mt-4 px-3 pt-3 pb-2">
             <p className="kicker mb-2">90 days vs Nifty 50</p>
             <PriceLine closes={d.prices.closes} nifty={d.prices.nifty} drawKey={`price-${d.symbol}`} />
           </div>
@@ -336,7 +337,7 @@ export function CompanyResearch({ symbol, auto = false }: { symbol: string; auto
           <p className="mt-2 text-13 leading-snug text-pretty text-ink-3">Shaded: the target, up to its deadline. Dots: each quarter since the call.</p>
         )}
         {(measured.length > 0 || open.length > 0) && (
-          <div className="card mt-3 px-4">
+          <div className="card mt-3 px-3">
             {measured.length > 0 && <ol>{measured.map((p, k) => <PromiseItem key={k} p={p} k={k} sym={d.symbol} />)}</ol>}
             {open.length > 0 && <Unmeasured rows={open} />}
           </div>
@@ -439,7 +440,7 @@ function PromiseItem({ p, k, sym }: { p: PromiseRow; k: number; sym: string }) {
       )}
       <p className={`mt-2 text-13 leading-[1.45] text-pretty text-ink ${open ? "" : "line-clamp-3"}`}><span className="kicker mr-1">Actual</span><Signed text={actualShort(p.actual)} /></p>
       <button type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}
-        className="press -mb-2 flex min-h-11 items-center gap-1 rounded-[4px] text-13 font-semibold text-accent">
+        className="press -mb-2 flex min-h-11 w-full items-center justify-between gap-1 rounded-[4px] text-left text-13 font-semibold text-accent">
         {open ? "Hide how it was measured" : "How it was measured"} <Chevron open={open} />
       </button>
       <Collapse open={open} id={id}>
@@ -513,7 +514,7 @@ function Snapshot({ d }: { d: Research }) {
     <section aria-labelledby="snap-h" className="mt-10">
       <h2 id="snap-h" className={H2}>Financial snapshot</h2>
       <p className="mt-2 text-13 text-ink-3">{s.basis[0].toUpperCase() + s.basis.slice(1)} · ₹ crore · from the results filings</p>
-      <div className="card mt-2 px-4">
+      <div className="card mt-2 px-3">
         {q && (
           <Claim id="quarters" claim={q.claim}>
             <p className="kicker mb-2">{q.revenue_name}</p>
@@ -564,7 +565,7 @@ function BullBear({ d }: { d: Research }) {
   const side = (name: string, pts: typeof b.bull) => (
     <div className="mt-5">
       <h3 className="kicker flex items-center gap-3 text-ink before:h-px before:flex-1 before:bg-rule after:h-px after:flex-1 after:bg-rule">{name}</h3>
-      <ol className="card mt-2 px-4">
+      <ol className="card mt-2 px-3">
         {pts.map((p, k) => (
           <li key={k} className="border-b border-rule py-3 last:border-b-0">
             <p className="text-15 leading-[1.45] text-ink-2"><strong className="font-semibold text-ink"><Signed text={p.point} /></strong>{p.why && <> {p.why}</>}</p>
@@ -589,18 +590,18 @@ function BullBear({ d }: { d: Research }) {
 }
 
 function Sources({ d }: { d: Research }) {
-  const when = new Date(d.generated_at).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false });
+  const when = istStamp(d.generated_at);
   return (
     <section aria-labelledby="src-h" className="mt-10">
       <h2 id="src-h" className={H2}>Sources</h2>
-      <ul className="card mt-2 px-4 text-13 leading-snug">
+      <ul className="card mt-2 px-3 text-13 leading-snug">
         {d.sources.map((c) => <li key={c.url} className="border-b border-rule last:border-b-0"><ExtLink c={c} className="press flex min-h-11 items-center py-2 font-semibold" /></li>)}
       </ul>
       {d.skipped_calls.length > 0 && (
         <p className="mt-2 text-11 text-ink-3">Skipped: {d.skipped_calls.map((c) => `${c.call} (transcript didn't open)`).join(", ")}.</p>
       )}
       <p className="mt-2 text-11 leading-[1.45] text-ink-3">
-        {d.margin_definition && `Margin promises are judged on ${d.margin_definition.name}. `}Built <span className="font-mono">{when}</span> IST.
+        {d.margin_definition && `Margin promises are judged on ${d.margin_definition.name}. `}Built {when} IST.
       </p>
     </section>
   );

@@ -1,14 +1,15 @@
 /* FINN design tokens: the single source of truth for colour, type and motion (REDESIGN.md §1).
    Newsprint, not pastel. Green and red colour numbers only, never backgrounds. */
 :root {
-  --paper: #F5F1E8;
+  --paper: #F2EDE2;
   --paper-raised: #FBF9F4; /* cards: stories, promise and alert groups, research sections, inputs */
-  --press: #EFEBE0; /* the 90ms pressed state */
+  --press: #ECE7DB; /* the 90ms pressed state (ink-3 on it: 4.6:1) */
   --ink: #16161A;
   --ink-2: #46464C;
   /* warm grey, matched to the paper: 5.0:1 on paper, 4.7:1 on the press tint (AA). */
   --ink-3: #6B675F;
-  --rule: #DDD7CC; /* hairline between rows, and the 1px card border */
+  --rule: #DDD7CC; /* hairline between rows */
+  --edge: #E4DED2; /* the 1px card border: lighter than a row hairline, so cards sit quietly */
   --rule-strong: #16161A; /* under section heads */
   --accent: #243F63; /* navy: links, active tab, toggles, focus rings, the company's line in charts */
   --up: #16653F;

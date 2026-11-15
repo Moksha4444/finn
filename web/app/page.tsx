@@ -64,7 +64,7 @@ function Masthead({ feed }: { feed: Feed }) {
         {edition(feed.generated_at)} · PORTFOLIO EDITION · {n} HOLDINGS
       </p>
       <p className="mt-2 text-13 text-ink-3">
-        Filings ranked, checked <span className="font-mono">{istTime(feed.generated_at)}</span> IST ·{" "}
+        Filings ranked, checked {istTime(feed.generated_at)} IST ·{" "}
         <Link href="/settings#how" className={`font-semibold whitespace-nowrap text-accent ${HIT}`}>How it works</Link>
       </p>
     </header>
@@ -107,8 +107,8 @@ function winFor(feed: Feed, filed: string): Win | null {
 
 // A quiet edition: nothing material, so say so, then what is true anyway. Everything here is from the feed:
 // the biggest moves vs Nifty on the latest day, the newest material filing before this window, the hidden count.
-function QuietDay({ feed, s, win, routine, open, next }: {
-  feed: Feed; s: Settings; win: Win; routine: number; open: (sym: string, w: Win) => void; next: () => void;
+function QuietDay({ feed, s, win, routine, open, next, showRoutine }: {
+  feed: Feed; s: Settings; win: Win; routine: number; open: (sym: string, w: Win) => void; next: () => void; showRoutine: () => void;
 }) {
   const days = [...lastDays(feed).values()].map((d) => ({ ...d, v: d.excess_pct ?? d.move_pct })).filter((d) => d.v != null);
   const up = days.reduce<(typeof days)[number] | null>((a, d) => (d.v > 0 && (!a || d.v > a.v) ? d : a), null);
@@ -118,7 +118,7 @@ function QuietDay({ feed, s, win, routine, open, next }: {
   const w = latest ? winFor(feed, latest.filed) : null;
   const name = (sym: string) => feed.companies?.[sym]?.name ?? sym;
   return (
-    <div className="card mt-4 px-4">
+    <div className="card mt-4 px-3">
       {(up || down) && (
         <div className="border-b border-rule py-3">
           <p className="kicker">Portfolio pulse{day && <> · <span className="font-mono tracking-normal">{shortDate(day).toUpperCase()}</span></>} · vs Nifty</p>
@@ -148,9 +148,15 @@ function QuietDay({ feed, s, win, routine, open, next }: {
           )}
         </div>
       )}
-      <p className={`py-3 text-13 text-ink-2 ${NEXT[win] ? "border-b border-rule" : ""}`}>
-        {routine > 0 ? <><span className="font-mono text-ink">{routine}</span> routine {routine === 1 ? "notice" : "notices"} hidden under Notices.</> : "No routine notices either."}
-      </p>
+      {routine > 0 ? (
+        <button type="button" onClick={showRoutine}
+          className={`press flex min-h-11 w-full items-center justify-between gap-3 text-left text-13 text-ink-2 ${NEXT[win] ? "border-b border-rule" : ""}`}>
+          <span><span className="font-mono text-ink">{routine}</span> routine {routine === 1 ? "notice" : "notices"} hidden</span>
+          <Chevron open={false} />
+        </button>
+      ) : (
+        <p className={`py-3 text-13 text-ink-2 ${NEXT[win] ? "border-b border-rule" : ""}`}>No routine notices either.</p>
+      )}
       {NEXT[win] && (
         <button type="button" onClick={next} className="press -mx-1 flex min-h-12 w-[calc(100%+0.5rem)] items-center rounded-[4px] px-1 text-15 font-semibold text-accent">
           See {WIN_NAME[NEXT[win]!].toLowerCase()}&rsquo;s edition →
@@ -228,6 +234,7 @@ export default function Brief() {
         {sub.length > 0 && <p className="mt-2 text-13 text-ink-2">{sub.join(" · ")}</p>}
         {quiet && (
           <QuietDay feed={feed} s={s} win={win} routine={routine.length} next={() => setWin(NEXT[win]!)}
+            showRoutine={() => { setShowRoutine(true); requestAnimationFrame(() => document.getElementById("h-notices")?.scrollIntoView({ block: "start", behavior: "smooth" })); }}
             open={(sym, w) => { setWin(w); setOpenSym(sym); setAllCards(true); }} />
         )}
         {pending && lastBar && (
@@ -256,16 +263,16 @@ export default function Brief() {
       {briefs.length > 0 && (
         <section aria-labelledby="h-worth" style={at(4)} className="mt-8">
           <h2 id="h-worth" className="section-head">In brief</h2>
-          <ol className="card mt-2 px-4">
+          <ol className="card mt-2 px-3">
             {briefs.map((g) => <BriefLine key={g.symbol} g={g} co={feed.companies?.[g.symbol]} initialOpen={g.symbol === openSym} />)}
           </ol>
         </section>
       )}
 
       {routine.length > 0 && (
-        <section aria-labelledby="h-notices" style={at(5)} className="mt-8">
+        <section aria-labelledby="h-notices" style={at(5)} className="mt-8 scroll-mt-4">
           <h2 id="h-notices" className="section-head">Notices</h2>
-          <div className="card mt-2 px-4">
+          <div className="card mt-2 px-3">
           <button type="button" aria-expanded={showRoutine} onClick={() => setShowRoutine(!showRoutine)}
             className={`press flex min-h-11 w-full items-center justify-between text-left ${showRoutine ? "border-b border-rule" : ""}`}>
             <span className="kicker text-ink-2"><span className="font-mono tracking-normal">{routine.length}</span> routine {routine.length === 1 ? "notice" : "notices"}</span>

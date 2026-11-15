@@ -49,11 +49,11 @@ export function TabBar() {
   return (
     <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-20 border-t border-rule bg-paper/95 backdrop-blur-sm pb-[env(safe-area-inset-bottom)]">
       <ul className="relative mx-auto grid h-14 max-w-[36rem] grid-cols-4">
-        {/* the active tab's pill: navy at 10%, 10px radius, sliding between tabs (220ms ease-out). Only this moves;
+        {/* the active tab's pill: navy at 16%, 10px radius, sliding between tabs (220ms ease-out). Only this moves;
             the bar itself never re-renders its layout or leaves the page on a tab change. */}
         {at >= 0 && (
           <li aria-hidden="true" className="tab-mark pointer-events-none absolute inset-y-1.5 left-0 w-1/4 px-2" style={{ transform: `translateX(${at * 100}%)` }}>
-            <span className="block size-full rounded-[10px] bg-accent/10" />
+            <span className="block size-full rounded-[10px] bg-accent/16" />
           </li>
         )}
         {TABS.map((t, k) => {

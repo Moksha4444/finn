@@ -16,7 +16,7 @@ export const shortName = (name: string) =>
 
 // Every company name in the app truncates at the same width, with an ellipsis (Brief, Alerts, Research).
 export function Name({ name, className = "" }: { name: string; className?: string }) {
-  return <span title={name} className={`inline-block max-w-[11rem] truncate align-bottom ${className}`}>{shortName(name)}</span>;
+  return <span title={name} className={`inline-block max-w-[11rem] min-w-0 truncate align-bottom ${className}`}>{shortName(name)}</span>;
 }
 
 // ---- headline + key numbers ----
@@ -63,7 +63,7 @@ function Numbers({ i }: { i: RankedItem }) {
   }
   if (!rows.length) return <span />;
   return (
-    <table className="min-w-0 border-collapse font-mono text-13 leading-5">
+    <table className="min-w-0 border-collapse font-mono text-13 leading-[1.125rem]">
       {head && (
         <thead>
           <tr className="text-11 leading-4 text-ink-3">
@@ -76,7 +76,7 @@ function Numbers({ i }: { i: RankedItem }) {
       <tbody>
         {rows.map(([k, v, d]) => (
           <tr key={k}>
-            <th scope="row" className="pr-3 text-left font-sans text-13 font-normal text-ink-3">{k}</th>
+            <th scope="row" className="pr-2.5 text-left font-sans text-11 leading-[1.125rem] font-normal text-ink-3">{k}</th>
             <td className="pr-3 text-right font-semibold whitespace-nowrap">{v}</td>
             <td className="text-right whitespace-nowrap">{d}</td>
           </tr>
@@ -171,7 +171,7 @@ function Body({ g }: { g: Group }) {
                 ) : (
                   <span className="min-w-0 truncate">{title(d)}</span>
                 )}
-                <span className="ml-auto shrink-0 font-mono text-11 text-ink-3">{filedAt(d.filed).toUpperCase()}</span>
+                <span className="ml-auto shrink-0 font-mono text-11 text-ink-3">{filedAt(d.filed)}</span>
               </li>
             ))}
           </ul>
@@ -224,10 +224,10 @@ function Kicker({ g, co }: { g: Group; co?: Co }) {
   return (
     <p className="kicker flex items-baseline gap-1.5 whitespace-nowrap">
       <span className="shrink-0">{eventLabel(i)} ·</span>
-      <Link href={`/research?symbol=${g.symbol}`} className="relative z-10 min-w-0 text-ink after:absolute after:-inset-y-3.5 after:-inset-x-1 after:content-[''] active:text-accent">
+      <Link href={`/research?symbol=${g.symbol}`} className="relative z-10 flex min-w-0 text-ink after:absolute after:-inset-y-3.5 after:-inset-x-1 after:content-[''] active:text-accent">
         <Name name={co?.name ?? i.name} />
       </Link>
-      <span className="ml-auto shrink-0 pl-2 font-mono font-normal tracking-normal">{filedAt(i.filed).toUpperCase()}</span>
+      <span className="ml-auto shrink-0 pl-2 font-mono font-normal tracking-normal normal-case">{filedAt(i.filed)}</span>
     </p>
   );
 }
@@ -248,7 +248,7 @@ export function Story({ g, co, nifty, end, lead = false, initialOpen = false }: 
   const spark = co?.closes && <Sparkline sym={g.symbol} closes={co.closes} nifty={nifty} mark={i.reaction ? i.reaction_day : undefined} pending={pending} end={end} />;
   return (
     <li ref={ref}
-      className={`card relative scroll-mt-4 transition-[scale,background-color] duration-[90ms] ease-in has-[h3_button:active]:scale-[0.985] has-[h3_button:active]:bg-press ${lead ? "px-5 py-5" : "px-4 py-4"}`}>
+      className={`card relative scroll-mt-4 transition-[scale,background-color] duration-[90ms] ease-in has-[h3_button:active]:scale-[0.985] has-[h3_button:active]:bg-press ${lead ? "px-4 py-4" : "px-3 py-3"}`}>
       <Kicker g={g} co={co} />
       <h3 className={`mt-1.5 font-serif font-semibold tracking-[-0.01em] text-balance text-ink ${lead ? "text-24 leading-[1.1]" : "text-20 leading-[1.12]"}`}>
         <button type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}
@@ -259,7 +259,7 @@ export function Story({ g, co, nifty, end, lead = false, initialOpen = false }: 
       </h3>
       {deck && <p className="mt-1.5 truncate text-15 leading-[1.4] text-ink-2"><Signed text={deck.text} /></p>}
       {(i.card || spark) && (
-        <div className={`mt-2.5 flex items-end justify-between gap-3 ${spark ? "mb-5" : ""}`}>
+        <div className="mt-2.5 flex items-end justify-between gap-3">
           <Numbers i={i} />
           {spark}
         </div>

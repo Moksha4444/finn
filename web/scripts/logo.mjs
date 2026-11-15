@@ -3,7 +3,7 @@
 // PNGs (apple-touch, 192, 512, maskable) are rendered from these SVGs by scripts/icons.mjs.
 import { writeFileSync } from "node:fs";
 
-const PAPER = "#F5F1E8", INK = "#16161A";
+const PAPER = "#F2EDE2", INK = "#16161A";
 const f = (n) => +n.toFixed(2);
 
 // A ray is a wedge along a quadratic curve S -> P (control C), w = half-width at the start, tapering to a point.

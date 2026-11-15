@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { shortDate } from "@/lib/feed";
+import { curve, type Pt } from "@/lib/curve";
 import { pct } from "@/lib/rank";
 import { Signed } from "../Signed";
 
@@ -92,14 +93,17 @@ const Dot = ({ x, y, className = "bg-accent" }: { x: number; y: number | string;
   <span aria-hidden="true" className={`pointer-events-none absolute size-[9px] -translate-x-1/2 -translate-y-1/2 rounded-full ring-2 ring-paper-raised ${className}`} style={{ left: `${x}%`, top: y }} />
 );
 const day = (d: string) => shortDate(d).toUpperCase();
+// Every line chart's line: smoothed (monotone, so no invented peaks), the company navy 1.5px, Nifty grey 1px.
+const Line = ({ pts, nifty = false }: { pts: Pt[]; nifty?: boolean }) => (
+  <path d={curve(pts)} fill="none" stroke="currentColor" strokeWidth={nifty ? 1 : 1.5} strokeLinejoin="round" vectorEffect="non-scaling-stroke"
+    className={nifty ? "text-ink-3/60" : "text-accent"} />
+);
 
 // Soft area under a company's line: navy 7% at the line's highest point fading to 0 at the plot's baseline.
-// Lines only (never bars, never Nifty). `pts` is the polyline's "x,y x,y" string in the SVG's own units.
-function Area({ pts, base }: { pts: string; base: number }) {
+// Lines only (never bars, never Nifty). Same smoothed curve as the line, closed down to the baseline.
+function Area({ pts, base }: { pts: Pt[]; base: number }) {
   const id = useId();
-  const xy = pts.split(" ").filter(Boolean);
-  if (xy.length < 2) return null;
-  const first = xy[0].split(",")[0], last = xy[xy.length - 1].split(",")[0];
+  if (pts.length < 2) return null;
   return (
     <>
       <defs>
@@ -108,7 +112,7 @@ function Area({ pts, base }: { pts: string; base: number }) {
           <stop offset="1" stopColor="currentColor" stopOpacity="0" />
         </linearGradient>
       </defs>
-      <polygon points={`${first},${base} ${xy.join(" ")} ${last},${base}`} fill={`url(#${id})`} />
+      <path d={`${curve(pts)}L${pts[pts.length - 1][0]},${base}L${pts[0][0]},${base}Z`} fill={`url(#${id})`} />
     </>
   );
 }
@@ -124,7 +128,7 @@ const Label = ({ x, y, children, className = "", align = "center" }: { x: number
 );
 
 // ---- sparkline: 30 days, the stock and Nifty rebased to the same start. Always 120x36, right-aligned on the
-// numbers row's baseline, its label hanging beneath (the row reserves the space with mb-5). ----
+// numbers row, its "30 days +4.3%" label at its top-right, the same 2px above the chart everywhere. ----
 export function Sparkline({ sym, closes, nifty, mark, pending, end }: {
   sym: string; closes: [string, number][]; nifty?: [string, number][]; mark?: string; pending: boolean; end: string;
 }) {
@@ -143,7 +147,7 @@ export function Sparkline({ sym, closes, nifty, mark, pending, end }: {
   const slots = pts.length + (pending ? 1 : 0); // a pending reaction sits one trading day past the last bar
   const x = (k: number) => (k / (slots - 1)) * 100;
   const y = (v: number) => 34 - ((v - lo) / span) * 32;
-  const line = (vs: (number | null)[]) => vs.map((v, k) => (v == null ? "" : `${x(k).toFixed(2)},${y(v).toFixed(2)}`)).filter(Boolean).join(" ");
+  const line = (vs: (number | null)[]): Pt[] => vs.flatMap((v, k) => (v == null ? [] : [[x(k), y(v)] as Pt]));
   const mk = pending ? pts.length : mark ? pts.findIndex(([d]) => d >= mark) : -1;
   const my = mk >= 0 ? y(s[Math.min(mk, s.length - 1)]) : 0;
   const chg = s[s.length - 1] * 100;
@@ -151,12 +155,20 @@ export function Sparkline({ sym, closes, nifty, mark, pending, end }: {
   const [at, scrub] = useScrub(pts.map((_, k) => x(k)));
   if (pts.length < 5) return null;
   return (
-    <div {...scrub} className="scrub relative z-10 h-9 w-[120px] shrink-0">
+    <div className="relative z-10 flex w-[120px] shrink-0 flex-col items-end">
+    <p className="mb-0.5 font-mono text-11 leading-4 whitespace-nowrap text-ink-3">
+      <span aria-hidden="true">30 days </span><span className="sr-only">Last 30 days: stock </span><Signed text={pct(chg)} />
+      <span className="sr-only">
+        {nchg != null ? `, Nifty ${pct(nchg)}` : ""}
+        {mk >= 0 ? (pending ? ". Filing day marked; reaction not in yet." : `. Filing reaction day ${shortDate(pts[mk][0])} marked.`) : ""}
+      </span>
+    </p>
+    <div {...scrub} className="scrub relative h-9 w-[120px]">
       <div ref={ref} className={`absolute inset-0 ${cls}`}>
         <svg viewBox="0 0 100 36" preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
           <Area pts={line(s)} base={36} />
-          {n.length > 0 && <polyline points={line(n)} fill="none" stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" className="text-ink-3/60" />}
-          <polyline points={line(s)} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="text-accent" />
+          {n.length > 0 && <Line pts={line(n)} nifty />}
+          <Line pts={line(s)} />
         </svg>
         {mk >= 0 && (
           <>
@@ -177,13 +189,7 @@ export function Sparkline({ sym, closes, nifty, mark, pending, end }: {
           </Tip>
         </>
       )}
-      <p className="absolute top-full right-0 mt-1 font-mono text-11 leading-4 whitespace-nowrap text-ink-3">
-        <span className="sr-only">30 days: </span>
-        <span aria-hidden="true">30D </span><Signed text={pct(chg)} />{nchg != null && <> · NIFTY {pct(nchg)}</>}
-        <span className="sr-only">
-          {mk >= 0 ? (pending ? ". Filing day marked; reaction not in yet." : `. Filing reaction day ${shortDate(pts[mk][0])} marked.`) : ""}
-        </span>
-      </p>
+    </div>
     </div>
   );
 }
@@ -248,9 +254,8 @@ export function PathLine({ points: all, lo = null, hi = null, end = null, signed
       <div ref={ref} className={`absolute inset-0 ${cls}`}>
         {n > 1 && (
           <svg viewBox={`0 0 100 ${height}`} preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
-            {!banded && <Area pts={points.map(([, v], k) => `${x(k)},${y(v)}`).join(" ")} base={top + plot} />}
-            <polyline points={points.map(([, v], k) => `${x(k)},${y(v)}`).join(" ")} fill="none" stroke="currentColor" strokeWidth="1.5"
-              strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="text-accent" />
+            {!banded && <Area pts={points.map(([, v], k) => [x(k), y(v)] as Pt)} base={top + plot} />}
+            <Line pts={points.map(([, v], k) => [x(k), y(v)] as Pt)} />
           </svg>
         )}
         {points.map(([q, v], k) => (
@@ -290,7 +295,7 @@ export function PriceLine({ closes, nifty, drawKey }: { closes: [string, number]
   const H = 104, top = 6, plot = 92;
   const x = (k: number) => (k / (closes.length - 1)) * 76; // the right quarter holds the end labels
   const y = (v: number) => top + (1 - (v - lo) / span) * plot;
-  const line = (vs: (number | null)[]) => vs.map((v, k) => (v == null ? "" : `${x(k)},${y(v)}`)).filter(Boolean).join(" ");
+  const line = (vs: (number | null)[]): Pt[] => vs.flatMap((v, k) => (v == null ? [] : [[x(k), y(v)] as Pt]));
   const sEnd = s[s.length - 1], nEnd = n.length ? n[n.length - 1] : null;
   let ys = y(sEnd) - 7, yn = nEnd != null ? y(nEnd) - 7 : 0;
   if (nEnd != null && Math.abs(ys - yn) < 14) { // keep the two end labels apart
@@ -304,8 +309,8 @@ export function PriceLine({ closes, nifty, drawKey }: { closes: [string, number]
         <svg viewBox={`0 0 100 ${H}`} preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
           <Area pts={line(s)} base={top + plot} />
           <line x1="0" x2="76" y1={y(0)} y2={y(0)} stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" className="text-rule" />
-          {n.length > 0 && <polyline points={line(n)} fill="none" stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" className="text-ink-3/60" />}
-          <polyline points={line(s)} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="text-accent" />
+          {n.length > 0 && <Line pts={line(n)} nifty />}
+          <Line pts={line(s)} />
         </svg>
       </div>
       <Label x={78} y={ys} align="left" className="font-semibold"><Signed text={pct(sEnd)} /></Label>

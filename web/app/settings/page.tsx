@@ -42,7 +42,7 @@ export default function SettingsPage() {
       <p className="pt-2 text-13 text-ink-2">
         A filing whose reaction day crosses either threshold ranks higher, and each crossing raises an alert.
       </p>
-      <div className="card mt-2 px-4">
+      <div className="card mt-2 px-3">
         <NumberField id="vol" label="Volume" hint="times the 20-day average" unit="×" value={s.volN} min={1} step={0.5} saved={saved === "vol"} onSave={(v) => save("vol", { volN: v })} />
         <NumberField id="move" label="Move vs Nifty" hint="either direction" unit="%" prefix="±" value={s.moveX} min={0.5} step={0.5} saved={saved === "move"} onSave={(v) => save("move", { moveX: v })} />
       </div>
@@ -80,7 +80,7 @@ function Holdings() {
       <p className="pt-2 text-13 text-ink-2">
         FINN tracks a watchlist, not positions: no quantities, prices paid or P&amp;L.{day && <> Moves are vs Nifty on <span className="font-mono">{shortDate(day)}</span>.</>}
       </p>
-      <ol className="card mt-2 px-4" aria-busy={!feed}>
+      <ol className="card mt-2 px-3" aria-busy={!feed}>
         {!feed
           ? Array.from({ length: 5 }, (_, k) => <li key={k} className="h-12 border-b border-rule last:border-b-0" />)
           : syms.map((s) => {
@@ -104,7 +104,7 @@ function Holdings() {
 // iOS-style switches in navy; the whole row is the label, so the row is the tap target.
 function CatGroup({ cats, s, toggle, saved }: { cats: string[]; s: Settings; toggle: (c: string) => void; saved: string | null }) {
   return (
-    <fieldset className="card mt-2 px-4">
+    <fieldset className="card mt-2 px-3">
       <legend className="sr-only">Material filings</legend>
       <ul>
         {cats.map((c) => (

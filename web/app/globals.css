@@ -51,6 +51,11 @@
 /* Tab changes: React's <ViewTransition> crossfades old and new page (main only). The document root is taken out of
    the transition, so the fixed tab bar is never snapshotted: it stays live and only its pill moves (no flicker). */
 :root { view-transition-name: none; }
+/* The tab bar is its own group above the page's: the page content crossfades beneath it, while the bar shows only its
+   live new state (no fade, no snapshot of the old one), so it never blinks. */
+nav[aria-label="Main"] { view-transition-name: tabbar; }
+::view-transition-group(tabbar), ::view-transition-new(tabbar) { animation: none; }
+::view-transition-old(tabbar) { display: none; }
 ::view-transition-old(*),
 ::view-transition-new(*) {
   animation-duration: 120ms;
@@ -113,7 +118,7 @@ input[type="checkbox"] { accent-color: var(--accent); }
 }
 
 /* Surfaces: content sits on raised paper with a hairline edge; quiet depth, no shadow. */
-.card { background: var(--paper-raised); border: 1px solid var(--rule); border-radius: 6px; }
+.card { background: var(--paper-raised); border: 1px solid var(--edge); border-radius: 6px; }
 /* Rows inside a card are inset 16px (the card's padding), hairlines between them, none under the last. */
 }
 
@@ -153,17 +158,18 @@ input:focus-visible + .switch { outline: 2px solid var(--accent); outline-offset
 .strip > ul { animation: drift 240ms var(--ease-enter) both; }
 
 /* Splash, 880ms: many signals converging into FINN.
-   0-520ms   each ray's line draws from the left into the point (stroke-dashoffset, 60ms stagger, ease-in-out:
-             it is movement on screen); its wedge lands as the line arrives.
-   520-720ms FINN fades up and slides 6px out of the point (ease-out).  720-760ms a beat.  760-880ms fade out.
+   0-700ms   each ray's line draws from the left into the point (stroke-dashoffset, 380ms each, 80ms stagger,
+             ease-in-out: it is movement on screen); its wedge lands as the line arrives.
+   700-900ms FINN fades up and slides 6px out of the point (ease-out).  900-1300ms the finished mark holds.
+   1300-1400ms fade out.
    Skipped (html[data-splash="skip"]) when the app was opened in the last 5 minutes; see layout.tsx. */
 .splash {
   position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: var(--paper);
-  animation: splash-out 120ms var(--ease-enter) 760ms both; pointer-events: none;
+  animation: splash-out 100ms var(--ease-enter) 1300ms both; pointer-events: none;
 }
-.splash .spine { stroke-dasharray: 1; animation: spine 280ms var(--ease-in-out) both; animation-delay: calc(var(--i) * 60ms); }
-.splash .wedge { animation: wedge 120ms var(--ease-enter) both; animation-delay: calc(var(--i) * 60ms + 200ms); }
-.splash .word { animation: word 200ms var(--ease-enter) 520ms both; }
+.splash .spine { stroke-dasharray: 1; animation: spine 380ms var(--ease-in-out) both; animation-delay: calc(var(--i) * 80ms); }
+.splash .wedge { animation: wedge 140ms var(--ease-enter) both; animation-delay: calc(var(--i) * 80ms + 280ms); }
+.splash .word { animation: word 200ms var(--ease-enter) 700ms both; }
 @keyframes spine { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes wedge { from { opacity: 0; } }
 @keyframes word { from { opacity: 0; transform: translateX(-6px); } }
