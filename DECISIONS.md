@@ -364,3 +364,7 @@ Presentation only; no data, rules or backend touched. Gate 0 problems; tests and
 - **Density and colour:** card padding 16 → 12px (lead 16), Rev/PAT labels 11px with tighter leading, card edge #E4DED2 (lighter than row hairlines), paper deepened to #F2EDE2 (press tint #ECE7DB to match; ink-3 still passes AA on both).
 - **Splash ~1.4s:** rays draw slower (380ms each, 80ms apart), FINN at 700ms, the finished mark holds 400ms, fade out by 1400ms. Still skipped within 5 minutes and under reduced motion.
 - There is no "Details" control in the app; the expanders that exist ("N more filings", the routine-notice line on a quiet day, "Show", "How it was measured") are full-width 44px rows with a rotating chevron.
+
+## After the final pass (15 Nov)
+- **Research list ticker chips** (navy 8%, the nav pill's navy, one fixed width so names align). Research index only: on the Brief, Alerts and company pages the name is the headline and a chip would compete with it.
+- **Bug found while taking README screenshots: with reduced motion on, the Brief lost its tab bar.** The market strip's 1,600px list leaked into the page width once its slide-in transform was gone (reduced motion removes the animation), so Chrome zoomed the phone layout out to 1,560px and the fixed bar landed below the last line. `contain: paint` on the strip fixes it. The screenshot audit now also fails any page whose layout viewport is wider than the screen (it had been measuring against the inflated viewport, which is why it missed this).

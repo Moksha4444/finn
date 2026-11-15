@@ -153,7 +153,10 @@ input:focus-visible + .switch { outline: 2px solid var(--accent); outline-offset
 
 /* Market strip drifts into place; momentum scroll, no visible bar. */
 @keyframes drift { from { opacity: 0; transform: translateX(24px); } }
-.strip { scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+/* contain: paint keeps the strip's 1,600px list inside its scroller. Without it (seen under reduced motion, when the
+   drift animation's transform is gone), Chrome counted the list as page width, zoomed the phone layout out to 1,560px,
+   and the fixed tab bar ended up below the Brief's last line. */
+.strip { scrollbar-width: none; -webkit-overflow-scrolling: touch; contain: paint; }
 .strip::-webkit-scrollbar { display: none; }
 .strip > ul { animation: drift 240ms var(--ease-enter) both; }
 
