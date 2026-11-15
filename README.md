@@ -3,7 +3,7 @@
 [![CI](https://github.com/Moksha4444/finn/actions/workflows/ci.yml/badge.svg)](https://github.com/Moksha4444/finn/actions/workflows/ci.yml)
 
 > Investors aren't short of information, they're short of filtering. FINN hides the routine, ranks what the market
-> reacted to, and asks whether management delivered what it promised.
+> actually reacted to, and asks whether management delivered what it promised.
 
 **Live:** https://finn-coral-eta.vercel.app (mobile-first; on a desktop it shows a QR code for your phone)
 
@@ -12,13 +12,14 @@
 
 ### Try it in 60 seconds
 
-1. **Brief → This month.** Results season across the 20 holdings, ranked by what the market reacted to. Tap a story for
+1. **Open it on a phone and add it to the home screen.** It installs as an app (a PWA) and opens without the browser bars.
+2. **Brief → This month.** Results season across the 20 holdings, ranked by what the market reacted to. Tap a story for
    the full results card (QoQ / YoY, one-offs flagged).
-2. **Research → Larsen & Toubro.** FY26 revenue growth guidance was 15% ("we maintain our full year revenue growth
+3. **Research → Larsen & Toubro.** FY26 revenue growth guidance was 15% ("we maintain our full year revenue growth
    guidance at 15%", Q2 FY26 call, p.10); delivered 11.8%: **missed**, with the quote and the page.
-3. **Research → search HAVELLS** (or any NSE symbol not in the list) for a live run: the backend's stages tick off as a
-   checklist, about 1–2 minutes.
-4. **Settings → change a threshold** (say, move vs Nifty from ±3% to ±1.5%), then go back to the Brief and watch it re-rank.
+4. **Research → search HAVELLS and run live research** (or any NSE symbol not in the list): the backend's stages tick
+   off as a checklist, about 1–2 minutes.
+5. **Settings → change a threshold** (say, move vs Nifty from ±3% to ±1.5%), then go back to the Brief and watch it re-rank.
 
 FINN reads every exchange filing across a portfolio, hides the routine ones, and puts the few that matter at the top with
 the numbers already worked out. For any NSE company it also checks whether management delivered what it promised on
@@ -152,8 +153,9 @@ Full log with the evidence for each: [DECISIONS.md](DECISIONS.md). The ones that
 - **PvD verdicts are computed, not judged,** wherever a number exists. Segment targets are measured on the filing's
   segment table, bank CD ratios on the balance sheet, and no target is called hit or missed before its period ends.
   On the first 22-company run 62% of promises were "not measurable"; now it's 36 of 72, and each one says why.
-- **No letter grades.** An A–D grade for management was built and then removed: a letter from two measured promises is
-  false precision. FINN prints the counts ("KEPT 1 · MISSED 1 · OPEN 1") and shows no record under 2 measured promises.
+- **No letter grades.** An A–D management grade was built and then removed: a letter derived from two measured promises
+  is false precision. The kept / missed / open counts ("KEPT 1 · MISSED 1 · OPEN 1") say it honestly, and under 2
+  measured promises FINN shows no record at all.
 - **A thin, true section beats a full, generic one.** Bull/bear points that fail the checks are dropped, not padded.
 - **No paid APIs, no database.** Free Gemini + Groq tiers with fallbacks; JSON files plus disk caches instead of
   SQLite/Supabase.
@@ -174,4 +176,7 @@ Full log with the evidence for each: [DECISIONS.md](DECISIONS.md). The ones that
 - **Coverage gaps are shown, not hidden.** Scanned filings with no text layer get no results card (the raw filing link is
   shown). ITC and TRENT publish no call transcripts, so they have no promise record. Some US-dollar and volume targets
   can't be measured from Indian filings.
+- **Fixed windows, not a free date range.** The feed holds 30 days of filings, so the Brief offers Today / This week /
+  This month rather than an open date picker: a picker would imply coverage the data doesn't have, and an empty custom
+  range reads as a bug. With a deeper archive the same switch takes an arbitrary range.
 - **Sizing thresholds are flat** (fine for this all-large-cap portfolio; small caps would want market-cap-relative ones).

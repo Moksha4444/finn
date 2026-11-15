@@ -1,7 +1,7 @@
 # Claude Code session 584cdb9b-1afa-46e0-a272-7812ea87d3f4
 
 - Started: 15 Nov 2026, 08:34 IST
-- Ended: 15 Nov 2026, 20:11 IST
+- Ended: 15 Nov 2026, 20:40 IST
 - Exported from the local Claude Code transcript. Prompts and replies in full; tool calls one line each, tool output truncated, internal reasoning and images omitted; email and any key-like strings redacted.
 
 ---
@@ -3665,4 +3665,616 @@ s=s.replace(a,'''REDACT = [(re.compile(re.escape(email), re.I), "[email redacted
 open(p,"w",encoding="utf8").write(s)
 PY
 cd "/c/Users/mokshagna/Claude Projects/finn" && rm -rf build-history/sessions && python "C:/Users/MOKSHA~1/Ap … [524 more chars]
+```
+
+  ↳ 19 sessions
+    files with the email or its local part: 0
+    733f388 Build history: redact the email's local part too
+    14:41:04
+
+→ **Bash**: Check production deploy time
+```
+curl -sI https://finn-coral-eta.vercel.app/ | grep -i "last-modified\|x-vercel-cache"; date -u +%H:%M:%S
+```
+
+  ↳ Last-Modified: Sun, 15 Nov 2026 14:41:10 GMT
+    X-Vercel-Cache: MISS
+    14:41:12
+
+→ **Bash**: Compare production assets to main
+```
+cd "/c/Users/mokshagna/Claude Projects/finn/web" && echo "local:"; grep -o '/_next/static/[^"]*\.css' out/index.html | sort -u; echo "prod:"; curl -s https://finn-coral-eta.vercel.app/ | grep -o '/_next/static/[^"]*\.css' | sort -u; for f in CDSL ASIANPAINT index; do a=$(curl -s https://finn-coral-eta.vercel.app/data/research/$f.json | sha1sum | cut -c1-12); b=$(git show HEAD:web/public/data/research/$f.json | sha1sum | cut -c1-12); echo "$f prod=$a main=$b"; done
+```
+
+  ↳ local:
+    /_next/static/chunks/2u9q8phi4o_eb.css
+    prod:
+    /_next/static/immutable/chunks/0q4n5rnp8d2gj.css
+    CDSL prod=ed184054ccfa main=ed184054ccfa
+    ASIANPAINT prod=40e9a6b092a1 main=40e9a6b092a1
+    index prod=8375a3c72db5 main=8375a3c72db5
+
+→ **Bash**: Check production assets for final-commit markers
+```
+cd "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad" && curl -s https://finn-coral-eta.vercel.app/ > p.html && curl -s "https://finn-coral-eta.vercel.app$(grep -o '/_next/static/[^"]*\.css' p.html | head -1)" | grep -oi "ece7db\|e4ded2\|f2ede2\|tabbar\|1\.3s\|1300ms" | sort -u | tr '\n' ' '; echo; for js in $(grep -o '/_next/static/[^"]*\.js' p.html | sort -u); do curl -s "https://finn-coral-eta.vercel.app$js"; done | grep -o '30 days \|bg-accent/16\|routine.\{0,30\}hidden' | sort -u
+```
+
+  ↳ 1.3s e4ded2 ece7db f2ede2 tabbar 
+    30 days 
+    bg-accent/16
+    routine ",1===c?"notice":"notices"," hidden
+    routine ${1===$?"filing":"filings"} hidden
+    Shell cwd was reset to c:\Users\mokshagna\Claude Projects\finn
+
+→ **Bash**: Probe tab switch on production
+```
+cd "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad" && sed 's|url: "http://localhost:4611" + path|url: (process.env.BASE ?? "http://localhost:4611") + path|' probe.mjs > probe2.mjs && BASE=https://finn-coral-eta.vercel.app MSYS_NO_PATHCONV=1 node probe2.mjs "C:/Users/mokshagna/Claude Projects/finn/web/out" /research "$(cat tabprobe.js)" 2>&1 | grep -v '"id"' | tr -d '\n ' | head -c 600; echo
+```
+
+  ↳ {"sameNav":true,"path":"/settings","before":"matrix(1,0,0,1,195,0)","samples":["56:matrix(1,0,0,1,195,0)","107:matrix(1,0,0,1,266.742,0)","155:matrix(1,0,0,1,287.713,0)","200:matrix(1,0,0,1,291.199,0)","247:matrix(1,0,0,1,292.433,0)","289:matrix(1,0,0,1,292.5,0)","338:matrix(1,0,0,1,292.5,0)","387:matrix(1,0,0,1,292.5,0)"],"vtPseudos":["::view-transition-group(_t_0_)","::view-transition-new(_t_0_) … [97 more chars]
+
+Both parts are done. `main` is at 733f388, pushed, and production is serving the final UI. Part A took about 10 minutes of the 45.
+
+**Part A: UI fixes (merged as 0e3fbb3)**
+- [x] **1. Overlaps and overflow:** I added a script that checks every page, including research pages and the live-research states, at 360/375/390/430px for overlapping text and for text outside its card or the screen. It found two real bugs:
+  - A long company name in a story kicker ran under the timestamp at 360/375.
+  - The lead story's sparkline label spilled out of its card at 360.
+  
+  Both are fixed; the script now reports 0 overlaps and 0 spills, and all 23 chart tips stay on screen.
+- [x] **2. Bottom nav:** the flicker came from the page crossfade, which painted over the fixed bar. The bar now has its own layer above the page, so only page content transitions. Checked on the live site: tab changes don't reload the page, the bar is the same element before and after, and the pill (navy 16%) slides in about 220ms. Labels keep one weight.
+- [x] **3. Smooth lines:** I used monotone smoothing instead of cardinal at 0.4. A cardinal curve can overshoot and draw a high or low that isn't in the data; monotone passes through every point without that, and it has a test. Navy line and 7% fill kept. The sparkline label "30 days +13.7%" now sits top-right, 2px above the chart, on every card. The Nifty figure moved into the touch tip.
+- [x] **4. Timestamps:** they read "11 Nov, 5:29 pm" and "8:15 am IST" everywhere, with a test. The data keeps its original format.
+- [x] **5. Tap targets:** "N more filings", "Show", the quiet day's "N routine notices hidden" and "How it was measured" are now full-width 44px rows with a rotating chevron. There is no "Details" control anywhere in the app, so there was nothing to change for that one.
+- [x] **6. Density:** card padding is down from 16px to 12px, Rev/PAT labels are 11px with tighter spacing, and card borders are #E4DED2.
+- [x] **7. Background:** the paper is now #F2EDE2, with raised cards still #FBF9F4. The press tint changed to match and still meets contrast standards.
+- [x] **8. Splash:** about 1.4s now. The rays draw more slowly, the finished mark holds for 400ms, then it fades.
+
+**Part B: submission**
+- [x] **9. Uncommitted files: committed, not reverted.** The consistency gate reported 0 problems with them in place. The regeneration had finished at 8:09 am; the Python process still running was VS Code's formatter. Commit 4928226.
+- [x] **10. README:** four screenshots taken from the live site (Brief, L&T, Promised vs Delivered, live research in progress). The cost line now comes from the call log: $3.21 at list prices for 974 calls, plus about $0.15 for live runs on the server, all on free tiers. The live link, CI badge and the other sections were already there and are kept.
+- [x] **11. Sessions:** all 19 sessions are exported to `build-history/sessions/`, named by date and topic, with an `INDEX.md`. That includes 5 empty or aborted ones, and this session up to the final commit. Your hand-made exports are untouched.
+- [x] **12. Security sweep:** no keys anywhere in the repo or `build-history`. Every match for the four patterns is a variable name, an empty placeholder or a test dummy. `.env` is ignored and untracked; only `.env.example` is tracked.
+- [x] **13. Verified:** the consistency gate reports 0 problems, 178 backend and 18 web tests pass, and the build succeeds. Production's CSS and JS contain the changes from the UI commit, and its research data matches `main` exactly. The commits after that only touched the README and `build-history`, which aren't part of the site.
+
+Two things you should know:
+- **Email fragment in history:** commit 1796617's session export contains the part of your email before the @ (no domain), inside one of my search commands. I redacted it in the next commit, but it remains in that commit's history. Removing it would mean force-pushing `main`, so tell me if you want that.
+- **Two live research runs used:** the screenshots started real runs on HAVELLS and PIDILITIND, using 2 of today's 8 slots. Their pages are now cached on the research server.
+
+I didn't test the tab switch and charts on a real phone; everything was checked in headless Chrome.
+
+> <pasted_content id="65fb">
+> README polish, then stop:
+> 1. Replace the four screenshot placeholders with real images of the live app, committed under docs/screenshots/: Brief front page (This month view), an expanded results card, the L&T research page showing Promised vs Delivered, and live research in progress. Make sure they render on GitHub.
+> 2. Add a "Try it in 60 seconds" numbered list right under the live link (Brief → This month; Research → Larsen & Toubro for the missed FY26 guidance; Research → search HAVELLS for a live run; Settings → change a threshold and watch the Brief re-rank).
+> 3. Add a one-line thesis blockquote above the current intro: investors aren't short of information, they're short of filtering; FINN hides the routine, ranks what the market reacted to, and asks whether management delivered what it promised.
+> 4. Add a prominent "AI build history: build-history/" link under the live link.
+> 5. In Key decisions add the removed-letter-grade bullet; in Architecture append to the consistency-gate bullet that it caught ITC's reversed year-ago column, which had turned a −18.7% PAT change into −5.1%.
+> Commit and push. Confirm the images display on github.com.
+> </pasted_content id="65fb">
+> 
+> <pasted_content id="65fb">
+> Take the README screenshots yourself with headless Chrome at 390x844 (deviceScaleFactor 2) against the LIVE site https://finn-coral-eta.vercel.app, and save them as PNGs in docs/screenshots/:
+> - brief-month.png — Brief, "This month" view, scrolled to show the lead story and a secondary story
+> - results-card.png — an expanded results card showing the QoQ/YoY table and the one-off note
+> - promised-vs-delivered.png — the L&T research page, scrolled to the Promised vs Delivered section
+> - live-research.png — live research in progress, with the stage checklist visible
+> Disable animations for the captures so nothing is caught mid-transition. Then reference them in the README table with relative paths and confirm they render on github.com.
+> </pasted_content id="65fb">
+> 
+> <pasted_content id="65fb">
+> Two things, then stop.
+> 
+> A. Ticker chips (Research index only):
+> In the Research list, wrap each ticker in a chip: navy at 8% opacity background, 4px radius, mono uppercase, 2px vertical / 6px horizontal padding, navy text at full strength. Same navy as the nav pill so it reads as one system. Fixed chip width so all rows align on the company name. Do NOT add chips to the Brief, Alerts or company pages, where the company name is the headline and a chip would compete.
+> 
+> B. README:
+> 1. Take screenshots yourself with headless Chrome at 390x844 (deviceScaleFactor 2) against the LIVE site https://finn-coral-eta.vercel.app, animations disabled, saved as PNGs in docs/screenshots/:
+>    - brief-month.png (Brief, "This month", lead story + a secondary story visible)
+>    - results-card.png (expanded results card with the QoQ/YoY table and one-off note)
+>    - promised-vs-delivered.png (L&T research page at the Promised vs Delivered section)
+>    - live-research.png (live research in progress with the stage checklist)
+>    Wire them into the README table with relative paths; confirm they render on github.com.
+> 2. Add a "Try it in 60 seconds" numbered list under the live link: Brief → This month; Research → Larsen & Toubro (FY26 revenue guidance 15% vs 11.8% delivered = missed, with quote and page); Research → search HAVELLS for a live run; Settings → change a threshold and watch the Brief re-rank.
+> 3. Add a one-line thesis blockquote above the intro: investors aren't short of information, they're short of filtering; FINN hides the routine, ranks what the market reacted to, and asks whether management delivered what it promised.
+> 4. Add "AI build history: build-history/" as a prominent link under the live link.
+> 5. Key decisions: add the removed-letter-grade bullet (an A–D grade was built and removed because a letter from two measured promises is false precision). Architecture: append to the consistency-gate bullet that it caught ITC printing its year-ago column second, which had turned a −18.7% PAT change into −5.1%.
+> 
+> Then: tests pass, build succeeds, commit and push. Report done.
+> </pasted_content id="65fb">
+
+The last of the three pasted messages repeats the other two, so I'm following it: ticker chips in the Research list, then the README with four new screenshots of the live site.
+
+One catch on "search HAVELLS for a live run": I ran HAVELLS earlier for the old screenshot, so the research server has it cached. A reviewer would get the saved page instantly, not a live run, until that server restarts. HAVELLS's page also says "no checkable promises found". I'll keep HAVELLS in the README as you asked, but add "or any symbol not in the list".
+
+First, finding a results story in the feed that has a one-off note, for the expanded-card shot:
+
+→ **Bash**: Find results cards with one-offs; locate index row code
+```
+cd "/c/Users/mokshagna/Claude Projects/finn" && git pull -q && git log --oneline -1 && python -c "
+import json
+f=json.load(open('web/public/data/feed.json',encoding='utf8'))
+print(f['generated_at'])
+for i in f['items']:
+  c=i.get('card') or {}
+  if c.get('type')=='results' and c.get('one_offs'): print(i['symbol'], i['filed'], i['tier'], c['one_offs'][:1], c.get('basis'))
+"; grep -n "w-\[5.5rem\] shrink-0 truncate font-mono text-13 font-semibold text-ink\">{r.symbol}\|pl-\[6rem\] font-mono text-11" web/components/Research.tsx
+```
+
+  ↳ 733f388 Build history: redact the email's local part too
+    Traceback (most recent call last):
+      File "<string>", line 7, in <module>
+        if c.get('type')=='results' and c.get('one_offs'): print(i['symbol'], i['filed'], i['tier'], c['one_offs'][:1], c.get('basis'))
+                                                           ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      … [669 more chars]
+
+Tata Power's results card has a one-off note, so that's the expanded-card shot. Now the chips:
+
+→ **Bash**: Add ticker chips to Research index; test and build
+```
+cd "/c/Users/mokshagna/Claude Projects/finn/web" && python - <<'PY'
+p="components/Research.tsx"; s=open(p,encoding="utf8").read()
+a='''          <span className="w-[5.5rem] shrink-0 truncate font-mono text-13 font-semibold text-ink">{r.symbol}</span>'''
+b='''          {/* Research list only: the ticker as a chip (navy 8%, the nav pill's navy), one fixed width so every name
+              starts on the same line. Not on the Brief, Alerts or company pages, where the name is the headline. */}
+          <span className="w-[5.75rem] shrink-0 truncate rounded-[4px] bg-accent/8 px-1.5 py-0.5 font-mono … [574 more chars]
+```
+
+  ↳ 115:        <span className="flex items-baseline gap-2">
+    ℹ pass 18
+    ℹ fail 0
+    ✓ Compiled successfully in 977ms
+
+Building passes. Checking the chips at 390px and re-running the overlap audit on the Research list:
+
+→ **Bash**: Screenshot Research index and audit overlaps
+```
+cd "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad" && node shoot.mjs "C:/Users/mokshagna/Claude Projects/finn/web/out" shots/c-390 390 844 >/dev/null 2>&1; python -c "
+import json; d=json.load(open('shots/c-390/audit.json')); print(d['research:text'], json.loads(d['research'])['overflow'])
+from PIL import Image; Image.open('shots/c-390/research.png').crop((0,500,780,1500)).save('chips.png')"
+```
+
+  ↳ {"overlaps":[],"outside":[]} []
+    Shell cwd was reset to c:\Users\mokshagna\Claude Projects\finn
+
+→ **Read**: C:\Users\MOKSHA~1\AppData\Local\Temp\claude\638d0bc94bb048d8\584cdb9b-1afa-46e0-a272-7812ea87d3f4\scratchpad\chips.png
+
+  ↳ [image]
+
+The chips work: the 10-letter tickers fit, every name starts on the same line, and the audit finds no overlap. Committing and pushing:
+
+→ **Bash**: Commit and push ticker chips
+```
+cd "/c/Users/mokshagna/Claude Projects/finn" && git add web/components/Research.tsx && git commit -q -m "Research list: tickers as navy 8% chips at one fixed width, so every company name aligns (Research index only)" && git push -q origin main && git log --oneline -1
+```
+
+  ↳ f43a29a Research list: tickers as navy 8% chips at one fixed width, so every company name aligns (Research index only)
+
+Now the four live-site screenshots at 390×844 (2×), with reduced motion emulated and every animation and transition switched off before each capture:
+
+→ **Write**: C:\Users\MOKSHA~1\AppData\Local\Temp\claude\638d0bc94bb048d8\584cdb9b-1afa-46e0-a272-7812ea87d3f4\scratchpad\readme_shots.mjs
+
+  ↳ File created successfully at: C:\Users\MOKSHA~1\AppData\Local\Temp\claude\638d0bc94bb048d8\584cdb9b-1afa-46e0-a272-7812ea87d3f4\scratchpad\readme_shots.mjs (file state is current in your context — no need to Read it back)
+
+→ **Bash**: Capture three static README screenshots from live site
+```
+cd "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad" && node readme_shots.mjs shots/readme X brief 2>&1 | tail -2 && node readme_shots.mjs shots/readme X card 2>&1 | tail -1 && node readme_shots.mjs shots/readme X pvd 2>&1 | tail -1 && python -c "
+from PIL import Image
+ims=[Image.open('shots/readme/'+f+'.png') for f in ['brief-month','results-card','promised-vs-delivered']]
+o=Image.new('RGB',(780*3,1688),'white')
+for k,i in enumerate(ims): o.paste(i,(780*k,0))
+o.resize((1170,844)).save('readme3.png')"
+```
+
+  ↳ brief-month at 0
+    results-card at 2771
+    promised-vs-delivered at 386
+    Shell cwd was reset to c:\Users\mokshagna\Claude Projects\finn
+
+→ **Read**: C:\Users\MOKSHA~1\AppData\Local\Temp\claude\638d0bc94bb048d8\584cdb9b-1afa-46e0-a272-7812ea87d3f4\scratchpad\readme3.png
+
+  ↳ [image]
+
+→ **Bash**: Probe tab bar on production Brief
+```
+cd "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad" && BASE=https://finn-coral-eta.vercel.app MSYS_NO_PATHCONV=1 node probe2.mjs x / "(async()=>{await new Promise(r=>setTimeout(r,1500));const n=document.querySelector('nav[aria-label=Main]');const r=n&&n.getBoundingClientRect();const cs=n&&getComputedStyle(n);return {exists:!!n,top:r&&r.top,h:r&&r.height,vis:cs&&cs.visibility,op:cs&&cs.opacity,disp:cs&&cs.display,z:cs&&cs.zIndex,pos:cs&&cs.position,innerH:innerHeight,docH:document.documentElement.scrollHeight}})()" 2>&1 | tail -14
+```
+
+  ↳ {"id":3,"result":{"frameId":"83570813509D82F04A389B59C36EB30A","loaderId":"A1F65BB556A010C5198E76D86799E8B1","isDownload":false}}
+    {
+     "exists": true,
+     "top": 787,
+     "h": 57,
+     "vis": "visible",
+     "op": "1",
+     "disp": "block",
+     "z": "20",
+     "pos": "fixed",
+     "innerH": 844,
+     "docH": 955
+    }
+    Shell cwd was reset to c:\Users\mokshagna\Claude Projects\finn
+
+→ **Bash**: Retake screenshots with viewport capture
+```
+cd "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad" && python - <<'PY'
+p="readme_shots.mjs"; s=open(p,encoding="utf8").read()
+a='''  const r = await send("Page.captureScreenshot", { format: "png", clip: { x: 0, y, width: 390, height: 844, scale: 1 } });'''
+assert a in s; s=s.replace(a,'''  const r = await send("Page.captureScreenshot", { format: "png" }); // the viewport as a phone shows it''')
+a='''  await at("#s-TATAPOWER table", 150); await shot("results-card");'''
+assert a in s; s=s.replace(a,'''  await at("#s-TATAPOWER", 8); aw … [549 more chars]
+```
+
+  ↳ brief-month at 0
+    results-card at 2771
+    promised-vs-delivered at 386
+    [(780, 1688), (780, 1688), (780, 1688)]
+    Shell cwd was reset to c:\Users\mokshagna\Claude Projects\finn
+
+→ **Read**: C:\Users\MOKSHA~1\AppData\Local\Temp\claude\638d0bc94bb048d8\584cdb9b-1afa-46e0-a272-7812ea87d3f4\scratchpad\readme3.png
+
+  ↳ [image]
+
+→ **Bash**: Check what element is at the tab bar position
+```
+cd "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad" && sed -i 's|^await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });|await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });\nif (process.env.RMOTION) await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });|' probe2.mjs && for rm in "" 1; do RMOTION=$rm BASE=https://finn-coral-eta.vercel.app MSYS_NO_PATHCONV=1  … [245 more chars]
+```
+
+  ↳ "rm= A.tab relative flex h-full flex-col items-center justify-cente in nav=true"
+    "rm=1 P.font-serif text-17 font-semibold text-ink in nav=false"
+    Shell cwd was reset to c:\Users\mokshagna\Claude Projects\finn
+
+→ **Bash**: Inspect nav position under reduced motion
+```
+cd "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad" && RMOTION=1 BASE=https://finn-coral-eta.vercel.app MSYS_NO_PATHCONV=1 node probe2.mjs x / "(async()=>{await new Promise(r=>setTimeout(r,1500));const n=document.querySelector('nav[aria-label=Main]');const r=n.getBoundingClientRect();const cs=getComputedStyle(n);const out={top:r.top,bottom:r.bottom,h:r.height,pos:cs.position,disp:cs.display,vis:cs.visibility,tr:cs.transform,vtn:cs.viewTransitionName};let a=n.parentElement,chain=[];while(a){const c=getComputedStyle(a);chain.push(a.ta … [242 more chars]
+```
+
+  ↳ {"id":4,"result":{"frameId":"C142E3C7DF1B8C4D5E7DCDD7E60143C7","loaderId":"DE37E8FBE878A977696795B5B0B86565","isDownload":false}}
+    {
+     "top": 3319,
+     "bottom": 3376,
+     "h": 57,
+     "pos": "fixed",
+     "disp": "block",
+     "vis": "visible",
+     "tr": "none",
+     "vtn": "tabbar",
+     "chain": [
+      "BODY:none:none:none:auto",
+      "HTML:none:none:none:auto"
+     ],
+     "stack": [
+      "P.font-serif text-17 font-semibo",
+      "FOOTER.mt-12 … [211 more chars]
+
+→ **Bash**: Compare viewport metrics with and without reduced motion
+```
+cd "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad" && for rm in "" 1; do RMOTION=$rm BASE=https://finn-coral-eta.vercel.app MSYS_NO_PATHCONV=1 node probe2.mjs x / "(async()=>{await new Promise(r=>setTimeout(r,1500));return 'rm=$rm inner='+innerHeight+' client='+document.documentElement.clientHeight+' vv='+visualViewport.height+' doc='+document.documentElement.scrollHeight+' navTop='+document.querySelector('nav[aria-label=Main]').getBoundingClientRect().top+' vt='+(document.activeViewTransition?'yes':'no')+' anims='+document.getAnim … [41 more chars]
+```
+
+  ↳ "rm= inner=844 client=844 vv=844 doc=955 navTop=787 vt=no anims=18"
+    "rm=1 inner=3376 client=844 vv=844 doc=3376 navTop=3319 vt=no anims=0"
+    Shell cwd was reset to c:\Users\mokshagna\Claude Projects\finn
+
+→ **Bash**: Find elements wider than the screen under reduced motion
+```
+cd "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad" && RMOTION=1 BASE=https://finn-coral-eta.vercel.app MSYS_NO_PATHCONV=1 node probe2.mjs x / "(async()=>{await new Promise(r=>setTimeout(r,1500));const W=document.documentElement.clientWidth;const wide=[...document.querySelectorAll('body *')].map(e=>[e,e.getBoundingClientRect()]).filter(([e,r])=>r.right>W+1&&!e.closest('.strip')).slice(0,8).map(([e,r])=>e.tagName+'.'+String(e.className).slice(0,50)+' '+Math.round(r.left)+'..'+Math.round(r.right));return {W,inner:innerWidth,scrollW:do … [61 more chars]
+```
+
+  ↳ "W": 390,
+     "inner": 1560,
+     "scrollW": 1592,
+     "wide": [
+      "NAV.fixed inset-x-0 bottom-0 z-20 border-t border-rule 0..1560",
+      "UL.relative mx-auto grid h-14 max-w-[36rem] grid-cols 492..1068",
+      "LI.tab-mark pointer-events-none absolute inset-y-1.5  492..636",
+      "SPAN.block size-full rounded-[10px] bg-accent/16 500..628",
+      "LI. 492..636",
+      "A.tab relative flex h-full flex-col items-center jus 492 … [154 more chars]
+
+→ **Bash**: Find the far-right element under reduced motion
+```
+cd "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad" && RMOTION=1 BASE=https://finn-coral-eta.vercel.app MSYS_NO_PATHCONV=1 node probe2.mjs x / "(async()=>{await new Promise(r=>setTimeout(r,1500));return [...document.querySelectorAll('body *')].map(e=>[e,e.getBoundingClientRect()]).filter(([e,r])=>r.right>600&&!e.closest('nav[aria-label=Main]')).slice(0,10).map(([e,r])=>e.tagName+'.'+String(e.className).slice(0,60)+' '+Math.round(r.left)+'..'+Math.round(r.right)+' parentOverflow='+getComputedStyle(e.parentElement).overflowX)})()" 2>& … [12 more chars]
+```
+
+  ↳ [
+     "UL.flex w-max items-stretch pl-4 0..1636 parentOverflow=auto",
+     "LI.border-l border-rule last:pr-4 532..617 parentOverflow=visible",
+     "A.press flex h-11 flex-col justify-center px-3 font-mono text- 533..617 parentOverflow=visible",
+     "SPAN.font-semibold text-ink 545..605 parentOverflow=visible",
+     "SPAN.text-ink-2 545..605 parentOverflow=visible",
+     "LI.border-l border-rule last:pr-4 617..685 par … [351 more chars]
+
+→ **Bash**: Bisect the element widening the page
+```
+cd "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad" && cat > wide.js <<'JS'
+(async () => {
+  await new Promise((r) => setTimeout(r, 1500));
+  const sw = () => document.documentElement.scrollWidth;
+  const base = sw(); const path = [];
+  let node = document.body;
+  for (let depth = 0; depth < 12; depth++) {
+    let found = null;
+    for (const c of node.children) {
+      const d = c.style.display; c.style.display = "none"; const w = sw(); c.style.display = d;
+      if (w < base - 50) { found = c; break; }
+    }
+    if (!found) break; … [392 more chars]
+```
+
+  ↳ {"id":4,"result":{"frameId":"1233BABC4DC6B4B8EA1E67BB524FCF29","loaderId":"706EF3522324D5B98467E45F1364B0A4","isDownload":false}}
+    {
+     "base": 1592,
+     "inner": 1560,
+     "path": [
+      "MAIN.mx-auto max-w-[36rem] px-4 pb-[calc(4.5rem+env(saf ox=visible w=390",
+      "DIV.enter ox=visible w=358",
+      "DIV. ox=visible w=358",
+      "NAV.strip -mx-4 mt-4 overflow-x-auto border-y border-r ox=auto w=390",
+      "UL.flex w-ma … [182 more chars]
+
+→ **Bash**: Test candidate fixes for the strip overflow
+```
+cd "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad" && cat > fixes.js <<'JS'
+(async () => {
+  await new Promise((r) => setTimeout(r, 1500));
+  const nav = document.querySelector("nav.strip"), ul = nav.querySelector("ul");
+  const sw = () => document.documentElement.scrollWidth;
+  const out = { base: sw(), navCS: getComputedStyle(nav).overflow + " / " + getComputedStyle(nav).display, ulAnim: getComputedStyle(ul).animationName, ulTr: getComputedStyle(ul).transform };
+  const tryit = (name, f, undo) => { f(); out[name] = sw(); undo();  … [690 more chars]
+```
+
+  ↳ {"id":4,"result":{"frameId":"70530F1D1578C34B9D3677A29E61C984","loaderId":"B4FFECA640575E2D3CB7AD22839D41C1","isDownload":false}}
+    {
+     "base": 1592,
+     "navCS": "auto / block",
+     "ulAnim": "none",
+     "ulTr": "none",
+     "contain-paint": 390,
+     "overflow-scroll": 1592,
+     "hide-ul": 390,
+     "ul-transform": 390,
+     "main-overflow-clip": 390
+    }
+    Shell cwd was reset to c:\Users\mokshagna\Claude Projects\finn
+
+→ **Bash**: Apply strip containment, rebuild, verify locally
+```
+cd "/c/Users/mokshagna/Claude Projects/finn/web" && python - <<'PY'
+p="app/globals.css"; s=open(p,encoding="utf8").read()
+a=".strip { scrollbar-width: none; -webkit-overflow-scrolling: touch; }"
+assert a in s
+s=s.replace(a,"""/* contain: paint keeps the strip's 1,600px list inside its scroller. Without it (seen under reduced motion, when the
+   drift animation's transform is gone), Chrome counted the list as page width, zoomed the phone layout out to 1,560px,
+   and the fixed tab bar ended up below the Brief's last line. */
+.strip { scrollbar-width: none; -webkit-overflow-scrolling: touch; con … [653 more chars]
+```
+
+  ↳ ✓ Compiled successfully in 915ms
+    "rm= inner=390x844 sw=390 atBar=true"
+    "rm=1 inner=390x844 sw=390 atBar=true"
+    Shell cwd was reset to c:\Users\mokshagna\Claude Projects\finn
+
+→ **Bash**: Audit all pages for page widening, with and without reduced motion
+```
+cd "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad" && python - <<'PY'
+p="shoot.mjs"; s=open(p,encoding="utf8").read()
+a="return JSON.stringify({overflow:o,small:t,"
+assert a in s
+s=s.replace(a,"if(innerWidth!==document.documentElement.clientWidth||document.documentElement.scrollWidth>document.documentElement.clientWidth)o.unshift('PAGE WIDER THAN SCREEN: inner='+innerWidth+' scrollW='+document.documentElement.scrollWidth); return JSON.stringify({overflow:o,small:t,")
+open(p,"w",encoding="utf8").write(s)
+PY
+for w in 360 390; do RM=1 … [538 more chars]
+```
+
+  ↳ rmw-360 31 problems: none
+    rmw-390 31 problems: none
+    nw-360 31 problems: none
+    nw-390 31 problems: none
+    Shell cwd was reset to c:\Users\mokshagna\Claude Projects\finn
+
+Every page passes at 360 and 390px, with and without reduced motion. Committing the fix with a DECISIONS note and pushing it so the live site gets it before the screenshots:
+
+→ **Bash**: Commit and push the strip fix
+```
+cd "/c/Users/mokshagna/Claude Projects/finn" && printf '%s\n' '' '## After the final pass (15 Nov)' '- **Research list ticker chips** (navy 8%, the nav pill'"'"'s navy, one fixed width so names align). Research index only: on the Brief, Alerts and company pages the name is the headline and a chip would compete with it.' '- **Bug found while taking README screenshots: with reduced motion on, the Brief lost its tab bar.** The market strip'"'"'s 1,600px list leaked into the page width once its slide-in transform was gone (reduced motion removes the animation), so Chrome zoomed the phone layout ou … [560 more chars]
+```
+
+  ↳ warning: in the working copy of 'DECISIONS.md', LF will be replaced by CRLF the next time Git touches it
+    466c938 Market strip: contain paint, so its list can't widen the page (with reduced motion on, the Brief's tab bar was pushed below the content)
+    14:54:47
+
+While Vercel deploys, I'll edit the README:
+
+→ **Bash**: Read README head and check L&T and ITC facts
+```
+cd "/c/Users/mokshagna/Claude Projects/finn" && sed -n 1,20p README.md; grep -n "consistency gate\|Cut on purpose\|## Key decisions\|ITC" README.md; grep -n "18.7\|5\.1%" DECISIONS.md | head -5; python -c "
+import json; d=json.load(open('web/public/data/research/LT.json',encoding='utf8'))
+for p in d['promises']:
+  if 'revenue' in p['metric'].lower() and 'FY26' in p['period']: print(p['verdict'], p['metric'], p['period'], p['target'], p['call'], p['page'], '|', p['actual'][:120])
+"
+```
+
+  ↳ Exit code 1
+    # FINN: a morning brief for a 20-stock Indian portfolio
+    
+    [![CI](https://github.com/Moksha4444/finn/actions/workflows/ci.yml/badge.svg)](https://github.com/Moksha4444/finn/actions/workflows/ci.yml)
+    
+    **Live:** https://finn-coral-eta.vercel.app (mobile-first; on a desktop it shows a QR code for your phone)
+    
+    FINN reads every exchange filing across a portfolio, hides the routine ones, and p … [3981 more chars]
+
+→ **Write**: C:\Users\MOKSHA~1\AppData\Local\Temp\claude\638d0bc94bb048d8\584cdb9b-1afa-46e0-a272-7812ea87d3f4\scratchpad\readme_edit.py
+
+  ↳ File created successfully at: C:\Users\MOKSHA~1\AppData\Local\Temp\claude\638d0bc94bb048d8\584cdb9b-1afa-46e0-a272-7812ea87d3f4\scratchpad\readme_edit.py (file state is current in your context — no need to Read it back)
+
+→ **Bash**: Apply README edits; check whether the fix is deployed
+```
+cd "/c/Users/mokshagna/Claude Projects/finn" && python "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad/readme_edit.py" && grep -n "consistency gate" -A 3 README.md | head -5; curl -s https://finn-coral-eta.vercel.app/ > /tmp/p.html; curl -s "https://finn-coral-eta.vercel.app$(grep -o '/_next/static/[^"]*\.css' /tmp/p.html | head -1)" | grep -o "contain:paint" | head -1; date -u +%T
+```
+
+  ↳ ok
+    90:- **A consistency gate** (`python -m finn.consistency`, also a test) checks that one fact has one number across the
+    91-  feed and every research page; the research batch fails if it doesn't. It caught ITC printing its year-ago column second, which had turned a −18.7% PAT change into −5.1%.
+    92-
+    93-Code map: `backend/finn/` (`llm.py` router, `sources/` BSE/NSE/screener/prices/PDF, `push/` cla … [40 more chars]
+
+→ **Bash**: Verify prod fix and take all four README screenshots
+```
+cd "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad" && sed -i 's|await at("#s-TATAPOWER", 8); await shot("results-card");|await at("li:has(#s-TATAPOWER)", 8); await shot("results-card");|' readme_shots.mjs && RMOTION=1 BASE=https://finn-coral-eta.vercel.app MSYS_NO_PATHCONV=1 node probe2.mjs x / "(async()=>{await new Promise(r=>setTimeout(r,1500));const e=document.elementFromPoint(195,815);return 'prod rm: inner='+innerWidth+'x'+innerHeight+' atBar='+(e&&!!e.closest('nav[aria-label=Main]'))})()" 2>&1 | tail -1; rm -rf shots/readme & … [58 more chars]
+```
+
+  ↳ "prod rm: inner=390x844 atBar=true"
+    brief-month at 245
+    results-card at 2928
+    promised-vs-delivered at 386
+    stage: 2:Read the last four call transcriptsQ2 FY27 call, 1 of 4
+    live-research at 0
+    Shell cwd was reset to c:\Users\mokshagna\Claude Projects\finn
+    [This command modified 1 file you've previously read: ..\..\..\MOKSHA~1\AppData\Local\Temp\claude\638d0bc94bb048d8\584cdb9b-1afa-46e0-a272-7812ea87d … [59 more chars]
+
+→ **Bash**: Combine the four README screenshots
+```
+cd "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad" && python -c "
+from PIL import Image
+ims=[Image.open('shots/readme/'+f+'.png') for f in ['brief-month','results-card','promised-vs-delivered','live-research']]
+print([i.size for i in ims])
+o=Image.new('RGB',(780*4,1688),'white')
+for k,i in enumerate(ims): o.paste(i,(780*k,0))
+o.resize((1560,844)).save('readme4.png')"
+```
+
+  ↳ [(780, 1688), (780, 1688), (780, 1688), (780, 1688)]
+    Shell cwd was reset to c:\Users\mokshagna\Claude Projects\finn
+
+→ **Read**: C:\Users\MOKSHA~1\AppData\Local\Temp\claude\638d0bc94bb048d8\584cdb9b-1afa-46e0-a272-7812ea87d3f4\scratchpad\readme4.png
+
+  ↳ [image]
+
+→ **Bash**: Swap screenshots, run tests and build, commit and push
+```
+cd "/c/Users/mokshagna/Claude Projects/finn" && git rm -q docs/screenshots/brief.png docs/screenshots/research-lt.png docs/screenshots/research-lt-pvd.png && cp "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad/shots/readme/"*.png docs/screenshots/ && ls docs/screenshots && for f in $(grep -o 'docs/screenshots/[a-z-]*\.png' README.md); do test -f "$f" && echo "ok $f" || echo "MISSING $f"; done && cd web && npm test 2>&1 | grep -E "^ℹ (pass|fail)" && npx next build 2>&1 | grep -E "Compiled|rror" && cd .. && git add README.md docs/scree … [312 more chars]
+```
+
+  ↳ brief-month.png
+    live-research.png
+    promised-vs-delivered.png
+    results-card.png
+    ok docs/screenshots/brief-month.png
+    ok docs/screenshots/results-card.png
+    ok docs/screenshots/promised-vs-delivered.png
+    ok docs/screenshots/live-research.png
+    ℹ pass 18
+    ℹ fail 0
+    ✓ Compiled successfully in 531ms
+    7157995 README: thesis, Try it in 60 seconds, AI build history link, four new screenshots of the live app (Brief t … [126 more chars]
+
+Pushed. Now confirming the images render on github.com:
+
+→ **Bash**: Check the images are reachable on GitHub
+```
+for u in https://github.com/Moksha4444/finn https://raw.githubusercontent.com/Moksha4444/finn/main/docs/screenshots/brief-month.png https://github.com/Moksha4444/finn/blob/main/docs/screenshots/results-card.png; do printf "%s " "$u"; curl -s -o /dev/null -w "%{http_code} %{content_type}\n" "$u"; done; cd "/c/Users/mokshagna/Claude Projects/finn" && git ls-tree -r origin/main --name-only docs/screenshots && git cat-file -s origin/main:docs/screenshots/brief-month.png
+```
+
+  ↳ https://github.com/Moksha4444/finn 200 text/html; charset=utf-8
+    https://raw.githubusercontent.com/Moksha4444/finn/main/docs/screenshots/brief-month.png 200 image/png
+    https://github.com/Moksha4444/finn/blob/main/docs/screenshots/results-card.png 200 text/html; charset=utf-8
+    docs/screenshots/brief-month.png
+    docs/screenshots/live-research.png
+    docs/screenshots/promised-vs-delivered.png
+    docs/screens … [28 more chars]
+
+The repo is public, and the raw image serves as a real PNG. As a final check, I'm looking in the rendered README on github.com for the four images:
+
+→ **Bash**: Confirm rendered README references and image downloads
+```
+curl -s https://github.com/Moksha4444/finn | grep -o 'docs/screenshots/[a-z-]*\.png' | sort -u; for f in brief-month results-card promised-vs-delivered live-research; do printf "%s " $f; curl -s -o /dev/null -w "%{http_code} %{content_type} %{size_download}B\n" "https://github.com/Moksha4444/finn/raw/main/docs/screenshots/$f.png" -L; done
+```
+
+  ↳ docs/screenshots/brief-month.png
+    docs/screenshots/live-research.png
+    docs/screenshots/promised-vs-delivered.png
+    docs/screenshots/results-card.png
+    brief-month 200 image/png 215440B
+    results-card 200 image/png 197473B
+    promised-vs-delivered 200 image/png 179679B
+    live-research 200 image/png 97776B
+
+Done: the ticker chips and every README item are in. Tests pass (18), the build succeeds, and everything is pushed to `main` (7157995). The four screenshots display on github.com: the rendered README links all four, and each serves from GitHub as a real PNG.
+
+**A. Ticker chips (Research list only):** each ticker sits in a navy 8% chip, mono uppercase, 4px corners, with one fixed width so every company name lines up. The Brief, Alerts and company pages are unchanged.
+
+**B. README:**
+1. **Screenshots**, taken from the live site at 390×844 (2×) with animations off and wired into the table with relative paths:
+   - `brief-month.png`: this month's verdict, the lead story (Dixon) and the stories after it.
+   - `results-card.png`: Tata Power opened, with the QoQ/YoY table and "This quarter includes ₹119 cr one-off gain."
+   - `promised-vs-delivered.png`: L&T's missed 15% FY26 revenue guidance (11.8% delivered), with quote, page and chart.
+   - `live-research.png`: a real run on VOLTAS, reading transcript 1 of 4.
+   
+   The three older images are deleted.
+2. **Try it in 60 seconds:** the four steps sit under the live link, with L&T's guidance quote and page reference.
+3. **Thesis:** the one-line blockquote sits above the intro.
+4. **AI build history:** a bold link under the live link, plus a link to the session index.
+5. **Key decisions:** the removed letter grade is in. The consistency-gate bullet now mentions ITC printing its year-ago column second, which turned a −18.7% PAT change into −5.1%.
+
+**A bug I found and fixed on the way:** with reduced motion turned on, the Brief lost its tab bar.
+- The market strip's 1,600px list leaked into the page width, so Chrome zoomed the phone layout out and the bar ended up below the last line. With motion on, the strip's slide-in animation happened to hide the leak.
+- Fixed with one line of CSS (commit 466c938) and confirmed on the live site. DECISIONS.md has a note on it.
+- My screenshot check had missed it, so it now fails any page wider than the screen. Every page passes at 360 and 390px, with motion on and off.
+
+**HAVELLS in "Try it" won't show a live run for now.** I researched it earlier today, so the server has it saved and opens the finished page instantly, and that page says it found no checkable promises. The README says "or any symbol not in the list", but if you'd rather it name a better example, swap HAVELLS for an unresearched company. The saved page disappears the next time the research server restarts or redeploys.
+
+**Live runs used today:** HAVELLS, PIDILITIND and VOLTAS, 3 of the 8 daily slots.
+
+> <pasted_content id="65fb">
+> Final pass before I submit. Do all of it, then stop.
+> 
+> A. Research index ticker chips:
+> Wrap each ticker in the Research list in a chip: navy at 8% opacity background, 4px radius, mono uppercase, 2px vertical / 6px horizontal padding, navy text. Same navy as the nav pill so it reads as one system. Fixed chip width so every row aligns on the company name. Do NOT add chips in the Brief, Alerts or company pages.
+> 
+> B. README screenshots:
+> Capture them yourself with headless Chrome at 390x844, deviceScaleFactor 2, animations disabled, against the LIVE site https://finn-coral-eta.vercel.app. Save as PNGs in docs/screenshots/:
+>  - brief-month.png (Brief, "This month", lead story + a secondary story visible)
+>  - results-card.png (expanded results card with the QoQ/YoY table and the one-off note)
+>  - promised-vs-delivered.png (L&T research page at the Promised vs Delivered section)
+>  - live-research.png (live research in progress with the stage checklist)
+> Wire them into the README table with relative paths and confirm they render on github.com.
+> 
+> C. README content:
+> 1. Add a one-line thesis blockquote above the intro: investors aren't short of information, they're short of filtering; FINN hides the routine, ranks what the market actually reacted to, and asks whether management delivered what it promised.
+> 2. Under the live link, add a prominent "AI build history: build-history/" link.
+> 3. Under that, add "Try it in 60 seconds" as a numbered list: open on a phone and add to home screen; Brief → This month; Research → Larsen & Toubro (FY26 revenue guidance of 15% vs 11.8% delivered = missed, with quote and page); Research → search HAVELLS and run live research; Settings → change a threshold and watch the Brief re-rank.
+> 4. Key decisions: add a bullet that an A–D management grade was built and removed, because a letter derived from two measured promises is false precision; the kept/missed/open counts say it honestly.
+> 5. Architecture: append to the consistency-gate bullet that it caught ITC printing its year-ago column second, which had turned a −18.7% PAT change into −5.1%.
+> 6. Known limitations: add "Fixed windows, not a free date range. The feed holds 30 days of filings, so the Brief offers Today / This week / This month rather than an open date picker: a picker would imply coverage the data doesn't have, and an empty custom range reads as a bug. With a deeper archive the same switch takes an arbitrary range."
+> 
+> D. Final verification, report each as pass/fail:
+>  - No uncommitted files left on main (commit or revert, say which).
+>  - Every Claude Code session exported into build-history/ and committed.
+>  - Security sweep of the repo INCLUDING build-history for "AIza", "gsk_", "sk-", "api_key" and key-like strings; confirm .env is untracked.
+>  - Consistency gate 0 problems, all tests pass, static build succeeds.
+>  - Production serves the latest commit.
+> Commit and push everything to main. Report the checklist.
+> </pasted_content id="65fb">
+
+Parts A and B were done in the last round: the chips are live and the four screenshots are committed and render on github.com. I'll re-check both as part of D. New in this request: the home-screen step in "Try it", the slightly reworded thesis and grade bullet, and the fixed-windows limitation.
+
+→ **Write**: C:\Users\MOKSHA~1\AppData\Local\Temp\claude\638d0bc94bb048d8\584cdb9b-1afa-46e0-a272-7812ea87d3f4\scratchpad\readme_edit2.py
+
+  ↳ File created successfully at: C:\Users\MOKSHA~1\AppData\Local\Temp\claude\638d0bc94bb048d8\584cdb9b-1afa-46e0-a272-7812ea87d3f4\scratchpad\readme_edit2.py (file state is current in your context — no need to Read it back)
+
+→ **Bash**: Apply README edits; confirm prior items still in place
+```
+cd "/c/Users/mokshagna/Claude Projects/finn" && git pull -q && git log --oneline -1 && python "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad/readme_edit2.py" && grep -n "ITC printing\|bg-accent/8" README.md web/components/Research.tsx | cut -c1-120; grep -n "manifest\|display" web/app/manifest.ts | head -4
+```
+
+  ↳ 7157995 README: thesis, Try it in 60 seconds, AI build history link, four new screenshots of the live app (Brief this month, expanded results card, L&T Promised vs Delivered, live research), the removed letter grade and the ITC column catch
+    ok
+    README.md:92:  feed and every research page; the research batch fails if it doesn't. It caught ITC printing its year-ago
+    web/components/Research.tsx:118:   … [179 more chars]
+
+The manifest says `standalone`, not `fullscreen`, so "opens full screen" is wrong. Correcting the wording, then refreshing the session exports so this session is included through this round:
+
+→ **Bash**: Fix PWA wording; re-export all sessions
+```
+cd "/c/Users/mokshagna/Claude Projects/finn" && sed -i 's|It installs as an app (a PWA) and opens full screen.|It installs as an app (a PWA) and opens without the browser bars.|' README.md && grep -n "installs as an app" README.md && rm -rf build-history/sessions && python "C:/Users/MOKSHA~1/AppData/Local/Temp/claude/638d0bc94bb048d8/584cdb9b-1afa-46e0-a272-7812ea87d3f4/scratchpad/export_sessions.py" "C:/Users/mokshagna/.claude/projects/C--Users-mokshagna-Claude-Projects-finn" build-history/sessions "[email redacted]" && ls ~/.claude/projects/C--Users-mokshagna-Claude-Projects-finn/*.jsonl | w … [55 more chars]
 ```
