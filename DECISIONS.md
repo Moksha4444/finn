@@ -309,3 +309,17 @@ Business snapshot → GH Actions cron (run ingest manually). **Live pull is neve
 - **Market-reaction ranking.** A filing's rank is boosted when that day's move vs Nifty or its volume ratio crosses the user's alert thresholds. The reason is shown on the card. The market's reaction is a free, objective materiality signal.
 - **Confident quiet-day state.** "Nothing material today. N routine filings hidden." An empty feed is an answer, not a bug.
 - **Management credibility chip** on results cards ("Mgmt delivered 3/5 promises"), computed from cached PvD with no extra LLM call.
+
+## Visual redesign (15 Nov, branch `redesign`, REDESIGN.md)
+Presentation only: no number, rule, verdict, citation or failure message changed. Consistency gate 0 problems; 172 backend + 16 web tests pass.
+- **Report-card grade** (`web/lib/grade.ts`, tested): from measured promises only. Kept = 1, on track and partial = ½, missed = 0; score = credit ÷ measured. A ≥ 0.8, B ≥ 0.6, C ≥ 0.4, else D. Fewer than 2 measured: "Not graded". Why: a letter is faster to scan than "Kept 1 · Missed 1 · Open 1", and the counts stay printed next to it, so nothing is hidden.
+- **`--ink-3` darkened** from the brief's #7A7A82 (3.87:1, fails WCAG AA) to #67676F (5.1:1). The brief's own contrast rule wins over its hex value.
+- **Kickers and the 3px sector edge kept** even though the impeccable craft floor discourages both: the brief asks for them, and both carry information (event type; sector).
+- **Numbers in headlines stay serif.** "All numbers mono" applies to rows, tables, signals, strip and charts; a mono figure inside a serif headline looks like a typo.
+- **Post-deadline quarters stay off the promise chart** (the brief asked for them at 30% opacity). They are not evidence for the promise and used to squeeze the scale (L&T); the "Actual" line and "How it was measured" still cite them.
+- **Lead story deck** is only the filing's own text (a results one-off, or the ingest note). No deck is better than an invented "why it matters" line.
+- **Long names in kickers fall back to the ticker** (over 22 characters), so a kicker never wraps.
+- **Market strip** shows each holding's latest day move vs Nifty from the feed's `days` (no new data, no new fetch).
+- **Charts draw on first view** via IntersectionObserver on the chart's parent (a fully clipped element never counts as visible).
+- **Splash** is CSS-only and server-rendered so content never flashes before it; a 1-line inline script skips it when FINN was opened in the last 5 minutes.
+- **Left out:** count-up on the Brief's verdict counts (only alert counts animate); a separate "Statistics" title (kept "Financial snapshot", the product's term); a 430px-specific layout (the 390 layout holds; checked at 430×932).

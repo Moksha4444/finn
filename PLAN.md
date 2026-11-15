@@ -303,3 +303,8 @@ Read CLAUDE.md, this file's §1/§2 "PvD" and DECISIONS.md first. Scope: **backe
 - Log comparison: tokens per results filing for the text path vs the PDF-page path, against the 12k full-PDF baseline.
 - Ingest covers all 20 tickers; every failed item has a raw link.
 - On a phone: feed < 2s; quiet window shows the confident state; results card shows the reaction reason + one-off flag + credibility chip; an unseen ticker completes or fails gracefully.
+
+## 7. Status: visual redesign (15 Nov, branch `redesign`)
+- REDESIGN.md Phases A–D done in a worktree: tokens (`web/app/tokens.css`), newsprint type (Newsreader / Source Sans 3 / IBM Plex Mono), Brief as a front page (masthead, market strip, edition tabs, lead + secondary stories, In brief, Notices), Research as report cards (grades, verdict marks, chart family), Alerts as a wire, typeset Settings, motion pass, regenerated PWA icons (paper #F7F4EC).
+- Self-review: 3 screenshot cycles at 390×844 (+ 430×932, + reduced motion); fixed kicker wrapping, chart draw-in never firing, mono overuse in Alerts.
+- Gate 0 problems; 172 backend + 16 web tests; static build OK. Preview deploys from the `redesign` branch; merge to main when approved.

@@ -9,8 +9,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "What changed in your portfolio, ranked by what matters.",
     start_url: "/",
     display: "standalone",
-    background_color: "#f8f5ef",
-    theme_color: "#f8f5ef",
+    background_color: "#F7F4EC",
+    theme_color: "#F7F4EC",
     icons: [
       { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
       { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
