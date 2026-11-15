@@ -4,7 +4,8 @@ import { shortDate } from "@/lib/feed";
 import { pct } from "@/lib/rank";
 import { Signed } from "../Signed";
 
-// One chart family (REDESIGN.md §2). Ink line, faint context, values labelled on the marks (no legends, no axes).
+// One chart family (REDESIGN.md §2). The company in --accent, context (Nifty, history) faint, values labelled on the
+// marks (no legends, no axes). Red/green colour numbers only, never chart fills; a missed promise's dots are --down.
 // The SVG stretches to the column; text and dots are HTML laid over it so they never distort.
 // Positions are % of width, px of height. Every chart's left edge is flush with the text column.
 
@@ -63,8 +64,8 @@ export function Sparkline({ sym, closes, nifty, mark, pending, end }: {
     <div className="relative h-9 w-[120px] shrink-0">
       <div ref={ref} className={`absolute inset-0 ${cls}`}>
         <svg viewBox="0 0 100 36" preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
-          {n.length > 0 && <polyline points={line(n)} fill="none" stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" className="text-ink-3/50" />}
-          <polyline points={line(s)} fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="text-ink" />
+          {n.length > 0 && <polyline points={line(n)} fill="none" stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" className="text-ink-3/60" />}
+          <polyline points={line(s)} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="text-accent" />
         </svg>
         {mk >= 0 && (
           <>
@@ -86,9 +87,9 @@ export function Sparkline({ sym, closes, nifty, mark, pending, end }: {
 }
 
 // ---- a quarterly path against a target band (Promised vs Delivered, 96px), also the margin line (88px) ----
-export function PathLine({ points: all, lo = null, hi = null, end = null, signed = false, labelAt, drawKey, describe, height = 96 }: {
+export function PathLine({ points: all, lo = null, hi = null, end = null, signed = false, labelAt, drawKey, describe, height = 96, miss = false }: {
   points: [string, number][]; lo?: number | null; hi?: number | null; end?: string | null; signed?: boolean; labelAt?: number[];
-  drawKey?: string; describe: string; height?: number;
+  drawKey?: string; describe: string; height?: number; miss?: boolean;
 }) {
   const [ref, cls] = useDraw(drawKey);
   // Quarters after the deadline aren't evidence for the promise: off the chart, so they can't stretch the scale
@@ -103,15 +104,23 @@ export function PathLine({ points: all, lo = null, hi = null, end = null, signed
   min -= pad; max += pad;
   const top = 16, plot = height - top - 18; // value labels | plot | quarter labels
   const banded = lo != null || hi != null;
-  const gut = banded ? 15 : 7; // left gutter holds the band labels
-  const x = (k: number) => (n === 1 ? (gut + 93) / 2 : gut + (k * (91 - gut)) / (n - 1));
+  // left gutter holds the band labels; an unbanded line keeps room either side for an end label set beside its dot
+  const gut = banded ? 15 : 12, right = banded ? 91 : 86;
+  const x = (k: number) => (n === 1 ? (gut + 93) / 2 : gut + (k * (right - gut)) / (n - 1));
   const y = (v: number) => top + (1 - (v - min) / (max - min)) * plot;
-  // a value label sits above its dot, or below it when a target line would run through the text
+  // A value label sits on the side of its dot away from the line: below when a neighbouring point is higher (the line
+  // leaves upward, so text above would sit on it), above otherwise; and off a target line when one runs through it.
   const lines = [lo, hi].filter((b): b is number => b != null).map(y);
   const clash = (t: number) => lines.some((l) => l > t - 1 && l < t + 15);
-  const labelY = (v: number) => {
-    const up = y(v) - 16, down = y(v) + 6;
-    return clash(up) && !clash(down) && down + 14 <= top + plot + 4 ? down : up;
+  // With no room below, an end point's label goes beside its dot, outward (the line only leaves inward).
+  const labelAt_ = (v: number, k: number): { x: number; y: number; align: "center" | "left" | "right" } => {
+    const up = y(v) - 16, down = y(v) + 6, fits = down + 14 <= top + plot + 4;
+    const nb = [points[k - 1]?.[1], points[k + 1]?.[1]].filter((w): w is number => w != null);
+    const lineAbove = nb.some((w) => y(w) < y(v) - 2) && !nb.some((w) => y(w) > y(v) + 2);
+    if (fits && !clash(down) && (clash(up) || lineAbove)) return { x: x(k), y: down, align: "center" };
+    if (lineAbove && !banded && n > 1 && (k === n - 1 || k === 0))
+      return k === 0 ? { x: x(k) - 2, y: y(v) - 7, align: "right" } : { x: x(k) + 2, y: y(v) - 7, align: "left" };
+    return { x: x(k), y: up, align: "center" };
   };
   const show = new Set(labelAt ?? points.map((_, k) => k));
   const value = (v: number) => (signed ? <Signed text={pct(v)} /> : fmt1(v));
@@ -121,7 +130,7 @@ export function PathLine({ points: all, lo = null, hi = null, end = null, signed
   return (
     <div role="img" aria-label={describe} className="relative" style={{ height }}>
       <svg viewBox={`0 0 100 ${height}`} preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
-        {banded && <rect x={gut - 4} width={bandRight - gut + 4} y={bandTop} height={Math.max(0, bandBottom - bandTop)} className="fill-ink/[0.06]" />}
+        {banded && <rect x={gut - 4} width={bandRight - gut + 4} y={bandTop} height={Math.max(0, bandBottom - bandTop)} className="fill-accent/[0.08]" />}
         {[lo, hi].map((b, k) => b != null && (
           <line key={k} x1={gut - 4} x2={bandRight} y1={y(b)} y2={y(b)} stroke="currentColor" strokeWidth="1" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" className="text-ink-3" />
         ))}
@@ -136,15 +145,15 @@ export function PathLine({ points: all, lo = null, hi = null, end = null, signed
         {n > 1 && (
           <svg viewBox={`0 0 100 ${height}`} preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
             <polyline points={points.map(([, v], k) => `${x(k)},${y(v)}`).join(" ")} fill="none" stroke="currentColor" strokeWidth="1.5"
-              strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="text-ink" />
+              strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="text-accent" />
           </svg>
         )}
         {points.map(([q, v], k) => (
-          <span key={q} aria-hidden="true" className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full ${k === endAt ? "size-[9px] border-2 border-ink bg-paper" : `size-[7px] ring-2 ring-paper ${show.has(k) ? "bg-ink" : "bg-ink-3"}`}`}
+          <span key={q} aria-hidden="true" className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full ${k === endAt ? `size-[9px] border-2 bg-paper ${miss ? "border-down" : "border-accent"}` : `size-[7px] ring-2 ring-paper ${miss ? "bg-down" : "bg-accent"} ${show.has(k) ? "" : "opacity-60"}`}`}
             style={{ left: `${x(k)}%`, top: y(v) }} />
         ))}
         {points.map(([q, v], k) => show.has(k) && (
-          <Label key={q} x={x(k)} y={labelY(v)} className="font-medium text-ink">{value(v)}</Label>
+          <Label key={q} {...labelAt_(v, k)} className="font-medium text-ink">{value(v)}</Label>
         ))}
       </div>
       {points.map(([q], k) => (show.has(k) || n <= 5) && <Label key={q} x={x(k)} y={height - 14} className={k === endAt ? "font-medium text-ink" : "text-ink-3"}>{q}</Label>)}
@@ -180,7 +189,7 @@ export function PriceLine({ closes, nifty, drawKey }: { closes: [string, number]
         <svg viewBox={`0 0 100 ${H}`} preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
           <line x1="0" x2="76" y1={y(0)} y2={y(0)} stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" className="text-rule" />
           {n.length > 0 && <polyline points={line(n)} fill="none" stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" className="text-ink-3/60" />}
-          <polyline points={line(s)} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="text-ink" />
+          <polyline points={line(s)} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="text-accent" />
         </svg>
       </div>
       <Label x={78} y={ys} align="left" className="font-semibold"><Signed text={pct(sEnd)} /></Label>
@@ -191,7 +200,7 @@ export function PriceLine({ closes, nifty, drawKey }: { closes: [string, number]
   );
 }
 
-// ---- bars: 88px. One series: the latest two in ink, the rest ink-3. Two series (CFO vs PAT): ink vs ink-3.
+// ---- bars: 88px. One series: the latest two in --accent, history at 35%. Two series (CFO vs PAT): accent vs accent 35%.
 // Values labelled only where `labelAt` says (first and last), so the rest stay quiet. ----
 export function Bars({ periods, series, labelAt, format, describe, drawKey }: {
   periods: string[]; series: { name: string; values: number[]; tone: "ink" | "faint" }[];
@@ -212,7 +221,7 @@ export function Bars({ periods, series, labelAt, format, describe, drawKey }: {
           const v = s.values[k];
           const hpx = (Math.abs(v) / span) * height;
           const left = k * slot + slot * gap + j * bw;
-          const dark = series.length > 1 ? (s.tone === "ink" ? "bg-ink" : "bg-ink-3/70") : k >= n - 2 ? "bg-ink" : "bg-ink-3/45";
+          const dark = series.length > 1 ? (s.tone === "ink" ? "bg-accent" : "bg-accent/35") : k >= n - 2 ? "bg-accent" : "bg-accent/35";
           return (
             <span key={`${p}${j}`} aria-hidden="true" className={`absolute ${dark}`}
               style={{ left: `${left}%`, width: `calc(${bw}% - 1px)`, top: v >= 0 ? zero - hpx : zero, height: Math.max(1, hpx) }} />

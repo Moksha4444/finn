@@ -8,11 +8,13 @@ const RAYS: [string, string][] = [
   ["M3.95 20.9Q22 20.95 42 16.5Q22 23.05 2.05 24.7Z", "#4a6c40"],
   ["M8.05 27.3Q24 26.24 42 16.5Q24 28.55 5.95 31.5Z", "#2d4a2c"],
 ];
+// Each ray's centreline (start S, control C, the shared point P), from LOCKUP in scripts/logo.mjs: the splash draws these.
+const SPINES = ["M9 2.6Q24 5.2 42 16.5", "M4 8.8Q22 10.4 42 16.5", "M2 15.8Q22 16 42 16.5", "M3 22.8Q22 22 42 16.5", "M7 29.4Q24 27.4 42 16.5"];
 
-export function Rays({ className = "h-6 w-8", drawn = false }: { className?: string; drawn?: boolean }) {
+export function Rays({ className = "h-6 w-8" }: { className?: string }) {
   return (
     <svg viewBox="0 0 44 33" className={className} aria-hidden="true">
-      {RAYS.map(([d, c], i) => <path key={c} d={d} fill={c} className={drawn ? "ray" : undefined} style={drawn ? ({ "--i": i } as React.CSSProperties) : undefined} />)}
+      {RAYS.map(([d, c]) => <path key={c} d={d} fill={c} />)}
     </svg>
   );
 }
@@ -26,13 +28,22 @@ export function Wordmark({ size = "text-20" }: { size?: string }) {
   );
 }
 
-// Launch splash (CSS only, 700ms, see globals.css). Server-rendered so content never flashes before it.
+// Launch splash, CSS only (globals.css, "Splash"): the rays draw in one by one from the left and converge on the point,
+// each wedge lands as its line arrives, then FINN slides out of that point; a beat; the splash fades into the Brief.
+// Server-rendered so content never flashes before it.
 export function Splash() {
   return (
     <div className="splash" aria-hidden="true">
-      <div className="flex flex-col items-center gap-3">
-        <Rays className="h-12 w-16" drawn />
-        <span className="word font-serif text-26 leading-none font-semibold tracking-[0.14em]">FINN</span>
+      <div className="flex items-center">
+        <svg viewBox="0 0 44 33" className="h-12 w-16 overflow-visible">
+          {RAYS.map(([d, c], i) => (
+            <g key={c} style={{ "--i": i } as React.CSSProperties}>
+              <path d={SPINES[i]} pathLength={1} fill="none" stroke={c} strokeWidth={1.6} className="spine" />
+              <path d={d} fill={c} className="wedge" />
+            </g>
+          ))}
+        </svg>
+        <span className="word ml-2 font-serif text-34 leading-none font-bold tracking-[0.12em]">FINN</span>
       </div>
     </div>
   );

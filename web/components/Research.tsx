@@ -3,11 +3,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { pct } from "@/lib/rank";
-import { API, countsText, indexUrl, KEPT, MISSED, NYM, researchUrl, useJson, VERDICT_TEXT, type Cite, type IndexRow, type PromiseRow, type Research } from "@/lib/research";
-import { grade } from "@/lib/grade";
+import { API, indexUrl, KEPT, MISSED, NYM, researchUrl, useJson, VERDICT_TEXT, type Cite, type IndexRow, type PromiseRow, type Research } from "@/lib/research";
 import { Bars, PathLine, PriceLine } from "./charts/Charts";
 import { Chevron, Collapse } from "./Collapse";
-import { GradeMark, shortName } from "./Company";
+import { Name, promiseCounts, shortName } from "./Company";
 import { crore } from "./FeedRow";
 import { Signed } from "./Signed";
 import { BUTTON, LoadFailed } from "./States";
@@ -62,7 +61,7 @@ export function ResearchHome() {
           </svg>
           <input id="sym" value={q} onChange={(e) => setQ(e.target.value)} autoComplete="off" autoCapitalize="characters" spellCheck={false}
             enterKeyHint="go" placeholder="Any NSE symbol or name"
-            className="h-full min-w-0 flex-1 bg-transparent font-mono text-15 text-ink outline-none placeholder:font-sans placeholder:text-ink-3" />
+            className="h-full min-w-0 flex-1 bg-transparent font-mono text-17 text-ink outline-none placeholder:font-sans placeholder:text-ink-3" />
           {query && SYMBOL.test(query) && (
             <button type="submit" className="press -mr-2 h-11 shrink-0 rounded-[4px] px-3 text-13 font-semibold text-accent">Open</button>
           )}
@@ -98,27 +97,24 @@ export function ResearchHome() {
   );
 }
 
+// Track record needs 2+ measured promises; under that FINN shows no record at all (a record of one is not a record).
 const GROUPS: [string, (r: IndexRow) => boolean][] = [
-  ["Track record", (r) => r.summary.measured > 0],
-  ["Nothing measurable yet", (r) => r.summary.measured === 0 && r.summary.total > 0],
-  ["No promises found", (r) => r.summary.measured === 0 && !r.summary.total],
+  ["Track record", (r) => promiseCounts(r.summary) != null],
+  ["Not enough measured yet", (r) => promiseCounts(r.summary) == null && r.summary.total > 0],
+  ["No promises found", (r) => !r.summary.total],
 ];
 
+// Same row grammar as the Alerts wire: ticker column, name, then the detail line under the name.
 function IndexItem({ r }: { r: IndexRow }) {
-  const g = grade(r.summary);
+  const counts = promiseCounts(r.summary);
   return (
     <li>
-      <Link href={`/research?symbol=${r.symbol}`} className="press flex min-h-14 items-center gap-3 border-b border-rule py-2">
-        <span className="w-[5.5rem] shrink-0 truncate font-mono text-13 font-semibold text-ink">{r.symbol}</span>
-        <span className="min-w-0 flex-1 truncate font-serif text-17 font-semibold text-ink">{shortName(r.name)}</span>
-        {r.summary.measured > 0 && (
-          <>
-            <span className="shrink-0 text-right font-mono text-11 leading-4 text-ink-2">
-              <span className="text-up">{r.summary.kept}</span>&#8201;KEPT<br /><span className={r.summary.missed ? "text-down" : ""}>{r.summary.missed}</span>&#8201;MISSED
-            </span>
-            <GradeMark g={g} />
-          </>
-        )}
+      <Link href={`/research?symbol=${r.symbol}`} className="press flex min-h-12 flex-col justify-center border-b border-rule py-3">
+        <span className="flex items-baseline gap-2">
+          <span className="w-[5.5rem] shrink-0 truncate font-mono text-13 font-semibold text-ink">{r.symbol}</span>
+          <Name name={r.name} className="font-serif text-17 font-semibold text-ink" />
+        </span>
+        {counts && <span className="mt-1 pl-[6rem] font-mono text-11 tracking-[0.04em] text-ink-2 uppercase">{counts}</span>}
       </Link>
     </li>
   );
@@ -318,17 +314,9 @@ export function CompanyResearch({ symbol, auto = false }: { symbol: string; auto
     <article>
       <Back />
       <header className="pt-1">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className="font-mono text-13 font-semibold text-ink">{d.symbol}</p>
-            <h1 className="mt-1 font-serif text-26 leading-[1.1] font-semibold tracking-[-0.01em] text-balance">{shortName(d.name)}</h1>
-            <p className="mt-1 text-13 text-pretty text-ink-3">{d.sector}{d.sector && d.latest_quarter && " · "}{d.latest_quarter && <>results to <span className="font-mono">{d.latest_quarter}</span></>}</p>
-          </div>
-          <a href="#pvd" aria-label={grade(d.summary) ? `Promise grade ${grade(d.summary)}` : "Not graded"} className="flex shrink-0 flex-col items-center gap-1 pt-1">
-            <GradeMark g={grade(d.summary)} size="lg" />
-            <span className="kicker">{grade(d.summary) ? "Grade" : "Not graded"}</span>
-          </a>
-        </div>
+        <p className="font-mono text-13 font-semibold text-ink">{d.symbol}</p>
+        <h1 className="mt-1 font-serif text-26 leading-[1.1] font-semibold tracking-[-0.01em] text-balance">{shortName(d.name)}</h1>
+        <p className="mt-1 text-13 text-pretty text-ink-3">{d.sector}{d.sector && d.latest_quarter && " · "}{d.latest_quarter && <>results to <span className="font-mono">{d.latest_quarter}</span></>}</p>
         {d.prices && d.prices.closes.length > 4 && (
           <div className="mt-4">
             <p className="kicker mb-2">90 days vs Nifty 50</p>
@@ -339,14 +327,11 @@ export function CompanyResearch({ symbol, auto = false }: { symbol: string; auto
 
       <section id="pvd" aria-labelledby="pvd-h" className="mt-8 scroll-mt-4">
         <h2 id="pvd-h" className={H2}>Promised vs delivered</h2>
-        {d.summary.measured > 0 && (
-          <p className="mt-3 font-mono text-13 font-semibold text-ink">
-            {countsText(d.summary).toUpperCase()} <span className="font-normal text-ink-3">OF {d.summary.measured} MEASURED</span>
-          </p>
+        {promiseCounts(d.summary) && (
+          <p className="mt-3 font-mono text-11 tracking-[0.04em] text-ink-2 uppercase">{promiseCounts(d.summary)}</p>
         )}
         <p className="mt-1 font-serif text-20 leading-[1.2] font-semibold text-balance">{d.pvd_error ?? d.summary.sentence}</p>
         {d.model_note && <p className="mt-2 text-13 text-ink-3">{d.model_note}</p>}
-        {grade(d.summary) == null && d.summary.measured > 0 && <p className="mt-1 text-13 text-ink-3">Not graded: too few measured promises.</p>}
         {measured.some((p) => p.chart) && (
           <p className="mt-2 text-13 leading-snug text-pretty text-ink-3">Shaded: the target, up to its deadline. Dots: each quarter since the call.</p>
         )}
@@ -447,7 +432,7 @@ function PromiseItem({ p, k, sym }: { p: PromiseRow; k: number; sym: string }) {
       </blockquote>
       {c && (
         <div className="mt-3">
-          <PathLine points={c.points} lo={c.lo} hi={c.hi} end={c.end} signed={c.kind === "growth"} drawKey={`${sym}-${k}`} describe={desc} />
+          <PathLine points={c.points} lo={c.lo} hi={c.hi} end={c.end} signed={c.kind === "growth"} drawKey={`${sym}-${k}`} describe={desc} miss={MISSED.includes(p.verdict)} />
         </div>
       )}
       <p className={`mt-2 text-13 leading-[1.45] text-pretty text-ink ${open ? "" : "line-clamp-3"}`}><span className="kicker mr-1">Actual</span><Signed text={actualShort(p.actual)} /></p>

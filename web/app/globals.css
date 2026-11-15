@@ -119,14 +119,21 @@ input[type="checkbox"] { accent-color: var(--accent); }
 .strip::-webkit-scrollbar { display: none; }
 .strip > ul { animation: drift 240ms var(--ease-enter) both; }
 
-/* Splash: paper, the rays draw in, the wordmark rises, the whole thing fades out. 700ms in total.
+/* Splash, 880ms: many signals converging into FINN.
+   0-520ms   each ray's line draws from the left into the point (stroke-dashoffset, 60ms stagger, ease-in-out:
+             it is movement on screen); its wedge lands as the line arrives.
+   520-720ms FINN fades up and slides 6px out of the point (ease-out).  720-760ms a beat.  760-880ms fade out.
    Skipped (html[data-splash="skip"]) when the app was opened in the last 5 minutes; see layout.tsx. */
 .splash {
   position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: var(--paper);
-  animation: splash-out 150ms var(--ease-exit) 550ms both; pointer-events: none;
+  animation: splash-out 120ms var(--ease-enter) 760ms both; pointer-events: none;
 }
-.splash .ray { animation: draw 300ms var(--ease-enter) both; animation-delay: calc(var(--i) * 40ms); }
-.splash .word { animation: rise 220ms var(--ease-enter) 180ms both; }
+.splash .spine { stroke-dasharray: 1; animation: spine 280ms var(--ease-in-out) both; animation-delay: calc(var(--i) * 60ms); }
+.splash .wedge { animation: wedge 120ms var(--ease-enter) both; animation-delay: calc(var(--i) * 60ms + 200ms); }
+.splash .word { animation: word 200ms var(--ease-enter) 520ms both; }
+@keyframes spine { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes wedge { from { opacity: 0; } }
+@keyframes word { from { opacity: 0; transform: translateX(-6px); } }
 @keyframes splash-out { to { opacity: 0; visibility: hidden; } }
 html[data-splash="skip"] .splash { display: none; }
 

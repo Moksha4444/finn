@@ -41,12 +41,6 @@ export const VERDICT_TEXT: Record<string, string> = {
   "no change": "No change", "behind pace": "Behind pace", "moved away": "Moved away", miss: "Missed",
 };
 
-// "Kept 3 · Missed 2 · Open 1" (+ Partial when any), zero buckets after Kept left out.
-export function countsText(c: Counts) {
-  return [`Kept ${c.kept}`, c.missed > 0 && `Missed ${c.missed}`, c.open > 0 && `Open ${c.open}`, c.partial > 0 && `Partial ${c.partial}`]
-    .filter(Boolean).join(" · ");
-}
-
 // ---- loading: 404 means "not researched", anything else is a load failure ----
 type State<T> = { data?: T; missing?: boolean; error?: string };
 const memo = new Map<string, Promise<unknown>>();

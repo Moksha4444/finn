@@ -20,10 +20,10 @@ export function Signed({ text, arrows = false }: { text: string; arrows?: boolea
   );
 }
 
-// A figure that counts to its new value (250ms) when it changes after mount, e.g. after a threshold edit.
-export function Count({ value }: { value: number }) {
-  const [shown, setShown] = useState(value);
-  const from = useRef(value);
+// A figure that counts to its new value (250ms) when it changes, e.g. after a threshold edit; with `from`, also on arrival.
+export function Count({ value, from: start }: { value: number; from?: number }) {
+  const [shown, setShown] = useState(start ?? value);
+  const from = useRef(start ?? value);
   useEffect(() => {
     const a = from.current, b = value;
     from.current = value;

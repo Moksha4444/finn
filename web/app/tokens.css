@@ -2,7 +2,7 @@
    Newsprint, not pastel. Green and red colour numbers only, never backgrounds. */
 :root {
   --paper: #F7F4EC;
-  --paper-raised: #FFFDF8; /* lead story and expanded story only */
+  --paper-raised: #FFFDF8; /* inputs and the desktop QR card */
   --press: #EFEBE0; /* the 90ms pressed state */
   --ink: #16161A;
   --ink-2: #46464C;
@@ -14,10 +14,7 @@
   --up: #16653F;
   --down: #A01F2E;
 
-  /* sector tint: a 3px edge on the lead story only; the hue is derived from the sector name */
-  --tint-l: 62%;
-  --tint-c: 0.045;
-
   --ease-enter: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-exit: cubic-bezier(0.55, 0, 1, 0.45);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); /* movement on screen (the splash lines) */
 }

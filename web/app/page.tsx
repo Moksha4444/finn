@@ -5,7 +5,7 @@ import { BriefLine, shortName, Story } from "@/components/Company";
 import { Chevron, Collapse } from "@/components/Collapse";
 import { FeedRow } from "@/components/FeedRow";
 import { Rays } from "@/components/Logo";
-import { Signed } from "@/components/Signed";
+import { Count, Signed } from "@/components/Signed";
 import { FeedSkeleton, LoadFailed } from "@/components/States";
 import { WIN_HOURS, WIN_PERIOD, filedAt, inWindow, istTime, ranked, shortDate, useFeed, useSettings, type Feed, type RankedItem, type Win } from "@/lib/feed";
 import { group, type Group } from "@/lib/group";
@@ -38,9 +38,9 @@ function verdict(feed: Feed, all: RankedItem[], groups: Group[], win: Win, moveX
   return { head, sub: [groups.length > material.length && `${groups.length - material.length} more worth a look`, ...sub].filter(Boolean) as string[] };
 }
 
-// SUN 15 NOV 2026, in IST
+// SUN 15 NOV, in IST
 const edition = (iso: string) =>
-  new Intl.DateTimeFormat("en-IN", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kolkata" })
+  new Intl.DateTimeFormat("en-IN", { weekday: "short", day: "numeric", month: "short", timeZone: "Asia/Kolkata" })
     .format(new Date(iso)).replace(/,/g, "").toUpperCase();
 
 // The entrance plays once per session (masthead, strip, then stories, 40ms apart); later visits render still.
@@ -51,7 +51,7 @@ function useEntrance() {
 }
 const at = (i: number) => ({ "--i": i }) as React.CSSProperties;
 
-function Masthead({ feed, lastBar }: { feed: Feed; lastBar?: string }) {
+function Masthead({ feed }: { feed: Feed }) {
   const n = feed.portfolio?.length ?? Object.keys(feed.companies ?? {}).length;
   return (
     <header className="pt-4 text-center">
@@ -59,8 +59,8 @@ function Masthead({ feed, lastBar }: { feed: Feed; lastBar?: string }) {
         <Rays className="h-7 w-9" />
         <span className="font-serif text-34 leading-none font-bold tracking-[0.12em]">FINN</span>
       </Link>
-      <p className="mt-3 border-y-[1.5px] border-rule-strong py-1.5 font-mono text-11 leading-4 tracking-[0.02em] text-ink-2">
-        {edition(feed.generated_at)} · PORTFOLIO EDITION · {n} COMPANIES{lastBar && ` · PRICES TO ${shortDate(lastBar).toUpperCase()}`}
+      <p className="mt-3 border-y-[1.5px] border-rule-strong py-1.5 font-mono text-11 leading-4 tracking-[0.02em] whitespace-nowrap text-ink-2">
+        {edition(feed.generated_at)} · PORTFOLIO EDITION · {n} HOLDINGS
       </p>
       <p className="mt-2 text-13 text-ink-3">
         Filings filtered and ranked, checked <span className="font-mono">{istTime(feed.generated_at)}</span> IST ·{" "}
@@ -139,11 +139,14 @@ export default function Brief() {
   for (const [sym, c] of Object.entries(feed.companies ?? {}))
     if (c.stale_as_of) staleBy.set(c.stale_as_of, [...(staleBy.get(c.stale_as_of) ?? []), sym]);
   const stale = [...staleBy];
-  const [lead, ...rest] = allCards ? matters : matters.slice(0, CARDS);
+  // exactly one lead per edition: the top-ranked company (material first), taken out of its own list
+  const top = matters[0] ?? worth[0];
+  const rest = (allCards ? matters : matters.slice(0, CARDS)).filter((g) => g !== top);
+  const briefs = worth.filter((g) => g !== top);
 
   return (
     <div className={enter ? "enter" : undefined}>
-      <div style={at(0)}><Masthead feed={feed} lastBar={lastBar} /></div>
+      <div style={at(0)}><Masthead feed={feed} /></div>
       <div style={at(1)}><MarketStrip feed={feed} /></div>
 
       <section style={at(2)} className="pt-2">
@@ -155,7 +158,10 @@ export default function Brief() {
             </button>
           ))}
         </div>
-        <h1 className="mt-6 font-serif text-34 leading-[1.08] font-semibold tracking-[-0.01em] text-balance">{head}</h1>
+        <h1 className="mt-6 font-serif text-34 leading-[1.08] font-semibold tracking-[-0.01em] text-balance">
+          {/* figures in the verdict count up on arrival and whenever an edition or threshold change moves them */}
+          {head.split(/(\d+)/).map((t, k) => (k % 2 ? <Count key={k} value={+t} from={enter ? 0 : undefined} /> : t))}
+        </h1>
         {sub.length > 0 && <p className="mt-2 text-13 text-ink-2">{sub.join(" · ")}</p>}
         {pending && lastBar && (
           <p className="mt-1 text-13 text-ink-3">
@@ -164,10 +170,10 @@ export default function Brief() {
         )}
       </section>
 
-      {lead && (
+      {top && (
         <section aria-label="What matters" style={at(3)} className="mt-6">
           <ol>
-            <Story key={lead.symbol} g={lead} co={feed.companies?.[lead.symbol]} nifty={feed.nifty} end={end} lead initialOpen={lead.symbol === openSym} />
+            <Story key={top.symbol} g={top} co={feed.companies?.[top.symbol]} nifty={feed.nifty} end={end} lead initialOpen={top.symbol === openSym} />
             {rest.map((g) => <Story key={g.symbol} g={g} co={feed.companies?.[g.symbol]} nifty={feed.nifty} end={end} initialOpen={g.symbol === openSym} />)}
           </ol>
           {matters.length > CARDS && (
@@ -180,11 +186,11 @@ export default function Brief() {
         </section>
       )}
 
-      {worth.length > 0 && (
+      {briefs.length > 0 && (
         <section aria-labelledby="h-worth" style={at(4)} className="mt-8">
           <h2 id="h-worth" className="section-head">In brief</h2>
           <ol>
-            {worth.map((g) => <BriefLine key={g.symbol} g={g} co={feed.companies?.[g.symbol]} initialOpen={g.symbol === openSym} />)}
+            {briefs.map((g) => <BriefLine key={g.symbol} g={g} co={feed.companies?.[g.symbol]} initialOpen={g.symbol === openSym} />)}
           </ol>
         </section>
       )}

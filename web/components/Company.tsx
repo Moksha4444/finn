@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { filedAt, shortDate, type Company as Co, type RankedItem } from "@/lib/feed";
-import { grade } from "@/lib/grade";
 import type { Group } from "@/lib/group";
 import { period } from "@/lib/period";
 import { pct } from "@/lib/rank";
@@ -15,13 +14,9 @@ import { Signed } from "./Signed";
 export const shortName = (name: string) =>
   name.replace(/\s*\((India|I)\)\s*/i, " ").replace(/\s+(Company\s+)?(Ltd\.?|Limited)$/i, "").replace(/^The\s+/i, "").trim();
 
-// Sector tint: a muted hue derived from screener's sector name (never per ticker), used only as the lead story's edge.
-const HUES = [28, 62, 96, 150, 188, 226, 262, 318];
-function tint(sector: string | null | undefined) {
-  if (!sector) return "var(--rule)";
-  let h = 0;
-  for (const c of sector) h = (h * 31 + c.charCodeAt(0)) >>> 0;
-  return `oklch(var(--tint-l) var(--tint-c) ${HUES[h % HUES.length]})`;
+// Every company name in the app truncates at the same width, with an ellipsis (Brief, Alerts, Research).
+export function Name({ name, className = "" }: { name: string; className?: string }) {
+  return <span title={name} className={`inline-block max-w-[11rem] truncate align-bottom ${className}`}>{shortName(name)}</span>;
 }
 
 // ---- headline + key numbers ----
@@ -36,10 +31,17 @@ function headlineOf(i: RankedItem): string {
   return i.title ? title(i) : keyFact(i); // no human title: the person line ("X appointed, Independent Director"), not the raw subject
 }
 
-// The lead's deck (why it matters), only from the filing: a results one-off, else the ingest note. None is fine.
-function deckOf(i: RankedItem): string | null {
-  if (i.card?.type === "results") return i.card.one_offs[0] ?? null;
-  return i.note ?? null;
+// The lead's one-line deck, only from the filing or the market: a results one-off, the ingest note, else the reaction
+// in plain words (then the lead skips its typeset reaction line, so nothing is said twice). Null while nothing is known.
+function deckOf(g: Group): { text: string; reaction: boolean } | null {
+  const i = g.lead;
+  if (i.card?.type === "results" && i.card.one_offs[0]) return { text: i.card.one_offs[0], reaction: false };
+  if (i.note) return { text: i.note, reaction: false };
+  const it = [g.lead, ...g.docs, ...g.more].find((x) => x.boosted) ?? g.lead;
+  const x = it.reaction;
+  if (!x) return null;
+  const vol = x.vol_ratio != null && x.vol_ratio >= 1.5 ? `, on ${x.vol_ratio.toFixed(1)}× its 20-day volume` : "";
+  return { text: `Stock ${pct(x.excess_pct ?? x.move_pct)}${x.excess_pct != null ? " vs Nifty" : ""} on ${shortDate(it.reaction_day)}${vol}.`, reaction: true };
 }
 
 const SHORT: Record<string, string> = { Revenue: "Rev", "Total income": "Income", "PAT (to owners)": "PAT" };
@@ -108,32 +110,22 @@ function Reaction({ g }: { g: Group }) {
   );
 }
 
-// Report-card stamp: management's record on its own concall promises, measured only; links to Research.
-function Stamp({ sym, co }: { sym: string; co?: Co }) {
-  const c = co?.credibility;
-  if (!c) return null;
-  const g = grade(c);
-  const parts = [`Kept ${c.kept}`, `Missed ${c.missed}`, c.open > 0 && `Open ${c.open}`].filter(Boolean).join(" · ");
-  return (
-    <Link href={`/research?symbol=${sym}#pvd`} aria-label={`Management promises, last 4 calls: ${parts}${g ? `, grade ${g}` : ""}. Open research`}
-      className="press relative z-10 -my-2 inline-flex min-h-11 items-center gap-2 rounded-[4px] py-2 pr-1">
-      <GradeMark g={g} />
-      <span className="font-mono text-11 leading-4 text-ink-2">PROMISES<br />{parts.toUpperCase()}</span>
-    </Link>
-  );
+// Management's record on its own concall promises, measured only: "KEPT 1 · MISSED 1 · OPEN 1". Links to Research.
+// Under 2 measured promises it shows nothing (a record of one is not a record).
+export function promiseCounts(c: { kept: number; missed: number; open?: number; partial?: number }) {
+  const n = c.kept + c.missed + (c.open ?? 0) + (c.partial ?? 0);
+  if (n < 2) return null;
+  return [`Kept ${c.kept}`, `Missed ${c.missed}`, c.open ? `Open ${c.open}` : null, c.partial ? `Partial ${c.partial}` : null].filter(Boolean).join(" · ");
 }
 
-const stamped = new Set<string>(); // the stamp settles once per grade per visit
-export function GradeMark({ g, size = "sm" }: { g: string | null; size?: "sm" | "lg" }) {
-  const key = `${g}-${size}`;
-  const [play] = useState(() => !stamped.has(key));
-  useEffect(() => { stamped.add(key); }, [key]);
-  const box = size === "lg" ? "size-14 text-26" : "size-9 text-17";
+function Promises({ sym, co }: { sym: string; co?: Co }) {
+  const parts = co?.credibility ? promiseCounts(co.credibility) : null;
+  if (!parts) return null;
   return (
-    <span aria-hidden="true"
-      className={`grid shrink-0 place-items-center rounded-[4px] border-[1.5px] font-serif leading-none font-bold ${box} ${g ? "border-ink text-ink" : "border-rule text-ink-3"} ${play ? "animate-stamp" : ""}`}>
-      {g ?? "–"}
-    </span>
+    <Link href={`/research?symbol=${sym}#pvd`} aria-label={`Management promises, last 4 calls: ${parts}. Open research`}
+      className="press relative z-10 -my-3 inline-flex min-h-11 items-center rounded-[4px] font-mono text-11 tracking-[0.04em] text-accent uppercase">
+      Promises · {parts}
+    </Link>
   );
 }
 
@@ -226,23 +218,23 @@ function useDeepOpen(initialOpen: boolean, setOpen: (v: boolean) => void) {
   return ref;
 }
 
-// Kicker: RESULTS · TATA POWER, date on the right; one line. A long name gives way to its ticker.
+// Kicker: RESULTS · TATA POWER, date on the right; one line.
 function Kicker({ g, co }: { g: Group; co?: Co }) {
   const i = g.lead;
-  const name = shortName(co?.name ?? i.name);
   return (
     <p className="kicker flex items-baseline gap-1.5 whitespace-nowrap">
       <span className="shrink-0">{eventLabel(i)} ·</span>
-      <Link href={`/research?symbol=${g.symbol}`} className="relative z-10 min-w-0 truncate text-ink after:absolute after:-inset-y-3.5 after:-inset-x-1 after:content-[''] active:text-accent">
-        {name.length > 22 ? <span className="font-mono tracking-normal">{g.symbol}</span> : name}
+      <Link href={`/research?symbol=${g.symbol}`} className="relative z-10 min-w-0 text-ink after:absolute after:-inset-y-3.5 after:-inset-x-1 after:content-[''] active:text-accent">
+        <Name name={co?.name ?? i.name} />
       </Link>
       <span className="ml-auto shrink-0 pl-2 font-mono font-normal tracking-normal">{filedAt(i.filed).toUpperCase()}</span>
     </p>
   );
 }
 
-// A story on the front page. The lead is raised with a sector-tint edge and the full set: deck, numbers + sparkline,
-// stamp, reaction, Also lines. Secondaries are separated by hairlines: kicker, headline, numbers + sparkline.
+// A story on the front page. Every story is the same component and looks the same: kicker, headline, numbers +
+// sparkline, reaction, promises, Also lines, hairline below. The one lead per edition differs only in type:
+// a heavier rule above, a 34px headline and a one-line deck. No box, no tint.
 // Only the headline is the toggle; a stretched ::after overlay keeps the whole story tappable.
 export function Story({ g, co, nifty, end, lead = false, initialOpen = false }: {
   g: Group; co?: Co; nifty?: [string, number][]; end: string; lead?: boolean; initialOpen?: boolean;
@@ -251,22 +243,21 @@ export function Story({ g, co, nifty, end, lead = false, initialOpen = false }: 
   const ref = useDeepOpen(initialOpen, setOpen);
   const i = g.lead;
   const pending = !i.reaction && !!i.last_bar && i.reaction_day > i.last_bar;
-  const deck = lead ? deckOf(i) : null;
+  const deck = lead ? deckOf(g) : null;
   const id = `s-${g.symbol}`;
   const spark = co?.closes && <Sparkline sym={g.symbol} closes={co.closes} nifty={nifty} mark={i.reaction ? i.reaction_day : undefined} pending={pending} end={end} />;
   return (
     <li ref={ref}
-      style={lead ? { borderLeftColor: tint(co?.sector) } : undefined}
-      className={`relative scroll-mt-4 transition-[scale] duration-[90ms] ease-in has-[h3_button:active]:scale-[0.985] ${lead ? "rounded-[4px] border border-l-[3px] border-rule bg-paper-raised px-4 pt-3 pb-2" : "border-b border-rule py-4"}`}>
+      className={`relative scroll-mt-4 border-b border-rule pb-4 transition-[scale] duration-[90ms] ease-in has-[h3_button:active]:scale-[0.985] ${lead ? "border-t-[3px] border-t-rule-strong pt-3" : "pt-4"}`}>
       <Kicker g={g} co={co} />
-      <h3 className={`mt-2 font-serif font-semibold tracking-[-0.01em] text-balance text-ink ${lead ? "text-26 leading-[1.1]" : "text-20 leading-[1.15]"}`}>
+      <h3 className={`mt-2 font-serif font-semibold tracking-[-0.01em] text-balance text-ink ${lead ? "text-34 leading-[1.05]" : "text-20 leading-[1.15]"}`}>
         <button type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}
           className="text-left after:absolute after:inset-0 after:content-['']">
           <span className="sr-only">{shortName(co?.name ?? i.name)}: </span>
           <Signed text={headlineOf(i)} />
         </button>
       </h3>
-      {deck && <p className="mt-2 line-clamp-2 text-15 leading-[1.4] text-ink-2"><Signed text={deck} /></p>}
+      {deck && <p className="mt-2 truncate text-15 leading-[1.4] text-ink-2"><Signed text={deck.text} /></p>}
       {(i.card || spark) && (
         <div className={`mt-3 flex items-end justify-between gap-3 ${spark ? "mb-5" : ""}`}>
           <Numbers i={i} />
@@ -274,19 +265,13 @@ export function Story({ g, co, nifty, end, lead = false, initialOpen = false }: 
         </div>
       )}
       <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-        <Reaction g={g} />
-        {i.card?.type === "results" && <Stamp sym={g.symbol} co={co} />}
+        {!deck?.reaction && <Reaction g={g} />}
+        {i.card?.type === "results" && <Promises sym={g.symbol} co={co} />}
       </div>
       <AlsoMaterial g={g} />
       <div className="relative z-10">
         <Collapse open={open} id={id}><Body g={g} /></Collapse>
       </div>
-      {lead && (
-        <button type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}
-          className="press relative z-10 mt-1 flex min-h-11 w-full items-center justify-end gap-1 rounded-[4px] text-13 font-semibold text-accent">
-          {open ? "Close" : "Full story"} <Chevron open={open} />
-        </button>
-      )}
     </li>
   );
 }

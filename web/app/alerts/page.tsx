@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Chevron, Collapse } from "@/components/Collapse";
-import { shortName } from "@/components/Company";
+import { Name, shortName } from "@/components/Company";
 import { eventLabel, keyFact } from "@/components/FeedRow";
 import { Count, Signed } from "@/components/Signed";
 import { FeedSkeleton, LoadFailed } from "@/components/States";
@@ -105,14 +105,14 @@ function Row({ r, feed, isNew }: { r: AlertRow; feed: Feed; isNew: boolean }) {
     <>
       <span className="flex items-baseline gap-2">
         <span className="w-[5.5rem] shrink-0 truncate font-mono text-13 font-semibold text-ink">{r.symbol}</span>
-        <span className="min-w-0 truncate font-serif text-17 font-semibold text-ink">{co ? shortName(co.name) : lead?.name ?? ""}</span>
+        <Name name={co?.name ?? lead?.name ?? r.symbol} className="font-serif text-17 font-semibold text-ink" />
         {isNew && <span className="kicker ml-auto shrink-0 text-accent">New</span>}
       </span>
       <span className="block pl-[6rem]">
         {facts.length > 0 && (
           <span className="mt-1 block text-13 leading-[1.45] text-ink-2">
             {facts.map((f, k) => (
-              <span key={k}>{k > 0 && <span className="text-ink-3"> · </span>}<span className={`${f.num ? "font-mono" : "kicker text-ink-2"} ${f.strong ? "font-semibold text-ink" : ""}`}><Signed text={f.t} arrows /></span></span>
+              <span key={k}>{k > 0 && <span className="text-ink-3">{"00a0·00a0"}</span>}<span className={`${f.num ? "font-mono" : "kicker text-ink-2"} ${f.strong ? "font-semibold text-ink" : ""}`}><Signed text={f.t} arrows /></span></span>
             ))}
           </span>
         )}
