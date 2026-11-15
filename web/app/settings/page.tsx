@@ -3,6 +3,7 @@ import { useState } from "react";
 import { DEFAULTS, P1_CATS, sentence, useSettings, type Settings } from "@/lib/feed";
 import { label } from "@/lib/rank";
 import { HowItWorksList } from "@/components/HowItWorks";
+import { BUTTON } from "@/components/States";
 
 export default function SettingsPage() {
   const [s, update] = useSettings();
@@ -11,47 +12,43 @@ export default function SettingsPage() {
 
   return (
     <>
-      <section className="pt-5 pb-4">
-        <h1 className="font-serif text-[1.75rem] leading-[1.15] font-semibold tracking-[-0.015em]">Settings</h1>
-        <p className="mt-1 text-[0.9375rem] text-ink-2">Saved on this device. Changes re-rank the brief straight away.</p>
+      <section className="pt-6 pb-2">
+        <p className="kicker">Settings</p>
+        <h1 className="mt-2 font-serif text-34 leading-[1.08] font-semibold tracking-[-0.01em]">Your thresholds</h1>
+        <p className="mt-2 text-13 text-ink-2">Saved on this device. Changes re-rank the brief straight away.</p>
       </section>
 
-      <h2 className="border-b border-ink/80 pb-1.5 text-[0.8125rem] font-semibold">Market reaction</h2>
-      <p className="pt-2 text-[0.8125rem] text-ink-2">
+      <h2 className="section-head mt-6">Market reaction</h2>
+      <p className="pt-2 text-13 text-ink-2">
         A filing whose reaction day crosses either threshold ranks higher, and each crossing raises an alert.
       </p>
       <NumberField id="vol" label="Volume" hint="times the 20-day average" unit="×" value={s.volN} min={1} step={0.5} onSave={(v) => update({ volN: v })} />
       <NumberField id="move" label="Move vs Nifty" hint="either direction" unit="%" prefix="±" value={s.moveX} min={0.5} step={0.5} onSave={(v) => update({ moveX: v })} />
 
-      <h2 className="mt-8 border-b border-ink/80 pb-1.5 text-[0.8125rem] font-semibold">Alert me on filings about</h2>
-      <CatGroup title="Material filings" cats={P1_CATS} s={s} toggle={toggle} />
-      <p className="pt-2 text-[0.8125rem] text-ink-2">Only material filings alert. Dividends, calls, press releases and routine paperwork still show in the brief.</p>
+      <h2 className="section-head mt-8">Alert me on filings about</h2>
+      <CatGroup cats={P1_CATS} s={s} toggle={toggle} />
+      <p className="pt-2 text-13 text-ink-2">Only material filings alert. Dividends, calls, press releases and routine paperwork still show in the brief.</p>
 
-      <h2 className="mt-8 border-b border-ink/80 pb-1.5 text-[0.8125rem] font-semibold">How FINN works</h2>
-      <div className="pt-3"><HowItWorksList /></div>
-
-      <button
-        type="button"
-        disabled={isDefault}
-        onClick={() => update(null)}
-        className="mt-8 h-10 rounded-md border border-ink/70 px-4 text-[0.9375rem] font-medium hover:bg-paper-2 disabled:border-rule disabled:text-ink-2 disabled:hover:bg-transparent"
-      >
+      <button type="button" disabled={isDefault} onClick={() => update(null)} className={`mt-6 ${BUTTON}`}>
         Reset to defaults
       </button>
+
+      <h2 id="how" className="section-head mt-12 scroll-mt-4">How FINN works</h2>
+      <HowItWorksList />
     </>
   );
 }
 
-function CatGroup({ title, cats, s, toggle }: { title: string; cats: string[]; s: Settings; toggle: (c: string) => void }) {
+function CatGroup({ cats, s, toggle }: { cats: string[]; s: Settings; toggle: (c: string) => void }) {
   return (
-    <fieldset className="mt-6 first-of-type:mt-3">
-      <legend className="text-[0.8125rem] text-ink-2">{title}</legend>
+    <fieldset>
+      <legend className="sr-only">Material filings</legend>
       <ul>
         {cats.map((c) => (
           <li key={c} className="border-b border-rule">
-            <label className="flex min-h-11 cursor-pointer items-center justify-between gap-3 text-[0.9375rem]">
+            <label className="press flex min-h-12 cursor-pointer items-center justify-between gap-3 text-15 text-ink">
               {sentence(label(c))}
-              <input type="checkbox" className="size-[1.125rem]" checked={s.cats.includes(c)} onChange={() => toggle(c)} />
+              <input type="checkbox" className="size-5" checked={s.cats.includes(c)} onChange={() => toggle(c)} />
             </label>
           </li>
         ))}
@@ -71,12 +68,12 @@ function NumberField(p: { id: string; label: string; hint: string; unit: string;
   return (
     <div className="border-b border-rule py-3">
       <div className="flex items-center justify-between gap-3">
-        <label htmlFor={p.id} className="text-[0.9375rem]">
+        <label htmlFor={p.id} className="text-15 font-semibold text-ink">
           {p.label}
-          <span className="block text-[0.8125rem] text-ink-2">{p.hint}</span>
+          <span className="block text-13 font-normal text-ink-3">{p.hint}</span>
         </label>
-        <span className="flex items-baseline gap-1 text-[1rem]">
-          {p.prefix && <span className="text-ink-2">{p.prefix}</span>}
+        <span className="flex items-baseline gap-1 font-mono text-17">
+          {p.prefix && <span className="text-ink-3">{p.prefix}</span>}
           <input
             id={p.id}
             type="number"
@@ -89,12 +86,12 @@ function NumberField(p: { id: string; label: string; hint: string; unit: string;
             onChange={(e) => setDraft(e.target.value)}
             onBlur={commit}
             onKeyDown={(e) => e.key === "Enter" && commit()}
-            className={`h-10 w-[4.5rem] rounded-md border bg-paper px-2 text-right text-[1rem] ${bad ? "border-loss" : "border-ink/40"}`}
+            className={`h-11 w-[5rem] rounded-[4px] border bg-paper-raised px-2 text-right font-mono text-17 text-ink outline-none focus:border-accent focus:shadow-[inset_0_0_0_1px_var(--accent)] ${bad ? "border-down" : "border-rule"}`}
           />
-          <span className="w-3 text-ink-2">{p.unit}</span>
+          <span className="w-3 text-ink-3">{p.unit}</span>
         </span>
       </div>
-      {bad && <p id={`${p.id}-err`} className="mt-1.5 text-[0.8125rem] text-loss">Enter a number of at least {p.min}.</p>}
+      {bad && <p id={`${p.id}-err`} className="mt-1.5 text-13 text-down">Enter a number of at least {p.min}.</p>}
     </div>
   );
 }

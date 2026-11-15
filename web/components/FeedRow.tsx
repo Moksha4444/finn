@@ -73,26 +73,26 @@ export function FeedRow({ item: i }: { item: RankedItem }) {
         aria-expanded={open}
         aria-controls={id}
         onClick={() => setOpen(!open)}
-        className="block w-full py-3 text-left transition-colors duration-150 ease-out active:bg-paper-2"
+        className="press block w-full py-3 text-left"
       >
         {/* line 1: who, what, and the market's verdict (single line); line 2: the fact (wraps to 2 lines) and when. */}
         <span className="flex items-baseline gap-2 whitespace-nowrap">
-          <span className="shrink-0 text-[0.9375rem] font-semibold tracking-[0.01em]">{i.symbol}</span>
-          <span className="shrink-0 text-[0.875rem] text-ink-2">{eventLabel(i)}</span>
+          <span className="shrink-0 font-mono text-13 font-semibold">{i.symbol}</span>
+          <span className="kicker shrink-0">{eventLabel(i)}</span>
           {i.tier === "P1" && (
-            <span className="inline-block size-[0.4375rem] shrink-0 -translate-y-px rounded-[1px] bg-accent" role="img" aria-label="Material" />
+            <span className="inline-block size-[0.4375rem] shrink-0 -translate-y-px bg-accent" role="img" aria-label="Material" />
           )}
           {/* Each reason part is a unit; one that doesn't fit wraps onto the clipped second line, so a part is dropped whole, never cut. */}
-          <span className={`ml-auto flex h-5 min-w-0 flex-wrap justify-end gap-x-1 overflow-hidden pl-2 text-[0.8125rem] leading-5 ${quietReason ? "text-ink-2 italic" : i.boosted ? "font-semibold" : "text-ink-2"}`}>
+          <span className={`ml-auto flex h-5 min-w-0 flex-wrap justify-end gap-x-1 overflow-hidden pl-2 font-mono text-11 leading-5 ${quietReason ? "text-ink-3" : i.boosted ? "font-semibold" : "text-ink-3"}`}>
             {i.boosted && <span className="sr-only">Ranked high: </span>}
             {shownReason && shownReason.split(" · ").map((u, k) => (
-              <span key={k}>{k > 0 && "· "}<Signed text={u} /></span>
+              <span key={k}>{k > 0 && "· "}<Signed text={u} arrows /></span>
             ))}
           </span>
         </span>
-        <span className="mt-0.5 flex items-start gap-3 text-[0.875rem] leading-[1.4]">
+        <span className="mt-1 flex items-start gap-3 text-15 leading-[1.4] text-ink-2">
           <span className="line-clamp-2 min-w-0"><Signed text={keyFact(i)} /></span>
-          <span className="ml-auto shrink-0 pt-px text-[0.8125rem] whitespace-nowrap text-ink-2">{filedAt(i.filed)}</span>
+          <span className="ml-auto shrink-0 pt-0.5 font-mono text-11 whitespace-nowrap text-ink-3">{filedAt(i.filed).toUpperCase()}</span>
         </span>
       </button>
       <Collapse open={open} id={id}><div className="pb-4"><Detail i={i} /></div></Collapse>
@@ -102,7 +102,7 @@ export function FeedRow({ item: i }: { item: RankedItem }) {
 
 export function Detail({ i }: { i: RankedItem }) {
   return (
-    <div className="pt-1 text-[0.875rem] leading-[1.45]">
+    <div className="pt-1 text-15 leading-[1.45] text-ink-2">
       {i.card?.type === "results" ? <Results c={i.card} /> : i.card?.type === "management_change" ? <Mgmt c={i.card} />
         : i.card?.type === "fund_raise" ? <Fund c={i.card} i={i} /> : <Other i={i} />}
       <Why i={i} />
@@ -114,8 +114,8 @@ export function Detail({ i }: { i: RankedItem }) {
 function Why({ i }: { i: RankedItem }) {
   const day = i.reaction ? ` on ${shortDate(i.reaction_day)}` : "";
   return (
-    <p className="mt-2 text-[0.8125rem] text-ink-2">
-      <span className="font-medium text-ink">Why it&rsquo;s here: </span>
+    <p className="mt-3 text-13 text-ink-2">
+      <span className="kicker mr-1">Why it&rsquo;s here</span>
       <Signed text={i.reason.replace(/^Ranked high: /, "ranked high: ").replace("Reaction pending", "market reaction not in yet")} />
       {day}
     </p>
@@ -126,18 +126,18 @@ export const crore = (v: number | null) =>
   v == null ? "not disclosed" : v.toLocaleString("en-IN", { maximumFractionDigits: Math.abs(v) < 100 ? 1 : 0 });
 
 function Change({ v }: { v: number | null }) {
-  return v == null ? <span className="text-ink-2">–</span> : <Signed text={pct(v)} />;
+  return v == null ? <span className="text-ink-3">–</span> : <Signed text={pct(v)} />;
 }
 
 function Results({ c }: { c: ResultsCard }) {
   return (
     <>
-      <table className="w-full border-collapse">
-        <caption className="pb-1.5 text-left text-[0.8125rem] text-ink-2">
+      <table className="w-full border-collapse font-mono text-13 text-ink">
+        <caption className="kicker pb-2 text-left">
           {sentence(c.basis)} · {c.unit}
         </caption>
         <thead>
-          <tr className="text-[0.75rem] text-ink-2">
+          <tr className="text-11 text-ink-3">
             <th scope="col" className="pb-1 text-left font-normal"><span className="sr-only">Line</span></th>
             <th scope="col" className="pb-1 text-right font-normal">{period(c.periods[0])}</th>
             <th scope="col" className="pb-1 text-right font-normal">QoQ</th>
@@ -147,19 +147,19 @@ function Results({ c }: { c: ResultsCard }) {
         <tbody>
           {c.lines.map((l) => (
             <tr key={l.name} className="border-t border-rule">
-              <th scope="row" className="py-1.5 text-left font-medium">{l.name}</th>
-              <td className="py-1.5 text-right">{crore(l.value)}</td>
-              <td className="w-[4.5rem] py-1.5 text-right"><Change v={l.qoq_pct} /></td>
-              <td className="w-[4.5rem] py-1.5 text-right"><Change v={l.yoy_pct} /></td>
+              <th scope="row" className="py-2 text-left font-sans text-15 font-semibold">{l.name}</th>
+              <td className="py-2 text-right">{crore(l.value)}</td>
+              <td className="w-[4.5rem] py-2 text-right"><Change v={l.qoq_pct} /></td>
+              <td className="w-[4.5rem] py-2 text-right"><Change v={l.yoy_pct} /></td>
             </tr>
           ))}
         </tbody>
       </table>
       {c.one_offs.map((o) => (
-        <p key={o} className="mt-2 font-medium">{o}.</p>
+        <p key={o} className="mt-2 font-semibold text-ink">{o}.</p>
       ))}
-      {c.note && <p className="mt-2 text-[0.8125rem] text-ink-2">{c.note}.</p>}
-      {c.model_note && <p className="mt-1 text-[0.8125rem] text-ink-2">{c.model_note}</p>}
+      {c.note && <p className="mt-2 text-13 text-ink-3">{c.note}.</p>}
+      {c.model_note && <p className="mt-1 text-13 text-ink-3">{c.model_note}</p>}
     </>
   );
 }
@@ -169,7 +169,7 @@ function Mgmt({ c }: { c: MgmtCard }) {
     <ul className="space-y-3">
       {c.people.map((p) => (
         <li key={p.name + p.change}>
-          <p className="font-semibold">{p.name}</p>
+          <p className="font-serif text-17 font-semibold text-ink">{p.name}</p>
           <p className="text-ink-2">
             {sentence(p.change)}
             {p.role && ` · ${p.role}`}
@@ -178,7 +178,7 @@ function Mgmt({ c }: { c: MgmtCard }) {
           {p.bio && <Bio text={p.bio} cited={p.bio_page != null} page={p.bio_page} />}
         </li>
       ))}
-      {c.model_note && <li className="text-[0.8125rem] text-ink-2">{c.model_note}</li>}
+      {c.model_note && <li className="text-13 text-ink-3">{c.model_note}</li>}
     </ul>
   );
 }
@@ -189,12 +189,12 @@ function Bio({ text, cited, page }: { text: string; cited: boolean; page: number
   return (
     <div className="mt-1">
       <p className={full ? "" : "line-clamp-3"}>{text}</p>
-      <p className="mt-0.5 text-[0.8125rem] text-ink-2">
+      <p className="mt-1 text-13 text-ink-3">
         Profile from the filing, p. {page}
         {!full && (
           <>
             {" · "}
-            <button type="button" onClick={() => setFull(true)} className="-my-3 inline-block py-3 text-accent underline">Full profile</button>
+            <button type="button" onClick={() => setFull(true)} className="-my-3 inline-block py-3 font-semibold text-accent">Full profile</button>
           </>
         )}
       </p>
@@ -208,14 +208,14 @@ const INSTRUMENT = { equity: "Equity", warrants: "Warrants (convert to equity)",
 function Fund({ c, i }: { c: FundCard; i: RankedItem }) {
   return (
     <>
-      <p className="text-ink-2">{INSTRUMENT[c.instrument]}{i.subject && ` · As filed: ${i.subject}`}</p>
+      <p>{INSTRUMENT[c.instrument]}{i.subject && ` · As filed: ${i.subject}`}</p>
       <p className="mt-1">
-        {c.size_cr != null ? <>Size ₹{crore(c.size_cr)} cr{c.size_page && <span className="text-ink-2"> (p. {c.size_page})</span>}</> : <span className="text-ink-2">Size not stated in this filing</span>}
+        {c.size_cr != null ? <>Size <span className="font-mono text-ink">₹{crore(c.size_cr)} cr</span>{c.size_page && <span className="text-ink-2"> (p. {c.size_page})</span>}</> : <span className="text-ink-2">Size not stated in this filing</span>}
         {c.instrument === "debt" ? <span className="text-ink-2"> · debt, no dilution</span>
-          : c.dilution_pct != null ? <> · Dilution {c.dilution_pct.toFixed(2)}% <span className="text-ink-2">(shares issued ÷ shares after the issue)</span></>
+          : c.dilution_pct != null ? <> · Dilution <span className="font-mono text-ink">{c.dilution_pct.toFixed(2)}%</span> <span className="text-ink-2">(shares issued ÷ shares after the issue)</span></>
           : <span className="text-ink-2"> · dilution not stated</span>}
       </p>
-      {c.model_note && <p className="mt-1 text-[0.8125rem] text-ink-2">{c.model_note}</p>}
+      {c.model_note && <p className="mt-1 text-13 text-ink-3">{c.model_note}</p>}
     </>
   );
 }
@@ -224,10 +224,10 @@ function Other({ i }: { i: RankedItem }) {
   const missingCard = i.tier === "P1" && i.category === "results"; // P1 results without a card: the sanity gate refused it
   return (
     <>
-      {i.subject && <p className="text-ink-2">As filed: {i.subject}</p>}
-      {i.note && <p className="mt-1 text-ink-2">{i.note}</p>}
+      {i.subject && <p>As filed: {i.subject}</p>}
+      {i.note && <p className="mt-1">{i.note}</p>}
       {missingCard && !i.card_error && (
-        <p className="mt-1 text-ink-2">Numbers not shown: no results table in this filing could be checked. Open the filing for the figures.</p>
+        <p className="mt-1">Numbers not shown: no results table in this filing could be checked. Open the filing for the figures.</p>
       )}
     </>
   );
@@ -237,16 +237,16 @@ function Source({ i, page }: { i: RankedItem; page?: number }) {
   const failed = i.card_error || i.classify_error;
   return (
     <>
-      {failed && <p className="mt-2 text-ink-2">Couldn&rsquo;t read this filing automatically. The original is linked below.</p>}
-      <p className="mt-2 text-[0.8125rem] text-ink-2">
+      {failed && <p className="mt-2">Couldn&rsquo;t read this filing automatically. The original is linked below.</p>}
+      <p className="mt-2 text-13 text-ink-3">
         {i.url ? (
-          <a href={page ? `${i.url}#page=${page}` : i.url} target="_blank" rel="noopener" className="-my-3 inline-block py-3 font-medium text-accent underline">
-            {page ? `Open filing at p. ${page}` : "Open filing"}
+          <a href={page ? `${i.url}#page=${page}` : i.url} target="_blank" rel="noopener" className="-my-3 inline-block py-3 font-semibold text-accent">
+            {page ? `Open filing at p. ${page}` : "Open filing"} →
           </a>
         ) : (
           "No attachment on this filing"
         )}
-        {` · ${i.source.toUpperCase()} · ${i.name}`}
+        <span className="font-mono text-11">{` · ${i.source.toUpperCase()} · `}</span>{i.name}
       </p>
     </>
   );

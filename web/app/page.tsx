@@ -1,15 +1,18 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { CompanyCard, CompanyRow, shortName } from "@/components/Company";
-import { Collapse } from "@/components/Collapse";
+import { BriefLine, shortName, Story } from "@/components/Company";
+import { Chevron, Collapse } from "@/components/Collapse";
 import { FeedRow } from "@/components/FeedRow";
-import { HowItWorksCard } from "@/components/HowItWorks";
+import { Rays } from "@/components/Logo";
+import { Signed } from "@/components/Signed";
 import { FeedSkeleton, LoadFailed } from "@/components/States";
-import { WIN_HOURS, WIN_PERIOD, filedAt, inWindow, istTime, longDate, ranked, shortDate, useFeed, useSettings, type Feed, type RankedItem, type Win } from "@/lib/feed";
+import { WIN_HOURS, WIN_PERIOD, filedAt, inWindow, istTime, ranked, shortDate, useFeed, useSettings, type Feed, type RankedItem, type Win } from "@/lib/feed";
 import { group, type Group } from "@/lib/group";
+import { pct } from "@/lib/rank";
 
 const WINS: Win[] = ["24h", "7d", "30d"];
+const WIN_NAME: Record<Win, string> = { "24h": "Today", "7d": "This week", "30d": "This month" };
 const NEXT: Partial<Record<Win, Win>> = { "24h": "7d", "7d": "30d" };
 const CARDS = 6; // a 30-day results season makes every holding material; the rest wait behind one tap
 
@@ -35,6 +38,67 @@ function verdict(feed: Feed, all: RankedItem[], groups: Group[], win: Win, moveX
   return { head, sub: [groups.length > material.length && `${groups.length - material.length} more worth a look`, ...sub].filter(Boolean) as string[] };
 }
 
+// SUN 15 NOV 2026, in IST
+const edition = (iso: string) =>
+  new Intl.DateTimeFormat("en-IN", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kolkata" })
+    .format(new Date(iso)).replace(/,/g, "").toUpperCase();
+
+// The entrance plays once per session (masthead, strip, then stories, 40ms apart); later visits render still.
+function useEntrance() {
+  const [play] = useState(() => typeof window !== "undefined" && !sessionStorage.getItem("finn.entered"));
+  useEffect(() => { sessionStorage.setItem("finn.entered", "1"); }, []);
+  return play;
+}
+const at = (i: number) => ({ "--i": i }) as React.CSSProperties;
+
+function Masthead({ feed, lastBar }: { feed: Feed; lastBar?: string }) {
+  const n = feed.portfolio?.length ?? Object.keys(feed.companies ?? {}).length;
+  return (
+    <header className="pt-4 text-center">
+      <Link href="/" aria-label="FINN, Brief" className="mx-auto flex w-fit items-center gap-2">
+        <Rays className="h-7 w-9" />
+        <span className="font-serif text-34 leading-none font-bold tracking-[0.12em]">FINN</span>
+      </Link>
+      <p className="mt-3 border-y-[1.5px] border-rule-strong py-1.5 font-mono text-11 leading-4 tracking-[0.02em] text-ink-2">
+        {edition(feed.generated_at)} · PORTFOLIO EDITION · {n} COMPANIES{lastBar && ` · PRICES TO ${shortDate(lastBar).toUpperCase()}`}
+      </p>
+      <p className="mt-2 text-13 text-ink-3">
+        Filings filtered and ranked, checked <span className="font-mono">{istTime(feed.generated_at)}</span> IST ·{" "}
+        <Link href="/settings#how" className="font-semibold text-accent">How it works</Link>
+      </p>
+    </header>
+  );
+}
+
+// Every holding's latest day vs Nifty, scrolling sideways. A ticker opens its research page.
+function MarketStrip({ feed }: { feed: Feed }) {
+  const last = new Map<string, Feed["days"][number]>();
+  for (const d of feed.days) if (!last.has(d.symbol) || d.date > last.get(d.symbol)!.date) last.set(d.symbol, d);
+  const syms = feed.portfolio ?? [...last.keys()];
+  const day = [...last.values()].map((d) => d.date).sort().at(-1);
+  return (
+    <nav aria-label="Portfolio, latest day vs Nifty" className="strip -mx-4 mt-4 overflow-x-auto border-y border-rule">
+      <ul className="flex w-max items-stretch pl-4">
+        <li className="flex h-11 flex-col justify-center pr-3 font-mono text-11 leading-4 text-ink-3">
+          <span>{day ? shortDate(day).toUpperCase() : "DAY"}</span><span>VS NIFTY</span>
+        </li>
+        {syms.map((s) => {
+          const d = last.get(s);
+          const v = d ? d.excess_pct ?? d.move_pct : null;
+          return (
+            <li key={s} className="border-l border-rule last:pr-4">
+              <Link href={`/research?symbol=${s}`} className="press flex h-11 flex-col justify-center px-3 font-mono text-11 leading-4">
+                <span className="font-semibold text-ink">{s}</span>
+                <span className="text-ink-2">{v == null ? "–" : <Signed text={pct(v)} arrows />}</span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+}
+
 export default function Brief() {
   const { feed, error, retry } = useFeed();
   const [s] = useSettings();
@@ -42,6 +106,7 @@ export default function Brief() {
   const [showRoutine, setShowRoutine] = useState(false);
   const [allCards, setAllCards] = useState(false);
   const [openSym, setOpenSym] = useState<string | null>(null);
+  const enter = useEntrance();
   useEffect(() => {
     // an alert links here as /?open=SYMBOL&w=7d; otherwise keep the window chosen earlier in this session
     const q = new URLSearchParams(location.search);
@@ -64,7 +129,7 @@ export default function Brief() {
   const matters = groups.filter((g) => g.material);
   const worth = groups.filter((g) => !g.material);
   const routine = all.filter((i) => i.collapsed);
-  const lastBar = all.map((i) => i.last_bar).filter(Boolean).sort().at(-1);
+  const lastBar = all.map((i) => i.last_bar).filter(Boolean).sort().at(-1) ?? feed.days.map((d) => d.date).sort().at(-1) ?? undefined;
   const pending = all.some((i) => !i.collapsed && !i.reaction && lastBar && i.reaction_day > lastBar);
   const coverageDays = Math.round((Date.parse(feed.window[1]) - Date.parse(feed.window[0])) / 864e5);
   const short = WIN_HOURS[win] / 24 > coverageDays + 1;
@@ -74,103 +139,97 @@ export default function Brief() {
   for (const [sym, c] of Object.entries(feed.companies ?? {}))
     if (c.stale_as_of) staleBy.set(c.stale_as_of, [...(staleBy.get(c.stale_as_of) ?? []), sym]);
   const stale = [...staleBy];
+  const [lead, ...rest] = allCards ? matters : matters.slice(0, CARDS);
 
   return (
-    <>
-      <HowItWorksCard />
-      <section className="pt-5">
-        <p className="text-[0.8125rem] text-ink-2">
-          {longDate(feed.generated_at)} · Last checked {istTime(feed.generated_at)} IST
-        </p>
-        <h1 className="mt-1.5 font-serif text-[1.75rem] leading-[1.15] font-semibold tracking-[-0.015em] text-balance">{head}</h1>
-        {sub.length > 0 && <p className="mt-1 text-[0.9375rem] text-ink-2">{sub.join(" · ")}</p>}
-        <div role="group" aria-label="Window" className="mt-4 grid grid-cols-3 rounded-lg border border-rule bg-paper-2/60 p-0.5 text-[0.9375rem]">
+    <div className={enter ? "enter" : undefined}>
+      <div style={at(0)}><Masthead feed={feed} lastBar={lastBar} /></div>
+      <div style={at(1)}><MarketStrip feed={feed} /></div>
+
+      <section style={at(2)} className="pt-2">
+        <div role="group" aria-label="Edition" className="flex gap-6 border-b border-rule">
           {WINS.map((w) => (
-            <button
-              key={w}
-              type="button"
-              aria-pressed={w === win}
-              onClick={() => setWin(w)}
-              className={`h-11 rounded-md ${w === win ? "bg-card font-semibold text-accent shadow-[0_1px_2px_oklch(22%_0.012_60/0.12)]" : "text-ink-2"}`}
-            >
-              {w === "24h" ? "Today" : w === "7d" ? "7 days" : "30 days"}
+            <button key={w} type="button" aria-pressed={w === win} onClick={() => setWin(w)}
+              className={`-mb-px h-11 border-b-2 text-11 font-bold tracking-[0.12em] uppercase transition-colors duration-150 ${w === win ? "border-accent text-accent" : "border-transparent text-ink-3"}`}>
+              {WIN_NAME[w]}
             </button>
           ))}
         </div>
+        <h1 className="mt-6 font-serif text-34 leading-[1.08] font-semibold tracking-[-0.01em] text-balance">{head}</h1>
+        {sub.length > 0 && <p className="mt-2 text-13 text-ink-2">{sub.join(" · ")}</p>}
         {pending && lastBar && (
-          <p className="mt-3 rounded-lg bg-paper-2 px-3 py-2 text-[0.8125rem] leading-[1.4] text-ink-2">
-            Prices are in up to {shortDate(lastBar)}. Market reaction to later filings shows after the next price update.
+          <p className="mt-1 text-13 text-ink-3">
+            Market reaction to filings after {shortDate(lastBar)} shows after the next price update.
           </p>
         )}
       </section>
 
-      {matters.length > 0 && (
-        <section aria-labelledby="h-matters" className="mt-6">
-          <h2 id="h-matters" className="font-serif text-[1.1875rem] font-semibold">What matters</h2>
-          <ol className="mt-2.5 space-y-3">
-            {(allCards ? matters : matters.slice(0, CARDS)).map((g) => <CompanyCard key={g.symbol} g={g} co={feed.companies?.[g.symbol]} nifty={feed.nifty} end={end} initialOpen={g.symbol === openSym} />)}
+      {lead && (
+        <section aria-label="What matters" style={at(3)} className="mt-6">
+          <ol>
+            <Story key={lead.symbol} g={lead} co={feed.companies?.[lead.symbol]} nifty={feed.nifty} end={end} lead initialOpen={lead.symbol === openSym} />
+            {rest.map((g) => <Story key={g.symbol} g={g} co={feed.companies?.[g.symbol]} nifty={feed.nifty} end={end} initialOpen={g.symbol === openSym} />)}
           </ol>
           {matters.length > CARDS && (
-            <button type="button" aria-expanded={allCards} onClick={() => setAllCards(!allCards)} className="mt-2 min-h-11 w-full rounded-xl border border-rule text-[0.875rem] font-medium text-accent">
-              {allCards ? "Show fewer" : `Show ${matters.length - CARDS} more ${matters.length - CARDS === 1 ? "company" : "companies"}`}
+            <button type="button" aria-expanded={allCards} onClick={() => setAllCards(!allCards)}
+              className="press flex min-h-11 w-full items-center justify-center gap-1 border-b border-rule text-13 font-semibold text-accent">
+              {allCards ? "Show fewer" : `${matters.length - CARDS} more ${matters.length - CARDS === 1 ? "story" : "stories"}`}
+              <Chevron open={allCards} />
             </button>
           )}
         </section>
       )}
 
       {worth.length > 0 && (
-        <section aria-labelledby="h-worth" className="mt-7">
-          <h2 id="h-worth" className="font-serif text-[1.1875rem] font-semibold">Also worth a look</h2>
-          <ol className="mt-1 border-t border-rule">
-            {worth.map((g) => <CompanyRow key={g.symbol} g={g} co={feed.companies?.[g.symbol]} initialOpen={g.symbol === openSym} />)}
+        <section aria-labelledby="h-worth" style={at(4)} className="mt-8">
+          <h2 id="h-worth" className="section-head">In brief</h2>
+          <ol>
+            {worth.map((g) => <BriefLine key={g.symbol} g={g} co={feed.companies?.[g.symbol]} initialOpen={g.symbol === openSym} />)}
           </ol>
         </section>
       )}
 
       {routine.length > 0 && (
-        <section className={matters.length + worth.length ? "mt-6" : "mt-5"}>
-          <button
-            type="button"
-            aria-expanded={showRoutine}
-            onClick={() => setShowRoutine(!showRoutine)}
-            className="flex min-h-11 w-full items-center justify-between border-y border-rule text-left text-[0.875rem] text-ink-2"
-          >
-            <span>{routine.length} routine {routine.length === 1 ? "filing" : "filings"} hidden</span>
-            <span className="font-medium text-accent">{showRoutine ? "Hide" : "Show"}</span>
+        <section aria-labelledby="h-notices" style={at(5)} className="mt-8">
+          <h2 id="h-notices" className="section-head">Notices</h2>
+          <button type="button" aria-expanded={showRoutine} onClick={() => setShowRoutine(!showRoutine)}
+            className="press flex min-h-11 w-full items-center justify-between border-b border-rule text-left">
+            <span className="kicker text-ink-2"><span className="font-mono tracking-normal">{routine.length}</span> routine {routine.length === 1 ? "notice" : "notices"}</span>
+            <span className="kicker flex items-center gap-1 text-accent">{showRoutine ? "Hide" : "Show"} <Chevron open={showRoutine} /></span>
           </button>
           <Collapse open={showRoutine}><ol>{routine.map((i) => <FeedRow key={i.id} item={i} />)}</ol></Collapse>
         </section>
       )}
 
       {groups.length === 0 && NEXT[win] && (
-        <button type="button" onClick={() => setWin(NEXT[win]!)} className="mt-4 min-h-11 text-[0.9375rem] font-medium text-accent underline">
-          See the last {NEXT[win] === "7d" ? "7" : "30"} days
+        <button type="button" onClick={() => setWin(NEXT[win]!)} className="press mt-4 min-h-11 rounded-[4px] text-15 font-semibold text-accent">
+          See {WIN_NAME[NEXT[win]!].toLowerCase()}&rsquo;s edition →
         </button>
       )}
 
       {missing.length > 0 && (
-        <p className="mt-4 text-[0.875rem] text-ink-2">
-          Couldn&rsquo;t fetch filings for {missing.join(", ")}. They are missing from this brief.
+        <p className="mt-4 text-13 text-ink-2">
+          Couldn&rsquo;t fetch filings for <span className="font-mono">{missing.join(", ")}</span>. They are missing from this brief.
         </p>
       )}
       {stale.map(([asOf, syms]) => (
-        <p key={asOf} className="mt-4 text-[0.875rem] text-ink-2">
-          Couldn&rsquo;t refresh {syms.join(", ")}. Showing {syms.length === 1 ? "its" : "their"} filings as of {filedAt(asOf)} IST.
+        <p key={asOf} className="mt-4 text-13 text-ink-2">
+          Couldn&rsquo;t refresh <span className="font-mono">{syms.join(", ")}</span>. Showing {syms.length === 1 ? "its" : "their"} filings as of {filedAt(asOf)} IST.
         </p>
       ))}
 
-      <footer className="mt-8 text-[0.8125rem] leading-[1.45] text-ink-2">
-        <p className="font-serif text-[1rem] text-ink">That&rsquo;s everything{win === "24h" ? " for today" : ""}.</p>
-        <details className="mt-2">
-          <summary className="min-h-11 cursor-pointer content-center font-medium text-accent">How ranking works</summary>
+      <footer className="mt-12 border-t-[1.5px] border-rule-strong pt-3 text-13 leading-[1.45] text-ink-2">
+        <p className="font-serif text-17 font-semibold text-ink">That&rsquo;s everything{win === "24h" ? " for today" : ""}.</p>
+        <details className="mt-1">
+          <summary className="min-h-11 cursor-pointer content-center font-semibold text-accent">How ranking works</summary>
           <p className="pb-2">
             {short && `This export covers ${coverageDays} days. `}
             Results, management changes, fund raises, M&amp;A and litigation rank first. A filing rises further when its
             stock moved ±{s.moveX}% vs Nifty or traded {s.volN}× its 20-day volume that day.{" "}
-            <Link href="/settings" className="text-accent underline">Change thresholds</Link>
+            <Link href="/settings" className="font-semibold text-accent">Change thresholds</Link>
           </p>
         </details>
       </footer>
-    </>
+    </div>
   );
 }

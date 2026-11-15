@@ -2,9 +2,9 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Chevron, Collapse } from "@/components/Collapse";
-import { Avatar, shortName } from "@/components/Company";
+import { shortName } from "@/components/Company";
 import { eventLabel, keyFact } from "@/components/FeedRow";
-import { Signed } from "@/components/Signed";
+import { Count, Signed } from "@/components/Signed";
 import { FeedSkeleton, LoadFailed } from "@/components/States";
 import { alertRows, needsLook, type AlertRow } from "@/lib/alerts";
 import { ALERT_DAYS, buildAlerts, MINOR_VOL, shortDate, useFeed, useSettings, useUnseen, type Feed } from "@/lib/feed";
@@ -39,45 +39,46 @@ export default function Alerts() {
     : `${news.length} companies need a look.`;
   return (
     <>
-      <section className="pt-5 pb-4">
-        <h1 className="font-serif text-[1.75rem] leading-[1.15] font-semibold tracking-[-0.015em] text-balance">{head}</h1>
-        <p className="mt-1 text-[0.9375rem] leading-snug text-ink-2">
-          {shown.length} {shown.length === 1 ? "alert" : "alerts"} in the {all ? "last 30 days" : `last ${ALERT_DAYS} days`}: moves of ±{s.moveX}% vs Nifty,
-          volume at {s.volN}× the 20-day average, material filings in{" "}
-          <Link href="/settings" className="text-accent underline">your categories</Link>.
+      <section className="pt-6 pb-2">
+        <p className="kicker">The wire</p>
+        <h1 className="mt-2 font-serif text-34 leading-[1.08] font-semibold tracking-[-0.01em] text-balance">{head}</h1>
+        <p className="mt-2 text-13 leading-[1.45] text-ink-2">
+          <span className="font-mono text-ink"><Count value={shown.length} /></span> {shown.length === 1 ? "alert" : "alerts"} in the {all ? "last 30 days" : `last ${ALERT_DAYS} days`}: moves of{" "}
+          <span className="font-mono">±{s.moveX}%</span> vs Nifty, volume at <span className="font-mono">{s.volN}×</span> the 20-day average, material filings in{" "}
+          <Link href="/settings" className="font-semibold text-accent">your categories</Link>.
         </p>
       </section>
 
       {shown.length === 0 ? (
-        <p className="border-t border-ink/80 pt-4 text-[0.9375rem] text-ink-2">
+        <p className="mt-4 border-t-[1.5px] border-rule-strong pt-4 text-15 text-ink-2">
           Nothing crossed your thresholds in the last {ALERT_DAYS} days.
         </p>
       ) : (
         days.map((d) => <Day key={d} d={d} rows={shown.filter((r) => r.date === d)} feed={feed} isNew={isNew} />)
       )}
       {(older > 0 || all) && (
-        <button type="button" onClick={() => setAll(!all)} className="mt-2 flex min-h-12 items-center text-[0.875rem] font-medium text-accent">
-          {all ? `Show the last ${ALERT_DAYS} days only` : `Show ${older} older ${older === 1 ? "alert" : "alerts"} (30 days)`}
+        <button type="button" onClick={() => setAll(!all)} className="press mt-4 flex min-h-11 items-center rounded-[4px] text-13 font-semibold text-accent">
+          {all ? `Show the last ${ALERT_DAYS} days only` : `${older} older ${older === 1 ? "alert" : "alerts"} (30 days)`}
         </button>
       )}
     </>
   );
 }
 
-// One day: most severe first; volume-only spikes under 3× fold behind one line.
+// One day under a dateline rule: most severe first; volume-only spikes under 3× fold behind one line.
 function Day({ d, rows, feed, isNew }: { d: string; rows: AlertRow[]; feed: Feed; isNew: (r: AlertRow) => boolean }) {
   const [open, setOpen] = useState(false);
   const main = rows.filter((r) => !r.minor), minor = rows.filter((r) => r.minor);
   const id = `minor-${d}`;
   return (
-    <section aria-labelledby={`d-${d}`}>
-      <h2 id={`d-${d}`} className="border-b border-rule pt-5 pb-1.5 font-serif text-[1rem] font-semibold">{shortDate(d)}</h2>
+    <section aria-labelledby={`d-${d}`} className="mt-6">
+      <h2 id={`d-${d}`} className="section-head font-mono tracking-[0.08em]">{shortDate(d).toUpperCase()}</h2>
       <ul>{main.map((r) => <Row key={r.key} r={r} feed={feed} isNew={isNew(r)} />)}</ul>
       {minor.length > 0 && (
         <>
           <button type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}
-            className="flex min-h-11 w-full items-center justify-between gap-3 border-b border-rule text-left text-[0.8125rem] text-ink-2">
-            {open ? "Hide the smaller volume spikes" : `+${minor.length} smaller volume ${minor.length === 1 ? "spike" : "spikes"} (under ${MINOR_VOL}×)`}
+            className="press flex min-h-11 w-full items-center justify-between gap-3 border-b border-rule text-left text-13 text-ink-3">
+            {open ? "Hide the smaller volume spikes" : <span><span className="font-mono">{minor.length}</span> smaller volume {minor.length === 1 ? "spike" : "spikes"} (under <span className="font-mono">{MINOR_VOL}×</span>)</span>}
             <Chevron open={open} />
           </button>
           <Collapse open={open} id={id}>
@@ -89,11 +90,11 @@ function Day({ d, rows, feed, isNew }: { d: string; rows: AlertRow[]; feed: Feed
   );
 }
 
-// "Tata Power · −3.3% vs Nifty · 2.3× vol · Results", then the filing's fact. Extreme values carry weight, not colour.
+// "TATAPOWER Tata Power / ▼ 3.3% vs Nifty · 2.3× vol · Results", then the filing's fact. Extremes carry weight, not colour.
 function Row({ r, feed, isNew }: { r: AlertRow; feed: Feed; isNew: boolean }) {
   const co = feed.companies?.[r.symbol];
   const lead = r.filings[0]?.item;
-  const facts = [...(r.market?.parts ?? []), ...[...new Set(r.filings.map((f) => eventLabel(f.item!)))].map((t) => ({ t, strong: false }))];
+  const facts = [...(r.market?.parts ?? []).map((p) => ({ ...p, num: true })), ...[...new Set(r.filings.map((f) => eventLabel(f.item!)))].map((t) => ({ t, strong: false, num: false }))];
   // the smallest Brief window that still contains the filing's day
   const winFor = (filed: string) => {
     const hours = (Date.parse(feed.generated_at) - Date.parse(`${filed}:00+05:30`)) / 36e5;
@@ -102,34 +103,27 @@ function Row({ r, feed, isNew }: { r: AlertRow; feed: Feed; isNew: boolean }) {
   const href = lead ? `/?open=${r.symbol}&w=${winFor(lead.filed)}` : r.errors.length ? null : `/research?symbol=${r.symbol}`;
   const body = (
     <>
-      <Avatar name={co?.name ?? lead?.name ?? r.symbol} sector={co?.sector} />
-      <span className="min-w-0 flex-1">
-        <span className="flex items-baseline gap-2">
-          <span className="min-w-0 text-[0.875rem] font-semibold">{co ? shortName(co.name) : r.symbol}</span>
-          {isNew && <span className="ml-auto shrink-0 text-[0.75rem] font-semibold text-accent">New</span>}
-        </span>
+      <span className="flex items-baseline gap-2">
+        <span className="w-[5.5rem] shrink-0 truncate font-mono text-13 font-semibold text-ink">{r.symbol}</span>
+        <span className="min-w-0 truncate font-serif text-17 font-semibold text-ink">{co ? shortName(co.name) : lead?.name ?? ""}</span>
+        {isNew && <span className="kicker ml-auto shrink-0 text-accent">New</span>}
+      </span>
+      <span className="block pl-[6rem]">
         {facts.length > 0 && (
-          <span className="mt-0.5 block text-[0.875rem] leading-[1.4]">
+          <span className="mt-1 block text-13 leading-[1.45] text-ink-2">
             {facts.map((f, k) => (
-              <span key={k}>{k > 0 && <span className="text-ink-2"> · </span>}<span className={f.strong ? "font-semibold" : ""}><Signed text={f.t} /></span></span>
+              <span key={k}>{k > 0 && <span className="text-ink-3"> · </span>}<span className={`${f.num ? "font-mono" : "kicker text-ink-2"} ${f.strong ? "font-semibold text-ink" : ""}`}><Signed text={f.t} arrows /></span></span>
             ))}
           </span>
         )}
-        {lead && <span className="mt-0.5 line-clamp-2 block text-[0.8125rem] leading-[1.4] text-ink-2 [overflow-wrap:anywhere]">{keyFact(lead)}</span>}
-        {r.errors.map((e) => <span key={e.key} className="mt-0.5 block text-[0.8125rem] leading-[1.4] text-ink-2">{e.text}</span>)}
+        {lead && <span className="mt-1 line-clamp-2 block text-15 leading-[1.4] text-ink-2 [overflow-wrap:anywhere]">{keyFact(lead)}</span>}
+        {r.errors.map((e) => <span key={e.key} className="mt-1 block text-13 leading-[1.4] text-ink-3">{e.text}</span>)}
       </span>
     </>
   );
   return (
     <li className="border-b border-rule">
-      {href ? (
-        <Link href={href} className="flex items-center gap-3 py-3 transition-colors duration-150 ease-out active:bg-paper-2">
-          {body}
-          <svg viewBox="0 0 16 16" className="size-4 shrink-0 text-ink-2" aria-hidden="true"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-        </Link>
-      ) : (
-        <div className="flex items-center gap-3 py-3">{body}</div>
-      )}
+      {href ? <Link href={href} className="press block py-3">{body}</Link> : <div className="py-3">{body}</div>}
     </li>
   );
 }
