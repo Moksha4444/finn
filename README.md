@@ -10,9 +10,11 @@ its last four earnings calls. Every figure links to the filing or transcript pag
 
 Built for the ENAM Holdings AI Engineer build challenge (11–15 Nov 2026).
 
-| Brief | Results card | Promised vs Delivered | Live research |
+Screenshots of the live app at 390×844, taken on 15 Nov 2026:
+
+| Brief (this week's edition) | L&T research | Promised vs Delivered | Live research in progress |
 |---|---|---|---|
-| _screenshot_ | _screenshot_ | _screenshot_ | _screenshot_ |
+| ![The Brief: masthead, market strip, the week's verdict and the lead story](docs/screenshots/brief.png) | ![Larsen & Toubro: 90 days vs Nifty and the start of Promised vs Delivered](docs/screenshots/research-lt.png) | ![L&T's promises: a missed revenue-growth target and a hit on working capital, each with quote, citation and chart](docs/screenshots/research-lt-pvd.png) | ![Researching PIDILITIND: the backend's stages as a checklist](docs/screenshots/live-research.png) |
 
 ## What it does
 
@@ -31,7 +33,7 @@ Built for the ENAM Holdings AI Engineer build challenge (11–15 Nov 2026).
     page. Only CEO / MD / CFO / Chairman changes are P1.
   - *Fund raise:* size and dilution, when the filing states them.
   - *Everything else:* a ≤12-word human headline at the right priority.
-- **Credibility chip** on results cards ("Promises: Kept 2 · Missed 1 · Open 2") from the company's PvD record.
+- **Promise record** on results stories ("PROMISES · KEPT 2 · MISSED 1") from the company's PvD record; nothing is shown when fewer than 2 promises are measured.
 
 **Pull: Research, for any NSE symbol**
 - **Promised vs Delivered (the hero):** guidance from the last 4 results-call transcripts, each promise with its quote
@@ -91,8 +93,9 @@ the answers it affects. Every call logs tokens and cost at paid list prices.
 Results PDFs go to the model as the 1–2 P&L pages only (~830 tokens vs ~12k for the whole PDF, and the only path that
 reads scanned filings correctly; measured in DECISIONS.md).
 
-**Total build cost: $3.19 at list prices for 966 model calls** (4.47M tokens in, 0.69M out), plus about $0.11 for
-live-research runs on Render. All of it ran on free tiers, so actual spend was $0. Most of it ($2.13) was
+**Total build cost: $3.21 at list prices for 974 model calls** (4.50M tokens in, 0.71M out; `cache/llm_calls.jsonl`),
+plus about $0.15 for live-research runs on Render, which are logged on its own disk (a few cents more for the two runs
+used for the screenshots above). All of it ran on free tiers, so actual spend was $0. Most of it ($2.13) was
 re-extracting transcripts while the guidance prompt changed. Running costs: a cached re-run of all 22 research pages
 costs about $0.01; a live research run for a new company costs about $0.02–0.05; a results card about $0.002.
 
