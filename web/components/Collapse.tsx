@@ -10,7 +10,7 @@ export function Collapse({ open, id, children }: { open: boolean; id?: string; c
     <div
       id={id}
       inert={!open}
-      className={`grid transition-[grid-template-rows,opacity] duration-200 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
+      className={`grid transition-[grid-template-rows,opacity] duration-[220ms] ${open ? "grid-rows-[1fr] opacity-100 ease-out" : "grid-rows-[0fr] opacity-0 ease-in"}`}
     >
       <div className="min-h-0 overflow-hidden">{seen && children}</div>
     </div>
@@ -19,7 +19,7 @@ export function Collapse({ open, id, children }: { open: boolean; id?: string; c
 
 export function Chevron({ open }: { open: boolean }) {
   return (
-    <svg viewBox="0 0 16 16" className={`size-4 shrink-0 text-ink-2 transition-transform duration-200 ease-out ${open ? "rotate-180" : ""}`} aria-hidden="true">
+    <svg viewBox="0 0 16 16" className={`size-4 shrink-0 transition-transform duration-[220ms] ease-out ${open ? "rotate-180" : ""}`} aria-hidden="true">
       <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );

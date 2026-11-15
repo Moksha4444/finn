@@ -1,56 +1,48 @@
-// Loading and failure states shared by every screen. Skeleton rows match the real 2-line row so nothing jumps.
+// Loading and failure states shared by every screen. Skeletons follow the real layout (rules, not boxes) so nothing jumps.
 
-const Bar = ({ w, h = "h-3" }: { w: string; h?: string }) => <span className={`block rounded-[2px] bg-paper-2 ${h} ${w}`} />;
+const Bar = ({ w, h = "h-3" }: { w: string; h?: string }) => <span className={`block bg-rule/60 ${h} ${w}`} />;
 
 export function FeedSkeleton({ rows = 7, header = true }: { rows?: number; header?: boolean }) {
   return (
     <div aria-busy="true" aria-label="Loading the brief">
       {header && (
-        <div className="pt-5 pb-4">
-          <Bar w="w-56" />
-          <span className="mt-2.5 block"><Bar w="w-64" h="h-7" /></span>
-          <span className="mt-2 block"><Bar w="w-48" h="h-4" /></span>
-          <span className="mt-4 block"><Bar w="w-full" h="h-11" /></span>
+        <div className="pt-4">
+          <span className="mx-auto block w-32"><Bar w="w-32" h="h-8" /></span>
+          <span className="mt-3 block border-y-[1.5px] border-rule-strong py-1.5"><Bar w="w-full" /></span>
+          <span className="mt-4 block border-y border-rule py-3"><Bar w="w-full" h="h-5" /></span>
+          <span className="mt-6 block"><Bar w="w-[80%]" h="h-9" /></span>
+          <span className="mt-2 block"><Bar w="w-48" /></span>
+          <span className="mt-6 block border border-rule px-4 py-4">
+            <Bar w="w-40" /><span className="mt-3 block"><Bar w="w-[85%]" h="h-7" /></span>
+            <span className="mt-4 flex justify-between"><Bar w="w-28" h="h-9" /><Bar w="w-[120px]" h="h-9" /></span>
+          </span>
         </div>
       )}
-      {header ? (
-        <ol className="mt-6 space-y-3">
-          {[0, 1].map((k) => (
-            <li key={k} className="rounded-xl border border-rule bg-card px-4 py-3.5">
-              <span className="flex items-center gap-3"><Bar w="size-10" h="" /><span className="flex-1"><Bar w="w-32" h="h-4" /><span className="mt-1.5 block"><Bar w="w-48" /></span></span></span>
-              <span className="mt-4 block"><Bar w="w-[80%]" h="h-5" /></span>
-              <span className="mt-4 grid grid-cols-2 gap-4"><Bar w="w-24" h="h-9" /><Bar w="w-24" h="h-9" /></span>
-              <span className="mt-4 block"><Bar w="w-full" h="h-8" /></span>
-            </li>
-          ))}
-        </ol>
-      ) : (
-        <ol className="border-t border-rule">
-          {Array.from({ length: rows }, (_, k) => (
-            <li key={k} className="flex items-center gap-3 border-b border-rule py-3">
-              <Bar w="size-8" h="" />
-              <span className="flex-1"><Bar w={k % 2 ? "w-36" : "w-44"} h="h-3.5" /><span className="mt-2 block"><Bar w="w-[75%]" /></span></span>
-            </li>
-          ))}
-        </ol>
-      )}
+      <ol className={header ? "mt-2" : "mt-4 border-t border-rule"}>
+        {Array.from({ length: header ? 3 : rows }, (_, k) => (
+          <li key={k} className="border-b border-rule py-4">
+            <Bar w="w-32" /><span className="mt-2 block"><Bar w={k % 2 ? "w-[70%]" : "w-[85%]"} h="h-5" /></span>
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }
 
+export const BUTTON = "press inline-flex h-11 items-center rounded-[4px] border border-ink px-4 text-15 font-semibold text-ink disabled:border-rule disabled:text-ink-3";
+
 export function LoadFailed({ error, retry, what = "The brief" }: { error: string; retry: () => void; what?: string }) {
   return (
-    <section className="pt-5" role="alert">
-      <h1 className="font-serif text-[1.75rem] leading-[1.15] font-semibold tracking-[-0.015em]">{what} didn&rsquo;t load.</h1>
-      <p className="mt-2 text-[0.9375rem] text-ink-2">
+    <section className="pt-6" role="alert">
+      <p className="kicker">Not loaded</p>
+      <h1 className="mt-2 font-serif text-26 leading-[1.1] font-semibold tracking-[-0.01em]">{what} didn&rsquo;t load.</h1>
+      <p className="mt-2 text-15 text-ink-2">
         {error.startsWith("HTTP 5")
           ? `FINN's data server didn't respond (${error}). Try again in a minute.`
           : `The data file couldn't be fetched (${error}). Check your connection, then try again.`}{" "}
         The original filings are still on BSE and NSE.
       </p>
-      <button type="button" onClick={retry} className="mt-4 h-10 rounded-md border border-ink/70 px-4 text-[0.9375rem] font-medium hover:bg-paper-2">
-        Try again
-      </button>
+      <button type="button" onClick={retry} className={`mt-4 ${BUTTON}`}>Try again</button>
     </section>
   );
 }

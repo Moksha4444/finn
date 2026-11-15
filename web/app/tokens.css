@@ -1,0 +1,23 @@
+/* FINN design tokens: the single source of truth for colour, type and motion (REDESIGN.md §1).
+   Newsprint, not pastel. Green and red colour numbers only, never backgrounds. */
+:root {
+  --paper: #F7F4EC;
+  --paper-raised: #FFFDF8; /* lead story and expanded story only */
+  --press: #EFEBE0; /* the 90ms pressed state */
+  --ink: #16161A;
+  --ink-2: #46464C;
+  /* #7A7A82 in the brief measured 3.87:1 on paper; darkened to pass 4.5:1 (5.1:1). */
+  --ink-3: #67676F;
+  --rule: #D9D4C7; /* hairline between rows */
+  --rule-strong: #16161A; /* under section heads */
+  --accent: #1F3A8A; /* ink blue: links, active states, filing-day markers */
+  --up: #16653F;
+  --down: #A01F2E;
+
+  /* sector tint: a 3px edge on the lead story only; the hue is derived from the sector name */
+  --tint-l: 62%;
+  --tint-c: 0.045;
+
+  --ease-enter: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-exit: cubic-bezier(0.55, 0, 1, 0.45);
+}

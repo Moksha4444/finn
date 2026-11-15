@@ -9,19 +9,31 @@ const RAYS: [string, string][] = [
   ["M8.05 27.3Q24 26.24 42 16.5Q24 28.55 5.95 31.5Z", "#2d4a2c"],
 ];
 
-export function Rays({ className = "h-6 w-8" }: { className?: string }) {
+export function Rays({ className = "h-6 w-8", drawn = false }: { className?: string; drawn?: boolean }) {
   return (
     <svg viewBox="0 0 44 33" className={className} aria-hidden="true">
-      {RAYS.map(([d, c]) => <path key={c} d={d} fill={c} />)}
+      {RAYS.map(([d, c], i) => <path key={c} d={d} fill={c} className={drawn ? "ray" : undefined} style={drawn ? ({ "--i": i } as React.CSSProperties) : undefined} />)}
     </svg>
   );
 }
 
-export function Wordmark() {
+export function Wordmark({ size = "text-20" }: { size?: string }) {
   return (
-    <span className="flex items-center gap-1.5">
+    <span className="flex items-center gap-2">
       <Rays />
-      <span className="font-serif text-[1.25rem] leading-none font-medium tracking-[0.14em]">FINN</span>
+      <span className={`font-serif ${size} leading-none font-semibold tracking-[0.14em]`}>FINN</span>
     </span>
+  );
+}
+
+// Launch splash (CSS only, 700ms, see globals.css). Server-rendered so content never flashes before it.
+export function Splash() {
+  return (
+    <div className="splash" aria-hidden="true">
+      <div className="flex flex-col items-center gap-3">
+        <Rays className="h-12 w-16" drawn />
+        <span className="word font-serif text-26 leading-none font-semibold tracking-[0.14em]">FINN</span>
+      </div>
+    </div>
   );
 }

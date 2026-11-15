@@ -20,11 +20,14 @@ const TABS = [
   { href: "/settings", text: "Settings" },
 ];
 
+// The Brief carries its own masthead; every other screen gets this slim one.
 export function TopBar() {
+  const path = usePathname();
+  if (path === "/") return <div className="pt-[env(safe-area-inset-top)]" />;
   return (
     <header className="border-b border-rule bg-paper pt-[env(safe-area-inset-top)]">
-      <div className="mx-auto flex h-12 max-w-[36rem] items-center px-5">
-        <Link href="/" aria-label="FINN, Brief" className="-mx-2 flex h-11 items-center px-2"><Wordmark /></Link>
+      <div className="mx-auto flex h-12 max-w-[36rem] items-center justify-center px-4">
+        <Link href="/" aria-label="FINN, Brief" className="press flex h-11 items-center rounded-[4px] px-2"><Wordmark size="text-17" /></Link>
       </div>
     </header>
   );
@@ -43,7 +46,7 @@ export function TabBar() {
   }, [alerts, unseen]);
 
   return (
-    <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-20 border-t border-rule bg-paper pb-[env(safe-area-inset-bottom)]">
+    <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-20 border-t border-rule bg-paper/95 backdrop-blur-sm pb-[env(safe-area-inset-bottom)]">
       <ul className="mx-auto grid h-14 max-w-[36rem] grid-cols-4">
         {TABS.map((t) => {
           const active = t.href === "/" ? path === "/" : path.startsWith(t.href);
@@ -53,14 +56,14 @@ export function TabBar() {
               <Link
                 href={t.href}
                 aria-current={active ? "page" : undefined}
-                className={`flex h-full flex-col items-center justify-center gap-0.5 text-[0.6875rem] ${active ? "font-semibold text-accent" : "text-ink-2"}`}
+                className={`press flex h-full flex-col items-center justify-center gap-1 text-11 tracking-[0.06em] uppercase ${active ? "font-semibold text-accent" : "text-ink-3"}`}
               >
                 <span className="relative">
-                  <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" className="tab-icon size-6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     {ICONS[t.href]}
                   </svg>
                   {count > 0 && (
-                    <span key={count} className="absolute -top-1 left-4 min-w-[1.125rem] animate-pop rounded-full bg-accent px-1 text-center text-[0.6875rem] leading-[1.125rem] font-semibold text-paper ring-2 ring-paper">
+                    <span key={count} className="absolute -top-1 left-4 min-w-[1.125rem] animate-pop rounded-full bg-accent px-1 text-center font-mono text-11 leading-[1.125rem] font-semibold text-paper ring-2 ring-paper">
                       {count}
                       <span className="sr-only"> new</span>
                     </span>
