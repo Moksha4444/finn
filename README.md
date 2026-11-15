@@ -2,7 +2,23 @@
 
 [![CI](https://github.com/Moksha4444/finn/actions/workflows/ci.yml/badge.svg)](https://github.com/Moksha4444/finn/actions/workflows/ci.yml)
 
+> Investors aren't short of information, they're short of filtering. FINN hides the routine, ranks what the market
+> reacted to, and asks whether management delivered what it promised.
+
 **Live:** https://finn-coral-eta.vercel.app (mobile-first; on a desktop it shows a QR code for your phone)
+
+**AI build history: [build-history/](build-history/)**: every Claude Code session that built FINN, in order
+([index](build-history/sessions/INDEX.md)).
+
+### Try it in 60 seconds
+
+1. **Brief → This month.** Results season across the 20 holdings, ranked by what the market reacted to. Tap a story for
+   the full results card (QoQ / YoY, one-offs flagged).
+2. **Research → Larsen & Toubro.** FY26 revenue growth guidance was 15% ("we maintain our full year revenue growth
+   guidance at 15%", Q2 FY26 call, p.10); delivered 11.8%: **missed**, with the quote and the page.
+3. **Research → search HAVELLS** (or any NSE symbol not in the list) for a live run: the backend's stages tick off as a
+   checklist, about 1–2 minutes.
+4. **Settings → change a threshold** (say, move vs Nifty from ±3% to ±1.5%), then go back to the Brief and watch it re-rank.
 
 FINN reads every exchange filing across a portfolio, hides the routine ones, and puts the few that matter at the top with
 the numbers already worked out. For any NSE company it also checks whether management delivered what it promised on
@@ -10,11 +26,11 @@ its last four earnings calls. Every figure links to the filing or transcript pag
 
 Built for the ENAM Holdings AI Engineer build challenge (11–15 Nov 2026).
 
-Screenshots of the live app at 390×844, taken on 15 Nov 2026:
+Screenshots of the live app (390×844, animations off), taken on 15 Nov 2026:
 
-| Brief (this week's edition) | L&T research | Promised vs Delivered | Live research in progress |
+| Brief: this month | Results card, expanded | Promised vs Delivered (L&T) | Live research in progress |
 |---|---|---|---|
-| ![The Brief: masthead, market strip, the week's verdict and the lead story](docs/screenshots/brief.png) | ![Larsen & Toubro: 90 days vs Nifty and the start of Promised vs Delivered](docs/screenshots/research-lt.png) | ![L&T's promises: a missed revenue-growth target and a hit on working capital, each with quote, citation and chart](docs/screenshots/research-lt-pvd.png) | ![Researching PIDILITIND: the backend's stages as a checklist](docs/screenshots/live-research.png) |
+| ![The Brief, this month's edition: masthead, market strip, the results-season verdict, the lead story and the next one](docs/screenshots/brief-month.png) | ![Tata Power's results card opened: revenue, EBITDA, PBT and PAT with QoQ and YoY, and the one-off gain flagged](docs/screenshots/results-card.png) | ![Larsen & Toubro's promises: FY26 revenue growth guidance of 15% missed at 11.8%, with quote, page and chart](docs/screenshots/promised-vs-delivered.png) | ![A live research run: the backend's stages as a checklist, ticking off](docs/screenshots/live-research.png) |
 
 ## What it does
 
@@ -72,7 +88,7 @@ python -m finn.pull.research (batch, by hand)          Render (FastAPI, free tie
   mirror the exchange filings and are cited as such). Prompts forbid outside knowledge; a missing fact is "not disclosed".
 - **Nothing is hard-coded to a ticker.** NSE symbol → BSE scrip code / screener slug is resolved at run time.
 - **A consistency gate** (`python -m finn.consistency`, also a test) checks that one fact has one number across the
-  feed and every research page; the research batch fails if it doesn't.
+  feed and every research page; the research batch fails if it doesn't. It caught ITC printing its year-ago column second, which had turned a −18.7% PAT change into −5.1%.
 
 Code map: `backend/finn/` (`llm.py` router, `sources/` BSE/NSE/screener/prices/PDF, `push/` classify/cards/rank,
 `pull/` PvD/segments/bank ratios/research, `api.py`, `ingest.py`), `web/` (Next.js app), `backend/tests/` (fixtures are
@@ -136,6 +152,8 @@ Full log with the evidence for each: [DECISIONS.md](DECISIONS.md). The ones that
 - **PvD verdicts are computed, not judged,** wherever a number exists. Segment targets are measured on the filing's
   segment table, bank CD ratios on the balance sheet, and no target is called hit or missed before its period ends.
   On the first 22-company run 62% of promises were "not measurable"; now it's 36 of 72, and each one says why.
+- **No letter grades.** An A–D grade for management was built and then removed: a letter from two measured promises is
+  false precision. FINN prints the counts ("KEPT 1 · MISSED 1 · OPEN 1") and shows no record under 2 measured promises.
 - **A thin, true section beats a full, generic one.** Bull/bear points that fail the checks are dropped, not padded.
 - **No paid APIs, no database.** Free Gemini + Groq tiers with fallbacks; JSON files plus disk caches instead of
   SQLite/Supabase.
