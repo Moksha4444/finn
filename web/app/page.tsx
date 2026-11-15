@@ -6,6 +6,7 @@ import { Chevron, Collapse } from "@/components/Collapse";
 import { eventLabel, FeedRow } from "@/components/FeedRow";
 import { Rays } from "@/components/Logo";
 import { Count, Signed } from "@/components/Signed";
+import { Ticker } from "@/components/Ticker";
 import { FeedSkeleton, LoadFailed } from "@/components/States";
 import { WIN_HOURS, WIN_PERIOD, filedAt, inWindow, istTime, lastDays, ranked, shortDate, useFeed, useSettings, type Feed, type RankedItem, type Settings, type Win } from "@/lib/feed";
 import { group, type Group } from "@/lib/group";
@@ -126,7 +127,7 @@ function QuietDay({ feed, s, win, routine, open, next, showRoutine }: {
             {[up, down].map((d) => d && (
               <li key={d.symbol}>
                 <Link href={`/research?symbol=${d.symbol}`} className="press -mx-1 flex min-h-11 items-center gap-2 rounded-[4px] px-1">
-                  <span className="w-[5.5rem] shrink-0 font-mono text-13 font-semibold text-ink">{d.symbol}</span>
+                  <Ticker symbol={d.symbol} />
                   <Name name={name(d.symbol)} className="min-w-0 text-15 text-ink-2" />
                   <span className="ml-auto shrink-0 pl-2 font-mono text-13 font-medium whitespace-nowrap"><Signed text={pct(d.v)} arrows /></span>
                 </Link>

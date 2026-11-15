@@ -117,6 +117,18 @@ input[type="checkbox"] { accent-color: var(--accent); }
   padding-bottom: 0.375rem;
 }
 
+/* Ticker chip (components/Ticker.tsx): hugs its text; the column around it is fixed, so names after it align.
+   Navy 8%, the nav pill's navy. A ticker longer than the column ends in an ellipsis. */
+.chip {
+  display: inline-block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  padding: 2px 6px; border-radius: 4px; background: color-mix(in oklab, var(--accent) 8%, transparent);
+  color: var(--accent); font-family: var(--font-mono); font-size: var(--text-13); line-height: 1rem; font-weight: 600;
+  text-transform: uppercase;
+}
+.ticker-col { width: var(--ticker-col); flex-shrink: 0; }
+/* a second line under the name, aligned with it: the ticker column plus the row's 0.5rem gap */
+.under-ticker { padding-left: calc(var(--ticker-col) + 0.5rem); }
+
 /* Surfaces: content sits on raised paper with a hairline edge; quiet depth, no shadow. */
 .card { background: var(--paper-raised); border: 1px solid var(--edge); border-radius: 6px; }
 /* Rows inside a card are inset 16px (the card's padding), hairlines between them, none under the last. */

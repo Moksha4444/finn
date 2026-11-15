@@ -5,6 +5,7 @@ import { Chevron, Collapse } from "@/components/Collapse";
 import { Name, shortName } from "@/components/Company";
 import { eventLabel, keyFact } from "@/components/FeedRow";
 import { Count, Signed } from "@/components/Signed";
+import { Ticker } from "@/components/Ticker";
 import { FeedSkeleton, LoadFailed } from "@/components/States";
 import { alertRows, needsLook, severity, type AlertRow } from "@/lib/alerts";
 import { ALERT_DAYS, buildAlerts, MINOR_VOL, shortDate, useFeed, useSettings, useUnseen, type Feed } from "@/lib/feed";
@@ -120,14 +121,14 @@ function Row({ r, feed, isNew }: { r: AlertRow; feed: Feed; isNew: boolean }) {
   const body = (
     <>
       <span className="flex items-baseline gap-2">
-        <span className="w-[5.5rem] shrink-0 truncate font-mono text-13 font-semibold text-ink">{r.symbol}</span>
+        <Ticker symbol={r.symbol} />
         <Name name={co?.name ?? lead?.name ?? r.symbol} className="font-serif text-17 font-semibold text-ink" />
         <span className="kicker ml-auto shrink-0 pl-2">
           {isNew && <span className="text-accent">New · </span>}
           <span className={SEV[sev]}><span className="sr-only">Severity: </span>{sev}</span>
         </span>
       </span>
-      <span className="block pl-[6rem]">
+      <span className="under-ticker block">
         {facts.length > 0 && (
           <span className="mt-1 block text-13 leading-[1.45] text-ink-2">
             {facts.map((f, k) => (

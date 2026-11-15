@@ -3,6 +3,7 @@ import { useState } from "react";
 import { filedAt, sentence, shortDate, type FundCard, type Item, type MgmtCard, type RankedItem, type ResultsCard, type ResultsLine } from "@/lib/feed";
 import { label, pct } from "@/lib/rank";
 import { Signed } from "./Signed";
+import { Ticker } from "./Ticker";
 import { period } from "@/lib/period";
 import { Collapse } from "./Collapse";
 
@@ -77,7 +78,7 @@ export function FeedRow({ item: i }: { item: RankedItem }) {
       >
         {/* line 1: who, what, and the market's verdict (single line); line 2: the fact (wraps to 2 lines) and when. */}
         <span className="flex items-baseline gap-2 whitespace-nowrap">
-          <span className="shrink-0 font-mono text-13 font-semibold">{i.symbol}</span>
+          <Ticker symbol={i.symbol} />
           <span className="kicker shrink-0">{eventLabel(i)}</span>
           {i.tier === "P1" && (
             <span className="inline-block size-[0.4375rem] shrink-0 -translate-y-px bg-accent" role="img" aria-label="Material" />

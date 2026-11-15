@@ -9,6 +9,7 @@ import { Sparkline } from "./charts/Charts";
 import { Chevron, Collapse } from "./Collapse";
 import { crore, Detail, eventLabel, FeedRow, keyFact, reasonText, title } from "./FeedRow";
 import { Signed } from "./Signed";
+import { Ticker } from "./Ticker";
 
 // ---- identity: a company is its ticker in mono plus its name; no tiles ----
 export const shortName = (name: string) =>
@@ -287,17 +288,17 @@ export function BriefLine({ g, co, initialOpen = false }: { g: Group; co?: Co; i
     <li ref={ref} className="scroll-mt-4 border-b border-rule last:border-b-0">
       <div className="press relative py-3">
         <p className="flex items-baseline gap-2">
-          <span className="w-[5.5rem] shrink-0 truncate font-mono text-13 font-semibold text-ink">{g.symbol}</span>
+          <Ticker symbol={g.symbol} />
           <span className="kicker min-w-0 truncate">{eventLabel(i)}{folded(g).length > 0 && ` +${folded(g).length}`}</span>
           <span className="ml-auto shrink-0 font-mono text-11 text-ink-3">{shortDate(i.filed).toUpperCase()}</span>
         </p>
         <button type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}
-          className="mt-1 line-clamp-2 w-full pl-[6rem] text-left text-15 leading-[1.35] text-ink after:absolute after:inset-0 after:content-['']">
+          className="under-ticker mt-1 line-clamp-2 w-full text-left text-15 leading-[1.35] text-ink after:absolute after:inset-0 after:content-['']">
           <span className="sr-only">{shortName(co?.name ?? i.name)}: </span>
           <Signed text={headlineOf(i)} />
         </button>
         {r && (
-          <p className={`mt-1 pl-[6rem] font-mono text-11 ${r.strong ? "font-semibold text-ink" : "text-ink-3"}`}><Signed text={r.text} arrows /></p>
+          <p className={`under-ticker mt-1 font-mono text-11 ${r.strong ? "font-semibold text-ink" : "text-ink-3"}`}><Signed text={r.text} arrows /></p>
         )}
       </div>
       <Collapse open={open} id={id}><div className="pb-3"><Body g={g} /></div></Collapse>

@@ -9,6 +9,7 @@
   /* warm grey, matched to the paper: 5.0:1 on paper, 4.7:1 on the press tint (AA). */
   --ink-3: #6B675F;
   --rule: #DDD7CC; /* hairline between rows */
+  --ticker-col: 5.75rem; /* the ticker column in list rows: fits the longest portfolio ticker's chip (10 characters) */
   --edge: #E4DED2; /* the 1px card border: lighter than a row hairline, so cards sit quietly */
   --rule-strong: #16161A; /* under section heads */
   --accent: #243F63; /* navy: links, active tab, toggles, focus rings, the company's line in charts */

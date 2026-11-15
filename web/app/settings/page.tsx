@@ -5,6 +5,7 @@ import { DEFAULTS, lastDays, P1_CATS, sentence, shortDate, useFeed, useSettings,
 import { label, pct } from "@/lib/rank";
 import { Name } from "@/components/Company";
 import { Signed } from "@/components/Signed";
+import { Ticker } from "@/components/Ticker";
 import { HowItWorksList } from "@/components/HowItWorks";
 import { BUTTON } from "@/components/States";
 
@@ -89,7 +90,7 @@ function Holdings() {
             return (
               <li key={s} className="border-b border-rule last:border-b-0">
                 <Link href={`/research?symbol=${s}`} className="press flex min-h-12 items-center gap-2">
-                  <span className="w-[5.5rem] shrink-0 truncate font-mono text-13 font-semibold text-ink">{s}</span>
+                  <Ticker symbol={s} />
                   <Name name={feed.companies?.[s]?.name ?? s} className="min-w-0 text-15 text-ink-2" />
                   <span className="ml-auto shrink-0 pl-2 font-mono text-13 whitespace-nowrap">{v == null ? <span className="text-ink-3">–</span> : <Signed text={pct(v)} arrows />}</span>
                 </Link>
