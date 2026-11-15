@@ -17,8 +17,8 @@
    the full results card (QoQ / YoY, one-offs flagged).
 3. **Research → Larsen & Toubro.** FY26 revenue growth guidance was 15% ("we maintain our full year revenue growth
    guidance at 15%", Q2 FY26 call, p.10); delivered 11.8%: **missed**, with the quote and the page.
-4. **Research → search HAVELLS and run live research** (or any NSE symbol not in the list): the backend's stages tick
-   off as a checklist, about 1–2 minutes.
+4. **Research → search any NSE symbol we didn't pick (e.g. PIDILITIND or CROMPTON) → Research this company.** FINN reads
+   the last four transcripts live in about 1–2 minutes; a company someone already researched opens instantly from cache.
 5. **Settings → change a threshold** (say, move vs Nifty from ±3% to ±1.5%), then go back to the Brief and watch it re-rank.
 
 FINN reads every exchange filing across a portfolio, hides the routine ones, and puts the few that matter at the top with
