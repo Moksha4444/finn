@@ -18,6 +18,7 @@
   --color-transparent: transparent;
 
   --font-serif: var(--font-newsreader), ui-serif, Georgia, serif;
+  --font-wordmark: var(--font-lora), var(--font-newsreader), Georgia, serif;
   --font-sans: var(--font-source-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 
@@ -47,13 +48,18 @@
   @keyframes pulse-dot { 50% { opacity: 0.35; transform: scale(0.8); } }
 }
 
-/* Tab changes: React's <ViewTransition> crossfades old and new page. */
+/* Tab changes: React's <ViewTransition> crossfades old and new page (main only). The document root is taken out of
+   the transition, so the fixed tab bar is never snapshotted: it stays live and only its pill moves (no flicker). */
+:root { view-transition-name: none; }
 ::view-transition-old(*),
 ::view-transition-new(*) {
   animation-duration: 120ms;
   animation-timing-function: var(--ease-enter);
 }
 
+/* Layered on purpose: in Tailwind v4 unlayered CSS beats every utility, so a base or component rule out here would
+   silently override classes written in the markup (outline-none on an input, text-ink on a kicker). */
+@layer base {
 html {
   color-scheme: only light; /* never let the browser force-dark the paper */
   background: var(--paper);
@@ -61,6 +67,9 @@ html {
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
 }
+
+/* Headings are the serif by default; kickers and section heads set their own sans below. */
+h1, h2, h3 { font-family: var(--font-serif); }
 
 body {
   font-family: var(--font-sans);
@@ -74,7 +83,12 @@ body {
 a { text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
 input { caret-color: var(--accent); }
 input[type="checkbox"] { accent-color: var(--accent); }
+.card :focus-visible { outline-offset: -2px; } /* rings stay inside the card's edge */
+}
 
+@layer components {
+/* The wordmark lockup sets its own face on the whole lockup (link included), so nothing inside inherits the sans. */
+.wordmark { font-family: var(--font-wordmark); font-weight: 700; letter-spacing: 0.16em; line-height: 1; }
 /* Kicker: RESULTS · TATA POWER */
 .kicker {
   font-family: var(--font-sans);
@@ -101,7 +115,7 @@ input[type="checkbox"] { accent-color: var(--accent); }
 /* Surfaces: content sits on raised paper with a hairline edge; quiet depth, no shadow. */
 .card { background: var(--paper-raised); border: 1px solid var(--rule); border-radius: 6px; }
 /* Rows inside a card are inset 16px (the card's padding), hairlines between them, none under the last. */
-.card :focus-visible { outline-offset: -2px; } /* rings stay inside the card's edge */
+}
 
 /* Press feedback: every tappable row or button gives way for 90ms. */
 .press {

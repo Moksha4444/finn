@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { shortDate } from "@/lib/feed";
 import { pct } from "@/lib/rank";
 import { Signed } from "../Signed";
@@ -92,6 +92,26 @@ const Dot = ({ x, y, className = "bg-accent" }: { x: number; y: number | string;
   <span aria-hidden="true" className={`pointer-events-none absolute size-[9px] -translate-x-1/2 -translate-y-1/2 rounded-full ring-2 ring-paper-raised ${className}`} style={{ left: `${x}%`, top: y }} />
 );
 const day = (d: string) => shortDate(d).toUpperCase();
+
+// Soft area under a company's line: navy 7% at the line's highest point fading to 0 at the plot's baseline.
+// Lines only (never bars, never Nifty). `pts` is the polyline's "x,y x,y" string in the SVG's own units.
+function Area({ pts, base }: { pts: string; base: number }) {
+  const id = useId();
+  const xy = pts.split(" ").filter(Boolean);
+  if (xy.length < 2) return null;
+  const first = xy[0].split(",")[0], last = xy[xy.length - 1].split(",")[0];
+  return (
+    <>
+      <defs>
+        <linearGradient id={id} x1="0" x2="0" y1="0" y2="1" className="text-accent">
+          <stop offset="0" stopColor="currentColor" stopOpacity="0.07" />
+          <stop offset="1" stopColor="currentColor" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <polygon points={`${first},${base} ${xy.join(" ")} ${last},${base}`} fill={`url(#${id})`} />
+    </>
+  );
+}
 const rupees = (v: number) => `₹${v.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 const fmt1 = (v: number) => `${v.toFixed(1)}%`;
@@ -134,6 +154,7 @@ export function Sparkline({ sym, closes, nifty, mark, pending, end }: {
     <div {...scrub} className="scrub relative z-10 h-9 w-[120px] shrink-0">
       <div ref={ref} className={`absolute inset-0 ${cls}`}>
         <svg viewBox="0 0 100 36" preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
+          <Area pts={line(s)} base={36} />
           {n.length > 0 && <polyline points={line(n)} fill="none" stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" className="text-ink-3/60" />}
           <polyline points={line(s)} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="text-accent" />
         </svg>
@@ -227,6 +248,7 @@ export function PathLine({ points: all, lo = null, hi = null, end = null, signed
       <div ref={ref} className={`absolute inset-0 ${cls}`}>
         {n > 1 && (
           <svg viewBox={`0 0 100 ${height}`} preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
+            {!banded && <Area pts={points.map(([, v], k) => `${x(k)},${y(v)}`).join(" ")} base={top + plot} />}
             <polyline points={points.map(([, v], k) => `${x(k)},${y(v)}`).join(" ")} fill="none" stroke="currentColor" strokeWidth="1.5"
               strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="text-accent" />
           </svg>
@@ -280,6 +302,7 @@ export function PriceLine({ closes, nifty, drawKey }: { closes: [string, number]
     <div {...scrub} role="img" aria-label={`Last 90 days: stock ${pct(sEnd)}${nEnd != null ? `, Nifty ${pct(nEnd)}` : ""}.`} className="scrub relative" style={{ height: H + 16 }}>
       <div ref={ref} className={`absolute inset-x-0 top-0 ${cls}`} style={{ height: H }}>
         <svg viewBox={`0 0 100 ${H}`} preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
+          <Area pts={line(s)} base={top + plot} />
           <line x1="0" x2="76" y1={y(0)} y2={y(0)} stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" className="text-rule" />
           {n.length > 0 && <polyline points={line(n)} fill="none" stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" className="text-ink-3/60" />}
           <polyline points={line(s)} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="text-accent" />

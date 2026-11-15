@@ -93,6 +93,13 @@ export function useFeed() {
   return { ...state, retry: () => { setState({}); setAttempt((a) => a + 1); } };
 }
 
+// Each holding's latest trading day from the feed (the market strip, the quiet day's pulse, Settings > Holdings).
+export function lastDays(feed: Feed) {
+  const last = new Map<string, Day>();
+  for (const d of feed.days) if (!last.has(d.symbol) || d.date > last.get(d.symbol)!.date) last.set(d.symbol, d);
+  return last;
+}
+
 // ---- windowing + ranking ----
 export type Win = "24h" | "7d" | "30d";
 export const WIN_HOURS: Record<Win, number> = { "24h": 24, "7d": 24 * 7, "30d": 24 * 30 };

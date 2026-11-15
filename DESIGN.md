@@ -14,7 +14,7 @@ colors:
   up: "#16653F"
   down: "#A01F2E"
 typography:
-  wordmark: { fontFamily: "Newsreader", fontSize: "34px", fontWeight: 700 }
+  wordmark: { fontFamily: "Lora", fontSize: "34px", fontWeight: 700, letterSpacing: "0.16em" }
   display: { fontFamily: "Newsreader", fontSize: "28px", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-0.01em" }
   lead: { fontFamily: "Newsreader", fontSize: "24px", fontWeight: 600, lineHeight: 1.1 }
   h2: { fontFamily: "Newsreader", fontSize: "20px", fontWeight: 600, lineHeight: 1.15 }
@@ -60,6 +60,9 @@ palette is switched off (`--color-*: initial`), so a colour outside the tokens c
 
 ## Type rules
 - Fixed scale 28/24/20/17/15/13/11 (`text-28` … `text-11` utilities); 34 is the wordmark only. Nothing else.
+- Faces: Lora (wordmark only), Newsreader (h1–h3 by default), Source Sans 3 (body, kickers, section heads), Plex Mono.
+- CSS layering: base rules in `@layer base`, `.kicker`/`.section-head`/`.card`/`.wordmark` in `@layer components`, so a
+  utility class on an element always wins.
 - Kickers (`.kicker`): 11px uppercase sans, 0.12em tracking, `ink-3`: `RESULTS · TATA POWER`.
 - Section heads (`.section-head`): 11px small caps over a 1.5px `rule-strong`.
 - Mono: figures, tickers, dates in tables and signal lines. Headlines keep serif numerals ("Profit up 48.6% YoY").
@@ -95,13 +98,18 @@ palette is switched off (`--color-*: initial`), so a colour outside the tokens c
 - **Alerts wire**: mono dateline over a strong rule, the day's rows on a card; ticker column + serif name; signals in mono,
   event names as kickers; severity as a small-caps word on the right (HIGH bold, WATCH medium, INFO grey). With nothing
   new, the headline is one line: "No new alerts · 9 in the last 7 days".
-- **Tab bar**: navy icon + label when active, warm grey otherwise; a 2px navy mark slides between tabs (220ms ease-out);
-  press 0.96 for 90ms; top hairline; safe-area padding.
+- **Tab bar**: a filled pill behind the active tab (navy 10%, 10px radius) with navy icon + label; warm grey otherwise.
+  The pill slides between tabs (220ms ease-out); the bar itself never leaves the page or the view transition. Press 0.96
+  for 90ms; top hairline; safe-area padding; content ends 16px above it.
+- **Search**: one input, 48px, full width, 1px `rule`, 6px radius; focus is a 2px navy ring (border + shadow), no size change.
+- **Holdings** (Settings): ticker, name, latest move vs Nifty; no position data (FINN tracks a watchlist).
 - **Settings**: navy iOS-style switches; numbers with − / + steppers (44px) and the unit inside the field; "Saved" for 1.6s.
 - **Buttons**: one style, 44px, 1px ink border, radius 4px. Links: accent, semibold, no underline.
 
 ## Charts (`web/components/charts/Charts.tsx`)
 - One family, one alignment rule: left edge flush with the text column; labels 11px mono `ink-3`.
+- Lines get a soft area fill: navy 7% at the top fading to 0 at the baseline (company lines and margin only; never bars,
+  Nifty or promise charts).
 - Touch: tap or drag for a crosshair, a snapped dot and a value tip (date, value, Nifty on comparison lines, the target
   on promise charts); release dismisses (a quick tap lingers 1.6s). The tip stays 8px inside the screen. Vertical scroll
   still works over charts (`touch-action: pan-y`).

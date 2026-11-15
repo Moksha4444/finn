@@ -21,9 +21,9 @@ export function Rays({ className = "h-6 w-8" }: { className?: string }) {
 
 export function Wordmark({ size = "text-20" }: { size?: string }) {
   return (
-    <span className="flex items-center gap-2">
+    <span className="wordmark flex items-center gap-2">
       <Rays />
-      <span className={`font-serif ${size} leading-none font-semibold tracking-[0.14em]`}>FINN</span>
+      <span className={size}>FINN</span>
     </span>
   );
 }
@@ -43,7 +43,7 @@ export function Splash() {
             </g>
           ))}
         </svg>
-        <span className="word ml-2 font-serif text-34 leading-none font-bold tracking-[0.12em]">FINN</span>
+        <span className="word wordmark ml-2 text-34">FINN</span>
       </div>
     </div>
   );

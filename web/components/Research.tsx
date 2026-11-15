@@ -55,15 +55,16 @@ export function ResearchHome() {
       </p>
       <form role="search" onSubmit={go} className="mt-4">
         <label htmlFor="sym" className="sr-only">NSE symbol or company name</label>
-        <div className="flex h-12 items-center gap-2 rounded-[4px] border border-rule bg-paper-raised px-3 focus-within:border-accent focus-within:shadow-[inset_0_0_0_1px_var(--accent)]">
-          <svg viewBox="0 0 24 24" className="size-5 shrink-0 text-ink-3" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
+        {/* one field: the input is the box (48px, 1px edge); focus adds a 2px navy ring as a shadow, so nothing moves */}
+        <div className="relative">
+          <svg viewBox="0 0 24 24" className="pointer-events-none absolute top-3.5 left-3 size-5 text-ink-3" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
             <circle cx="10.5" cy="10.5" r="5.5" /><path d="M14.5 14.5l5 5" />
           </svg>
           <input id="sym" value={q} onChange={(e) => setQ(e.target.value)} autoComplete="off" autoCapitalize="characters" spellCheck={false}
             enterKeyHint="go" placeholder="Any NSE symbol or name"
-            className="h-full min-w-0 flex-1 bg-transparent font-mono text-17 text-ink outline-none placeholder:font-sans placeholder:text-ink-3" />
+            className={`block h-12 w-full rounded-[6px] border border-rule bg-paper-raised pl-10 font-mono text-17 text-ink outline-none placeholder:font-sans placeholder:text-ink-3 focus:border-accent focus:shadow-[0_0_0_1px_var(--accent)] focus-visible:outline-none ${query && SYMBOL.test(query) ? "pr-20" : "pr-3"}`} />
           {query && SYMBOL.test(query) && (
-            <button type="submit" className="press -mr-2 h-11 shrink-0 rounded-[4px] px-3 text-13 font-semibold text-accent">Open</button>
+            <button type="submit" className="press absolute top-0.5 right-0.5 h-11 rounded-[4px] px-3 text-13 font-semibold text-accent">Open</button>
           )}
         </div>
       </form>

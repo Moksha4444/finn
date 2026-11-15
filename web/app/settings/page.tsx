@@ -1,7 +1,10 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { DEFAULTS, P1_CATS, sentence, useSettings, type Settings } from "@/lib/feed";
-import { label } from "@/lib/rank";
+import Link from "next/link";
+import { DEFAULTS, lastDays, P1_CATS, sentence, shortDate, useFeed, useSettings, type Settings } from "@/lib/feed";
+import { label, pct } from "@/lib/rank";
+import { Name } from "@/components/Company";
+import { Signed } from "@/components/Signed";
 import { HowItWorksList } from "@/components/HowItWorks";
 import { BUTTON } from "@/components/States";
 
@@ -53,9 +56,48 @@ export default function SettingsPage() {
         <Saved show={saved === "reset"} />
       </div>
 
+      <Holdings />
+
       <h2 id="how" className="section-head mt-12 scroll-mt-4">How FINN works</h2>
       <HowItWorksList />
     </>
+  );
+}
+
+// The portfolio as FINN knows it: tickers only. FINN has no quantities, prices paid or P&L, and shows none (every
+// number on screen must trace to a filing or an exchange price). The move is the market strip's latest day vs Nifty.
+function Holdings() {
+  const { feed, error } = useFeed();
+  if (error) return null; // the Brief already says the feed didn't load; settings still work without it
+  const last = feed ? lastDays(feed) : null;
+  const syms = feed ? feed.portfolio ?? [...last!.keys()] : [];
+  const day = last && [...last.values()].map((d) => d.date).sort().at(-1);
+  return (
+    <section aria-labelledby="h-hold" className="mt-8">
+      <h2 id="h-hold" className="section-head flex justify-between">
+        Holdings{feed && <span className="font-mono font-normal tracking-normal text-ink-3">{syms.length}</span>}
+      </h2>
+      <p className="pt-2 text-13 text-ink-2">
+        FINN tracks a watchlist, not positions: no quantities, prices paid or P&amp;L.{day && <> Moves are vs Nifty on <span className="font-mono">{shortDate(day)}</span>.</>}
+      </p>
+      <ol className="card mt-2 px-4" aria-busy={!feed}>
+        {!feed
+          ? Array.from({ length: 5 }, (_, k) => <li key={k} className="h-12 border-b border-rule last:border-b-0" />)
+          : syms.map((s) => {
+            const d = last!.get(s);
+            const v = d ? d.excess_pct ?? d.move_pct : null;
+            return (
+              <li key={s} className="border-b border-rule last:border-b-0">
+                <Link href={`/research?symbol=${s}`} className="press flex min-h-12 items-center gap-2">
+                  <span className="w-[5.5rem] shrink-0 truncate font-mono text-13 font-semibold text-ink">{s}</span>
+                  <Name name={feed.companies?.[s]?.name ?? s} className="min-w-0 text-15 text-ink-2" />
+                  <span className="ml-auto shrink-0 pl-2 font-mono text-13 whitespace-nowrap">{v == null ? <span className="text-ink-3">–</span> : <Signed text={pct(v)} arrows />}</span>
+                </Link>
+              </li>
+            );
+          })}
+      </ol>
+    </section>
   );
 }
 
@@ -113,7 +155,7 @@ function NumberField(p: { id: string; label: string; hint: string; unit: string;
               onChange={(e) => setDraft(e.target.value)}
               onBlur={commit}
               onKeyDown={(e) => e.key === "Enter" && commit()}
-              className="h-full w-0 min-w-0 flex-1 bg-transparent text-right text-ink outline-none"
+              className="h-full w-0 min-w-0 flex-1 bg-transparent text-right text-ink outline-none focus-visible:outline-none"
             />
             <span className="pl-0.5 text-ink-3">{p.unit}</span>
           </span>

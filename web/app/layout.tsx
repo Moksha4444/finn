@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { ViewTransition } from "react";
-import { IBM_Plex_Mono, Newsreader, Source_Sans_3 } from "next/font/google";
+import { IBM_Plex_Mono, Lora, Newsreader, Source_Sans_3 } from "next/font/google";
 import { Splash } from "@/components/Logo";
 import { TabBar, TopBar } from "@/components/TabBar";
 import "./globals.css";
@@ -8,6 +8,8 @@ import "./globals.css";
 // Newsreader: a newspaper serif for headlines and the wordmark. Source Sans 3: body and UI.
 // IBM Plex Mono: every figure and ticker, so numbers align on their decimals.
 const serif = Newsreader({ variable: "--font-newsreader", subsets: ["latin"], weight: ["500", "600", "700"] });
+// Lora: the wordmark only. Warmer than Newsreader, with soft, brushed terminals.
+const wordmark = Lora({ variable: "--font-lora", subsets: ["latin"], weight: ["600", "700"] });
 const sans = Source_Sans_3({ variable: "--font-source-sans", subsets: ["latin"], weight: ["400", "600", "700"] });
 const mono = IBM_Plex_Mono({ variable: "--font-plex-mono", subsets: ["latin"], weight: ["400", "500", "600"] });
 
@@ -28,7 +30,7 @@ const SPLASH_GATE = `try{var n=Date.now(),t=+localStorage.getItem("finn.opened")
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-IN" className={`${serif.variable} ${sans.variable} ${mono.variable} antialiased`} suppressHydrationWarning>
+    <html lang="en-IN" className={`${serif.variable} ${wordmark.variable} ${sans.variable} ${mono.variable} antialiased`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: SPLASH_GATE }} />
       </head>
@@ -37,7 +39,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <TopBar />
         {/* route changes are transitions, so this crossfades tabs (120ms, see globals.css) */}
         <ViewTransition>
-          <main className="mx-auto max-w-[36rem] px-4 pb-[calc(6rem+env(safe-area-inset-bottom))]">{children}</main>
+          <main className="mx-auto max-w-[36rem] px-4 pb-[calc(4.5rem+env(safe-area-inset-bottom))]">{children}</main>
         </ViewTransition>
         <TabBar />
         {/* laptops only (a wide screen with a mouse): the column stays phone-sized, this says why */}

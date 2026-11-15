@@ -7,7 +7,7 @@ import { eventLabel, FeedRow } from "@/components/FeedRow";
 import { Rays } from "@/components/Logo";
 import { Count, Signed } from "@/components/Signed";
 import { FeedSkeleton, LoadFailed } from "@/components/States";
-import { WIN_HOURS, WIN_PERIOD, filedAt, inWindow, istTime, ranked, shortDate, useFeed, useSettings, type Feed, type RankedItem, type Settings, type Win } from "@/lib/feed";
+import { WIN_HOURS, WIN_PERIOD, filedAt, inWindow, istTime, lastDays, ranked, shortDate, useFeed, useSettings, type Feed, type RankedItem, type Settings, type Win } from "@/lib/feed";
 import { group, type Group } from "@/lib/group";
 import { pct } from "@/lib/rank";
 
@@ -56,9 +56,9 @@ function Masthead({ feed }: { feed: Feed }) {
   const n = feed.portfolio?.length ?? Object.keys(feed.companies ?? {}).length;
   return (
     <header className="pt-4 text-center">
-      <Link href="/" aria-label="FINN, Brief" className="press mx-auto flex w-fit items-center gap-2 rounded-[4px]">
+      <Link href="/" aria-label="FINN, Brief" className="wordmark press mx-auto flex w-fit items-center gap-2 rounded-[4px]">
         <Rays className="h-7 w-9" />
-        <span className="font-serif text-34 leading-none font-bold tracking-[0.12em]">FINN</span>
+        <span className="text-34">FINN</span>
       </Link>
       <p className="mt-3 border-y-[1.5px] border-rule-strong py-1.5 font-mono text-11 leading-4 tracking-[0.02em] whitespace-nowrap text-ink-2">
         {edition(feed.generated_at)} · PORTFOLIO EDITION · {n} HOLDINGS
@@ -69,13 +69,6 @@ function Masthead({ feed }: { feed: Feed }) {
       </p>
     </header>
   );
-}
-
-// Each holding's latest trading day (the market strip, and the quiet day's pulse).
-function lastDays(feed: Feed) {
-  const last = new Map<string, Feed["days"][number]>();
-  for (const d of feed.days) if (!last.has(d.symbol) || d.date > last.get(d.symbol)!.date) last.set(d.symbol, d);
-  return last;
 }
 
 // Every holding's latest day vs Nifty, scrolling sideways. A ticker opens its research page.
