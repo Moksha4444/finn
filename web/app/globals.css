@@ -21,9 +21,10 @@
   --font-sans: var(--font-source-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 
-  /* the fixed type scale, 34/26/20/17/15/13/11 */
+  /* the fixed type scale, 28/24/20/17/15/13/11 (34 is the wordmark only) */
   --text-34: 2.125rem;
-  --text-26: 1.625rem;
+  --text-28: 1.75rem;
+  --text-24: 1.5rem;
   --text-20: 1.25rem;
   --text-17: 1.0625rem;
   --text-15: 0.9375rem;
@@ -97,6 +98,11 @@ input[type="checkbox"] { accent-color: var(--accent); }
   padding-bottom: 0.375rem;
 }
 
+/* Surfaces: content sits on raised paper with a hairline edge; quiet depth, no shadow. */
+.card { background: var(--paper-raised); border: 1px solid var(--rule); border-radius: 6px; }
+/* Rows inside a card are inset 16px (the card's padding), hairlines between them, none under the last. */
+.card :focus-visible { outline-offset: -2px; } /* rings stay inside the card's edge */
+
 /* Press feedback: every tappable row or button gives way for 90ms. */
 .press {
   transition: transform 90ms var(--ease-exit), background-color 90ms var(--ease-exit);
@@ -109,9 +115,22 @@ input[type="checkbox"] { accent-color: var(--accent); }
 /* Charts wait hidden until first scrolled into view, then draw in. */
 .draw-wait { clip-path: inset(0 100% 0 0); }
 
-/* Active tab icon: a small spring when it becomes active. */
-@keyframes spring { 0% { transform: scale(0.86); } 60% { transform: scale(1.08); } 100% { transform: scale(1); } }
-[aria-current="page"] .tab-icon { animation: spring 240ms var(--ease-enter); }
+/* Tabs: icon + label give way to 0.96 for 90ms; the navy indicator slides between tabs (220ms ease-out). */
+.tab > span { transition: transform 90ms var(--ease-exit); }
+.tab:active > span { transform: scale(0.96); }
+.tab-mark { transition: transform 220ms var(--ease-enter); }
+
+/* iOS-style switch: a navy track, the knob slides 20px (160ms ease-out). */
+.switch { position: relative; width: 51px; height: 31px; flex-shrink: 0; border-radius: 999px; background: var(--rule);
+  transition: background-color 160ms var(--ease-enter); }
+.switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 27px; height: 27px; border-radius: 999px;
+  background: var(--paper-raised); box-shadow: 0 1px 2px rgb(22 22 26 / 0.2); transition: transform 160ms var(--ease-enter); }
+input:checked + .switch { background: var(--accent); }
+input:checked + .switch::after { transform: translateX(20px); }
+input:focus-visible + .switch { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Chart scrub: a crosshair and a value tip while a finger is on the chart. */
+.scrub { touch-action: pan-y; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 
 /* Market strip drifts into place; momentum scroll, no visible bar. */
 @keyframes drift { from { opacity: 0; transform: translateX(24px); } }

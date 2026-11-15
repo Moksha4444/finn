@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { shortDate } from "@/lib/feed";
 import { pct } from "@/lib/rank";
 import { Signed } from "../Signed";
@@ -25,6 +25,75 @@ export function useDraw(key?: string) {
   return [ref, state === "wait" ? "draw-wait" : state === "draw" ? "animate-draw" : ""] as const;
 }
 
+// ---- touch: tap or drag a chart for a crosshair and the values under the finger, snapped to the nearest point.
+// Release dismisses (a quick tap lingers 1.6s so it can be read). touch-action pan-y keeps vertical scrolling: the
+// browser cancels the scrub when the finger moves to scroll. A mouse hovers instead. ----
+function useScrub(xs: number[]) {
+  const box = useRef<HTMLDivElement>(null);
+  const [k, setK] = useState<number | null>(null);
+  const g = useRef({ x: 0, t: 0, moved: false, timer: 0 });
+  useEffect(() => () => clearTimeout(g.current.timer), []);
+  const pick = (cx: number) => {
+    const r = box.current?.getBoundingClientRect();
+    if (!r || !xs.length) return;
+    const p = ((cx - r.left) / r.width) * 100;
+    let best = 0;
+    xs.forEach((x, i) => { if (Math.abs(x - p) < Math.abs(xs[best] - p)) best = i; });
+    setK(best);
+  };
+  const off = () => setK(null);
+  const bind = {
+    ref: box,
+    onPointerDown: (e: React.PointerEvent) => { clearTimeout(g.current.timer); g.current = { x: e.clientX, t: e.timeStamp, moved: false, timer: 0 }; pick(e.clientX); },
+    onPointerMove: (e: React.PointerEvent) => {
+      if (e.pointerType !== "mouse" && !e.buttons) return;
+      if (Math.abs(e.clientX - g.current.x) > 4) g.current.moved = true;
+      pick(e.clientX);
+    },
+    onPointerUp: (e: React.PointerEvent) => {
+      if (e.pointerType === "mouse") return;
+      if (!g.current.moved && e.timeStamp - g.current.t < 300) g.current.timer = window.setTimeout(off, 1600);
+      else off();
+    },
+    onPointerCancel: off,
+    onPointerLeave: (e: React.PointerEvent) => { if (e.pointerType === "mouse") off(); },
+    onClick: (e: React.MouseEvent) => e.stopPropagation(), // a tap on a chart reads it; it doesn't open the story
+  };
+  return [k, bind] as const;
+}
+
+// The value tip: above the chart (below it if that would leave the screen), shifted sideways to stay 8px inside
+// the screen edge. Measured after layout, so it never overflows whatever its width.
+function Tip({ x, children }: { x: number; children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    Object.assign(el.style, { translate: "-50% 0", top: "", bottom: "100%" });
+    let r = el.getBoundingClientRect();
+    if (r.top < 8) { Object.assign(el.style, { top: "100%", bottom: "auto" }); r = el.getBoundingClientRect(); }
+    const vw = document.documentElement.clientWidth;
+    const dx = r.left < 8 ? 8 - r.left : r.right > vw - 8 ? vw - 8 - r.right : 0;
+    el.style.translate = `calc(-50% + ${dx}px) 0`;
+  });
+  return (
+    // no transition, ever: under reduced motion globals.css gives every property a 1ms transition, and a tip
+    // mid-transition measures at its old place (the edge clamp then misses)
+    <div ref={ref} aria-hidden="true" data-tip="" style={{ left: `${x}%`, transitionProperty: "none" }}
+      className="pointer-events-none absolute z-30 my-1.5 rounded-[4px] border border-rule-strong bg-paper-raised px-2 py-1 font-mono text-11 leading-4 whitespace-nowrap text-ink">
+      {children}
+    </div>
+  );
+}
+const Cross = ({ x, top = 0, bottom = 0 }: { x: number; top?: number; bottom?: number }) => (
+  <span aria-hidden="true" className="pointer-events-none absolute w-px bg-ink/45" style={{ left: `${x}%`, top, bottom }} />
+);
+const Dot = ({ x, y, className = "bg-accent" }: { x: number; y: number | string; className?: string }) => (
+  <span aria-hidden="true" className={`pointer-events-none absolute size-[9px] -translate-x-1/2 -translate-y-1/2 rounded-full ring-2 ring-paper-raised ${className}`} style={{ left: `${x}%`, top: y }} />
+);
+const day = (d: string) => shortDate(d).toUpperCase();
+const rupees = (v: number) => `₹${v.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
 const fmt1 = (v: number) => `${v.toFixed(1)}%`;
 const Label = ({ x, y, children, className = "", align = "center" }: { x: number; y: number; children: React.ReactNode; className?: string; align?: "center" | "left" | "right" }) => (
   <span aria-hidden="true"
@@ -42,7 +111,6 @@ export function Sparkline({ sym, closes, nifty, mark, pending, end }: {
   const [ref, cls] = useDraw(`spark-${sym}`);
   const since = new Date(Date.parse(end) - 30 * 864e5).toISOString().slice(0, 10);
   const pts = closes.filter(([d]) => d >= since && d <= end);
-  if (pts.length < 5) return null;
   const s = pts.map(([, c]) => c / pts[0][1] - 1);
   // Nifty on the same dates (carry the last close over a missing day), rebased to the stock's first day
   const nm = new Map(nifty ?? []);
@@ -60,8 +128,10 @@ export function Sparkline({ sym, closes, nifty, mark, pending, end }: {
   const my = mk >= 0 ? y(s[Math.min(mk, s.length - 1)]) : 0;
   const chg = s[s.length - 1] * 100;
   const nchg = n.length && n[n.length - 1] != null ? n[n.length - 1]! * 100 : null;
+  const [at, scrub] = useScrub(pts.map((_, k) => x(k)));
+  if (pts.length < 5) return null;
   return (
-    <div className="relative h-9 w-[120px] shrink-0">
+    <div {...scrub} className="scrub relative z-10 h-9 w-[120px] shrink-0">
       <div ref={ref} className={`absolute inset-0 ${cls}`}>
         <svg viewBox="0 0 100 36" preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
           {n.length > 0 && <polyline points={line(n)} fill="none" stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" className="text-ink-3/60" />}
@@ -70,11 +140,22 @@ export function Sparkline({ sym, closes, nifty, mark, pending, end }: {
         {mk >= 0 && (
           <>
             <span className="absolute inset-y-0 w-px bg-accent/30" style={{ left: `${x(mk)}%` }} />
-            <span className={`absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-[1px] ring-2 ring-paper ${pending ? "border-2 border-accent bg-paper" : "bg-accent"}`}
+            <span className={`absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-[1px] ring-2 ring-paper-raised ${pending ? "border-2 border-accent bg-paper-raised" : "bg-accent"}`}
               style={{ left: `${x(mk)}%`, top: `${(my / 36) * 100}%` }} />
           </>
         )}
       </div>
+      {at != null && (
+        <>
+          <Cross x={x(at)} />
+          <Dot x={x(at)} y={`${(y(s[at]) / 36) * 100}%`} />
+          <Tip x={x(at)}>
+            <span className="block text-ink-3">{day(pts[at][0])}</span>
+            {rupees(pts[at][1])} · <Signed text={pct(s[at] * 100)} />
+            {n[at] != null && <span className="block text-ink-3">NIFTY {pct(n[at]! * 100)}</span>}
+          </Tip>
+        </>
+      )}
       <p className="absolute top-full right-0 mt-1 font-mono text-11 leading-4 whitespace-nowrap text-ink-3">
         <span className="sr-only">30 days: </span>
         <span aria-hidden="true">30D </span><Signed text={pct(chg)} />{nchg != null && <> · NIFTY {pct(nchg)}</>}
@@ -127,8 +208,10 @@ export function PathLine({ points: all, lo = null, hi = null, end = null, signed
   const bandTop = hi != null ? y(hi) : top, bandBottom = lo != null ? y(lo) : top + plot;
   const endAt = end ? points.findIndex(([q]) => q === end) : -1; // the deadline quarter, if it's on the chart
   const bandRight = endAt >= 0 && endAt < n - 1 ? (x(endAt) + x(endAt + 1)) / 2 : 100;
+  const [at, scrub] = useScrub(points.map((_, k) => x(k)));
+  const target = lo != null && hi != null ? `${lo}–${hi}%` : lo != null ? `≥${lo}%` : hi != null ? `≤${hi}%` : null;
   return (
-    <div role="img" aria-label={describe} className="relative" style={{ height }}>
+    <div {...scrub} role="img" aria-label={describe} className="scrub relative" style={{ height }}>
       <svg viewBox={`0 0 100 ${height}`} preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
         {banded && <rect x={gut - 4} width={bandRight - gut + 4} y={bandTop} height={Math.max(0, bandBottom - bandTop)} className="fill-accent/[0.08]" />}
         {[lo, hi].map((b, k) => b != null && (
@@ -149,7 +232,7 @@ export function PathLine({ points: all, lo = null, hi = null, end = null, signed
           </svg>
         )}
         {points.map(([q, v], k) => (
-          <span key={q} aria-hidden="true" className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full ${k === endAt ? `size-[9px] border-2 bg-paper ${miss ? "border-down" : "border-accent"}` : `size-[7px] ring-2 ring-paper ${miss ? "bg-down" : "bg-accent"} ${show.has(k) ? "" : "opacity-60"}`}`}
+          <span key={q} aria-hidden="true" className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full ${k === endAt ? `size-[9px] border-2 bg-paper-raised ${miss ? "border-down" : "border-accent"}` : `size-[7px] ring-2 ring-paper-raised ${miss ? "bg-down" : "bg-accent"} ${show.has(k) ? "" : "opacity-60"}`}`}
             style={{ left: `${x(k)}%`, top: y(v) }} />
         ))}
         {points.map(([q, v], k) => show.has(k) && (
@@ -157,6 +240,16 @@ export function PathLine({ points: all, lo = null, hi = null, end = null, signed
         ))}
       </div>
       {points.map(([q], k) => (show.has(k) || n <= 5) && <Label key={q} x={x(k)} y={height - 14} className={k === endAt ? "font-medium text-ink" : "text-ink-3"}>{q}</Label>)}
+      {at != null && (
+        <>
+          <Cross x={x(at)} top={top - 4} bottom={18} />
+          <Dot x={x(at)} y={y(points[at][1])} className={miss ? "bg-down" : "bg-accent"} />
+          <Tip x={x(at)}>
+            <span className="block text-ink-3">{points[at][0]}{at === endAt ? " · DEADLINE" : ""}</span>
+            {value(points[at][1])}{target && <span className="text-ink-3"> · TARGET {target}</span>}
+          </Tip>
+        </>
+      )}
     </div>
   );
 }
@@ -182,9 +275,9 @@ export function PriceLine({ closes, nifty, drawKey }: { closes: [string, number]
     const mid = (ys + yn) / 2, up = sEnd >= nEnd;
     ys = mid + (up ? -7 : 7); yn = mid + (up ? 7 : -7);
   }
-  const day = (d: string) => shortDate(d).toUpperCase();
+  const [at, scrub] = useScrub(closes.map((_, k) => x(k)));
   return (
-    <div role="img" aria-label={`Last 90 days: stock ${pct(sEnd)}${nEnd != null ? `, Nifty ${pct(nEnd)}` : ""}.`} className="relative" style={{ height: H + 16 }}>
+    <div {...scrub} role="img" aria-label={`Last 90 days: stock ${pct(sEnd)}${nEnd != null ? `, Nifty ${pct(nEnd)}` : ""}.`} className="scrub relative" style={{ height: H + 16 }}>
       <div ref={ref} className={`absolute inset-x-0 top-0 ${cls}`} style={{ height: H }}>
         <svg viewBox={`0 0 100 ${H}`} preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
           <line x1="0" x2="76" y1={y(0)} y2={y(0)} stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" className="text-rule" />
@@ -196,15 +289,27 @@ export function PriceLine({ closes, nifty, drawKey }: { closes: [string, number]
       {nEnd != null && <Label x={78} y={yn} align="left" className="text-ink-3">NIFTY {pct(nEnd)}</Label>}
       <Label x={0} y={H + 2} align="left" className="text-ink-3">{day(closes[0][0])}</Label>
       <Label x={76} y={H + 2} align="right" className="text-ink-3">{day(closes[closes.length - 1][0])}</Label>
+      {at != null && (
+        <>
+          <Cross x={x(at)} bottom={16} />
+          {n[at] != null && <Dot x={x(at)} y={y(n[at]!)} className="bg-ink-3" />}
+          <Dot x={x(at)} y={y(s[at])} />
+          <Tip x={x(at)}>
+            <span className="block text-ink-3">{day(closes[at][0])}</span>
+            {rupees(closes[at][1])} · <Signed text={pct(s[at])} />
+            {n[at] != null && <span className="block text-ink-3">NIFTY {pct(n[at]!)}</span>}
+          </Tip>
+        </>
+      )}
     </div>
   );
 }
 
 // ---- bars: 88px. One series: the latest two in --accent, history at 35%. Two series (CFO vs PAT): accent vs accent 35%.
 // Values labelled only where `labelAt` says (first and last), so the rest stay quiet. ----
-export function Bars({ periods, series, labelAt, format, describe, drawKey }: {
+export function Bars({ periods, series, labelAt, format, tipValue, describe, drawKey }: {
   periods: string[]; series: { name: string; values: number[]; tone: "ink" | "faint" }[];
-  labelAt: number[]; format: (v: number, series: string) => string; describe: string; drawKey?: string;
+  labelAt: number[]; format: (v: number, series: string) => string; tipValue?: (v: number) => string; describe: string; drawKey?: string;
 }) {
   const [ref, cls] = useDraw(drawKey);
   const height = 54;
@@ -214,8 +319,9 @@ export function Bars({ periods, series, labelAt, format, describe, drawKey }: {
   const slot = 100 / periods.length, gap = series.length > 1 ? 0.12 : 0.22;
   const bw = (slot * (1 - gap * 2)) / series.length;
   const n = periods.length;
+  const [at, scrub] = useScrub(periods.map((_, k) => k * slot + slot / 2));
   return (
-    <div role="img" aria-label={describe} className="relative" style={{ height: top + height + 18 }}>
+    <div {...scrub} role="img" aria-label={describe} className="scrub relative" style={{ height: top + height + 18 }}>
       <div ref={ref} className={`absolute inset-0 ${cls}`}>
         {periods.map((p, k) => series.map((s, j) => {
           const v = s.values[k];
@@ -234,7 +340,17 @@ export function Bars({ periods, series, labelAt, format, describe, drawKey }: {
         }))}
       </div>
       <span aria-hidden="true" className="absolute inset-x-0 h-px bg-rule" style={{ top: zero }} />
-      {periods.map((p, k) => <Label key={p} x={k * slot + slot / 2} y={top + height + 3} className="text-ink-3">{p}</Label>)}
+      {/* past 6 periods the labels would touch: every other one, counted back from the latest (the tip names each) */}
+      {periods.map((p, k) => (n <= 6 || (n - 1 - k) % 2 === 0) && <Label key={p} x={k * slot + slot / 2} y={top + height + 3} className="text-ink-3">{p}</Label>)}
+      {at != null && (
+        <>
+          <span aria-hidden="true" className="pointer-events-none absolute bg-ink/[0.07]" style={{ left: `${at * slot}%`, width: `${slot}%`, top: top - 4, height: height + 8 }} />
+          <Tip x={at * slot + slot / 2}>
+            <span className="block text-ink-3">{periods[at]}</span>
+            {series.map((sr, j) => <span key={sr.name}>{j > 0 && " · "}{series.length > 1 && `${sr.name} `}{(tipValue ?? ((v: number) => format(v, sr.name)))(sr.values[at])}</span>)}
+          </Tip>
+        </>
+      )}
     </div>
   );
 }

@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 
 // "only light": Android Chrome's auto-dark otherwise repaints the paper design (seen on the user's phone, 12 Nov).
 export const viewport: Viewport = {
-  themeColor: "#F7F4EC", colorScheme: "only light", width: "device-width", initialScale: 1, viewportFit: "cover",
+  themeColor: "#F5F1E8", colorScheme: "only light", width: "device-width", initialScale: 1, viewportFit: "cover",
 };
 
 // Runs before first paint: the splash shows on launch only, not if FINN was opened in the last 5 minutes.

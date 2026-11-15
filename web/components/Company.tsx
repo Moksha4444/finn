@@ -20,7 +20,7 @@ export function Name({ name, className = "" }: { name: string; className?: strin
 }
 
 // ---- headline + key numbers ----
-function headlineOf(i: RankedItem): string {
+export function headlineOf(i: RankedItem): string {
   const c = i.card;
   if (c?.type === "results") {
     const pat = c.lines[c.lines.length - 1];
@@ -167,7 +167,7 @@ function Body({ g }: { g: Group }) {
             {g.docs.map((d) => (
               <li key={d.id} className="flex min-h-11 items-center gap-3 border-t border-rule">
                 {d.url ? (
-                  <a href={d.url} target="_blank" rel="noopener" className="min-w-0 truncate font-semibold text-accent">{title(d)}</a>
+                  <a href={d.url} target="_blank" rel="noopener" className="press min-w-0 truncate rounded-[4px] font-semibold text-accent">{title(d)}</a>
                 ) : (
                   <span className="min-w-0 truncate">{title(d)}</span>
                 )}
@@ -196,7 +196,7 @@ function AlsoMaterial({ g }: { g: Group }) {
   const groups = alsoGroups(g);
   if (!groups.length) return null;
   return (
-    <ul className="mt-3 space-y-1 text-13 leading-[1.35] text-ink-2">
+    <ul className="mt-2.5 space-y-1 text-13 leading-[1.35] text-ink-2">
       {groups.map((l) => (
         <li key={l[0].category} className="truncate">
           <span className="kicker text-ink">Also</span> · {eventLabel(l[0])}
@@ -232,9 +232,9 @@ function Kicker({ g, co }: { g: Group; co?: Co }) {
   );
 }
 
-// A story on the front page. Every story is the same component and looks the same: kicker, headline, numbers +
-// sparkline, reaction, promises, Also lines, hairline below. The one lead per edition differs only in type:
-// a heavier rule above, a 34px headline and a one-line deck. No box, no tint.
+// A story on the front page. Every story is the same card: kicker, headline, numbers + sparkline, reaction,
+// promises, Also lines. The one lead per edition differs only in type and room: a 24px headline, a one-line deck
+// and a little more padding. Same surface, no tint.
 // Only the headline is the toggle; a stretched ::after overlay keeps the whole story tappable.
 export function Story({ g, co, nifty, end, lead = false, initialOpen = false }: {
   g: Group; co?: Co; nifty?: [string, number][]; end: string; lead?: boolean; initialOpen?: boolean;
@@ -248,23 +248,23 @@ export function Story({ g, co, nifty, end, lead = false, initialOpen = false }: 
   const spark = co?.closes && <Sparkline sym={g.symbol} closes={co.closes} nifty={nifty} mark={i.reaction ? i.reaction_day : undefined} pending={pending} end={end} />;
   return (
     <li ref={ref}
-      className={`relative scroll-mt-4 border-b border-rule pb-4 transition-[scale] duration-[90ms] ease-in has-[h3_button:active]:scale-[0.985] ${lead ? "border-t-[3px] border-t-rule-strong pt-3" : "pt-4"}`}>
+      className={`card relative scroll-mt-4 transition-[scale,background-color] duration-[90ms] ease-in has-[h3_button:active]:scale-[0.985] has-[h3_button:active]:bg-press ${lead ? "px-5 py-5" : "px-4 py-4"}`}>
       <Kicker g={g} co={co} />
-      <h3 className={`mt-2 font-serif font-semibold tracking-[-0.01em] text-balance text-ink ${lead ? "text-34 leading-[1.05]" : "text-20 leading-[1.15]"}`}>
+      <h3 className={`mt-1.5 font-serif font-semibold tracking-[-0.01em] text-balance text-ink ${lead ? "text-24 leading-[1.1]" : "text-20 leading-[1.12]"}`}>
         <button type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}
           className="text-left after:absolute after:inset-0 after:content-['']">
           <span className="sr-only">{shortName(co?.name ?? i.name)}: </span>
           <Signed text={headlineOf(i)} />
         </button>
       </h3>
-      {deck && <p className="mt-2 truncate text-15 leading-[1.4] text-ink-2"><Signed text={deck.text} /></p>}
+      {deck && <p className="mt-1.5 truncate text-15 leading-[1.4] text-ink-2"><Signed text={deck.text} /></p>}
       {(i.card || spark) && (
-        <div className={`mt-3 flex items-end justify-between gap-3 ${spark ? "mb-5" : ""}`}>
+        <div className={`mt-2.5 flex items-end justify-between gap-3 ${spark ? "mb-5" : ""}`}>
           <Numbers i={i} />
           {spark}
         </div>
       )}
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+      <div className="mt-2.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 empty:hidden">
         {!deck?.reaction && <Reaction g={g} />}
         {i.card?.type === "results" && <Promises sym={g.symbol} co={co} />}
       </div>
@@ -284,7 +284,7 @@ export function BriefLine({ g, co, initialOpen = false }: { g: Group; co?: Co; i
   const r = reactionOf(g);
   const id = `b-${g.symbol}`;
   return (
-    <li ref={ref} className="scroll-mt-4 border-b border-rule">
+    <li ref={ref} className="scroll-mt-4 border-b border-rule last:border-b-0">
       <div className="press relative py-3">
         <p className="flex items-baseline gap-2">
           <span className="w-[5.5rem] shrink-0 truncate font-mono text-13 font-semibold text-ink">{g.symbol}</span>

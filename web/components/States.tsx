@@ -35,7 +35,7 @@ export function LoadFailed({ error, retry, what = "The brief" }: { error: string
   return (
     <section className="pt-6" role="alert">
       <p className="kicker">Not loaded</p>
-      <h1 className="mt-2 font-serif text-26 leading-[1.1] font-semibold tracking-[-0.01em]">{what} didn&rsquo;t load.</h1>
+      <h1 className="mt-2 font-serif text-28 leading-[1.05] font-semibold tracking-[-0.01em]">{what} didn&rsquo;t load.</h1>
       <p className="mt-2 text-15 text-ink-2">
         {error.startsWith("HTTP 5")
           ? `FINN's data server didn't respond (${error}). Try again in a minute.`

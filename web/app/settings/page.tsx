@@ -1,37 +1,57 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DEFAULTS, P1_CATS, sentence, useSettings, type Settings } from "@/lib/feed";
 import { label } from "@/lib/rank";
 import { HowItWorksList } from "@/components/HowItWorks";
 import { BUTTON } from "@/components/States";
 
+// "Saved" shows for 1.6s beside whatever just changed (and is announced once, politely).
+function useSaved() {
+  const [at, setAt] = useState<string | null>(null);
+  const t = useRef(0);
+  useEffect(() => () => clearTimeout(t.current), []);
+  const flash = (id: string) => { clearTimeout(t.current); setAt(id); t.current = window.setTimeout(() => setAt(null), 1600); };
+  return [at, flash] as const;
+}
+const Saved = ({ show }: { show: boolean }) => (
+  <span aria-hidden="true" className={`font-mono text-11 font-normal tracking-[0.04em] text-accent uppercase transition-opacity duration-150 ease-out ${show ? "opacity-100" : "opacity-0"}`}>
+    Saved
+  </span>
+);
+
 export default function SettingsPage() {
   const [s, update] = useSettings();
-  const toggle = (cat: string) => update({ cats: s.cats.includes(cat) ? s.cats.filter((c) => c !== cat) : [...s.cats, cat] });
+  const [saved, flash] = useSaved();
+  const save = (id: string, patch: Partial<Settings> | null) => { update(patch); flash(id); };
+  const toggle = (cat: string) => save(cat, { cats: s.cats.includes(cat) ? s.cats.filter((c) => c !== cat) : [...s.cats, cat] });
   const isDefault = JSON.stringify(s) === JSON.stringify(DEFAULTS);
 
   return (
     <>
       <section className="pt-6 pb-2">
         <p className="kicker">Settings</p>
-        <h1 className="mt-2 font-serif text-34 leading-[1.08] font-semibold tracking-[-0.01em]">Your thresholds</h1>
-        <p className="mt-2 text-13 text-ink-2">Saved on this device. Changes re-rank the brief straight away.</p>
+        <h1 className="mt-2 font-serif text-28 leading-[1.05] font-semibold tracking-[-0.01em]">Your thresholds</h1>
+        <p className="mt-2 text-13 text-ink-2">Settings are stored on this device, not in an account. Changes re-rank the brief straight away.</p>
       </section>
+      <p role="status" aria-live="polite" className="sr-only">{saved ? "Saved" : ""}</p>
 
       <h2 className="section-head mt-6">Market reaction</h2>
       <p className="pt-2 text-13 text-ink-2">
         A filing whose reaction day crosses either threshold ranks higher, and each crossing raises an alert.
       </p>
-      <NumberField id="vol" label="Volume" hint="times the 20-day average" unit="×" value={s.volN} min={1} step={0.5} onSave={(v) => update({ volN: v })} />
-      <NumberField id="move" label="Move vs Nifty" hint="either direction" unit="%" prefix="±" value={s.moveX} min={0.5} step={0.5} onSave={(v) => update({ moveX: v })} />
+      <div className="card mt-2 px-4">
+        <NumberField id="vol" label="Volume" hint="times the 20-day average" unit="×" value={s.volN} min={1} step={0.5} saved={saved === "vol"} onSave={(v) => save("vol", { volN: v })} />
+        <NumberField id="move" label="Move vs Nifty" hint="either direction" unit="%" prefix="±" value={s.moveX} min={0.5} step={0.5} saved={saved === "move"} onSave={(v) => save("move", { moveX: v })} />
+      </div>
 
       <h2 className="section-head mt-8">Alert me on filings about</h2>
-      <CatGroup cats={P1_CATS} s={s} toggle={toggle} />
+      <CatGroup cats={P1_CATS} s={s} toggle={toggle} saved={saved} />
       <p className="pt-2 text-13 text-ink-2">Only material filings alert. Dividends, calls, press releases and routine paperwork still show in the brief.</p>
 
-      <button type="button" disabled={isDefault} onClick={() => update(null)} className={`mt-6 ${BUTTON}`}>
-        Reset to defaults
-      </button>
+      <div className="mt-6 flex items-center gap-3">
+        <button type="button" disabled={isDefault} onClick={() => save("reset", null)} className={BUTTON}>Reset to defaults</button>
+        <Saved show={saved === "reset"} />
+      </div>
 
       <h2 id="how" className="section-head mt-12 scroll-mt-4">How FINN works</h2>
       <HowItWorksList />
@@ -39,16 +59,19 @@ export default function SettingsPage() {
   );
 }
 
-function CatGroup({ cats, s, toggle }: { cats: string[]; s: Settings; toggle: (c: string) => void }) {
+// iOS-style switches in navy; the whole row is the label, so the row is the tap target.
+function CatGroup({ cats, s, toggle, saved }: { cats: string[]; s: Settings; toggle: (c: string) => void; saved: string | null }) {
   return (
-    <fieldset>
+    <fieldset className="card mt-2 px-4">
       <legend className="sr-only">Material filings</legend>
       <ul>
         {cats.map((c) => (
-          <li key={c} className="border-b border-rule">
-            <label className="press flex min-h-12 cursor-pointer items-center justify-between gap-3 text-15 text-ink">
-              {sentence(label(c))}
-              <input type="checkbox" className="size-5" checked={s.cats.includes(c)} onChange={() => toggle(c)} />
+          <li key={c} className="border-b border-rule last:border-b-0">
+            <label className="press flex min-h-12 cursor-pointer items-center gap-3 text-15 text-ink">
+              <span className="min-w-0 flex-1">{sentence(label(c))}</span>
+              <Saved show={saved === c} />
+              <input type="checkbox" role="switch" className="peer sr-only" checked={s.cats.includes(c)} onChange={() => toggle(c)} />
+              <span className="switch" aria-hidden="true" />
             </label>
           </li>
         ))}
@@ -57,38 +80,44 @@ function CatGroup({ cats, s, toggle }: { cats: string[]; s: Settings; toggle: (c
   );
 }
 
-function NumberField(p: { id: string; label: string; hint: string; unit: string; prefix?: string; value: number; min: number; step: number; onSave: (v: number) => void }) {
+// A number with its unit inside the field and − / + steppers either side (44px each). Typing still works; a bad
+// value is refused with a reason, never saved.
+function NumberField(p: { id: string; label: string; hint: string; unit: string; prefix?: string; value: number; min: number; step: number; saved: boolean; onSave: (v: number) => void }) {
   const [draft, setDraft] = useState<string | null>(null); // null = showing the saved value
   const v = draft == null ? null : Number(draft);
   const bad = draft != null && (draft.trim() === "" || !Number.isFinite(v) || v! < p.min);
   const commit = () => {
-    if (!bad && v != null) p.onSave(v);
+    if (!bad && v != null && v !== p.value) p.onSave(v);
     if (!bad) setDraft(null);
   };
+  const step = (d: number) => { setDraft(null); p.onSave(Math.max(p.min, Math.round((p.value + d) * 100) / 100)); };
+  const STEP = "press flex size-11 shrink-0 items-center justify-center rounded-[4px] font-mono text-20 text-accent disabled:text-ink-3/50";
   return (
-    <div className="border-b border-rule py-3">
-      <div className="flex items-center justify-between gap-3">
-        <label htmlFor={p.id} className="text-15 font-semibold text-ink">
-          {p.label}
+    <div className="border-b border-rule py-3 last:border-b-0">
+      <div className="flex items-center justify-between gap-2">
+        <label htmlFor={p.id} className="min-w-0 text-15 font-semibold text-ink">
+          {p.label} <Saved show={p.saved} />
           <span className="block text-13 font-normal text-ink-3">{p.hint}</span>
         </label>
-        <span className="flex items-baseline gap-1 font-mono text-17">
-          {p.prefix && <span className="text-ink-3">{p.prefix}</span>}
-          <input
-            id={p.id}
-            type="number"
-            inputMode="decimal"
-            min={p.min}
-            step={p.step}
-            value={draft ?? String(p.value)}
-            aria-invalid={bad}
-            aria-describedby={bad ? `${p.id}-err` : undefined}
-            onChange={(e) => setDraft(e.target.value)}
-            onBlur={commit}
-            onKeyDown={(e) => e.key === "Enter" && commit()}
-            className={`h-11 w-[5rem] rounded-[4px] border bg-paper-raised px-2 text-right font-mono text-17 text-ink outline-none focus:border-accent focus:shadow-[inset_0_0_0_1px_var(--accent)] ${bad ? "border-down" : "border-rule"}`}
-          />
-          <span className="w-3 text-ink-3">{p.unit}</span>
+        <span className="-mr-2 flex shrink-0 items-center">
+          <button type="button" aria-label={`Decrease ${p.label.toLowerCase()} by ${p.step}`} disabled={p.value - p.step < p.min} onClick={() => step(-p.step)} className={STEP}>−</button>
+          <span className={`flex h-11 w-[5.25rem] items-center rounded-[4px] border bg-paper px-2 font-mono text-17 focus-within:border-accent focus-within:shadow-[inset_0_0_0_1px_var(--accent)] ${bad ? "border-down" : "border-rule"}`}>
+            {p.prefix && <span className="text-ink-3">{p.prefix}</span>}
+            <input
+              id={p.id}
+              type="text"
+              inputMode="decimal"
+              value={draft ?? String(p.value)}
+              aria-invalid={bad}
+              aria-describedby={bad ? `${p.id}-err` : undefined}
+              onChange={(e) => setDraft(e.target.value)}
+              onBlur={commit}
+              onKeyDown={(e) => e.key === "Enter" && commit()}
+              className="h-full w-0 min-w-0 flex-1 bg-transparent text-right text-ink outline-none"
+            />
+            <span className="pl-0.5 text-ink-3">{p.unit}</span>
+          </span>
+          <button type="button" aria-label={`Increase ${p.label.toLowerCase()} by ${p.step}`} onClick={() => step(p.step)} className={STEP}>+</button>
         </span>
       </div>
       {bad && <p id={`${p.id}-err`} className="mt-1.5 text-13 text-down">Enter a number of at least {p.min}.</p>}

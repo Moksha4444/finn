@@ -67,7 +67,7 @@ export function FeedRow({ item: i }: { item: RankedItem }) {
   const quietReason = !i.boosted && reason === "No price data";
   const id = `row-${i.id}`;
   return (
-    <li className="border-b border-rule">
+    <li className="border-b border-rule last:border-b-0">
       <button
         type="button"
         aria-expanded={open}
@@ -159,7 +159,6 @@ function Results({ c }: { c: ResultsCard }) {
         <p key={o} className="mt-2 font-semibold text-ink">{o}.</p>
       ))}
       {c.note && <p className="mt-2 text-13 text-ink-3">{c.note}.</p>}
-      {c.model_note && <p className="mt-1 text-13 text-ink-3">{c.model_note}</p>}
     </>
   );
 }
@@ -178,7 +177,6 @@ function Mgmt({ c }: { c: MgmtCard }) {
           {p.bio && <Bio text={p.bio} cited={p.bio_page != null} page={p.bio_page} />}
         </li>
       ))}
-      {c.model_note && <li className="text-13 text-ink-3">{c.model_note}</li>}
     </ul>
   );
 }
@@ -194,7 +192,7 @@ function Bio({ text, cited, page }: { text: string; cited: boolean; page: number
         {!full && (
           <>
             {" · "}
-            <button type="button" onClick={() => setFull(true)} className="-my-3 inline-block py-3 font-semibold text-accent">Full profile</button>
+            <button type="button" onClick={() => setFull(true)} className="press -my-3 inline-block rounded-[4px] py-3 font-semibold text-accent">Full profile</button>
           </>
         )}
       </p>
@@ -215,7 +213,6 @@ function Fund({ c, i }: { c: FundCard; i: RankedItem }) {
           : c.dilution_pct != null ? <> · Dilution <span className="font-mono text-ink">{c.dilution_pct.toFixed(2)}%</span> <span className="text-ink-2">(shares issued ÷ shares after the issue)</span></>
           : <span className="text-ink-2"> · dilution not stated</span>}
       </p>
-      {c.model_note && <p className="mt-1 text-13 text-ink-3">{c.model_note}</p>}
     </>
   );
 }
@@ -240,7 +237,7 @@ function Source({ i, page }: { i: RankedItem; page?: number }) {
       {failed && <p className="mt-2">Couldn&rsquo;t read this filing automatically. The original is linked below.</p>}
       <p className="mt-2 text-13 text-ink-3">
         {i.url ? (
-          <a href={page ? `${i.url}#page=${page}` : i.url} target="_blank" rel="noopener" className="-my-3 inline-block py-3 font-semibold text-accent">
+          <a href={page ? `${i.url}#page=${page}` : i.url} target="_blank" rel="noopener" className="press -my-3 inline-block rounded-[4px] py-3 font-semibold text-accent">
             {page ? `Open filing at p. ${page}` : "Open filing"} →
           </a>
         ) : (

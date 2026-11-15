@@ -45,21 +45,29 @@ export function TabBar() {
     return alerts ? alertRows(alerts).filter((r) => needsLook(r) && r.keys.some((k) => keys.has(k))).length : 0;
   }, [alerts, unseen]);
 
+  const at = TABS.findIndex((t) => (t.href === "/" ? path === "/" : path.startsWith(t.href)));
   return (
     <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-20 border-t border-rule bg-paper/95 backdrop-blur-sm pb-[env(safe-area-inset-bottom)]">
-      <ul className="mx-auto grid h-14 max-w-[36rem] grid-cols-4">
-        {TABS.map((t) => {
-          const active = t.href === "/" ? path === "/" : path.startsWith(t.href);
+      <ul className="relative mx-auto grid h-14 max-w-[36rem] grid-cols-4">
+        {/* the active tab's 2px navy mark, sliding between tabs (220ms ease-out) */}
+        {at >= 0 && (
+          <li aria-hidden="true" className="tab-mark pointer-events-none absolute -top-px left-0 flex h-0.5 w-1/4 justify-center" style={{ transform: `translateX(${at * 100}%)` }}>
+            <span className="h-full w-10 rounded-b-[1px] bg-accent" />
+          </li>
+        )}
+        {TABS.map((t, k) => {
+          const active = k === at;
           const count = t.href === "/alerts" && !active ? fresh : 0;
           return (
             <li key={t.href}>
               <Link
                 href={t.href}
                 aria-current={active ? "page" : undefined}
-                className={`press flex h-full flex-col items-center justify-center gap-1 text-11 tracking-[0.06em] uppercase ${active ? "font-semibold text-accent" : "text-ink-3"}`}
+                className={`tab flex h-full flex-col items-center justify-center text-11 tracking-[0.06em] uppercase transition-colors duration-150 ${active ? "font-semibold text-accent" : "text-ink-3"}`}
               >
+                <span className="flex flex-col items-center gap-1">
                 <span className="relative">
-                  <svg viewBox="0 0 24 24" className="tab-icon size-6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     {ICONS[t.href]}
                   </svg>
                   {count > 0 && (
@@ -70,6 +78,7 @@ export function TabBar() {
                   )}
                 </span>
                 {t.text}
+                </span>
               </Link>
             </li>
           );

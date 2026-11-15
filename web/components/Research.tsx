@@ -11,7 +11,7 @@ import { crore } from "./FeedRow";
 import { Signed } from "./Signed";
 import { BUTTON, LoadFailed } from "./States";
 
-const H1 = "font-serif text-34 leading-[1.08] font-semibold tracking-[-0.01em] text-balance";
+const H1 = "font-serif text-28 leading-[1.05] font-semibold tracking-[-0.01em] text-balance";
 const H2 = "section-head";
 const SYMBOL = /^[A-Z0-9&-]{1,20}$/;
 
@@ -68,9 +68,9 @@ export function ResearchHome() {
         </div>
       </form>
       {!rows ? (
-        <ol className="mt-8 border-t-[1.5px] border-rule-strong">
+        <ol className="card mt-8 px-4">
           {Array.from({ length: 6 }, (_, k) => (
-            <li key={k} className="flex items-center gap-3 border-b border-rule py-4"><Bar w="w-16" /><Bar w="w-36" h="h-4" /></li>
+            <li key={k} className="flex items-center gap-3 border-b border-rule py-4 last:border-b-0"><Bar w="w-16" /><Bar w="w-36" h="h-4" /></li>
           ))}
         </ol>
       ) : (
@@ -81,7 +81,7 @@ export function ResearchHome() {
               return rows.length > 0 && (
                 <section key={head} className="mt-8">
                   <h2 className="section-head flex justify-between">{head}<span className="font-mono font-normal tracking-normal text-ink-3">{rows.length}</span></h2>
-                  <ol>{rows.map((r) => <IndexItem key={r.symbol} r={r} />)}</ol>
+                  <ol className="card mt-2 px-4">{rows.map((r) => <IndexItem key={r.symbol} r={r} />)}</ol>
                 </section>
               );
             })
@@ -108,8 +108,8 @@ const GROUPS: [string, (r: IndexRow) => boolean][] = [
 function IndexItem({ r }: { r: IndexRow }) {
   const counts = promiseCounts(r.summary);
   return (
-    <li>
-      <Link href={`/research?symbol=${r.symbol}`} className="press flex min-h-12 flex-col justify-center border-b border-rule py-3">
+    <li className="border-b border-rule last:border-b-0">
+      <Link href={`/research?symbol=${r.symbol}`} className="press flex min-h-12 flex-col justify-center py-3">
         <span className="flex items-baseline gap-2">
           <span className="w-[5.5rem] shrink-0 truncate font-mono text-13 font-semibold text-ink">{r.symbol}</span>
           <Name name={r.name} className="font-serif text-17 font-semibold text-ink" />
@@ -315,10 +315,10 @@ export function CompanyResearch({ symbol, auto = false }: { symbol: string; auto
       <Back />
       <header className="pt-1">
         <p className="font-mono text-13 font-semibold text-ink">{d.symbol}</p>
-        <h1 className="mt-1 font-serif text-26 leading-[1.1] font-semibold tracking-[-0.01em] text-balance">{shortName(d.name)}</h1>
+        <h1 className="mt-1 font-serif text-28 leading-[1.05] font-semibold tracking-[-0.01em] text-balance">{shortName(d.name)}</h1>
         <p className="mt-1 text-13 text-pretty text-ink-3">{d.sector}{d.sector && d.latest_quarter && " · "}{d.latest_quarter && <>results to <span className="font-mono">{d.latest_quarter}</span></>}</p>
         {d.prices && d.prices.closes.length > 4 && (
-          <div className="mt-4">
+          <div className="card mt-4 px-4 pt-3 pb-2">
             <p className="kicker mb-2">90 days vs Nifty 50</p>
             <PriceLine closes={d.prices.closes} nifty={d.prices.nifty} drawKey={`price-${d.symbol}`} />
           </div>
@@ -331,14 +331,15 @@ export function CompanyResearch({ symbol, auto = false }: { symbol: string; auto
           <p className="mt-3 font-mono text-11 tracking-[0.04em] text-ink-2 uppercase">{promiseCounts(d.summary)}</p>
         )}
         <p className="mt-1 font-serif text-20 leading-[1.2] font-semibold text-balance">{d.pvd_error ?? d.summary.sentence}</p>
-        {d.model_note && <p className="mt-2 text-13 text-ink-3">{d.model_note}</p>}
         {measured.some((p) => p.chart) && (
           <p className="mt-2 text-13 leading-snug text-pretty text-ink-3">Shaded: the target, up to its deadline. Dots: each quarter since the call.</p>
         )}
-        {measured.length > 0 && (
-          <ol className="mt-3 border-t-[1.5px] border-rule-strong">{measured.map((p, k) => <PromiseItem key={k} p={p} k={k} sym={d.symbol} />)}</ol>
+        {(measured.length > 0 || open.length > 0) && (
+          <div className="card mt-3 px-4">
+            {measured.length > 0 && <ol>{measured.map((p, k) => <PromiseItem key={k} p={p} k={k} sym={d.symbol} />)}</ol>}
+            {open.length > 0 && <Unmeasured rows={open} />}
+          </div>
         )}
-        {open.length > 0 && <Unmeasured rows={open} />}
       </section>
 
       <Snapshot d={d} />
@@ -366,7 +367,7 @@ const ExtLink = ({ c, className = "" }: { c: Cite; className?: string }) =>
   ) : <span className={className}>{c.label}</span>;
 
 // Inline citations are one line of small text: extend the hit area to 44px without changing the layout.
-const HIT = "relative after:absolute after:-inset-y-3 after:-inset-x-1 after:content-['']";
+const HIT = "relative transition-opacity duration-[90ms] active:opacity-60 after:absolute after:-inset-y-3 after:-inset-x-1 after:content-['']";
 
 // "Loan-to-deposit ratio · FY26 (Apr 2025 – Mar 2026)": the period tells two promises on one metric apart.
 const title = (p: PromiseRow) => {
@@ -419,7 +420,7 @@ function PromiseItem({ p, k, sym }: { p: PromiseRow; k: number; sym: string }) {
   const desc = c ? `${p.metric} by quarter: ${c.points.map(([q, v]) => `${q} ${c.kind === "growth" ? pct(v) : `${v}%`}`).join(", ")}.` +
     ` Target ${c.lo != null && c.hi != null ? `${c.lo} to ${c.hi}%` : c.lo != null ? `at least ${c.lo}%` : `at most ${c.hi}%`}.` : "";
   return (
-    <li className="grid grid-cols-[1.5rem_1fr] gap-x-2 border-b border-rule py-4">
+    <li className="grid grid-cols-[1.5rem_1fr] gap-x-2 border-b border-rule py-4 last:border-b-0">
       <Mark v={p.verdict} />
       <div className="min-w-0">
       <p className={`kicker ${verdictWeight(p.verdict)}`}>{VERDICT_TEXT[p.verdict] ?? p.verdict}</p>
@@ -444,7 +445,7 @@ function PromiseItem({ p, k, sym }: { p: PromiseRow; k: number; sym: string }) {
         <div className="pb-1 text-13 leading-[1.45] text-ink-2">
           <p>{plain(p.why)}</p>
           {p.path && <p className="mt-1 text-ink-3">Path: <Signed text={p.path} /></p>}
-          {p.actual_source && <p className="mt-1 text-ink-3">Source: {p.actual_source}{p.model && !p.model.startsWith("python") ? ` · evidence picked by ${p.model.split(" ")[0].split("/").pop()}` : ""}</p>}
+          {p.actual_source && <p className="mt-1 text-ink-3">Source: {p.actual_source}</p>}
           {p.cites.length > 0 && (
             <ul className="mt-1.5 space-y-1">
               {p.cites.map((c, j) => <li key={j} className="py-1.5"><ExtLink c={c} className={HIT} /></li>)}
@@ -460,7 +461,7 @@ function PromiseItem({ p, k, sym }: { p: PromiseRow; k: number; sym: string }) {
 function Unmeasured({ rows }: { rows: PromiseRow[] }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border-b border-rule">
+    <div className="border-t border-rule first:border-t-0">
       <button type="button" aria-expanded={open} aria-controls="nym" onClick={() => setOpen(!open)}
         className="press flex min-h-12 w-full items-center justify-between gap-3 text-left text-13 font-semibold text-accent">
         {open ? `Hide the ${rows.length} unmeasured` : `${rows.length} more ${rows.length === 1 ? "promise" : "promises"} can't be measured yet`}
@@ -489,7 +490,7 @@ const ends = (xs: unknown[]) => (xs.length > 1 ? [0, xs.length - 1] : [0]);
 
 function Claim({ id, claim, children }: { id: string; claim: string; children: React.ReactNode }) {
   return (
-    <div id={id} className="scroll-mt-4 border-b border-rule py-4">
+    <div id={id} className="scroll-mt-4 border-b border-rule py-4 last:border-b-0">
       <p className="font-serif text-17 leading-[1.25] font-semibold text-pretty text-ink"><Signed text={claim} /></p>
       <div className="mt-3">{children}</div>
     </div>
@@ -511,15 +512,15 @@ function Snapshot({ d }: { d: Research }) {
     <section aria-labelledby="snap-h" className="mt-10">
       <h2 id="snap-h" className={H2}>Financial snapshot</h2>
       <p className="mt-2 text-13 text-ink-3">{s.basis[0].toUpperCase() + s.basis.slice(1)} · ₹ crore · from the results filings</p>
-      <div>
+      <div className="card mt-2 px-4">
         {q && (
           <Claim id="quarters" claim={q.claim}>
             <p className="kicker mb-2">{q.revenue_name}</p>
             <Bars periods={q.periods.map(short)} series={[{ name: q.revenue_name, values: q.revenue, tone: "ink" }]} labelAt={ends(q.periods)} drawKey={`rev-${d.symbol}`}
-              format={(v) => crore(v)} describe={`${q.revenue_name} by quarter, ₹ crore: ${q.periods.map((p, k) => `${p} ${crore(q.revenue[k])}`).join(", ")}.`} />
+              format={(v) => crore(v)} tipValue={(v) => `₹${crore(v)} cr`} describe={`${q.revenue_name} by quarter, ₹ crore: ${q.periods.map((p, k) => `${p} ${crore(q.revenue[k])}`).join(", ")}.`} />
             <p className="kicker mt-3 mb-2">PAT</p>
             <Bars periods={q.periods.map(short)} series={[{ name: "PAT", values: q.pat, tone: "ink" }]} labelAt={ends(q.periods)} drawKey={`pat-${d.symbol}`}
-              format={(v) => crore(v)} describe={`PAT by quarter, ₹ crore: ${q.periods.map((p, k) => `${p} ${crore(q.pat[k])}`).join(", ")}.`} />
+              format={(v) => crore(v)} tipValue={(v) => `₹${crore(v)} cr`} describe={`PAT by quarter, ₹ crore: ${q.periods.map((p, k) => `${p} ${crore(q.pat[k])}`).join(", ")}.`} />
           </Claim>
         )}
         {m && (
@@ -533,7 +534,7 @@ function Snapshot({ d }: { d: Research }) {
         {cash && (
           <Claim id="cash" claim={cash.claim}>
             <Bars periods={cash.years} series={[{ name: "CFO", values: cash.cfo, tone: "ink" }, { name: "PAT", values: cash.pat, tone: "faint" }]}
-              labelAt={[cash.years.length - 1]} format={(_, name) => name} drawKey={`cash-${d.symbol}`}
+              labelAt={[cash.years.length - 1]} format={(_, name) => name} tipValue={(v) => `₹${crore(v)} cr`} drawKey={`cash-${d.symbol}`}
               describe={`Cash from operations vs PAT, ₹ crore: ${cash.years.map((y, k) => `${y} ${crore(cash.cfo[k])} vs ${crore(cash.pat[k])}`).join(", ")}.`} />
           </Claim>
         )}
@@ -543,8 +544,8 @@ function Snapshot({ d }: { d: Research }) {
               format={(v) => v.toFixed(2)} describe={`Debt to equity at year end: ${lev.years.map((y, k) => `${y} ${lev.values[k].toFixed(2)}`).join(", ")}.`} />
           </Claim>
         )}
-        {note && <p className="pt-3 text-13 text-ink-3">Cash conversion and debt/equity: {note.replace(/^Not shown for lenders: /, "not shown for lenders; ")}</p>}
       </div>
+      {note && <p className="pt-3 text-13 text-ink-3">Cash conversion and debt/equity: {note.replace(/^Not shown for lenders: /, "not shown for lenders; ")}</p>}
     </section>
   );
 }
@@ -562,7 +563,7 @@ function BullBear({ d }: { d: Research }) {
   const side = (name: string, pts: typeof b.bull) => (
     <div className="mt-5">
       <h3 className="kicker flex items-center gap-3 text-ink before:h-px before:flex-1 before:bg-rule after:h-px after:flex-1 after:bg-rule">{name}</h3>
-      <ol className="mt-1">
+      <ol className="card mt-2 px-4">
         {pts.map((p, k) => (
           <li key={k} className="border-b border-rule py-3 last:border-b-0">
             <p className="text-15 leading-[1.45] text-ink-2"><strong className="font-semibold text-ink"><Signed text={p.point} /></strong>{p.why && <> {p.why}</>}</p>
@@ -577,10 +578,9 @@ function BullBear({ d }: { d: Research }) {
       <h2 id="bb-h" className={H2}>Bull and bear</h2>
       {b.bull.length > 0 && side("The case for", b.bull)}
       {b.bear.length > 0 && side("The case against", b.bear)}
-      <p className="mt-3 border-t border-rule pt-3 text-11 leading-[1.45] text-ink-3">
-        Written by {b.model.split("/").pop()} from the cited statements, questions and figures only.
+      <p className="mt-3 text-11 leading-[1.45] text-ink-3">
+        Generated from the cited statements and figures only.
         {b.dropped > 0 && ` ${b.dropped} ${b.dropped === 1 ? "point" : "points"} failed FINN's checks (numbers not in the source, a generic reason, or a clash with a promise verdict) and ${b.dropped === 1 ? "was" : "were"} dropped.`}
-        {b.model_note && ` ${b.model_note}.`}
         {b.note && ` ${b.note}`}
       </p>
     </section>
@@ -592,8 +592,8 @@ function Sources({ d }: { d: Research }) {
   return (
     <section aria-labelledby="src-h" className="mt-10">
       <h2 id="src-h" className={H2}>Sources</h2>
-      <ul className="text-13 leading-snug">
-        {d.sources.map((c) => <li key={c.url} className="flex min-h-11 items-center border-b border-rule py-2"><ExtLink c={c} className="font-semibold" /></li>)}
+      <ul className="card mt-2 px-4 text-13 leading-snug">
+        {d.sources.map((c) => <li key={c.url} className="border-b border-rule last:border-b-0"><ExtLink c={c} className="press flex min-h-11 items-center py-2 font-semibold" /></li>)}
       </ul>
       {d.skipped_calls.length > 0 && (
         <p className="mt-2 text-11 text-ink-3">Skipped: {d.skipped_calls.map((c) => `${c.call} (transcript didn't open)`).join(", ")}.</p>

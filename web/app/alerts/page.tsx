@@ -6,7 +6,7 @@ import { Name, shortName } from "@/components/Company";
 import { eventLabel, keyFact } from "@/components/FeedRow";
 import { Count, Signed } from "@/components/Signed";
 import { FeedSkeleton, LoadFailed } from "@/components/States";
-import { alertRows, needsLook, type AlertRow } from "@/lib/alerts";
+import { alertRows, needsLook, severity, type AlertRow } from "@/lib/alerts";
 import { ALERT_DAYS, buildAlerts, MINOR_VOL, shortDate, useFeed, useSettings, useUnseen, type Feed } from "@/lib/feed";
 
 export default function Alerts() {
@@ -34,18 +34,29 @@ export default function Alerts() {
   const days = [...new Set(shown.map((r) => r.date))];
   const name = (sym: string) => { const n = shortName(feed.companies?.[sym]?.name ?? sym); return n.length > 24 ? sym : n; };
   const news = [...new Set(rows.filter((r) => isNew(r) && needsLook(r)).map((r) => r.symbol))];
-  const head = news.length === 0 ? "No new alerts."
-    : news.length <= 2 ? `${news.map(name).join(" and ")} ${news.length === 1 ? "needs" : "need"} a look.`
-    : `${news.length} companies need a look.`;
+  const span = all ? "last 30 days" : `last ${ALERT_DAYS} days`;
+  // The headline never contradicts the list: with nothing new but recent alerts below, it is one quiet line.
+  const count = <><span className="font-mono"><Count value={shown.length} /></span> in the {span}</>;
+  const H = "mt-2 font-serif text-28 leading-[1.05] font-semibold tracking-[-0.01em] text-balance";
   return (
     <>
       <section className="pt-6 pb-2">
         <p className="kicker">The wire</p>
-        <h1 className="mt-2 font-serif text-34 leading-[1.08] font-semibold tracking-[-0.01em] text-balance">{head}</h1>
-        <p className="mt-2 text-13 leading-[1.45] text-ink-2">
-          <span className="font-mono text-ink"><Count value={shown.length} /></span> {shown.length === 1 ? "alert" : "alerts"} in the {all ? "last 30 days" : `last ${ALERT_DAYS} days`}: moves of{" "}
-          <span className="font-mono">±{s.moveX}%</span> vs Nifty, volume at <span className="font-mono">{s.volN}×</span> the 20-day average, material filings in{" "}
-          <Link href="/settings" className="font-semibold text-accent">your categories</Link>.
+        {news.length > 0 ? (
+          <>
+            <h1 className={H}>
+              {news.length <= 2 ? `${news.map(name).join(" and ")} ${news.length === 1 ? "needs" : "need"} a look.` : `${news.length} companies need a look.`}
+            </h1>
+            <p className="mt-2 text-15 font-semibold text-ink"><span className="font-mono">{news.length}</span> new · {count}</p>
+          </>
+        ) : shown.length > 0 ? (
+          <h1 className="mt-2 text-17 leading-snug font-semibold text-ink">No new alerts · {count}</h1>
+        ) : (
+          <h1 className={H}>No alerts in the {span}.</h1>
+        )}
+        <p className="mt-1.5 text-13 leading-[1.45] text-ink-2">
+          Moves of <span className="font-mono">±{s.moveX}%</span> vs Nifty, volume at <span className="font-mono">{s.volN}×</span> the 20-day average, and material filings in{" "}
+          <Link href="/settings" className="relative font-semibold text-accent after:absolute after:-inset-x-1 after:-inset-y-3.5 after:content-['']">your categories</Link>.
         </p>
       </section>
 
@@ -73,24 +84,28 @@ function Day({ d, rows, feed, isNew }: { d: string; rows: AlertRow[]; feed: Feed
   return (
     <section aria-labelledby={`d-${d}`} className="mt-6">
       <h2 id={`d-${d}`} className="section-head font-mono tracking-[0.08em]">{shortDate(d).toUpperCase()}</h2>
+      <div className="card mt-2 px-4">
       <ul>{main.map((r) => <Row key={r.key} r={r} feed={feed} isNew={isNew(r)} />)}</ul>
       {minor.length > 0 && (
         <>
           <button type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}
-            className="press flex min-h-11 w-full items-center justify-between gap-3 border-b border-rule text-left text-13 text-ink-3">
+            className={`press flex min-h-11 w-full items-center justify-between gap-3 text-left text-13 text-ink-3 ${main.length ? "border-t border-rule" : ""}`}>
             {open ? "Hide the smaller volume spikes" : <span><span className="font-mono">{minor.length}</span> smaller volume {minor.length === 1 ? "spike" : "spikes"} (under <span className="font-mono">{MINOR_VOL}×</span>)</span>}
             <Chevron open={open} />
           </button>
           <Collapse open={open} id={id}>
-            <ul>{minor.map((r) => <Row key={r.key} r={r} feed={feed} isNew={isNew(r)} />)}</ul>
+            <ul className="border-t border-rule">{minor.map((r) => <Row key={r.key} r={r} feed={feed} isNew={isNew(r)} />)}</ul>
           </Collapse>
         </>
       )}
+      </div>
     </section>
   );
 }
 
-// "TATAPOWER Tata Power / ▼ 3.3% vs Nifty · 2.3× vol · Results", then the filing's fact. Extremes carry weight, not colour.
+// "TATAPOWER Tata Power  HIGH / ▼ 3.3% vs Nifty · 2.3× vol · Results", then the filing's fact. Extremes carry
+// weight, not colour; severity is a small-caps word (high bold, watch medium, info grey), never a badge.
+const SEV = { high: "font-bold text-ink", watch: "font-semibold text-ink-2", info: "font-semibold text-ink-3" };
 function Row({ r, feed, isNew }: { r: AlertRow; feed: Feed; isNew: boolean }) {
   const co = feed.companies?.[r.symbol];
   const lead = r.filings[0]?.item;
@@ -100,19 +115,23 @@ function Row({ r, feed, isNew }: { r: AlertRow; feed: Feed; isNew: boolean }) {
     const hours = (Date.parse(feed.generated_at) - Date.parse(`${filed}:00+05:30`)) / 36e5;
     return hours <= 24 ? "24h" : hours <= 24 * 7 ? "7d" : "30d";
   };
+  const sev = severity(r);
   const href = lead ? `/?open=${r.symbol}&w=${winFor(lead.filed)}` : r.errors.length ? null : `/research?symbol=${r.symbol}`;
   const body = (
     <>
       <span className="flex items-baseline gap-2">
         <span className="w-[5.5rem] shrink-0 truncate font-mono text-13 font-semibold text-ink">{r.symbol}</span>
         <Name name={co?.name ?? lead?.name ?? r.symbol} className="font-serif text-17 font-semibold text-ink" />
-        {isNew && <span className="kicker ml-auto shrink-0 text-accent">New</span>}
+        <span className="kicker ml-auto shrink-0 pl-2">
+          {isNew && <span className="text-accent">New · </span>}
+          <span className={SEV[sev]}><span className="sr-only">Severity: </span>{sev}</span>
+        </span>
       </span>
       <span className="block pl-[6rem]">
         {facts.length > 0 && (
           <span className="mt-1 block text-13 leading-[1.45] text-ink-2">
             {facts.map((f, k) => (
-              <span key={k}>{k > 0 && <span className="text-ink-3">{"00a0·00a0"}</span>}<span className={`${f.num ? "font-mono" : "kicker text-ink-2"} ${f.strong ? "font-semibold text-ink" : ""}`}><Signed text={f.t} arrows /></span></span>
+              <span key={k}>{k > 0 && <span className="text-ink-3">{"\u00a0·\u00a0"}</span>}<span className={`${f.num ? "font-mono" : "kicker text-ink-2"} ${f.strong ? "font-semibold text-ink" : ""}`}><Signed text={f.t} arrows /></span></span>
             ))}
           </span>
         )}
@@ -122,7 +141,7 @@ function Row({ r, feed, isNew }: { r: AlertRow; feed: Feed; isNew: boolean }) {
     </>
   );
   return (
-    <li className="border-b border-rule">
+    <li className="border-b border-rule last:border-b-0">
       {href ? <Link href={href} className="press block py-3">{body}</Link> : <div className="py-3">{body}</div>}
     </li>
   );

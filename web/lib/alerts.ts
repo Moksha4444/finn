@@ -34,3 +34,8 @@ export function alertRows(alerts: Alert[]): AlertRow[] {
 
 // What the badge counts and the inbox headline names: a move or a filing, not a small volume spike or a data note.
 export const needsLook = (r: AlertRow) => !r.minor && (!!r.market || r.filings.length > 0);
+
+// Severity, as a typographic mark on each row: a material filing is high; a move or volume crossing your
+// threshold is watch; a small volume spike or a data note is info.
+export type Severity = "high" | "watch" | "info";
+export const severity = (r: AlertRow): Severity => (r.filings.length ? "high" : r.market && !r.minor ? "watch" : "info");

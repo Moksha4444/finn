@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { alertRows, sameEvent } from "./alerts.ts";
+import { alertRows, sameEvent, severity } from "./alerts.ts";
 
 test("the same event filed on two days is one event; different events are not", () => {
   assert.ok(sameEvent(
@@ -22,4 +22,13 @@ test("one row per company per day; a filing with a move ranks first; folded only
   assert.deepEqual(rows.map((r) => r.symbol), ["TATAPOWER", "IRCTC", "CDSL"]);
   assert.equal(rows[0].filings.length, 1);
   assert.ok(rows[0].market && !rows[0].minor && rows[2].minor);
+});
+
+test("severity: a filing is high, a threshold crossing is watch, a small spike or data note is info", () => {
+  const a = (kind: string, extra = {}) => ({ key: `${kind}${Math.random()}`, symbol: "X", date: "2026-11-13", kind, text: "", sev: 0, ...extra }) as never;
+  const [filing] = alertRows([a("filing"), a("price")]);
+  const [move] = alertRows([a("price")]);
+  const [spike] = alertRows([a("price", { minor: true })]);
+  const [note] = alertRows([a("error")]);
+  assert.deepEqual([severity(filing), severity(move), severity(spike), severity(note)], ["high", "watch", "info", "info"]);
 });
