@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-11-15T08:15+05:30",
+ "generated_at": "2026-11-16T00:51+05:30",
  "window": [
-  "2026-10-16",
-  "2026-11-15"
+  "2026-10-17",
+  "2026-11-16"
  ],
  "thresholds": {
   "volume_multiple": 2.0,
@@ -35,10 +35,6 @@
    "name": "Reliance Industries Ltd",
    "sector": "Energy",
    "closes": [
-    [
-     "2026-09-15",
-     1235.3
-    ],
     [
      "2026-09-16",
      1240.0
@@ -206,10 +202,6 @@
    "name": "HDFC Bank Ltd",
    "sector": "Financial Services",
    "closes": [
-    [
-     "2026-09-15",
-     716.55
-    ],
     [
      "2026-09-16",
      721.5
@@ -382,10 +374,6 @@
    "sector": "Information Technology",
    "closes": [
     [
-     "2026-09-15",
-     2251.0
-    ],
-    [
      "2026-09-16",
      2188.8
     ],
@@ -557,10 +545,6 @@
    "sector": "Telecommunication",
    "closes": [
     [
-     "2026-09-15",
-     1830.4
-    ],
-    [
      "2026-09-16",
      1835.0
     ],
@@ -728,10 +712,6 @@
    "sector": "Fast Moving Consumer Goods",
    "closes": [
     [
-     "2026-09-15",
-     258.0
-    ],
-    [
      "2026-09-16",
      264.15
     ],
@@ -898,10 +878,6 @@
    "name": "Larsen & Toubro Ltd",
    "sector": "Industrials",
    "closes": [
-    [
-     "2026-09-15",
-     3850.7
-    ],
     [
      "2026-09-16",
      3807.7
@@ -1074,10 +1050,6 @@
    "sector": "Healthcare",
    "closes": [
     [
-     "2026-09-15",
-     1835.0
-    ],
-    [
      "2026-09-16",
      1853.5
     ],
@@ -1249,10 +1221,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-15",
-     12231.0
-    ],
-    [
      "2026-09-16",
      12166.0
     ],
@@ -1419,10 +1387,6 @@
    "name": "Bajaj Finance Ltd",
    "sector": "Financial Services",
    "closes": [
-    [
-     "2026-09-15",
-     1009.2
-    ],
     [
      "2026-09-16",
      1006.2
@@ -1595,10 +1559,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-15",
-     2402.8
-    ],
-    [
      "2026-09-16",
      2416.6
     ],
@@ -1770,10 +1730,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-15",
-     2730.0
-    ],
-    [
      "2026-09-16",
      2769.7
     ],
@@ -1940,10 +1896,6 @@
    "name": "Eternal Ltd",
    "sector": "Consumer Discretionary",
    "closes": [
-    [
-     "2026-09-15",
-     315.25
-    ],
     [
      "2026-09-16",
      317.0
@@ -2112,10 +2064,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-15",
-     13180.0
-    ],
-    [
      "2026-09-16",
      13181.0
     ],
@@ -2283,10 +2231,6 @@
    "sector": "Information Technology",
    "closes": [
     [
-     "2026-09-15",
-     5477.5
-    ],
-    [
      "2026-09-16",
      5440.0
     ],
@@ -2453,10 +2397,6 @@
    "name": "Polycab India Ltd",
    "sector": "Industrials",
    "closes": [
-    [
-     "2026-09-15",
-     8143.5
-    ],
     [
      "2026-09-16",
      8121.5
@@ -2629,10 +2569,6 @@
    "sector": "Utilities",
    "closes": [
     [
-     "2026-09-15",
-     363.0
-    ],
-    [
      "2026-09-16",
      360.4
     ],
@@ -2804,10 +2740,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-15",
-     458.55
-    ],
-    [
      "2026-09-16",
      452.95
     ],
@@ -2975,10 +2907,6 @@
    "sector": "Financial Services",
    "closes": [
     [
-     "2026-09-15",
-     1311.0
-    ],
-    [
      "2026-09-16",
      1299.0
     ],
@@ -3145,10 +3073,6 @@
    "name": "KPIT Technologies Ltd",
    "sector": "Information Technology",
    "closes": [
-    [
-     "2026-09-15",
-     563.0
-    ],
     [
      "2026-09-16",
      555.0
@@ -3321,10 +3245,6 @@
    "sector": "Commodities",
    "closes": [
     [
-     "2026-09-15",
-     1561.3
-    ],
-    [
      "2026-09-16",
      1590.5
     ],
@@ -3489,10 +3409,6 @@
   }
  },
  "nifty": [
-  [
-   "2026-09-15",
-   23118.6
-  ],
   [
    "2026-09-16",
    23217.6
@@ -4980,80 +4896,6 @@
    },
    "score": 450,
    "reason": "Ranked high: results · 2.4× volume",
-   "boosted": true,
-   "collapsed": false
-  },
-  {
-   "id": "ef085bc5-f876-4a36-8110-ada91aea4c11",
-   "symbol": "PERSISTENT",
-   "name": "Persistent Systems Ltd",
-   "filed": "2026-10-16T10:52",
-   "subject": "Announcement under Regulation 30 (LODR)-Issue of Securities",
-   "headline": "The intimation of approval of the terms of NCD and CP issuance in as enclosed",
-   "note": null,
-   "category": "fund_raise",
-   "tier": "P1",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/68fc3ccb-8531-4cde-b4c6-b612a3ea8718.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": -1.7,
-    "nifty_pct": 0.65,
-    "excess_pct": -2.34,
-    "vol_ratio": 4.38
-   },
-   "title": "Approved issuing NCDs amounting up to INR 8,000 Crores",
-   "card": {
-    "type": "fund_raise",
-    "instrument": "debt",
-    "size_cr": 8000.0,
-    "size_page": 1,
-    "dilution_pct": null,
-    "model_note": null
-   },
-   "score": 450,
-   "reason": "Ranked high: fund raise · 4.4× volume",
-   "boosted": true,
-   "collapsed": false
-  },
-  {
-   "id": "a56229ae-c9cc-4c63-9cb4-d20281687574",
-   "symbol": "PERSISTENT",
-   "name": "Persistent Systems Ltd",
-   "filed": "2026-10-16T10:47",
-   "subject": "Announcement under Regulation 30 (LODR)-Meeting Updates",
-   "headline": "Special Committee approved terms of issuance of NCDs up to INR 8,000 Crores",
-   "note": null,
-   "category": "fund_raise",
-   "tier": "P1",
-   "classified_by": "llm",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4cbf9c00-c806-4272-80e2-b35583f0d919.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": -1.7,
-    "nifty_pct": 0.65,
-    "excess_pct": -2.34,
-    "vol_ratio": 4.38
-   },
-   "title": "Approved issuance of NCDs up to INR 8,000 Crores",
-   "card": {
-    "type": "fund_raise",
-    "instrument": "debt",
-    "size_cr": 8000.0,
-    "size_page": 1,
-    "dilution_pct": null,
-    "model_note": null
-   },
-   "score": 450,
-   "reason": "Ranked high: fund raise · 4.4× volume",
    "boosted": true,
    "collapsed": false
   },
@@ -7227,35 +7069,6 @@
    },
    "score": 300,
    "reason": "results · −1.2% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
-   "id": "4f686399-b641-4495-a5dd-e5124e088cf0",
-   "symbol": "POLYCAB",
-   "name": "Polycab India Ltd",
-   "filed": "2026-10-16T09:34",
-   "subject": "Corporate Insolvency Resolution Process (CIRP)-Updates - Corporate Insolvency Resolution Process  (CIRP)",
-   "headline": "Update on the appeal listed on October 15, 2026 before Hon''ble NCLAT, Principal Bench, New Delhi",
-   "note": null,
-   "category": "litigation",
-   "tier": "P1",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a0fba81c-bd84-40eb-8435-9643b019e9fc.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-16",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-16",
-    "move_pct": 0.15,
-    "nifty_pct": 0.65,
-    "excess_pct": -0.5,
-    "vol_ratio": 1.2
-   },
-   "title": "NCLAT reserved order in appeal regarding Asier Metals Private Limited",
-   "score": 300,
-   "reason": "litigation · −0.5% vs Nifty",
    "boosted": false,
    "collapsed": false
   },
@@ -12352,286 +12165,6 @@
    "reason": "investor meetings · −1.2% vs Nifty",
    "boosted": false,
    "collapsed": true
-  },
-  {
-   "id": "93666f00-4508-4e24-a20c-c2e193fc040a",
-   "symbol": "DEEPAKNTR",
-   "name": "Deepak Nitrite Ltd",
-   "filed": "2026-10-16T22:50",
-   "subject": "Schedule Of Q2 & H1 FY 2027 Earnings Conference Call",
-   "headline": "Schedule of Q2 & H1 FY 2027 Earnings Con Call",
-   "note": null,
-   "category": "earnings_call",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4d2b0a11-d089-428a-ac4f-48653e5eab08.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-17",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-19",
-    "move_pct": -3.0,
-    "nifty_pct": -1.11,
-    "excess_pct": -1.89,
-    "vol_ratio": 0.42
-   },
-   "score": 100,
-   "reason": "earnings call · −1.9% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "07a5e3b2-0795-42c9-b0bb-f9154de9ca54",
-   "symbol": "PERSISTENT",
-   "name": "Persistent Systems Ltd",
-   "filed": "2026-10-16T22:32",
-   "subject": "Announcement under Regulation 30 (LODR)-Newspaper Publication",
-   "headline": "Submitted newspaper advertisement of financial results for the quarter and half year ended September 30, 2026",
-   "note": null,
-   "category": "results",
-   "tier": "P3",
-   "classified_by": "llm",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/87710a11-22c5-4ad7-80f8-57b4f726a01b.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-17",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-19",
-    "move_pct": -0.89,
-    "nifty_pct": -1.11,
-    "excess_pct": 0.22,
-    "vol_ratio": 2.13
-   },
-   "score": 100,
-   "reason": "results · +0.2% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "63fd2e6f-818f-402a-b4cc-ba1e898d6d81",
-   "symbol": "RELIANCE",
-   "name": "Reliance Industries Ltd",
-   "filed": "2026-10-16T20:58",
-   "subject": "Newspaper Clippings - Proposed Initial Public Offer Of Jio Platforms Limited - Reservation For Eligible RIL Shareholders",
-   "headline": "The newspaper clippings of the advertisement on the captioned subject published today are enclosed.",
-   "note": null,
-   "category": "fund_raise",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/36a51bd7-b43c-414a-8984-3139d2d4723e.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-17",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-19",
-    "move_pct": -0.76,
-    "nifty_pct": -1.11,
-    "excess_pct": 0.35,
-    "vol_ratio": 1.09
-   },
-   "score": 100,
-   "reason": "fund raise · +0.3% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "c2611717-5f2d-4762-8594-2db1e11640e0",
-   "symbol": "ITC",
-   "name": "ITC Ltd",
-   "filed": "2026-10-16T17:35",
-   "subject": "Board Meeting Intimation for Unaudited Standalone And Consolidated Financial Results Of The Company For The Quarter And Six Months Ended 30Th September, 2026",
-   "headline": "ITC Ltdhas informed BSE that the meeting of the Board of Directors of the Company is scheduled on 02/11/2026 ,inter alia, to consider and approve the Unaudited Standalone and Consolidated ....",
-   "note": null,
-   "category": "results",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a5bddd8c-e334-4796-abcb-fe6f95a76110.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-17",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-19",
-    "move_pct": -1.02,
-    "nifty_pct": -1.11,
-    "excess_pct": 0.09,
-    "vol_ratio": 0.58
-   },
-   "score": 100,
-   "reason": "results · +0.1% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "aca9a93b-4d2b-4922-a053-6d58155669e9",
-   "symbol": "LT",
-   "name": "Larsen & Toubro Ltd",
-   "filed": "2026-10-16T16:52",
-   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Intimation",
-   "headline": "Schedule of Analyst / Institutional Investors'' Meet",
-   "note": null,
-   "category": "investor_meetings",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/821c9264-499f-4c19-a55c-233ed13d8e11.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-17",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-19",
-    "move_pct": 0.96,
-    "nifty_pct": -1.11,
-    "excess_pct": 2.07,
-    "vol_ratio": 1.34
-   },
-   "score": 100,
-   "reason": "investor meetings · +2.1% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "045997fb-f599-40f5-90e9-f264dde98614",
-   "symbol": "HDFCBANK",
-   "name": "HDFC Bank Ltd",
-   "filed": "2026-10-16T16:36",
-   "subject": "Compliances-Certificate under Reg. 74 (5) of SEBI (DP) Regulations, 2018",
-   "headline": "Certificate under Regulation 74(5) of SEBI (Depositories and Participants) Regulations, 2018 for quarter ended September 30, 2026",
-   "note": null,
-   "category": "unclassified",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/bc192f76-0ffd-484d-b747-541fb5c47101.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-17",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-19",
-    "move_pct": -2.31,
-    "nifty_pct": -1.11,
-    "excess_pct": -1.2,
-    "vol_ratio": 1.08
-   },
-   "score": 100,
-   "reason": "unclassified · −1.2% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "fccd372b-db66-488d-a963-726b42f7324a",
-   "symbol": "TCS",
-   "name": "Tata Consultancy Services Ltd",
-   "filed": "2026-10-16T16:29",
-   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Intimation",
-   "headline": "Schedule of Analyst/Institutional Investor Meeting",
-   "note": null,
-   "category": "investor_meetings",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/18a00aec-26f8-4738-9e5b-d33abe1ff616.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-17",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-19",
-    "move_pct": -0.17,
-    "nifty_pct": -1.11,
-    "excess_pct": 0.94,
-    "vol_ratio": 1.62
-   },
-   "score": 100,
-   "reason": "investor meetings · +0.9% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "5043cd2c-5f3e-44fb-bd46-9a1ec5e35d0b",
-   "symbol": "BAJFINANCE",
-   "name": "Bajaj Finance Ltd",
-   "filed": "2026-10-16T16:12",
-   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Intimation",
-   "headline": "Schedule of Analysts''/Investors'' Meet.",
-   "note": null,
-   "category": "investor_meetings",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b93f01a0-573d-4aaa-9d02-929ffa10c5ce.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-17",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-19",
-    "move_pct": -2.52,
-    "nifty_pct": -1.11,
-    "excess_pct": -1.41,
-    "vol_ratio": 1.06
-   },
-   "score": 100,
-   "reason": "investor meetings · −1.4% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "545db3fb-3a29-4083-8357-bece4653cb77",
-   "symbol": "BAJFINANCE",
-   "name": "Bajaj Finance Ltd",
-   "filed": "2026-10-16T16:07",
-   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Intimation",
-   "headline": "Schedule of Analysts''/Investors'' Meet.",
-   "note": null,
-   "category": "investor_meetings",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c15837a7-6d43-4f62-9e8c-d6700c138a70.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-17",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-19",
-    "move_pct": -2.52,
-    "nifty_pct": -1.11,
-    "excess_pct": -1.41,
-    "vol_ratio": 1.06
-   },
-   "score": 100,
-   "reason": "investor meetings · −1.4% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "f10171fc-5d3d-4905-823a-a6ba1d682a1d",
-   "symbol": "BAJFINANCE",
-   "name": "Bajaj Finance Ltd",
-   "filed": "2026-10-16T16:06",
-   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Intimation",
-   "headline": "Schedule of Analysts''/Investors'' Meet.",
-   "note": null,
-   "category": "investor_meetings",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fc936909-2b70-497f-8330-629acc3fb6b3.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-17",
-   "last_bar": "2026-11-13",
-   "reaction": {
-    "date": "2026-10-19",
-    "move_pct": -2.52,
-    "nifty_pct": -1.11,
-    "excess_pct": -1.41,
-    "vol_ratio": 1.06
-   },
-   "score": 100,
-   "reason": "investor meetings · −1.4% vs Nifty",
-   "boosted": false,
-   "collapsed": true
   }
  ],
  "alerts": [
@@ -13172,61 +12705,9 @@
    "kind": "filing",
    "id": "ae8b989d-e24d-45bf-8958-f610b3c0e66a",
    "text": "results: Approval of unaudited standalone and consolidated financial results of the Bank for the quarter and half-year ended September 30, 2026"
-  },
-  {
-   "symbol": "TCS",
-   "date": "2026-10-16",
-   "kind": "price",
-   "text": "+4.9% (+4.2% vs Nifty) · 2.5× volume"
-  },
-  {
-   "symbol": "BHARTIARTL",
-   "date": "2026-10-16",
-   "kind": "price",
-   "text": "3.7× volume"
-  },
-  {
-   "symbol": "DIXON",
-   "date": "2026-10-16",
-   "kind": "price",
-   "text": "−2.6% (−3.2% vs Nifty)"
-  },
-  {
-   "symbol": "PERSISTENT",
-   "date": "2026-10-16",
-   "kind": "price",
-   "text": "4.4× volume"
-  },
-  {
-   "symbol": "PERSISTENT",
-   "date": "2026-10-16",
-   "kind": "filing",
-   "id": "ef085bc5-f876-4a36-8110-ada91aea4c11",
-   "text": "fund raise: The intimation of approval of the terms of NCD and CP issuance in as enclosed"
-  },
-  {
-   "symbol": "POLYCAB",
-   "date": "2026-10-16",
-   "kind": "filing",
-   "id": "4f686399-b641-4495-a5dd-e5124e088cf0",
-   "text": "litigation: Update on the appeal listed on October 15, 2026 before Hon''ble NCLAT, Principal Bench, New Delhi"
-  },
-  {
-   "symbol": "KPITTECH",
-   "date": "2026-10-16",
-   "kind": "price",
-   "text": "+5.5% (+4.9% vs Nifty) · 2.4× volume"
   }
  ],
  "days": [
-  {
-   "symbol": "RELIANCE",
-   "date": "2026-10-16",
-   "move_pct": -0.31,
-   "nifty_pct": 0.65,
-   "excess_pct": -0.96,
-   "vol_ratio": 1.24
-  },
   {
    "symbol": "RELIANCE",
    "date": "2026-10-19",
@@ -13370,14 +12851,6 @@
    "nifty_pct": -0.61,
    "excess_pct": 0.61,
    "vol_ratio": 0.63
-  },
-  {
-   "symbol": "HDFCBANK",
-   "date": "2026-10-16",
-   "move_pct": 0.28,
-   "nifty_pct": 0.65,
-   "excess_pct": -0.37,
-   "vol_ratio": 0.95
   },
   {
    "symbol": "HDFCBANK",
@@ -13525,14 +12998,6 @@
   },
   {
    "symbol": "TCS",
-   "date": "2026-10-16",
-   "move_pct": 4.89,
-   "nifty_pct": 0.65,
-   "excess_pct": 4.25,
-   "vol_ratio": 2.47
-  },
-  {
-   "symbol": "TCS",
    "date": "2026-10-19",
    "move_pct": -0.17,
    "nifty_pct": -1.11,
@@ -13674,14 +13139,6 @@
    "nifty_pct": -0.61,
    "excess_pct": -0.82,
    "vol_ratio": 0.63
-  },
-  {
-   "symbol": "BHARTIARTL",
-   "date": "2026-10-16",
-   "move_pct": 2.75,
-   "nifty_pct": 0.65,
-   "excess_pct": 2.1,
-   "vol_ratio": 3.71
   },
   {
    "symbol": "BHARTIARTL",
@@ -13829,14 +13286,6 @@
   },
   {
    "symbol": "ITC",
-   "date": "2026-10-16",
-   "move_pct": -0.15,
-   "nifty_pct": 0.65,
-   "excess_pct": -0.8,
-   "vol_ratio": 0.65
-  },
-  {
-   "symbol": "ITC",
    "date": "2026-10-19",
    "move_pct": -1.02,
    "nifty_pct": -1.11,
@@ -13978,14 +13427,6 @@
    "nifty_pct": -0.61,
    "excess_pct": 0.95,
    "vol_ratio": 0.41
-  },
-  {
-   "symbol": "LT",
-   "date": "2026-10-16",
-   "move_pct": -0.13,
-   "nifty_pct": 0.65,
-   "excess_pct": -0.78,
-   "vol_ratio": 1.1
   },
   {
    "symbol": "LT",
@@ -14133,14 +13574,6 @@
   },
   {
    "symbol": "SUNPHARMA",
-   "date": "2026-10-16",
-   "move_pct": -0.29,
-   "nifty_pct": 0.65,
-   "excess_pct": -0.94,
-   "vol_ratio": 0.94
-  },
-  {
-   "symbol": "SUNPHARMA",
    "date": "2026-10-19",
    "move_pct": -0.9,
    "nifty_pct": -1.11,
@@ -14282,14 +13715,6 @@
    "nifty_pct": -0.61,
    "excess_pct": 0.35,
    "vol_ratio": 0.88
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-16",
-   "move_pct": 0.38,
-   "nifty_pct": 0.65,
-   "excess_pct": -0.26,
-   "vol_ratio": 0.91
   },
   {
    "symbol": "MARUTI",
@@ -14437,14 +13862,6 @@
   },
   {
    "symbol": "BAJFINANCE",
-   "date": "2026-10-16",
-   "move_pct": 1.75,
-   "nifty_pct": 0.65,
-   "excess_pct": 1.1,
-   "vol_ratio": 1.01
-  },
-  {
-   "symbol": "BAJFINANCE",
    "date": "2026-10-19",
    "move_pct": -2.52,
    "nifty_pct": -1.11,
@@ -14586,14 +14003,6 @@
    "nifty_pct": -0.61,
    "excess_pct": 0.79,
    "vol_ratio": 1.18
-  },
-  {
-   "symbol": "ASIANPAINT",
-   "date": "2026-10-16",
-   "move_pct": -0.77,
-   "nifty_pct": 0.65,
-   "excess_pct": -1.42,
-   "vol_ratio": 1.67
   },
   {
    "symbol": "ASIANPAINT",
@@ -14741,14 +14150,6 @@
   },
   {
    "symbol": "TRENT",
-   "date": "2026-10-16",
-   "move_pct": 0.31,
-   "nifty_pct": 0.65,
-   "excess_pct": -0.34,
-   "vol_ratio": 0.45
-  },
-  {
-   "symbol": "TRENT",
    "date": "2026-10-19",
    "move_pct": -2.27,
    "nifty_pct": -1.11,
@@ -14890,14 +14291,6 @@
    "nifty_pct": -0.61,
    "excess_pct": 0.15,
    "vol_ratio": 0.57
-  },
-  {
-   "symbol": "ETERNAL",
-   "date": "2026-10-16",
-   "move_pct": 0.71,
-   "nifty_pct": 0.65,
-   "excess_pct": 0.07,
-   "vol_ratio": 0.77
   },
   {
    "symbol": "ETERNAL",
@@ -15045,14 +14438,6 @@
   },
   {
    "symbol": "DIXON",
-   "date": "2026-10-16",
-   "move_pct": -2.57,
-   "nifty_pct": 0.65,
-   "excess_pct": -3.22,
-   "vol_ratio": 1.91
-  },
-  {
-   "symbol": "DIXON",
    "date": "2026-10-19",
    "move_pct": -1.94,
    "nifty_pct": -1.11,
@@ -15194,14 +14579,6 @@
    "nifty_pct": -0.61,
    "excess_pct": -0.88,
    "vol_ratio": 0.5
-  },
-  {
-   "symbol": "PERSISTENT",
-   "date": "2026-10-16",
-   "move_pct": -1.7,
-   "nifty_pct": 0.65,
-   "excess_pct": -2.34,
-   "vol_ratio": 4.38
   },
   {
    "symbol": "PERSISTENT",
@@ -15349,14 +14726,6 @@
   },
   {
    "symbol": "POLYCAB",
-   "date": "2026-10-16",
-   "move_pct": 0.15,
-   "nifty_pct": 0.65,
-   "excess_pct": -0.5,
-   "vol_ratio": 1.2
-  },
-  {
-   "symbol": "POLYCAB",
    "date": "2026-10-19",
    "move_pct": -2.36,
    "nifty_pct": -1.11,
@@ -15498,14 +14867,6 @@
    "nifty_pct": -0.61,
    "excess_pct": -1.57,
    "vol_ratio": 1.1
-  },
-  {
-   "symbol": "TATAPOWER",
-   "date": "2026-10-16",
-   "move_pct": 1.16,
-   "nifty_pct": 0.65,
-   "excess_pct": 0.51,
-   "vol_ratio": 0.85
   },
   {
    "symbol": "TATAPOWER",
@@ -15653,14 +15014,6 @@
   },
   {
    "symbol": "IRCTC",
-   "date": "2026-10-16",
-   "move_pct": -0.58,
-   "nifty_pct": 0.65,
-   "excess_pct": -1.22,
-   "vol_ratio": 1.52
-  },
-  {
-   "symbol": "IRCTC",
    "date": "2026-10-19",
    "move_pct": -2.37,
    "nifty_pct": -1.11,
@@ -15802,14 +15155,6 @@
    "nifty_pct": -0.61,
    "excess_pct": -2.2,
    "vol_ratio": 1.6
-  },
-  {
-   "symbol": "CDSL",
-   "date": "2026-10-16",
-   "move_pct": -0.47,
-   "nifty_pct": 0.65,
-   "excess_pct": -1.12,
-   "vol_ratio": 0.83
   },
   {
    "symbol": "CDSL",
@@ -15957,14 +15302,6 @@
   },
   {
    "symbol": "KPITTECH",
-   "date": "2026-10-16",
-   "move_pct": 5.51,
-   "nifty_pct": 0.65,
-   "excess_pct": 4.87,
-   "vol_ratio": 2.44
-  },
-  {
-   "symbol": "KPITTECH",
    "date": "2026-10-19",
    "move_pct": -3.25,
    "nifty_pct": -1.11,
@@ -16105,14 +15442,6 @@
    "move_pct": -1.08,
    "nifty_pct": -0.61,
    "excess_pct": -0.47,
-   "vol_ratio": 0.5
-  },
-  {
-   "symbol": "DEEPAKNTR",
-   "date": "2026-10-16",
-   "move_pct": -0.07,
-   "nifty_pct": 0.65,
-   "excess_pct": -0.72,
    "vol_ratio": 0.5
   },
   {
