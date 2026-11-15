@@ -113,10 +113,12 @@ function IndexItem({ r }: { r: IndexRow }) {
     <li className="border-b border-rule last:border-b-0">
       <Link href={`/research?symbol=${r.symbol}`} className="press flex min-h-12 flex-col justify-center py-3">
         <span className="flex items-baseline gap-2">
-          <span className="w-[5.5rem] shrink-0 truncate font-mono text-13 font-semibold text-ink">{r.symbol}</span>
+          {/* Research list only: the ticker as a chip (navy 8%, the nav pill's navy), one fixed width so every name
+              starts on the same line. Not on the Brief, Alerts or company pages, where the name is the headline. */}
+          <span className="w-[5.75rem] shrink-0 truncate rounded-[4px] bg-accent/8 px-1.5 py-0.5 font-mono text-13 font-semibold text-accent uppercase">{r.symbol}</span>
           <Name name={r.name} className="font-serif text-17 font-semibold text-ink" />
         </span>
-        {counts && <span className="mt-1 pl-[6rem] font-mono text-11 tracking-[0.04em] text-ink-2 uppercase">{counts}</span>}
+        {counts && <span className="mt-1 pl-[6.25rem] font-mono text-11 tracking-[0.04em] text-ink-2 uppercase">{counts}</span>}
       </Link>
     </li>
   );
