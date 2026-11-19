@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-11-19T16:59+05:30",
+ "generated_at": "2026-11-20T02:59+05:30",
  "window": [
-  "2026-10-20",
-  "2026-11-19"
+  "2026-10-21",
+  "2026-11-20"
  ],
  "thresholds": {
   "volume_multiple": 2.0,
@@ -194,10 +194,6 @@
     [
      "2026-11-18",
      1363.0
-    ],
-    [
-     "2026-11-19",
-     1375.6
     ]
    ],
    "credibility": null
@@ -365,10 +361,6 @@
     [
      "2026-11-18",
      808.15
-    ],
-    [
-     "2026-11-19",
-     821.8
     ]
    ],
    "credibility": {
@@ -540,10 +532,6 @@
     [
      "2026-11-18",
      2379.5
-    ],
-    [
-     "2026-11-19",
-     2342.7
     ]
    ],
    "credibility": {
@@ -715,10 +703,6 @@
     [
      "2026-11-18",
      2132.0
-    ],
-    [
-     "2026-11-19",
-     2144.0
     ]
    ],
    "credibility": null
@@ -886,10 +870,6 @@
     [
      "2026-11-18",
      296.6
-    ],
-    [
-     "2026-11-19",
-     301.0
     ]
    ],
    "credibility": null
@@ -1057,10 +1037,6 @@
     [
      "2026-11-18",
      4159.0
-    ],
-    [
-     "2026-11-19",
-     4211.0
     ]
    ],
    "credibility": {
@@ -1232,10 +1208,6 @@
     [
      "2026-11-18",
      1871.5
-    ],
-    [
-     "2026-11-19",
-     1900.0
     ]
    ],
    "credibility": {
@@ -1407,10 +1379,6 @@
     [
      "2026-11-18",
      12632.0
-    ],
-    [
-     "2026-11-19",
-     13589.0
     ]
    ],
    "credibility": null
@@ -1578,10 +1546,6 @@
     [
      "2026-11-18",
      1093.85
-    ],
-    [
-     "2026-11-19",
-     1092.85
     ]
    ],
    "credibility": {
@@ -1753,10 +1717,6 @@
     [
      "2026-11-18",
      2580.3
-    ],
-    [
-     "2026-11-19",
-     2595.0
     ]
    ],
    "credibility": {
@@ -1928,10 +1888,6 @@
     [
      "2026-11-18",
      3190.0
-    ],
-    [
-     "2026-11-19",
-     3225.0
     ]
    ],
    "credibility": null
@@ -2099,10 +2055,6 @@
     [
      "2026-11-18",
      366.0
-    ],
-    [
-     "2026-11-19",
-     366.85
     ]
    ],
    "credibility": null
@@ -2270,10 +2222,6 @@
     [
      "2026-11-18",
      12615.0
-    ],
-    [
-     "2026-11-19",
-     13054.0
     ]
    ],
    "credibility": null
@@ -2441,10 +2389,6 @@
     [
      "2026-11-18",
      5857.0
-    ],
-    [
-     "2026-11-19",
-     5880.0
     ]
    ],
    "credibility": null
@@ -2612,10 +2556,6 @@
     [
      "2026-11-18",
      7307.5
-    ],
-    [
-     "2026-11-19",
-     7550.0
     ]
    ],
    "credibility": {
@@ -2787,10 +2727,6 @@
     [
      "2026-11-18",
      338.0
-    ],
-    [
-     "2026-11-19",
-     340.0
     ]
    ],
    "credibility": {
@@ -2962,10 +2898,6 @@
     [
      "2026-11-18",
      444.35
-    ],
-    [
-     "2026-11-19",
-     449.9
     ]
    ],
    "credibility": null
@@ -3133,10 +3065,6 @@
     [
      "2026-11-18",
      1416.6
-    ],
-    [
-     "2026-11-19",
-     1423.4
     ]
    ],
    "credibility": null
@@ -3304,10 +3232,6 @@
     [
      "2026-11-18",
      521.75
-    ],
-    [
-     "2026-11-19",
-     522.5
     ]
    ],
    "credibility": {
@@ -3479,10 +3403,6 @@
     [
      "2026-11-18",
      1562.9
-    ],
-    [
-     "2026-11-19",
-     1552.3
     ]
    ],
    "credibility": null
@@ -3648,10 +3568,6 @@
   [
    "2026-11-18",
    25227.95
-  ],
-  [
-   "2026-11-19",
-   25514.3
   ]
  ],
  "items": [
@@ -3670,7 +3586,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/79ead256-b47e-41f3-8e17-8b635bb30820.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.83,
@@ -3714,7 +3630,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/73421683-fb93-45b6-9534-28f0b0d8262e.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.83,
@@ -3806,7 +3722,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4dc63132-8d0c-4836-b74b-f289525d6384.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": 3.36,
@@ -3843,7 +3759,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_31102026141138_OutcomeBM31102026_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": -0.87,
@@ -3933,7 +3849,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/880087f6-7ecc-40a9-8cac-de48d4616b25.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.6,
@@ -4023,7 +3939,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_30102026191314_IntimationofPenalty30102026_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": -0.87,
@@ -4052,7 +3968,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d7b8fffb-7a5f-4efa-9241-482c5d765f1d.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.99,
@@ -4142,7 +4058,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/658231ad-7203-4355-be99-2a162b722c0c.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 0.95,
@@ -4235,7 +4151,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a59f1b7a-6692-4d45-9886-f842d7faf839.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 2.91,
@@ -4263,7 +4179,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6d04e12f-221f-4d62-925d-0792202a19e7.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 5.44,
@@ -4343,7 +4259,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b891b5ce-4d60-44f6-a01f-1bd507d5de0f.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 5.44,
@@ -4423,7 +4339,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b962e91a-b409-4f5f-a22f-3275c992153a.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 5.44,
@@ -4518,7 +4434,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6ad6c765-6512-49a8-8de9-8bae58b913ca.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 0.76,
@@ -4608,7 +4524,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/741a7974-4bc2-47a3-b638-63131bfd70a0.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.87,
@@ -4636,7 +4552,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c0d52f59-f997-494d-918e-7e0d4d3eda65.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.87,
@@ -4727,7 +4643,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/be28659d-c65e-4500-917e-02ef891caee6.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.72,
@@ -4817,7 +4733,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5e5ee67c-fdd2-46d5-9390-e8e4a018c5b2.pdf",
    "source": "bse",
    "reaction_day": "2026-10-22",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-22",
     "move_pct": -2.53,
@@ -4908,7 +4824,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9d55161e-7758-49f4-8740-4ad95e6b2ba0.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.83,
@@ -4937,7 +4853,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7a4ac249-057f-4abc-b701-cabc9e2370c8.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.83,
@@ -4966,7 +4882,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/2892bca6-b4be-4496-a6fb-ad849fd94e0a.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.83,
@@ -4994,7 +4910,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/263f0717-d22e-42b2-b518-853172271c8c.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.83,
@@ -5022,7 +4938,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": 3.14,
@@ -5051,7 +4967,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5dfbdab4-d040-4a99-b694-bbe26f015f14.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": 3.8,
@@ -5080,7 +4996,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4b1ab7e2-a0c4-40d9-8758-64975aea90d9.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": -2.52,
@@ -5109,7 +5025,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_03112026125814_NSEIntimation_PressRelease_finalsd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 5.43,
@@ -5138,7 +5054,7 @@
    "url": null,
    "source": "bse",
    "reaction_day": "2026-11-02",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": -0.43,
@@ -5167,7 +5083,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8e997741-4d35-4188-933a-cf020fb9c816.pdf",
    "source": "bse",
    "reaction_day": "2026-11-02",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.6,
@@ -5196,7 +5112,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_31102026155542_CDSL_InvestorPresentation_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": -0.87,
@@ -5224,7 +5140,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_31102026142410_Press_release_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": -0.87,
@@ -5253,7 +5169,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0dc8ebe7-5e2d-4946-85ee-1e536c461a71.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.6,
@@ -5281,7 +5197,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/aacc5fc7-25e5-4901-b682-d9911fe1d21b.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.6,
@@ -5310,7 +5226,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9d4cb3ed-a184-4662-91fc-f4112ce354b7.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.6,
@@ -5338,7 +5254,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/53529778-f611-4f21-b789-0bc1bf52e7e5.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.99,
@@ -5382,7 +5298,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f4cee6de-593c-4f4c-a0b0-368c8d0aa43e.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.99,
@@ -5410,7 +5326,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9b8f28d0-1101-4b12-82d0-e2ef23c8ef6c.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 0.95,
@@ -5439,7 +5355,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/17448e49-e6d5-4616-be82-86a78e83bb8c.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 2.91,
@@ -5467,7 +5383,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5634f899-a008-45ab-b930-2b74cf08e566.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 5.44,
@@ -5495,7 +5411,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/984d68e3-738c-43cf-afd1-756b33f60610.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 5.44,
@@ -5524,7 +5440,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/386aab9b-d99c-44af-ba52-1bd95d49a60c.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 5.44,
@@ -5552,7 +5468,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/cc0c50f8-1d2d-4bbd-95bc-806513fe6062.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 0.76,
@@ -5581,7 +5497,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a27ed780-8c39-4533-a783-817445f5f11d.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 0.76,
@@ -5610,7 +5526,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a933af17-dee7-4d6f-a87c-48a70b3a532f.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 0.76,
@@ -5639,7 +5555,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/67b1b091-294b-47af-aee0-df9fa7211cee.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 0.76,
@@ -5668,7 +5584,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/e20392a9-cbd5-4271-9ad1-450cad3ff835.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 0.76,
@@ -5696,7 +5612,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_28102026180148_Retirement_Ashish_Bhatt_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 4.06,
@@ -5740,7 +5656,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f901b2e2-5991-467d-836f-623b8eefdbb9.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.87,
@@ -5768,7 +5684,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4c027e30-6b95-4915-9843-bd4e4c437bb1.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.72,
@@ -5796,7 +5712,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/e0efae36-4554-4d02-8938-9a63b303f9c3.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.72,
@@ -5824,7 +5740,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a0daf632-ab45-41ef-bbc5-bfc655056cbb.pdf",
    "source": "bse",
    "reaction_day": "2026-10-22",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-22",
     "move_pct": -2.53,
@@ -5853,7 +5769,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a6d81afd-41a5-496e-b6f3-228f23346f39.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": 1.0,
@@ -5883,7 +5799,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/95153dec-f5c7-4013-90b5-92e3c1d7c92a.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": 1.0,
@@ -5913,7 +5829,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/788c2d34-b575-4343-b984-f1628be0e6c6.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": -2.81,
@@ -6006,7 +5922,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/84c0dbf5-4b55-41b9-ab7b-e20d9fe359a9.pdf",
    "source": "bse",
    "reaction_day": "2026-11-10",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 1.31,
@@ -6043,7 +5959,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/41e7bb57-172f-4858-a5ac-8c15fe653e81.pdf",
    "source": "bse",
    "reaction_day": "2026-11-10",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 1.31,
@@ -6080,7 +5996,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d7ac2233-ec14-4247-a363-92be10e5752c.pdf",
    "source": "bse",
    "reaction_day": "2026-11-08",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": 2.13,
@@ -6109,7 +6025,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c6c189db-e010-4c6e-a997-b50d6d33767a.pdf",
    "source": "bse",
    "reaction_day": "2026-11-07",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": -1.44,
@@ -6162,7 +6078,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7e17b4ed-a5e2-4625-9e2b-2af590350caa.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 2.45,
@@ -6256,7 +6172,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/258dfe1d-7ec3-4563-863f-330be44338eb.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": -0.52,
@@ -6293,7 +6209,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8e05f8c9-956c-4fbc-9e8e-3f6aa4694621.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": -0.52,
@@ -6330,7 +6246,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6ad82347-ac2d-4385-ae80-3cd07c428f69.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 2.82,
@@ -6424,7 +6340,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c3d1ba29-6132-47b7-9f3b-79a294e53189.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 0.54,
@@ -6453,7 +6369,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ead5c0dc-e464-4e53-8006-b861205174a9.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": -0.49,
@@ -6482,7 +6398,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/70bfc361-3c9a-45d0-8240-e1b544debd01.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": -3.19,
@@ -6519,7 +6435,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1dc3fa06-d8da-447c-ad6d-8d2166fd134c.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 1.13,
@@ -6610,7 +6526,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/e5b2d06f-fea8-4dea-aa03-84674215a0fd.pdf",
    "source": "bse",
    "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-27",
     "move_pct": -1.14,
@@ -6663,7 +6579,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b633b6e5-f968-461c-b8f1-2ac155afc384.pdf",
    "source": "bse",
    "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-27",
     "move_pct": -0.3,
@@ -6700,7 +6616,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4491cbf4-b27c-45f2-a905-1220b80dec9c.pdf",
    "source": "bse",
    "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-27",
     "move_pct": -0.3,
@@ -6737,7 +6653,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d3ba2a8b-279a-4e0f-9ee8-c99ca501552b.pdf",
    "source": "bse",
    "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-27",
     "move_pct": -0.3,
@@ -6774,7 +6690,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/2f44a1be-85a8-4545-a86e-71a27b7b7f15.pdf",
    "source": "bse",
    "reaction_day": "2026-10-26",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-26",
     "move_pct": -0.46,
@@ -6811,7 +6727,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0056a3dc-6357-48ff-a037-f1b206624331.pdf",
    "source": "bse",
    "reaction_day": "2026-10-25",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-26",
     "move_pct": 0.99,
@@ -6848,7 +6764,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/cf9c8eec-654a-4016-acf5-b7160985dc78.pdf",
    "source": "bse",
    "reaction_day": "2026-10-24",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-26",
     "move_pct": 0.97,
@@ -6877,7 +6793,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f7cde952-83d0-475d-b216-02af2204013a.pdf",
    "source": "bse",
    "reaction_day": "2026-10-22",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-22",
     "move_pct": -2.01,
@@ -6914,7 +6830,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c4c190cd-e98b-41fe-add8-8a367bb3917b.pdf",
    "source": "bse",
    "reaction_day": "2026-10-22",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-22",
     "move_pct": -2.01,
@@ -6951,7 +6867,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/af35c243-2088-4dae-aa78-5a1346d756cd.pdf",
    "source": "bse",
    "reaction_day": "2026-11-18",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-18",
     "move_pct": -1.89,
@@ -6980,7 +6896,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6464f590-90c7-40d8-8093-0e700ab95a88.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": 0.07,
@@ -7009,7 +6925,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_16112026185724_ConcallInvite_Nov19_2026_final_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": 0.41,
@@ -7038,7 +6954,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4c31e194-fe41-4e54-9862-fdda5efccb7b.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": -0.86,
@@ -7067,7 +6983,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/52877bcf-b57f-486c-9c6f-4b29fa2fd203.pdf",
    "source": "bse",
    "reaction_day": "2026-11-16",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-16",
     "move_pct": -0.72,
@@ -7096,7 +7012,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7b9eb8a8-fa88-453b-810f-b55034589aac.pdf",
    "source": "bse",
    "reaction_day": "2026-11-14",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-16",
     "move_pct": 1.55,
@@ -7140,7 +7056,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1ff3e14f-7e97-4074-89c7-049408721c5e.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": 0.48,
@@ -7169,7 +7085,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/85fd0472-5794-49ac-9025-a7b18f17e91d.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": -2.81,
@@ -7197,7 +7113,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6df1f05c-9926-47ce-9896-94c41bdb71ab.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": -1.02,
@@ -7241,7 +7157,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/2b74a7fe-194c-4a61-8cf6-dbba26573f57.pdf",
    "source": "bse",
    "reaction_day": "2026-11-10",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 1.99,
@@ -7270,7 +7186,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8269aea9-54c0-4a24-a615-6dda0ab8f054.pdf",
    "source": "bse",
    "reaction_day": "2026-11-09",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": 1.63,
@@ -7299,7 +7215,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_05112026164633_NSEIntimationTranscript02112026Sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": -0.19,
@@ -7328,7 +7244,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/995a3a71-4a1e-4c1f-a29a-6c6747e4ca10.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 0.07,
@@ -7357,7 +7273,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5f677c46-d64d-4c66-9851-541120179fe4.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 2.45,
@@ -7385,7 +7301,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/422774be-d5f4-4a17-a483-ffb3b7728020.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 2.45,
@@ -7414,7 +7330,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/e6d9bef6-f458-40de-9c71-9da5d56b6f47.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 2.45,
@@ -7442,7 +7358,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9d0d7935-7fc2-47ba-8da1-19dd5ace72da.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": 1.26,
@@ -7471,7 +7387,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9a4b00d7-4978-4c75-beb2-78403163cb8e.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": 0.18,
@@ -7500,7 +7416,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a7331811-fe14-4c79-896d-f0a9df901335.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": 0.04,
@@ -7529,7 +7445,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ee7e6efe-1f9b-4b5e-bff7-1da18902ffeb.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": -0.8,
@@ -7558,7 +7474,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4a189744-1646-4de4-809b-e936a67b6fe4.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 1.69,
@@ -7587,7 +7503,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1bbe06aa-8721-4e47-b0b1-985a91279ce9.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": -0.01,
@@ -7616,7 +7532,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/32ee21d2-58a3-45c8-83af-c109a9bd080d.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 2.82,
@@ -7645,7 +7561,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ff62231c-b3bd-48d1-a643-8b379a46cb57.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 2.82,
@@ -7673,7 +7589,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9251c692-ccfd-44b9-8720-4a5a42e808ba.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 2.82,
@@ -7701,7 +7617,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d8a69245-c1f1-4bc3-a7c9-9dbc5795aae8.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 0.21,
@@ -7730,7 +7646,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/86cb66bf-7e97-4d77-a803-40ae7750d8f2.pdf",
    "source": "bse",
    "reaction_day": "2026-11-02",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 1.76,
@@ -7759,7 +7675,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b7585ba4-523e-4c05-b037-263a3e803229.pdf",
    "source": "bse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 2.41,
@@ -7788,7 +7704,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/817afcae-2ee4-486a-a3c0-fdbfd7a392e9.pdf",
    "source": "bse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 2.41,
@@ -7817,7 +7733,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b36ff756-1cf7-44a3-9b2c-4583e7e0e792.pdf",
    "source": "bse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 1.04,
@@ -7861,7 +7777,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ef51f1d4-0f28-478d-ba24-ea772334daa8.pdf",
    "source": "bse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 0.32,
@@ -7905,7 +7821,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/13e50739-50e7-4b5a-8dba-ac92ece6d35f.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 1.76,
@@ -7934,7 +7850,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/83b2bead-08c8-4789-a658-7985de0c772f.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 0.78,
@@ -7962,7 +7878,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/95d1017a-3e9d-46db-ba54-ca6ae2c6dfbe.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": -1.32,
@@ -7991,7 +7907,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/64f36e3b-87e9-426e-be3e-515dca4525d2.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": -1.51,
@@ -8020,7 +7936,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f2035228-03c1-4d40-a644-560d2727c2d1.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 1.13,
@@ -8048,7 +7964,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7ec86b0c-ade4-46be-bdb7-bae88ce1dfb8.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 1.13,
@@ -8077,7 +7993,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fca20bad-7bfe-438f-a526-d9f42ccf0346.pdf",
    "source": "bse",
    "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-27",
     "move_pct": 2.05,
@@ -8105,7 +8021,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/77a076e8-3476-462a-9b25-360533cfcd07.pdf",
    "source": "bse",
    "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-27",
     "move_pct": 0.18,
@@ -8134,7 +8050,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/115618e0-f718-4b8b-81e1-642618cbe608.pdf",
    "source": "bse",
    "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-27",
     "move_pct": -0.4,
@@ -8163,7 +8079,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/34cdfd84-89c0-476d-b2dc-82908b76b697.pdf",
    "source": "bse",
    "reaction_day": "2026-10-24",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-26",
     "move_pct": -0.09,
@@ -8192,7 +8108,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/524eadda-3966-4f4f-8888-bfaf2cb0d69e.pdf",
    "source": "bse",
    "reaction_day": "2026-10-24",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-26",
     "move_pct": 2.14,
@@ -8221,7 +8137,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/46b44110-a538-4759-8351-04d4731da2ae.pdf",
    "source": "bse",
    "reaction_day": "2026-10-24",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-26",
     "move_pct": -0.46,
@@ -8250,7 +8166,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d500e04f-fe02-4b5c-923a-0275b18f6044.pdf",
    "source": "bse",
    "reaction_day": "2026-10-23",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-23",
     "move_pct": -0.23,
@@ -8279,7 +8195,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/3667a6e5-6d63-45c2-b94e-d09043e401b4.pdf",
    "source": "bse",
    "reaction_day": "2026-10-22",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-22",
     "move_pct": -2.03,
@@ -8308,7 +8224,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/439fef91-1dfa-4639-944f-eccbddfae1ff.pdf",
    "source": "bse",
    "reaction_day": "2026-10-22",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-22",
     "move_pct": -2.01,
@@ -8337,7 +8253,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/77e3ec52-056d-4103-8388-14b48756f70d.pdf",
    "source": "bse",
    "reaction_day": "2026-10-22",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-22",
     "move_pct": -2.03,
@@ -8366,7 +8282,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/cbfbd146-6a68-43d6-9cbc-dfb7d0f50fd0.pdf",
    "source": "bse",
    "reaction_day": "2026-10-21",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-21",
     "move_pct": -2.45,
@@ -8394,7 +8310,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/aa6e31e0-6f77-4b22-a9dd-591c7c4a7d6d.pdf",
    "source": "bse",
    "reaction_day": "2026-10-21",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-21",
     "move_pct": -2.45,
@@ -8422,7 +8338,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/42761949-c90f-4c0c-8fad-6d79416f15d2.pdf",
    "source": "bse",
    "reaction_day": "2026-10-21",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-21",
     "move_pct": -0.71,
@@ -8437,33 +8353,70 @@
    "collapsed": false
   },
   {
-   "id": "92bfa9a7-469a-4360-af1e-71de13927b80",
-   "symbol": "SUNPHARMA",
-   "name": "Sun Pharmaceutical Industries Ltd",
-   "filed": "2026-10-20T17:33",
-   "subject": "Announcement under Regulation 30 (LODR)-Press Release / Media Release",
-   "headline": "Press Release",
+   "id": "b4cff113-f6e7-4de2-898b-de5e2d8bcdc6",
+   "symbol": "RELIANCE",
+   "name": "Reliance Industries Ltd",
+   "filed": "2026-11-19T18:37",
+   "subject": "Update On Institutional Investors'' Meeting - Morgan Stanley 25Th Annual Asia-Pacific Summit",
+   "headline": "This is further to the disclosure dated November 13, 2026 made by the Company. We wish to inform you that the Company executives participated in the Institutional Investors'' Meeting - ....",
    "note": null,
-   "category": "press_release",
-   "tier": "P2",
+   "category": "investor_meetings",
+   "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9a434af1-62a4-4822-a754-fa547098def0.pdf",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/3c911ae3-537d-4dad-b536-c6c8337562ee.pdf",
    "source": "bse",
-   "reaction_day": "2026-10-21",
-   "last_bar": "2026-11-19",
-   "reaction": {
-    "date": "2026-10-21",
-    "move_pct": 0.12,
-    "nifty_pct": -0.34,
-    "excess_pct": 0.46,
-    "vol_ratio": 1.52
-   },
-   "title": "UNLOXCYT received Category 2A Preferred Designation in updated NCCN Guidelines",
-   "score": 200,
-   "reason": "press release · +0.5% vs Nifty",
+   "reaction_day": "2026-11-20",
+   "last_bar": "2026-11-18",
+   "reaction": null,
+   "score": 100,
+   "reason": "investor meetings · Reaction pending",
    "boosted": false,
-   "collapsed": false
+   "collapsed": true
+  },
+  {
+   "id": "2fc3f1bd-e740-4bb4-81e2-22bf496baf2d",
+   "symbol": "TCS",
+   "name": "Tata Consultancy Services Ltd",
+   "filed": "2026-11-19T17:39",
+   "subject": "Announcement under Regulation 30 (LODR)-Newspaper Publication",
+   "headline": "Copy of Newspaper Publication for IEPF Statutory Reminder letters for Third Interim Dividend 2019-20",
+   "note": null,
+   "category": "unclassified",
+   "tier": "P3",
+   "classified_by": "rule",
+   "classify_error": null,
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/943a8ed9-8e89-481f-b0d5-dece57330687.pdf",
+   "source": "bse",
+   "reaction_day": "2026-11-20",
+   "last_bar": "2026-11-18",
+   "reaction": null,
+   "score": 100,
+   "reason": "unclassified · Reaction pending",
+   "boosted": false,
+   "collapsed": true
+  },
+  {
+   "id": "40fe44fa-81b5-4ccb-bf28-a65d479d4730",
+   "symbol": "TCS",
+   "name": "Tata Consultancy Services Ltd",
+   "filed": "2026-11-19T17:28",
+   "subject": "Announcement under Regulation 30 (LODR)-Newspaper Publication",
+   "headline": "Newspaper Advertisement regarding the opening of another special window for re-lodgement of transfer request of physical shares.",
+   "note": null,
+   "category": "unclassified",
+   "tier": "P3",
+   "classified_by": "default",
+   "classify_error": "ValueError: No API key was provided. Please pass a valid API key. Learn how to create an API key at https://aistudio.google.com/docs/api-key.",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/82a70838-3f9c-456b-b3f7-655b39e0ece9.pdf",
+   "source": "bse",
+   "reaction_day": "2026-11-20",
+   "last_bar": "2026-11-18",
+   "reaction": null,
+   "score": 100,
+   "reason": "unclassified · Reaction pending",
+   "boosted": false,
+   "collapsed": true
   },
   {
    "id": "5032b2dc-353f-4f45-bdf4-0641bbf3c146",
@@ -8480,16 +8433,10 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5032B2DC_353F_4F45_BDF4_0641BBF3C146_104632.pdf",
    "source": "bse",
    "reaction_day": "2026-11-19",
-   "last_bar": "2026-11-19",
-   "reaction": {
-    "date": "2026-11-19",
-    "move_pct": 7.58,
-    "nifty_pct": 1.14,
-    "excess_pct": 6.44,
-    "vol_ratio": 2.39
-   },
+   "last_bar": "2026-11-18",
+   "reaction": null,
    "score": 100,
-   "reason": "insider trading · +6.4% vs Nifty",
+   "reason": "insider trading · Reaction pending",
    "boosted": false,
    "collapsed": true
   },
@@ -8508,16 +8455,10 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/cc662964-1403-455d-a7c7-c4f0412e8a21.pdf",
    "source": "bse",
    "reaction_day": "2026-11-19",
-   "last_bar": "2026-11-19",
-   "reaction": {
-    "date": "2026-11-19",
-    "move_pct": 0.14,
-    "nifty_pct": 1.14,
-    "excess_pct": -0.99,
-    "vol_ratio": 0.54
-   },
+   "last_bar": "2026-11-18",
+   "reaction": null,
    "score": 100,
-   "reason": "investor meetings · −1.0% vs Nifty",
+   "reason": "investor meetings · Reaction pending",
    "boosted": false,
    "collapsed": true
   },
@@ -8536,16 +8477,10 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a670cf06-dc92-4bbc-a388-9ec495c70181.pdf",
    "source": "bse",
    "reaction_day": "2026-11-19",
-   "last_bar": "2026-11-19",
-   "reaction": {
-    "date": "2026-11-19",
-    "move_pct": 0.56,
-    "nifty_pct": 1.14,
-    "excess_pct": -0.57,
-    "vol_ratio": 0.64
-   },
+   "last_bar": "2026-11-18",
+   "reaction": null,
    "score": 100,
-   "reason": "fund raise · −0.6% vs Nifty",
+   "reason": "fund raise · Reaction pending",
    "boosted": false,
    "collapsed": true
   },
@@ -8564,7 +8499,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/eadec632-3d3c-49bd-8f85-6d26d79a4332.pdf",
    "source": "bse",
    "reaction_day": "2026-11-18",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-18",
     "move_pct": -0.29,
@@ -8592,7 +8527,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_17112026182705_ConCallInvite_Nov20_2026_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-11-18",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-18",
     "move_pct": -1.61,
@@ -8620,7 +8555,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5f857401-ae59-416d-9fa3-95705fa2e4d0.pdf",
    "source": "bse",
    "reaction_day": "2026-11-18",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-18",
     "move_pct": -0.83,
@@ -8648,7 +8583,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/500db86f-5139-4f98-8ede-68a0d7a33da0.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": -0.29,
@@ -8676,7 +8611,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/68f10113-f839-4891-994e-312e5df5ebf0.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": -0.86,
@@ -8704,7 +8639,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/3c252309-6a76-41db-b704-e8c0e51c8d14.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": -0.19,
@@ -8732,7 +8667,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fd66e516-a621-4f15-ab01-439c886c14bd.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": -0.87,
@@ -8760,7 +8695,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7c441734-0d84-47ac-8fef-831908ec674d.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": 1.48,
@@ -8788,7 +8723,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c3e0b430-7329-4925-8c6f-a9a1967bc0f9.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": 1.65,
@@ -8816,7 +8751,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f6c95e73-2736-46c0-a70a-5d6a952f58eb.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": -0.71,
@@ -8844,7 +8779,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f81a8e9b-2133-4827-9a7e-7e82fa7ee92b.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": -3.19,
@@ -8872,7 +8807,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9f32b982-5393-4f42-a661-adcbc5db6d12.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": 1.48,
@@ -8900,7 +8835,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a5d2906c-bc39-4fc9-8d6c-821f2f1c8789.pdf",
    "source": "bse",
    "reaction_day": "2026-11-16",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-16",
     "move_pct": 0.65,
@@ -8928,7 +8863,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a68bf781-d41a-4320-a9f5-2d8d4c8a08a3.pdf",
    "source": "bse",
    "reaction_day": "2026-11-15",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-16",
     "move_pct": 2.26,
@@ -8956,7 +8891,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/3f614a9e-94b0-42ef-8145-ba0055ba7be5.pdf",
    "source": "bse",
    "reaction_day": "2026-11-14",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-16",
     "move_pct": 0.38,
@@ -8984,7 +8919,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/549cc510-62f9-4022-b62b-58e3e72ad671.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": 0.33,
@@ -9012,7 +8947,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/95651ec6-7981-473a-9005-26a5d06d478c.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": -2.81,
@@ -9040,7 +8975,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ce3cb1dd-0d97-4fd3-8c15-78b958145ad4.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": -0.47,
@@ -9068,7 +9003,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/55f9d4f5-8638-4669-abdb-7cc4127221fc.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": 0.0,
@@ -9096,7 +9031,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f7320672-e51f-4047-b49e-e53cbe71a0ad.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": -1.08,
@@ -9124,7 +9059,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/df35ab63-de36-4daf-b7c4-04c5d2fba0b9.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": -1.08,
@@ -9152,7 +9087,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1570c4a2-da85-4152-8c92-38fc6ab69878.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.83,
@@ -9180,7 +9115,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d01ef203-cd61-4f19-b88b-7a373979e5b5.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": 0.71,
@@ -9208,7 +9143,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/19833a7e-2123-409e-990d-b9c1bfd1a543.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -1.22,
@@ -9236,7 +9171,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5abe6ad6-2eb7-432c-85f4-20e44db0cb5d.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.83,
@@ -9264,7 +9199,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/884ef8c7-e105-4c95-afca-41f6e592da02.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.83,
@@ -9292,7 +9227,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ae574f7a-4573-459b-9090-59d84bf2d02a.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.62,
@@ -9320,7 +9255,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/bf144841-4cb9-4339-9a20-fef1c4b313e2.pdf",
    "source": "bse",
    "reaction_day": "2026-11-11",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 0.0,
@@ -9348,7 +9283,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/141afdbd-5245-4bad-9f7f-0528decee21a.pdf",
    "source": "bse",
    "reaction_day": "2026-11-11",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 0.0,
@@ -9376,7 +9311,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_09112026180719_ConCallInvite_Nov19_2026_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-10",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 3.76,
@@ -9404,7 +9339,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_09112026180456_ConCallInvite_Nov18_2026_Sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-10",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 3.76,
@@ -9432,7 +9367,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8a988798-8c55-42be-a6ce-6cb97abd6d5c.pdf",
    "source": "bse",
    "reaction_day": "2026-11-10",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 1.63,
@@ -9460,7 +9395,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_09112026180247_ConCallInvite_Nov17_2026_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-10",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 3.76,
@@ -9488,7 +9423,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_09112026175741_ConCallInvite_Nov13_2026_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-10",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 3.76,
@@ -9516,7 +9451,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c0a1bde0-4d57-46c0-ac73-940d5ff093d7.pdf",
    "source": "bse",
    "reaction_day": "2026-11-10",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": -0.13,
@@ -9544,7 +9479,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/bca602f2-cf50-4964-8641-a88186d2b914.pdf",
    "source": "bse",
    "reaction_day": "2026-11-09",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": 1.31,
@@ -9572,7 +9507,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/88c1f74a-5faf-4951-bd1c-87ac9c742fd0.pdf",
    "source": "bse",
    "reaction_day": "2026-11-08",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": -2.11,
@@ -9600,7 +9535,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/703B45EC_657C_437B_B91E_78E37D0B453F_144749.pdf",
    "source": "bse",
    "reaction_day": "2026-11-07",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": 0.35,
@@ -9628,7 +9563,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0926e958-96d9-4537-ae2b-188dfe3eb1d1.pdf",
    "source": "bse",
    "reaction_day": "2026-11-07",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": 1.26,
@@ -9656,7 +9591,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/72c96165-b9ed-4b62-ac86-80cc440b32ff.pdf",
    "source": "bse",
    "reaction_day": "2026-11-07",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": -0.49,
@@ -9684,7 +9619,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/dd885c0b-f490-4da2-9fcc-a0ef6cfb76a3.pdf",
    "source": "bse",
    "reaction_day": "2026-11-07",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": -1.44,
@@ -9712,7 +9647,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ddc90afe-51c7-4e86-984c-dbb5d641c44e.pdf",
    "source": "bse",
    "reaction_day": "2026-11-07",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": -1.44,
@@ -9740,7 +9675,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/bab324f6-6fab-42fc-8b79-a3881f4fb7c7.pdf",
    "source": "bse",
    "reaction_day": "2026-11-07",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": 0.33,
@@ -9768,7 +9703,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c0ebd50a-d1d2-4c02-8be7-cf5e771bb8ff.pdf",
    "source": "bse",
    "reaction_day": "2026-11-07",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": -1.67,
@@ -9796,7 +9731,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9e23e65f-ffbd-4e61-be8c-a57227966831.pdf",
    "source": "bse",
    "reaction_day": "2026-11-07",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": 1.63,
@@ -9824,7 +9759,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/82e352f2-9e9d-4073-af20-2f36da07dd99.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 2.45,
@@ -9852,7 +9787,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/74915aaa-1875-4cc4-af7c-1684eabee116.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 2.45,
@@ -9880,7 +9815,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/11b1a994-4cb5-4dc8-98ea-73923446674c.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 0.79,
@@ -9908,7 +9843,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/73a8c540-4229-4137-8e2b-5aae04fa0a35.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": -0.92,
@@ -9936,7 +9871,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/55c20e61-aebc-4717-b79a-065bec64e10b.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 2.45,
@@ -9964,7 +9899,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c260f50a-c5cb-45e9-a568-a0732046d11b.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 2.45,
@@ -9992,7 +9927,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/191d3534-ded0-412c-9b3e-a8fbe7c38d5a.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 1.66,
@@ -10020,7 +9955,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/bdab8a75-541a-4c8e-bd67-a4c1e81d0a22.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 0.07,
@@ -10048,7 +9983,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/50d58706-f181-4522-8799-b05f65780ce8.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 1.69,
@@ -10076,7 +10011,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/af15e069-bce2-4b71-a4aa-808def873510.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": 1.71,
@@ -10104,7 +10039,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/dfc259d1-be1e-465f-a9da-e6eb390c5353.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": -0.52,
@@ -10132,7 +10067,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/3eba3f7a-167e-4bd6-8c15-ea13bdefd1e5.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": -0.52,
@@ -10160,7 +10095,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1a1e858a-92de-4d39-9433-a8d3d62ccd22.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": 2.68,
@@ -10188,7 +10123,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1b59d36e-54d8-422a-8308-ff536357d314.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": -0.52,
@@ -10216,7 +10151,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7d087a4f-5077-43f5-a2d8-af2847be1303.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": -0.52,
@@ -10244,7 +10179,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/041ecd16-8df5-45cd-90bb-d4bd2fa6cf9b.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": -0.52,
@@ -10272,7 +10207,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a2e82696-5059-47a4-9c36-8399f022f4f0.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": 2.47,
@@ -10300,7 +10235,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8e3b4c06-ccd5-4aac-a57b-0abf323713d5.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": 2.23,
@@ -10328,7 +10263,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c2694b22-e5e8-41af-b6f4-e820ee6cf481.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": 0.13,
@@ -10356,7 +10291,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6b5ac8ab-73ab-44fe-824a-d794314fe3cd.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": 0.04,
@@ -10384,7 +10319,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/878869fb-5e51-4867-b640-2120edd34b6c.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": -2.52,
@@ -10412,7 +10347,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d219f169-7be4-4d16-9697-1251e8767e69.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": 0.16,
@@ -10440,7 +10375,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6c644005-9bd2-42f5-b61b-556e8c885e2d.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": 1.19,
@@ -10468,7 +10403,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_03112026152936_ConCallInvite_Nov06_2026_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": 0.29,
@@ -10496,7 +10431,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/12486329-18b7-4e94-a0e6-4b851e757235.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": -0.4,
@@ -10524,7 +10459,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5f21f715-4d81-4470-9e3b-2ca076cf4e22.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 1.1,
@@ -10552,7 +10487,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_02112026174345_NSEIntimation_Concall_02Nov2026_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 5.43,
@@ -10580,7 +10515,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/82194fd1-e0aa-4dc7-9dfe-bc5d4bf73b04.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 0.18,
@@ -10608,7 +10543,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/773ac0af-b53b-4ef9-9866-32dac67c2935.pdf",
    "source": "bse",
    "reaction_day": "2026-11-02",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 0.96,
@@ -10636,7 +10571,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_01112026143902_Newspaper_31102026_Final_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": -0.87,
@@ -10664,7 +10599,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/e87d46d8-c447-4fc2-9b82-a95a8a922b0f.pdf",
    "source": "bse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": -0.43,
@@ -10692,7 +10627,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/2336e442-6dfb-4af9-81c4-09a8770d2c94.pdf",
    "source": "bse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.99,
@@ -10720,7 +10655,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9ce2ef60-0b4f-44dc-a3a0-435c1066af80.pdf",
    "source": "bse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": -0.43,
@@ -10748,7 +10683,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0f665e67-b13f-4624-9278-3f4183d817eb.pdf",
    "source": "bse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.6,
@@ -10776,7 +10711,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ff271f28-80be-4329-a556-8ecc1cc7684f.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 0.82,
@@ -10804,7 +10739,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/082ec2fb-f975-4058-aadb-d27d3e69a02d.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.99,
@@ -10832,7 +10767,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5e1a8352-6166-444c-848a-29299a80a8d1.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": -0.43,
@@ -10860,7 +10795,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/21b018cf-36f2-48de-9bef-0fd35ec94607.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 0.78,
@@ -10888,7 +10823,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8c1e7a04-f30c-4229-8189-88b576aab720.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 0.95,
@@ -10916,7 +10851,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/500d7b1a-2dd6-4bec-b711-ea723571ad36.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 0.08,
@@ -10944,7 +10879,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/20d73044-2322-4d46-883f-67bff54a3b50.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 0.02,
@@ -10972,7 +10907,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/38dab330-ca6e-4311-9679-7b47cebb7993.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 1.39,
@@ -11000,7 +10935,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4463a62c-65c7-4641-8d1f-e6b9325f005b.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 0.78,
@@ -11028,7 +10963,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ec12024a-306f-4e5e-b516-cfda480e7093.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": -2.47,
@@ -11056,7 +10991,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/af0f8622-1854-4424-96bf-3e22856f1470.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 1.23,
@@ -11084,7 +11019,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/bc9fc5d1-9c04-4a88-b807-79d27dd63697.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 0.81,
@@ -11112,7 +11047,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/177db96b-825d-4e30-8988-d4cbba3cf92d.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": -1.59,
@@ -11140,7 +11075,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/498df898-abfc-4569-b288-56622aa74bef.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 0.94,
@@ -11168,7 +11103,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/dfa80ddb-f524-419d-b71e-d3c606e27c93.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 1.23,
@@ -11196,7 +11131,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/26cdd582-7e95-4019-88b5-fdff3d5e60e1.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 0.85,
@@ -11224,7 +11159,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/31980a61-8b0b-4f0e-8ec3-b3fea61c7ada.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.87,
@@ -11252,7 +11187,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/86d68230-8e70-43c7-abb0-ebaf541aeaa8.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.87,
@@ -11280,7 +11215,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d6ee0e49-1938-4648-a9e4-d6979352fe8e.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.87,
@@ -11308,7 +11243,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/2c2c299b-f7bf-4edd-b15e-cedb0a5a14a8.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.87,
@@ -11336,7 +11271,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d7008597-6ddd-4192-ab30-da3d6832abd9.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": -1.45,
@@ -11364,7 +11299,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fb1e1ced-406b-42d5-96b7-8fda705bdb16.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 1.13,
@@ -11392,7 +11327,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0e4c11c6-4c96-42c0-ac94-b2cb928c4f4f.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.72,
@@ -11420,7 +11355,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f59fa177-7b03-4b3d-96d2-aeff1847bcb4.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 1.13,
@@ -11448,7 +11383,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fe0fd731-b8f8-4196-a639-066291bf6ef0.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.87,
@@ -11476,7 +11411,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/abf880ad-357c-4ff9-b6d7-83c1dcf59cba.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": -3.19,
@@ -11504,7 +11439,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5670a3e4-4e3c-489d-9160-455cb124704f.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": -3.19,
@@ -11532,7 +11467,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/cafe2036-e51b-413a-80cd-65e331d170be.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": -0.49,
@@ -11560,7 +11495,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_27102026172744_NSEIntimation_Concall_02112026_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 0.82,
@@ -11588,7 +11523,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/edbc5f7a-bd4a-43c2-94d0-0e4cc9f24b9e.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": -1.21,
@@ -11616,7 +11551,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/03e4a1f0-302f-4029-8996-9cd1f254f916.pdf",
    "source": "bse",
    "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-27",
     "move_pct": 0.18,
@@ -11644,7 +11579,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6e5c35b1-1012-4947-bf92-558cefc37ca6.pdf",
    "source": "bse",
    "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-27",
     "move_pct": -0.4,
@@ -11672,7 +11607,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9ec6c385-b23c-49cd-9d07-b09dc86c3df7.pdf",
    "source": "bse",
    "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-27",
     "move_pct": 2.05,
@@ -11700,7 +11635,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/bd352f0e-ac9c-4c6d-94cd-6b50802c665b.pdf",
    "source": "bse",
    "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-27",
     "move_pct": -0.73,
@@ -11728,7 +11663,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1a5ea611-ba91-4312-95aa-59a8cc634910.pdf",
    "source": "bse",
    "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-27",
     "move_pct": 3.2,
@@ -11756,7 +11691,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b1d1f1f7-7442-4d44-876e-106b3405dd14.pdf",
    "source": "bse",
    "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-27",
     "move_pct": 3.2,
@@ -11784,7 +11719,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9e0bab4c-fcd5-45ce-8a91-a3dcf5dac9e9.pdf",
    "source": "bse",
    "reaction_day": "2026-10-25",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-26",
     "move_pct": -0.69,
@@ -11812,7 +11747,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d7e45614-ae12-4bb9-b92d-623b3a63f166.pdf",
    "source": "bse",
    "reaction_day": "2026-10-24",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-26",
     "move_pct": -0.69,
@@ -11840,7 +11775,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4260af0d-9e97-44f0-a19a-04b0b0ddb4e5.pdf",
    "source": "bse",
    "reaction_day": "2026-10-24",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-26",
     "move_pct": -0.27,
@@ -11868,7 +11803,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4ac4537e-4a64-4682-a4c5-5255ba8895cf.pdf",
    "source": "bse",
    "reaction_day": "2026-10-24",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-26",
     "move_pct": -0.27,
@@ -11896,7 +11831,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/aeaf0a5d-3d57-41ef-87d1-a10268a57932.pdf",
    "source": "bse",
    "reaction_day": "2026-10-24",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-26",
     "move_pct": 0.97,
@@ -11924,7 +11859,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7873abcb-7f97-487d-a474-028b0a26feea.pdf",
    "source": "bse",
    "reaction_day": "2026-10-23",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-23",
     "move_pct": -1.4,
@@ -11952,7 +11887,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a9743040-8809-46d3-85ca-c6ca01bc322a.pdf",
    "source": "bse",
    "reaction_day": "2026-10-23",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-23",
     "move_pct": -3.01,
@@ -11980,7 +11915,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/536a781d-6af5-4dde-840e-5e1420f5157f.pdf",
    "source": "bse",
    "reaction_day": "2026-10-22",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-22",
     "move_pct": -1.82,
@@ -12008,7 +11943,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/19d4c3c3-df05-444a-adfb-4edcffa3f847.pdf",
    "source": "bse",
    "reaction_day": "2026-10-22",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-22",
     "move_pct": -1.82,
@@ -12036,7 +11971,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/34d0f640-5c7b-4bfa-b042-6b4fbe63daa0.pdf",
    "source": "bse",
    "reaction_day": "2026-10-22",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-22",
     "move_pct": -2.01,
@@ -12064,7 +11999,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/243de729-cff5-4203-a58d-cb59adb578b5.pdf",
    "source": "bse",
    "reaction_day": "2026-10-22",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-22",
     "move_pct": -0.81,
@@ -12092,7 +12027,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0c09b689-969e-4ab5-88db-ab3fa4ea814a.pdf",
    "source": "bse",
    "reaction_day": "2026-10-22",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-22",
     "move_pct": -2.53,
@@ -12120,7 +12055,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7b116e2d-3f77-43c4-85d7-b4a4077b43ba.pdf",
    "source": "bse",
    "reaction_day": "2026-10-22",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-22",
     "move_pct": -1.28,
@@ -12148,7 +12083,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c1d60831-6535-483d-9eec-222e52fbe3bb.pdf",
    "source": "bse",
    "reaction_day": "2026-10-22",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-22",
     "move_pct": -0.27,
@@ -12176,7 +12111,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5bb76cad-5a8c-42c8-8aa3-6d81edf31bf6.pdf",
    "source": "bse",
    "reaction_day": "2026-10-21",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-21",
     "move_pct": -3.27,
@@ -12204,7 +12139,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/06533910-f3e7-4bae-80e9-34ecd08bbafc.pdf",
    "source": "bse",
    "reaction_day": "2026-10-21",
-   "last_bar": "2026-11-19",
+   "last_bar": "2026-11-18",
    "reaction": {
     "date": "2026-10-21",
     "move_pct": -0.71,
@@ -12219,24 +12154,6 @@
   }
  ],
  "alerts": [
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-19",
-   "kind": "price",
-   "text": "+7.6% (+6.4% vs Nifty) · 2.4× volume"
-  },
-  {
-   "symbol": "POLYCAB",
-   "date": "2026-11-19",
-   "kind": "price",
-   "text": "2.9× volume"
-  },
-  {
-   "symbol": "TATAPOWER",
-   "date": "2026-11-19",
-   "kind": "price",
-   "text": "2.9× volume"
-  },
   {
    "symbol": "POLYCAB",
    "date": "2026-11-18",
@@ -12956,14 +12873,6 @@
    "vol_ratio": 0.86
   },
   {
-   "symbol": "RELIANCE",
-   "date": "2026-11-19",
-   "move_pct": 0.92,
-   "nifty_pct": 1.14,
-   "excess_pct": -0.21,
-   "vol_ratio": 0.68
-  },
-  {
    "symbol": "HDFCBANK",
    "date": "2026-10-21",
    "move_pct": -0.71,
@@ -13122,14 +13031,6 @@
    "nifty_pct": -0.63,
    "excess_pct": -0.21,
    "vol_ratio": 0.55
-  },
-  {
-   "symbol": "HDFCBANK",
-   "date": "2026-11-19",
-   "move_pct": 1.69,
-   "nifty_pct": 1.14,
-   "excess_pct": 0.55,
-   "vol_ratio": 0.62
   },
   {
    "symbol": "TCS",
@@ -13292,14 +13193,6 @@
    "vol_ratio": 0.34
   },
   {
-   "symbol": "TCS",
-   "date": "2026-11-19",
-   "move_pct": -1.55,
-   "nifty_pct": 1.14,
-   "excess_pct": -2.68,
-   "vol_ratio": 0.67
-  },
-  {
    "symbol": "BHARTIARTL",
    "date": "2026-10-21",
    "move_pct": 0.88,
@@ -13458,14 +13351,6 @@
    "nifty_pct": -0.63,
    "excess_pct": 0.33,
    "vol_ratio": 0.41
-  },
-  {
-   "symbol": "BHARTIARTL",
-   "date": "2026-11-19",
-   "move_pct": 0.56,
-   "nifty_pct": 1.14,
-   "excess_pct": -0.57,
-   "vol_ratio": 0.64
   },
   {
    "symbol": "ITC",
@@ -13628,14 +13513,6 @@
    "vol_ratio": 0.8
   },
   {
-   "symbol": "ITC",
-   "date": "2026-11-19",
-   "move_pct": 1.48,
-   "nifty_pct": 1.14,
-   "excess_pct": 0.35,
-   "vol_ratio": 1.23
-  },
-  {
    "symbol": "LT",
    "date": "2026-10-21",
    "move_pct": -0.71,
@@ -13794,14 +13671,6 @@
    "nifty_pct": -0.63,
    "excess_pct": 0.71,
    "vol_ratio": 0.47
-  },
-  {
-   "symbol": "LT",
-   "date": "2026-11-19",
-   "move_pct": 1.25,
-   "nifty_pct": 1.14,
-   "excess_pct": 0.12,
-   "vol_ratio": 0.88
   },
   {
    "symbol": "SUNPHARMA",
@@ -13964,14 +13833,6 @@
    "vol_ratio": 0.72
   },
   {
-   "symbol": "SUNPHARMA",
-   "date": "2026-11-19",
-   "move_pct": 1.52,
-   "nifty_pct": 1.14,
-   "excess_pct": 0.39,
-   "vol_ratio": 0.84
-  },
-  {
    "symbol": "MARUTI",
    "date": "2026-10-21",
    "move_pct": -2.4,
@@ -14130,14 +13991,6 @@
    "nifty_pct": -0.63,
    "excess_pct": 0.68,
    "vol_ratio": 1.02
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-11-19",
-   "move_pct": 7.58,
-   "nifty_pct": 1.14,
-   "excess_pct": 6.44,
-   "vol_ratio": 2.39
   },
   {
    "symbol": "BAJFINANCE",
@@ -14300,14 +14153,6 @@
    "vol_ratio": 0.91
   },
   {
-   "symbol": "BAJFINANCE",
-   "date": "2026-11-19",
-   "move_pct": -0.09,
-   "nifty_pct": 1.14,
-   "excess_pct": -1.23,
-   "vol_ratio": 0.77
-  },
-  {
    "symbol": "ASIANPAINT",
    "date": "2026-10-21",
    "move_pct": -0.48,
@@ -14466,14 +14311,6 @@
    "nifty_pct": -0.63,
    "excess_pct": -1.07,
    "vol_ratio": 0.66
-  },
-  {
-   "symbol": "ASIANPAINT",
-   "date": "2026-11-19",
-   "move_pct": 0.57,
-   "nifty_pct": 1.14,
-   "excess_pct": -0.57,
-   "vol_ratio": 0.75
   },
   {
    "symbol": "TRENT",
@@ -14636,14 +14473,6 @@
    "vol_ratio": 1.3
   },
   {
-   "symbol": "TRENT",
-   "date": "2026-11-19",
-   "move_pct": 1.1,
-   "nifty_pct": 1.14,
-   "excess_pct": -0.04,
-   "vol_ratio": 0.73
-  },
-  {
    "symbol": "ETERNAL",
    "date": "2026-10-21",
    "move_pct": -2.45,
@@ -14802,14 +14631,6 @@
    "nifty_pct": -0.63,
    "excess_pct": -1.78,
    "vol_ratio": 0.49
-  },
-  {
-   "symbol": "ETERNAL",
-   "date": "2026-11-19",
-   "move_pct": 0.23,
-   "nifty_pct": 1.14,
-   "excess_pct": -0.9,
-   "vol_ratio": 1.07
   },
   {
    "symbol": "DIXON",
@@ -14972,14 +14793,6 @@
    "vol_ratio": 0.68
   },
   {
-   "symbol": "DIXON",
-   "date": "2026-11-19",
-   "move_pct": 3.48,
-   "nifty_pct": 1.14,
-   "excess_pct": 2.34,
-   "vol_ratio": 0.84
-  },
-  {
    "symbol": "PERSISTENT",
    "date": "2026-10-21",
    "move_pct": 2.96,
@@ -15138,14 +14951,6 @@
    "nifty_pct": -0.63,
    "excess_pct": -0.29,
    "vol_ratio": 0.43
-  },
-  {
-   "symbol": "PERSISTENT",
-   "date": "2026-11-19",
-   "move_pct": 0.39,
-   "nifty_pct": 1.14,
-   "excess_pct": -0.74,
-   "vol_ratio": 0.77
   },
   {
    "symbol": "POLYCAB",
@@ -15308,14 +15113,6 @@
    "vol_ratio": 2.68
   },
   {
-   "symbol": "POLYCAB",
-   "date": "2026-11-19",
-   "move_pct": 3.32,
-   "nifty_pct": 1.14,
-   "excess_pct": 2.18,
-   "vol_ratio": 2.93
-  },
-  {
    "symbol": "TATAPOWER",
    "date": "2026-10-21",
    "move_pct": -0.07,
@@ -15474,14 +15271,6 @@
    "nifty_pct": -0.63,
    "excess_pct": -1.26,
    "vol_ratio": 1.09
-  },
-  {
-   "symbol": "TATAPOWER",
-   "date": "2026-11-19",
-   "move_pct": 0.59,
-   "nifty_pct": 1.14,
-   "excess_pct": -0.54,
-   "vol_ratio": 2.91
   },
   {
    "symbol": "IRCTC",
@@ -15644,14 +15433,6 @@
    "vol_ratio": 0.57
   },
   {
-   "symbol": "IRCTC",
-   "date": "2026-11-19",
-   "move_pct": 1.25,
-   "nifty_pct": 1.14,
-   "excess_pct": 0.11,
-   "vol_ratio": 0.61
-  },
-  {
    "symbol": "CDSL",
    "date": "2026-10-21",
    "move_pct": -2.58,
@@ -15810,14 +15591,6 @@
    "nifty_pct": -0.63,
    "excess_pct": -0.98,
    "vol_ratio": 1.3
-  },
-  {
-   "symbol": "CDSL",
-   "date": "2026-11-19",
-   "move_pct": 0.48,
-   "nifty_pct": 1.14,
-   "excess_pct": -0.66,
-   "vol_ratio": 0.63
   },
   {
    "symbol": "KPITTECH",
@@ -15980,14 +15753,6 @@
    "vol_ratio": 0.71
   },
   {
-   "symbol": "KPITTECH",
-   "date": "2026-11-19",
-   "move_pct": 0.14,
-   "nifty_pct": 1.14,
-   "excess_pct": -0.99,
-   "vol_ratio": 0.54
-  },
-  {
    "symbol": "DEEPAKNTR",
    "date": "2026-10-21",
    "move_pct": -2.86,
@@ -16146,14 +15911,6 @@
    "nifty_pct": -0.63,
    "excess_pct": -1.08,
    "vol_ratio": 0.64
-  },
-  {
-   "symbol": "DEEPAKNTR",
-   "date": "2026-11-19",
-   "move_pct": -0.68,
-   "nifty_pct": 1.14,
-   "excess_pct": -1.81,
-   "vol_ratio": 0.29
   }
  ],
  "failed": []
