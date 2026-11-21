@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-11-21T16:25+05:30",
+ "generated_at": "2026-11-22T01:34+05:30",
  "window": [
-  "2026-10-22",
-  "2026-11-21"
+  "2026-10-23",
+  "2026-11-22"
  ],
  "thresholds": {
   "volume_multiple": 2.0,
@@ -35,10 +35,6 @@
    "name": "Reliance Industries Ltd",
    "sector": "Energy",
    "closes": [
-    [
-     "2026-09-21",
-     1247.4
-    ],
     [
      "2026-09-22",
      1240.4
@@ -210,10 +206,6 @@
    "name": "HDFC Bank Ltd",
    "sector": "Financial Services",
    "closes": [
-    [
-     "2026-09-21",
-     739.5
-    ],
     [
      "2026-09-22",
      738.6
@@ -390,10 +382,6 @@
    "sector": "Information Technology",
    "closes": [
     [
-     "2026-09-21",
-     2128.7
-    ],
-    [
      "2026-09-22",
      2105.0
     ],
@@ -569,10 +557,6 @@
    "sector": "Telecommunication",
    "closes": [
     [
-     "2026-09-21",
-     1830.2
-    ],
-    [
      "2026-09-22",
      1817.2
     ],
@@ -744,10 +728,6 @@
    "sector": "Fast Moving Consumer Goods",
    "closes": [
     [
-     "2026-09-21",
-     267.0
-    ],
-    [
      "2026-09-22",
      265.8
     ],
@@ -918,10 +898,6 @@
    "name": "Larsen & Toubro Ltd",
    "sector": "Industrials",
    "closes": [
-    [
-     "2026-09-21",
-     3904.8
-    ],
     [
      "2026-09-22",
      3866.4
@@ -1098,10 +1074,6 @@
    "sector": "Healthcare",
    "closes": [
     [
-     "2026-09-21",
-     1868.9
-    ],
-    [
      "2026-09-22",
      1846.4
     ],
@@ -1277,10 +1249,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-21",
-     12153.0
-    ],
-    [
      "2026-09-22",
      12190.0
     ],
@@ -1451,10 +1419,6 @@
    "name": "Bajaj Finance Ltd",
    "sector": "Financial Services",
    "closes": [
-    [
-     "2026-09-21",
-     1021.3
-    ],
     [
      "2026-09-22",
      1008.8
@@ -1631,10 +1595,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-21",
-     2440.3
-    ],
-    [
      "2026-09-22",
      2448.5
     ],
@@ -1810,10 +1770,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-21",
-     2815.5
-    ],
-    [
      "2026-09-22",
      2782.9
     ],
@@ -1984,10 +1940,6 @@
    "name": "Eternal Ltd",
    "sector": "Consumer Discretionary",
    "closes": [
-    [
-     "2026-09-21",
-     335.9
-    ],
     [
      "2026-09-22",
      342.0
@@ -2160,10 +2112,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-21",
-     13350.0
-    ],
-    [
      "2026-09-22",
      13084.0
     ],
@@ -2335,10 +2283,6 @@
    "sector": "Information Technology",
    "closes": [
     [
-     "2026-09-21",
-     5449.0
-    ],
-    [
      "2026-09-22",
      5366.0
     ],
@@ -2509,10 +2453,6 @@
    "name": "Polycab India Ltd",
    "sector": "Industrials",
    "closes": [
-    [
-     "2026-09-21",
-     8369.5
-    ],
     [
      "2026-09-22",
      8350.0
@@ -2689,10 +2629,6 @@
    "sector": "Utilities",
    "closes": [
     [
-     "2026-09-21",
-     367.15
-    ],
-    [
      "2026-09-22",
      367.0
     ],
@@ -2868,10 +2804,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-21",
-     470.7
-    ],
-    [
      "2026-09-22",
      469.65
     ],
@@ -3043,10 +2975,6 @@
    "sector": "Financial Services",
    "closes": [
     [
-     "2026-09-21",
-     1361.0
-    ],
-    [
      "2026-09-22",
      1348.0
     ],
@@ -3217,10 +3145,6 @@
    "name": "KPIT Technologies Ltd",
    "sector": "Information Technology",
    "closes": [
-    [
-     "2026-09-21",
-     536.8
-    ],
     [
      "2026-09-22",
      529.05
@@ -3397,10 +3321,6 @@
    "sector": "Commodities",
    "closes": [
     [
-     "2026-09-21",
-     1586.3
-    ],
-    [
      "2026-09-22",
      1613.2
     ],
@@ -3569,10 +3489,6 @@
   }
  },
  "nifty": [
-  [
-   "2026-09-21",
-   23414.3
-  ],
   [
    "2026-09-22",
    23329.0
@@ -6374,19 +6290,19 @@
    "collapsed": false
   },
   {
-   "id": "0df598a9-08f7-48f3-b53d-f69d332706e2",
+   "id": "106836029",
    "symbol": "POLYCAB",
    "name": "Polycab India Ltd",
-   "filed": "2026-10-30T12:17",
-   "subject": "Corporate Insolvency Resolution Process (CIRP)-Updates - Corporate Insolvency Resolution Process  (CIRP)",
-   "headline": "Order passed by NCLAT setting aside the order of NCLT Ahmedabad bench dated October 07, 2026",
+   "filed": "2026-10-30T12:20",
+   "subject": "Polycab India Limited has informed the Exchange about the order passed by NCLAT setting aside the order of NCLT Ahmedabad bench dated October 07, 2026",
+   "headline": null,
    "note": null,
    "category": "litigation",
    "tier": "P1",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c3d1ba29-6132-47b7-9f3b-79a294e53189.pdf",
-   "source": "bse",
+   "url": "https://nsearchives.nseindia.in/corporate/POLYCAB_30102026121954_SECIRP30102026.pdf",
+   "source": "nse",
    "reaction_day": "2026-10-30",
    "last_bar": "2026-11-20",
    "reaction": {
@@ -6396,26 +6312,26 @@
     "excess_pct": 0.04,
     "vol_ratio": 0.75
    },
-   "title": "NCLAT allowed appeal and set aside order of NCLT Ahmedabad Bench",
+   "title": null,
    "score": 300,
    "reason": "litigation · +0.0% vs Nifty",
    "boosted": false,
    "collapsed": false
   },
   {
-   "id": "ec5b190e-b037-4cb0-91a8-d037cfad8574",
+   "id": "106831536",
    "symbol": "POLYCAB",
    "name": "Polycab India Ltd",
-   "filed": "2026-10-28T10:21",
-   "subject": "Corporate Insolvency Resolution Process (CIRP)-Updates - Corporate Insolvency Resolution Process  (CIRP)",
-   "headline": "Update on NCLAT order dated October 27, 2026",
+   "filed": "2026-10-28T10:24",
+   "subject": "Polycab India Limited has informed the Exchange on the update of NCLAT order dated October 27, 2026",
+   "headline": null,
    "note": null,
    "category": "litigation",
    "tier": "P1",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ead5c0dc-e464-4e53-8006-b861205174a9.pdf",
-   "source": "bse",
+   "url": "https://nsearchives.nseindia.in/corporate/POLYCAB_28102026102430_StockExchangeintimation27102026.pdf",
+   "source": "nse",
    "reaction_day": "2026-10-28",
    "last_bar": "2026-11-20",
    "reaction": {
@@ -6425,7 +6341,7 @@
     "excess_pct": -0.27,
     "vol_ratio": 0.57
    },
-   "title": "NCLAT directed MSCI not to delist scrip till order pronouncement",
+   "title": null,
    "score": 300,
    "reason": "litigation · −0.3% vs Nifty",
    "boosted": false,
@@ -8126,33 +8042,48 @@
    "collapsed": false
   },
   {
-   "id": "3dbcfb55-1bb7-4987-a427-1be66b13b9de",
-   "symbol": "PERSISTENT",
-   "name": "Persistent Systems Ltd",
-   "filed": "2026-10-22T23:06",
-   "subject": "Announcement under Regulation 30 (LODR)-Credit Rating",
-   "headline": "The intimation regarding the receipt of Credit Rating from M/s. ICRA Limited, is as enclosed.",
+   "id": "e0cd09e1-ad73-4b27-b4a2-aecacc557647",
+   "symbol": "MARUTI",
+   "name": "Maruti Suzuki India Ltd",
+   "filed": "2026-11-22T00:07",
+   "subject": "Price Increase",
+   "headline": "Price increase",
    "note": null,
-   "category": "credit_rating",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d500e04f-fe02-4b5c-923a-0275b18f6044.pdf",
+   "category": "unclassified",
+   "tier": "P3",
+   "classified_by": "default",
+   "classify_error": "ValueError: No API key was provided. Please pass a valid API key. Learn how to create an API key at https://aistudio.google.com/docs/api-key.",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5a6ae83d-a595-41a3-98db-f9270111f00b.pdf",
    "source": "bse",
-   "reaction_day": "2026-10-23",
+   "reaction_day": "2026-11-22",
    "last_bar": "2026-11-20",
-   "reaction": {
-    "date": "2026-10-23",
-    "move_pct": -0.23,
-    "nifty_pct": -0.39,
-    "excess_pct": 0.16,
-    "vol_ratio": 1.71
-   },
-   "title": "ICRA assigned [ICRA]A1+ to 1,000.00 INR Crores Commercial Paper",
-   "score": 200,
-   "reason": "credit rating · +0.2% vs Nifty",
+   "reaction": null,
+   "score": 100,
+   "reason": "unclassified · Reaction pending",
    "boosted": false,
-   "collapsed": false
+   "collapsed": true
+  },
+  {
+   "id": "8e1db404-6eac-478f-b1cb-11715a7205fc",
+   "symbol": "DIXON",
+   "name": "Dixon Technologies (India) Ltd",
+   "filed": "2026-11-21T20:29",
+   "subject": "Announcement Under Regulation 30 Of SEBI LODR-Update",
+   "headline": "Announcement under Regulation 30 of SEBI LODR- Update on Asset Purchase Agreement executed between Dixon Technologies (India) Limited and Vimal Plast (India) Private Limited",
+   "note": null,
+   "category": "unclassified",
+   "tier": "P3",
+   "classified_by": "default",
+   "classify_error": "ValueError: No API key was provided. Please pass a valid API key. Learn how to create an API key at https://aistudio.google.com/docs/api-key.",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/20a44726-e8b7-4a23-b0e8-ab8638aff9f7.pdf",
+   "source": "bse",
+   "reaction_day": "2026-11-22",
+   "last_bar": "2026-11-20",
+   "reaction": null,
+   "score": 100,
+   "reason": "unclassified · Reaction pending",
+   "boosted": false,
+   "collapsed": true
   },
   {
    "id": "54c8c687-eb9e-457d-acf8-744ae603f225",
@@ -8797,19 +8728,19 @@
    "collapsed": true
   },
   {
-   "id": "d51dbd69-b71b-4451-bb1f-2ac9a82ee78d",
+   "id": "106862564",
    "symbol": "POLYCAB",
    "name": "Polycab India Ltd",
-   "filed": "2026-11-16T17:52",
-   "subject": "Announcement Under Regulation 30 (LODR) - Analyst(S) / Investor(S) Meet - Intimation",
-   "headline": "Intimation of Institutional Analyst(s)/Investor(s) meet",
+   "filed": "2026-11-16T17:55",
+   "subject": "Polycab India Limited has informed the Exchange about Analyst(s)/Investor(s) meet.",
+   "headline": null,
    "note": null,
    "category": "investor_meetings",
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f81a8e9b-2133-4827-9a7e-7e82fa7ee92b.pdf",
-   "source": "bse",
+   "url": "https://nsearchives.nseindia.in/corporate/POLYCAB_16112026175513_Intimationtostockexchange.pdf",
+   "source": "nse",
    "reaction_day": "2026-11-17",
    "last_bar": "2026-11-20",
    "reaction": {
@@ -8853,19 +8784,19 @@
    "collapsed": true
   },
   {
-   "id": "8aa2a6aa-2e81-4b3d-b47b-f2b935f405bc",
+   "id": "106861876",
    "symbol": "POLYCAB",
    "name": "Polycab India Ltd",
-   "filed": "2026-11-16T11:25",
-   "subject": "Announcement Under Regulation 30 (LODR) - Analyst(S) / Investor(S) Meet - Intimation",
-   "headline": "Intimation of Institutional Analyst(s)/Investor(s) meet",
+   "filed": "2026-11-16T11:28",
+   "subject": "Polycab India Limited has informed the Exchange about Analyst(s)/Investor(s) meet.",
+   "headline": null,
    "note": null,
    "category": "investor_meetings",
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a5d2906c-bc39-4fc9-8d6c-821f2f1c8789.pdf",
-   "source": "bse",
+   "url": "https://nsearchives.nseindia.in/corporate/POLYCAB_16112026112810_Intimationtostockexchange.pdf",
+   "source": "nse",
    "reaction_day": "2026-11-16",
    "last_bar": "2026-11-20",
    "reaction": {
@@ -9609,19 +9540,19 @@
    "collapsed": true
   },
   {
-   "id": "e3733e07-d1a7-4b44-ade2-d9a6882e69fb",
+   "id": "106851763",
    "symbol": "POLYCAB",
    "name": "Polycab India Ltd",
-   "filed": "2026-11-06T22:02",
-   "subject": "Announcement Under Regulation 30 (LODR) - Analyst(S) / Investor(S) Meet - Intimation",
-   "headline": "Intimation of Institutional Analyst(s)/Investor(s) meet",
+   "filed": "2026-11-06T22:03",
+   "subject": "Polycab India Limited has informed the Exchange about Analyst(s)/Investor(s) meet.",
+   "headline": null,
    "note": null,
    "category": "investor_meetings",
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/72c96165-b9ed-4b62-ac86-80cc440b32ff.pdf",
-   "source": "bse",
+   "url": "https://nsearchives.nseindia.in/corporate/POLYCAB_06112026220329_Intimationtostockexchange.pdf",
+   "source": "nse",
    "reaction_day": "2026-11-07",
    "last_bar": "2026-11-20",
    "reaction": {
@@ -10393,19 +10324,19 @@
    "collapsed": true
   },
   {
-   "id": "d348b3d0-dd7f-49b2-a0b1-d95c8697064c",
+   "id": "106841885",
    "symbol": "POLYCAB",
    "name": "Polycab India Ltd",
-   "filed": "2026-11-03T15:55",
-   "subject": "Announcement Under Regulation 30 (LODR)-Allotment Of ESOP / ESPS",
-   "headline": "Disclosure of allotment of Equity shares pursuant to Employee Stock Options Scheme, 2018 of Polycab India Limited",
+   "filed": "2026-11-03T16:01",
+   "subject": "Polycab India Limited has informed the Exchange regarding Allotment of 3403  Shares.",
+   "headline": null,
    "note": null,
    "category": "unclassified",
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6c644005-9bd2-42f5-b61b-556e8c885e2d.pdf",
-   "source": "bse",
+   "url": "https://nsearchives.nseindia.in/corporate/POLYCAB_03112026160106_IntimationtoStockexchange.pdf",
+   "source": "nse",
    "reaction_day": "2026-11-04",
    "last_bar": "2026-11-20",
    "reaction": {
@@ -11149,19 +11080,19 @@
    "collapsed": true
   },
   {
-   "id": "8285e7a1-d78d-46ff-ab46-fae476882893",
+   "id": "106832611",
    "symbol": "POLYCAB",
    "name": "Polycab India Ltd",
-   "filed": "2026-10-28T17:41",
-   "subject": "Announcement Under Regulation 30 (LODR) - Analyst(S) / Investor(S) Meet - Intimation",
-   "headline": "Intimation of Institutional Analyst(s)/Investor(s) meet",
+   "filed": "2026-10-28T17:43",
+   "subject": "Polycab India Limited has informed the Exchange about Analyst(s)/Investor(s) meet.",
+   "headline": null,
    "note": null,
    "category": "investor_meetings",
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/26cdd582-7e95-4019-88b5-fdff3d5e60e1.pdf",
-   "source": "bse",
+   "url": "https://nsearchives.nseindia.in/corporate/POLYCAB_28102026174326_Intimationtostockexchange.pdf",
+   "source": "nse",
    "reaction_day": "2026-10-29",
    "last_bar": "2026-11-20",
    "reaction": {
@@ -11485,19 +11416,19 @@
    "collapsed": true
   },
   {
-   "id": "757969fc-1b60-4ab9-884f-258a81e89ee9",
+   "id": "106830897",
    "symbol": "POLYCAB",
    "name": "Polycab India Ltd",
-   "filed": "2026-10-27T19:01",
-   "subject": "Announcement Under Regulation 30 (LODR) - Analyst(S) / Investor(S) Meet - Intimation",
-   "headline": "Intimation of Institutional Analyst(s)/Investor(s) meet",
+   "filed": "2026-10-27T19:04",
+   "subject": "Polycab India Limited has informed the Exchange about Analyst(s)/Investor(s) meet.",
+   "headline": null,
    "note": null,
    "category": "investor_meetings",
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/cafe2036-e51b-413a-80cd-65e331d170be.pdf",
-   "source": "bse",
+   "url": "https://nsearchives.nseindia.in/corporate/POLYCAB_27102026190410_Intimationtostockexchange.pdf",
+   "source": "nse",
    "reaction_day": "2026-10-28",
    "last_bar": "2026-11-20",
    "reaction": {
@@ -11509,6 +11440,34 @@
    },
    "score": 100,
    "reason": "investor meetings · −0.3% vs Nifty",
+   "boosted": false,
+   "collapsed": true
+  },
+  {
+   "id": "106830830",
+   "symbol": "POLYCAB",
+   "name": "Polycab India Ltd",
+   "filed": "2026-10-27T18:42",
+   "subject": "Polycab India Limited has informed the Exchange about Certificate under SEBI (Depositories and Participants) Regulations, 2018",
+   "headline": null,
+   "note": null,
+   "category": "unclassified",
+   "tier": "P3",
+   "classified_by": "default",
+   "classify_error": "ValueError: No API key was provided. Please pass a valid API key. Learn how to create an API key at https://aistudio.google.com/docs/api-key.",
+   "url": "https://nsearchives.nseindia.in/corporate/POLYCAB_27102026184209_IntimationtoStockExchange.pdf",
+   "source": "nse",
+   "reaction_day": "2026-10-28",
+   "last_bar": "2026-11-20",
+   "reaction": {
+    "date": "2026-10-28",
+    "move_pct": -0.49,
+    "nifty_pct": -0.22,
+    "excess_pct": -0.27,
+    "vol_ratio": 0.57
+   },
+   "score": 100,
+   "reason": "unclassified · −0.3% vs Nifty",
    "boosted": false,
    "collapsed": true
   },
@@ -11905,19 +11864,19 @@
    "collapsed": true
   },
   {
-   "id": "f9560b59-3651-4e92-8b18-6f23905f96d5",
+   "id": "106826247",
    "symbol": "POLYCAB",
    "name": "Polycab India Ltd",
-   "filed": "2026-10-23T14:32",
-   "subject": "Announcement Under Regulation 30 (LODR) - Analyst(S) / Investor(S) Meet - Intimation",
-   "headline": "Intimation of Institutional Analyst(s)/Investor(s) meet",
+   "filed": "2026-10-23T14:34",
+   "subject": "Polycab India Limited has informed the Exchange about Analyst(s)/Investor(s) meet.",
+   "headline": null,
    "note": null,
    "category": "investor_meetings",
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a9743040-8809-46d3-85ca-c6ca01bc322a.pdf",
-   "source": "bse",
+   "url": "https://nsearchives.nseindia.in/corporate/POLYCAB_23102026143418_Intimationtostockexchange.pdf",
+   "source": "nse",
    "reaction_day": "2026-10-23",
    "last_bar": "2026-11-20",
    "reaction": {
@@ -11931,65 +11890,15 @@
    "reason": "investor meetings · −2.6% vs Nifty",
    "boosted": false,
    "collapsed": true
-  },
-  {
-   "id": "0728c182-d4b7-4e7c-894b-3e1535ef9f37",
-   "symbol": "HDFCBANK",
-   "name": "HDFC Bank Ltd",
-   "filed": "2026-10-22T13:51",
-   "subject": "Announcement under Regulation 30 (LODR)-Allotment of ESOP / ESPS",
-   "headline": "Allotment of 91,38,522 equity shares pursuant to exercise of ESOP/RSU",
-   "note": null,
-   "category": "unclassified",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/536a781d-6af5-4dde-840e-5e1420f5157f.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-22",
-   "last_bar": "2026-11-20",
-   "reaction": {
-    "date": "2026-10-22",
-    "move_pct": -1.82,
-    "nifty_pct": -0.54,
-    "excess_pct": -1.28,
-    "vol_ratio": 1.99
-   },
-   "score": 100,
-   "reason": "unclassified · −1.3% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "3fda89e2-f430-4457-85ab-78d178775062",
-   "symbol": "HDFCBANK",
-   "name": "HDFC Bank Ltd",
-   "filed": "2026-10-22T11:49",
-   "subject": "Announcement under Regulation 30 (LODR)-Newspaper Publication",
-   "headline": "Newspaper publication confirming dispatch of postal ballot Notice",
-   "note": null,
-   "category": "postal_ballot",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/19d4c3c3-df05-444a-adfb-4edcffa3f847.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-22",
-   "last_bar": "2026-11-20",
-   "reaction": {
-    "date": "2026-10-22",
-    "move_pct": -1.82,
-    "nifty_pct": -0.54,
-    "excess_pct": -1.28,
-    "vol_ratio": 1.99
-   },
-   "score": 100,
-   "reason": "postal ballot · −1.3% vs Nifty",
-   "boosted": false,
-   "collapsed": true
   }
  ],
  "alerts": [
+  {
+   "symbol": "POLYCAB",
+   "date": "2026-11-22",
+   "kind": "error",
+   "text": "BSE failed, used NSE: HTTPStatusError: Client error '400 Bad Request' for url 'https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=1&strCat=-1&subcategory=-1&strSearch=P&strType=C&strPrevDate=20261023&s"
+  },
   {
    "symbol": "MARUTI",
    "date": "2026-11-20",
@@ -12352,8 +12261,8 @@
    "symbol": "POLYCAB",
    "date": "2026-10-30",
    "kind": "filing",
-   "id": "0df598a9-08f7-48f3-b53d-f69d332706e2",
-   "text": "litigation: Order passed by NCLAT setting aside the order of NCLT Ahmedabad bench dated October 07, 2026"
+   "id": "106836029",
+   "text": "litigation: Polycab India Limited has informed the Exchange about the order passed by NCLAT setting aside the order of NCLT Ahmedabad bench dated October 07, 2026"
   },
   {
    "symbol": "CDSL",
@@ -12424,8 +12333,8 @@
    "symbol": "POLYCAB",
    "date": "2026-10-28",
    "kind": "filing",
-   "id": "ec5b190e-b037-4cb0-91a8-d037cfad8574",
-   "text": "litigation: Update on NCLAT order dated October 27, 2026"
+   "id": "106831536",
+   "text": "litigation: Polycab India Limited has informed the Exchange on the update of NCLAT order dated October 27, 2026"
   },
   {
    "symbol": "KPITTECH",
@@ -12531,23 +12440,9 @@
    "date": "2026-10-23",
    "kind": "price",
    "text": "−3.5% (−3.1% vs Nifty)"
-  },
-  {
-   "symbol": "ETERNAL",
-   "date": "2026-10-22",
-   "kind": "price",
-   "text": "3.9× volume"
   }
  ],
  "days": [
-  {
-   "symbol": "RELIANCE",
-   "date": "2026-10-22",
-   "move_pct": -2.03,
-   "nifty_pct": -0.54,
-   "excess_pct": -1.48,
-   "vol_ratio": 1.02
-  },
   {
    "symbol": "RELIANCE",
    "date": "2026-10-23",
@@ -12707,14 +12602,6 @@
    "nifty_pct": 1.12,
    "excess_pct": -0.98,
    "vol_ratio": 0.63
-  },
-  {
-   "symbol": "HDFCBANK",
-   "date": "2026-10-22",
-   "move_pct": -1.82,
-   "nifty_pct": -0.54,
-   "excess_pct": -1.28,
-   "vol_ratio": 1.99
   },
   {
    "symbol": "HDFCBANK",
@@ -12878,14 +12765,6 @@
   },
   {
    "symbol": "TCS",
-   "date": "2026-10-22",
-   "move_pct": -0.87,
-   "nifty_pct": -0.54,
-   "excess_pct": -0.33,
-   "vol_ratio": 0.74
-  },
-  {
-   "symbol": "TCS",
    "date": "2026-10-23",
    "move_pct": 0.92,
    "nifty_pct": -0.39,
@@ -13043,14 +12922,6 @@
    "nifty_pct": 1.12,
    "excess_pct": 0.31,
    "vol_ratio": 0.84
-  },
-  {
-   "symbol": "BHARTIARTL",
-   "date": "2026-10-22",
-   "move_pct": 0.17,
-   "nifty_pct": -0.54,
-   "excess_pct": 0.72,
-   "vol_ratio": 1.66
   },
   {
    "symbol": "BHARTIARTL",
@@ -13214,14 +13085,6 @@
   },
   {
    "symbol": "ITC",
-   "date": "2026-10-22",
-   "move_pct": -1.18,
-   "nifty_pct": -0.54,
-   "excess_pct": -0.64,
-   "vol_ratio": 0.75
-  },
-  {
-   "symbol": "ITC",
    "date": "2026-10-23",
    "move_pct": -0.39,
    "nifty_pct": -0.39,
@@ -13379,14 +13242,6 @@
    "nifty_pct": 1.12,
    "excess_pct": -1.75,
    "vol_ratio": 1.3
-  },
-  {
-   "symbol": "LT",
-   "date": "2026-10-22",
-   "move_pct": 0.06,
-   "nifty_pct": -0.54,
-   "excess_pct": 0.61,
-   "vol_ratio": 1.46
   },
   {
    "symbol": "LT",
@@ -13550,14 +13405,6 @@
   },
   {
    "symbol": "SUNPHARMA",
-   "date": "2026-10-22",
-   "move_pct": 0.74,
-   "nifty_pct": -0.54,
-   "excess_pct": 1.28,
-   "vol_ratio": 1.18
-  },
-  {
-   "symbol": "SUNPHARMA",
    "date": "2026-10-23",
    "move_pct": -0.57,
    "nifty_pct": -0.39,
@@ -13715,14 +13562,6 @@
    "nifty_pct": 1.12,
    "excess_pct": -1.92,
    "vol_ratio": 0.82
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-22",
-   "move_pct": -0.27,
-   "nifty_pct": -0.54,
-   "excess_pct": 0.27,
-   "vol_ratio": 0.9
   },
   {
    "symbol": "MARUTI",
@@ -13886,14 +13725,6 @@
   },
   {
    "symbol": "BAJFINANCE",
-   "date": "2026-10-22",
-   "move_pct": 1.74,
-   "nifty_pct": -0.54,
-   "excess_pct": 2.28,
-   "vol_ratio": 1.24
-  },
-  {
-   "symbol": "BAJFINANCE",
    "date": "2026-10-23",
    "move_pct": -1.4,
    "nifty_pct": -0.39,
@@ -14051,14 +13882,6 @@
    "nifty_pct": 1.12,
    "excess_pct": 1.55,
    "vol_ratio": 0.97
-  },
-  {
-   "symbol": "ASIANPAINT",
-   "date": "2026-10-22",
-   "move_pct": -1.49,
-   "nifty_pct": -0.54,
-   "excess_pct": -0.95,
-   "vol_ratio": 0.71
   },
   {
    "symbol": "ASIANPAINT",
@@ -14222,14 +14045,6 @@
   },
   {
    "symbol": "TRENT",
-   "date": "2026-10-22",
-   "move_pct": -1.64,
-   "nifty_pct": -0.54,
-   "excess_pct": -1.09,
-   "vol_ratio": 1.22
-  },
-  {
-   "symbol": "TRENT",
    "date": "2026-10-23",
    "move_pct": -1.74,
    "nifty_pct": -0.39,
@@ -14387,14 +14202,6 @@
    "nifty_pct": 1.12,
    "excess_pct": -0.16,
    "vol_ratio": 1.22
-  },
-  {
-   "symbol": "ETERNAL",
-   "date": "2026-10-22",
-   "move_pct": -2.53,
-   "nifty_pct": -0.54,
-   "excess_pct": -1.99,
-   "vol_ratio": 3.91
   },
   {
    "symbol": "ETERNAL",
@@ -14558,14 +14365,6 @@
   },
   {
    "symbol": "DIXON",
-   "date": "2026-10-22",
-   "move_pct": -0.81,
-   "nifty_pct": -0.54,
-   "excess_pct": -0.27,
-   "vol_ratio": 1.02
-  },
-  {
-   "symbol": "DIXON",
    "date": "2026-10-23",
    "move_pct": -3.48,
    "nifty_pct": -0.39,
@@ -14723,14 +14522,6 @@
    "nifty_pct": 1.12,
    "excess_pct": -0.62,
    "vol_ratio": 0.59
-  },
-  {
-   "symbol": "PERSISTENT",
-   "date": "2026-10-22",
-   "move_pct": -2.01,
-   "nifty_pct": -0.54,
-   "excess_pct": -1.47,
-   "vol_ratio": 1.11
   },
   {
    "symbol": "PERSISTENT",
@@ -14894,14 +14685,6 @@
   },
   {
    "symbol": "POLYCAB",
-   "date": "2026-10-22",
-   "move_pct": -1.28,
-   "nifty_pct": -0.54,
-   "excess_pct": -0.74,
-   "vol_ratio": 0.65
-  },
-  {
-   "symbol": "POLYCAB",
    "date": "2026-10-23",
    "move_pct": -3.01,
    "nifty_pct": -0.39,
@@ -15059,14 +14842,6 @@
    "nifty_pct": 1.12,
    "excess_pct": -0.86,
    "vol_ratio": 1.65
-  },
-  {
-   "symbol": "TATAPOWER",
-   "date": "2026-10-22",
-   "move_pct": 0.43,
-   "nifty_pct": -0.54,
-   "excess_pct": 0.97,
-   "vol_ratio": 0.76
   },
   {
    "symbol": "TATAPOWER",
@@ -15230,14 +15005,6 @@
   },
   {
    "symbol": "IRCTC",
-   "date": "2026-10-22",
-   "move_pct": 0.14,
-   "nifty_pct": -0.54,
-   "excess_pct": 0.69,
-   "vol_ratio": 0.95
-  },
-  {
-   "symbol": "IRCTC",
    "date": "2026-10-23",
    "move_pct": -2.19,
    "nifty_pct": -0.39,
@@ -15395,14 +15162,6 @@
    "nifty_pct": 1.12,
    "excess_pct": -1.53,
    "vol_ratio": 0.47
-  },
-  {
-   "symbol": "CDSL",
-   "date": "2026-10-22",
-   "move_pct": -0.99,
-   "nifty_pct": -0.54,
-   "excess_pct": -0.44,
-   "vol_ratio": 0.77
   },
   {
    "symbol": "CDSL",
@@ -15566,14 +15325,6 @@
   },
   {
    "symbol": "KPITTECH",
-   "date": "2026-10-22",
-   "move_pct": -1.28,
-   "nifty_pct": -0.54,
-   "excess_pct": -0.73,
-   "vol_ratio": 0.6
-  },
-  {
-   "symbol": "KPITTECH",
    "date": "2026-10-23",
    "move_pct": -0.95,
    "nifty_pct": -0.39,
@@ -15731,14 +15482,6 @@
    "nifty_pct": 1.12,
    "excess_pct": -1.79,
    "vol_ratio": 0.86
-  },
-  {
-   "symbol": "DEEPAKNTR",
-   "date": "2026-10-22",
-   "move_pct": -1.25,
-   "nifty_pct": -0.54,
-   "excess_pct": -0.71,
-   "vol_ratio": 0.77
   },
   {
    "symbol": "DEEPAKNTR",
