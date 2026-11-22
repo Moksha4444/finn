@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-11-22T16:38+05:30",
+ "generated_at": "2026-11-23T01:49+05:30",
  "window": [
-  "2026-10-23",
-  "2026-11-22"
+  "2026-10-24",
+  "2026-11-23"
  ],
  "thresholds": {
   "volume_multiple": 2.0,
@@ -35,10 +35,6 @@
    "name": "Reliance Industries Ltd",
    "sector": "Energy",
    "closes": [
-    [
-     "2026-09-22",
-     1240.4
-    ],
     [
      "2026-09-23",
      1248.0
@@ -206,10 +202,6 @@
    "name": "HDFC Bank Ltd",
    "sector": "Financial Services",
    "closes": [
-    [
-     "2026-09-22",
-     738.6
-    ],
     [
      "2026-09-23",
      737.25
@@ -382,10 +374,6 @@
    "sector": "Information Technology",
    "closes": [
     [
-     "2026-09-22",
-     2105.0
-    ],
-    [
      "2026-09-23",
      2089.6
     ],
@@ -557,10 +545,6 @@
    "sector": "Telecommunication",
    "closes": [
     [
-     "2026-09-22",
-     1817.2
-    ],
-    [
      "2026-09-23",
      1833.2
     ],
@@ -728,10 +712,6 @@
    "sector": "Fast Moving Consumer Goods",
    "closes": [
     [
-     "2026-09-22",
-     265.8
-    ],
-    [
      "2026-09-23",
      270.15
     ],
@@ -898,10 +878,6 @@
    "name": "Larsen & Toubro Ltd",
    "sector": "Industrials",
    "closes": [
-    [
-     "2026-09-22",
-     3866.4
-    ],
     [
      "2026-09-23",
      3929.9
@@ -1074,10 +1050,6 @@
    "sector": "Healthcare",
    "closes": [
     [
-     "2026-09-22",
-     1846.4
-    ],
-    [
      "2026-09-23",
      1865.0
     ],
@@ -1249,10 +1221,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-22",
-     12190.0
-    ],
-    [
      "2026-09-23",
      12230.0
     ],
@@ -1419,10 +1387,6 @@
    "name": "Bajaj Finance Ltd",
    "sector": "Financial Services",
    "closes": [
-    [
-     "2026-09-22",
-     1008.8
-    ],
     [
      "2026-09-23",
      1043.2
@@ -1595,10 +1559,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-22",
-     2448.5
-    ],
-    [
      "2026-09-23",
      2455.0
     ],
@@ -1770,10 +1730,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-22",
-     2782.9
-    ],
-    [
      "2026-09-23",
      2774.0
     ],
@@ -1940,10 +1896,6 @@
    "name": "Eternal Ltd",
    "sector": "Consumer Discretionary",
    "closes": [
-    [
-     "2026-09-22",
-     342.0
-    ],
     [
      "2026-09-23",
      342.65
@@ -2112,10 +2064,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-22",
-     13084.0
-    ],
-    [
      "2026-09-23",
      13200.0
     ],
@@ -2283,10 +2231,6 @@
    "sector": "Information Technology",
    "closes": [
     [
-     "2026-09-22",
-     5366.0
-    ],
-    [
      "2026-09-23",
      5240.0
     ],
@@ -2453,10 +2397,6 @@
    "name": "Polycab India Ltd",
    "sector": "Industrials",
    "closes": [
-    [
-     "2026-09-22",
-     8350.0
-    ],
     [
      "2026-09-23",
      8417.0
@@ -2629,10 +2569,6 @@
    "sector": "Utilities",
    "closes": [
     [
-     "2026-09-22",
-     367.0
-    ],
-    [
      "2026-09-23",
      369.0
     ],
@@ -2804,10 +2740,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-22",
-     469.65
-    ],
-    [
      "2026-09-23",
      463.8
     ],
@@ -2975,10 +2907,6 @@
    "sector": "Financial Services",
    "closes": [
     [
-     "2026-09-22",
-     1348.0
-    ],
-    [
      "2026-09-23",
      1351.1
     ],
@@ -3145,10 +3073,6 @@
    "name": "KPIT Technologies Ltd",
    "sector": "Information Technology",
    "closes": [
-    [
-     "2026-09-22",
-     529.05
-    ],
     [
      "2026-09-23",
      527.0
@@ -3321,10 +3245,6 @@
    "sector": "Commodities",
    "closes": [
     [
-     "2026-09-22",
-     1613.2
-    ],
-    [
      "2026-09-23",
      1635.8
     ],
@@ -3489,10 +3409,6 @@
   }
  },
  "nifty": [
-  [
-   "2026-09-22",
-   23329.0
-  ],
   [
    "2026-09-23",
    23446.8
@@ -4975,19 +4891,19 @@
    "collapsed": false
   },
   {
-   "id": "90d4d0da-7873-410e-ac11-fef10a5063d1",
+   "id": "106843544",
    "symbol": "TCS",
    "name": "Tata Consultancy Services Ltd",
    "filed": "2026-11-04T11:00",
-   "subject": "Press Release - TCS Enterprise AI Study: 84% Say Productivity Is AI'S Top Benefit; Just 10% Let AI Act Without Human Oversight",
-   "headline": "Press Release - TCS Enterprise AI Study: 84% say productivity is AI''s top benefit; just 10% let AI act without human oversight",
+   "subject": "Tata Consultancy Services Limited has informed the Exchange regarding 'Press Release -  TCS Enterprise AI Study: 84% say productivity is AI s top benefit; just 10% let AI act without human oversight'.",
+   "headline": null,
    "note": null,
    "category": "press_release",
    "tier": "P2",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4b1ab7e2-a0c4-40d9-8758-64975aea90d9.pdf",
-   "source": "bse",
+   "url": "https://nsearchives.nseindia.in/corporate/TCS_CORPCS_04112026104913_PR_04Nov26_signed.pdf",
+   "source": "nse",
    "reaction_day": "2026-11-04",
    "last_bar": "2026-11-20",
    "reaction": {
@@ -4997,7 +4913,7 @@
     "excess_pct": -3.15,
     "vol_ratio": 0.54
    },
-   "title": "Released Enterprise AI Study showing 84% cite productivity as top benefit",
+   "title": null,
    "score": 350,
    "reason": "Ranked high: press release · −2.5% (−3.1% vs Nifty)",
    "boosted": true,
@@ -6714,35 +6630,6 @@
    "collapsed": false
   },
   {
-   "id": "d3016b7e-4efb-458a-95ee-01a85d813dc5",
-   "symbol": "TRENT",
-   "name": "Trent Ltd",
-   "filed": "2026-10-23T19:49",
-   "subject": "Announcement under Regulation 30 (LODR)-Diversification / Disinvestment",
-   "headline": "Nahar Retail Trading Services Private Limited, a wholly owned subsidiary of the Company, has entered into a binding term sheet dated 22nd October 2026.",
-   "note": null,
-   "category": "m_and_a",
-   "tier": "P1",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/cf9c8eec-654a-4016-acf5-b7160985dc78.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-24",
-   "last_bar": "2026-11-20",
-   "reaction": {
-    "date": "2026-10-26",
-    "move_pct": 0.97,
-    "nifty_pct": 0.68,
-    "excess_pct": 0.29,
-    "vol_ratio": 0.7
-   },
-   "title": "Subsidiary agreed to divest 100% stake in Netria Property Holdings",
-   "score": 300,
-   "reason": "M&A · +0.3% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
    "id": "f900c530-4dbe-4db3-8379-7e1c181b6f9a",
    "symbol": "TATAPOWER",
    "name": "Tata Power Company Ltd",
@@ -6772,19 +6659,19 @@
    "collapsed": false
   },
   {
-   "id": "6ea8728b-52b3-4d92-806c-5b56c30ce110",
+   "id": "106863353",
    "symbol": "TCS",
    "name": "Tata Consultancy Services Ltd",
    "filed": "2026-11-17T11:00",
-   "subject": "Press Release - HFS Research Ranks TCS As A Leader In Agentic Application Management Services",
-   "headline": "Press Release - HFS Research ranks TCS as a leader in agentic application management services",
+   "subject": "Tata Consultancy Services Limited has informed the Exchange regarding 'Press Release-HFS Research ranks TCS as a leader in agentic application management services'.",
+   "headline": null,
    "note": null,
    "category": "press_release",
    "tier": "P2",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6464f590-90c7-40d8-8093-0e700ab95a88.pdf",
-   "source": "bse",
+   "url": "https://nsearchives.nseindia.in/corporate/TCS_CORPCS_17112026105152_PR_17Nov26_signed.pdf",
+   "source": "nse",
    "reaction_day": "2026-11-17",
    "last_bar": "2026-11-20",
    "reaction": {
@@ -7984,64 +7871,6 @@
    "collapsed": false
   },
   {
-   "id": "cf7dff3e-65f6-4857-9129-8234b8197245",
-   "symbol": "PERSISTENT",
-   "name": "Persistent Systems Ltd",
-   "filed": "2026-10-23T20:45",
-   "subject": "Announcement under Regulation 30 (LODR)-Earnings Call Transcript",
-   "headline": "The Transcript of the investor/analyst call held on Thursday, October 15, 2026, is as enclosed.",
-   "note": null,
-   "category": "earnings_call",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/524eadda-3966-4f4f-8888-bfaf2cb0d69e.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-24",
-   "last_bar": "2026-11-20",
-   "reaction": {
-    "date": "2026-10-26",
-    "move_pct": 2.14,
-    "nifty_pct": 0.68,
-    "excess_pct": 1.46,
-    "vol_ratio": 0.63
-   },
-   "title": "Submitted transcript of investor analyst call held on October 15 2026",
-   "score": 200,
-   "reason": "earnings call · +1.5% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
-   "id": "ce77353e-4987-4ce8-b231-170f5e9944c4",
-   "symbol": "SUNPHARMA",
-   "name": "Sun Pharmaceutical Industries Ltd",
-   "filed": "2026-10-23T18:01",
-   "subject": "Announcement under Regulation 30 (LODR)-Press Release / Media Release",
-   "headline": "Press Release",
-   "note": null,
-   "category": "press_release",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/46b44110-a538-4759-8351-04d4731da2ae.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-24",
-   "last_bar": "2026-11-20",
-   "reaction": {
-    "date": "2026-10-26",
-    "move_pct": -0.46,
-    "nifty_pct": 0.68,
-    "excess_pct": -1.14,
-    "vol_ratio": 1.04
-   },
-   "title": "To present long-term follow-up data on UNLOXCYT at ESMO 2026",
-   "score": 200,
-   "reason": "press release · −1.1% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
    "id": "e0cd09e1-ad73-4b27-b4a2-aecacc557647",
    "symbol": "MARUTI",
    "name": "Maruti Suzuki India Ltd",
@@ -8308,19 +8137,19 @@
    "collapsed": true
   },
   {
-   "id": "2fc3f1bd-e740-4bb4-81e2-22bf496baf2d",
+   "id": "106866374",
    "symbol": "TCS",
    "name": "Tata Consultancy Services Ltd",
-   "filed": "2026-11-19T17:39",
-   "subject": "Announcement under Regulation 30 (LODR)-Newspaper Publication",
-   "headline": "Copy of Newspaper Publication for IEPF Statutory Reminder letters for Third Interim Dividend 2019-20",
+   "filed": "2026-11-19T17:41",
+   "subject": "Tata Consultancy Services Limited has informed the Exchange about Copy of Newspaper Publication regarding the IEPF Statutory Reminder letters for Third Interim Dividend 2019-20.",
+   "headline": null,
    "note": null,
    "category": "unclassified",
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/943a8ed9-8e89-481f-b0d5-dece57330687.pdf",
-   "source": "bse",
+   "url": "https://nsearchives.nseindia.in/corporate/TCS_CORPCS_19112026174056_SEInt19112026_v1.pdf",
+   "source": "nse",
    "reaction_day": "2026-11-20",
    "last_bar": "2026-11-20",
    "reaction": {
@@ -8336,19 +8165,19 @@
    "collapsed": true
   },
   {
-   "id": "40fe44fa-81b5-4ccb-bf28-a65d479d4730",
+   "id": "106866359",
    "symbol": "TCS",
    "name": "Tata Consultancy Services Ltd",
-   "filed": "2026-11-19T17:28",
-   "subject": "Announcement under Regulation 30 (LODR)-Newspaper Publication",
-   "headline": "Newspaper Advertisement regarding the opening of another special window for re-lodgement of transfer request of physical shares.",
+   "filed": "2026-11-19T17:34",
+   "subject": "Tata Consultancy Services Limited has informed the Exchange about Copy of Newspaper Publication regarding the opening of another special window for re-lodgement of transfer request of physical shares.",
+   "headline": null,
    "note": null,
    "category": "unclassified",
    "tier": "P3",
    "classified_by": "default",
    "classify_error": "ValueError: No API key was provided. Please pass a valid API key. Learn how to create an API key at https://aistudio.google.com/docs/api-key.",
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/82a70838-3f9c-456b-b3f7-655b39e0ece9.pdf",
-   "source": "bse",
+   "url": "https://nsearchives.nseindia.in/corporate/TCS_CORPCS_19112026173306_SE_Intimation_19112026.pdf",
+   "source": "nse",
    "reaction_day": "2026-11-20",
    "last_bar": "2026-11-20",
    "reaction": {
@@ -9400,19 +9229,19 @@
    "collapsed": true
   },
   {
-   "id": "c8b0646b-9893-4091-a16e-02bb68666b91",
+   "id": "106853516",
    "symbol": "TCS",
    "name": "Tata Consultancy Services Ltd",
-   "filed": "2026-11-09T16:59",
-   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Intimation",
-   "headline": "Schedule of Analyst/Institutional Investor Meeting",
+   "filed": "2026-11-09T17:12",
+   "subject": "Tata Consultancy Services Limited has informed the Exchange about Schedule of meet",
+   "headline": null,
    "note": null,
-   "category": "investor_meetings",
+   "category": "earnings_call",
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c0a1bde0-4d57-46c0-ac73-940d5ff093d7.pdf",
-   "source": "bse",
+   "url": "https://nsearchives.nseindia.in/corporate/TCS_CORPCS_09112026171125_SEIntimation_signed.pdf",
+   "source": "nse",
    "reaction_day": "2026-11-10",
    "last_bar": "2026-11-20",
    "reaction": {
@@ -9423,7 +9252,7 @@
     "vol_ratio": 0.7
    },
    "score": 100,
-   "reason": "investor meetings · −1.0% vs Nifty",
+   "reason": "earnings call · −1.0% vs Nifty",
    "boosted": false,
    "collapsed": true
   },
@@ -10268,19 +10097,19 @@
    "collapsed": true
   },
   {
-   "id": "915f6d2d-b1e6-4d3c-a9c3-7bc65d709247",
+   "id": "106842587",
    "symbol": "TCS",
    "name": "Tata Consultancy Services Ltd",
-   "filed": "2026-11-03T18:44",
-   "subject": "Announcement under Regulation 30 (LODR)-Newspaper Publication",
-   "headline": "Company published newspaper advertisement regarding notice of email registration",
+   "filed": "2026-11-03T18:52",
+   "subject": "Tata Consultancy Services Limited has informed the Exchange about Copy of Newspaper Publication",
+   "headline": null,
    "note": null,
    "category": "unclassified",
    "tier": "P3",
-   "classified_by": "llm",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/878869fb-5e51-4867-b640-2120edd34b6c.pdf",
-   "source": "bse",
+   "classified_by": "default",
+   "classify_error": "ValueError: No API key was provided. Please pass a valid API key. Learn how to create an API key at https://aistudio.google.com/docs/api-key.",
+   "url": "https://nsearchives.nseindia.in/corporate/TCS_CORPCS_03112026185113_SEInt3112026_signed.pdf",
+   "source": "nse",
    "reaction_day": "2026-11-04",
    "last_bar": "2026-11-20",
    "reaction": {
@@ -11694,177 +11523,15 @@
    "reason": "unclassified · −1.4% vs Nifty",
    "boosted": false,
    "collapsed": true
-  },
-  {
-   "id": "fd8f06cf-fd65-4a93-944c-e6463ce1eda6",
-   "symbol": "HDFCBANK",
-   "name": "HDFC Bank Ltd",
-   "filed": "2026-10-23T22:50",
-   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Outcome",
-   "headline": "Transcript of Earnings Call in relation to the unaudited standalone and consolidated financial results of the HDFC Bank Limited for the quarter and half-year ended September 30, 2026",
-   "note": null,
-   "category": "investor_meetings",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d7e45614-ae12-4bb9-b92d-623b3a63f166.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-24",
-   "last_bar": "2026-11-20",
-   "reaction": {
-    "date": "2026-10-26",
-    "move_pct": -0.69,
-    "nifty_pct": 0.68,
-    "excess_pct": -1.36,
-    "vol_ratio": 0.75
-   },
-   "score": 100,
-   "reason": "investor meetings · −1.4% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "618d8e5c-8cf3-417f-b2e0-e5bf9310235c",
-   "symbol": "DIXON",
-   "name": "Dixon Technologies (India) Ltd",
-   "filed": "2026-10-23T18:10",
-   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Intimation",
-   "headline": "We wish to inform you that Dixon Technologies (India) Limited ('Company') has arranged a Conference Call for the Un-Audited Financial Results (Standalone and Consolidated) of the Company ....",
-   "note": null,
-   "category": "investor_meetings",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4260af0d-9e97-44f0-a19a-04b0b0ddb4e5.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-24",
-   "last_bar": "2026-11-20",
-   "reaction": {
-    "date": "2026-10-26",
-    "move_pct": -0.27,
-    "nifty_pct": 0.68,
-    "excess_pct": -0.95,
-    "vol_ratio": 0.85
-   },
-   "score": 100,
-   "reason": "investor meetings · −0.9% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "7b023dbb-c6c3-4850-a772-82e5a94a13e4",
-   "symbol": "DIXON",
-   "name": "Dixon Technologies (India) Ltd",
-   "filed": "2026-10-23T18:04",
-   "subject": "Board Meeting Intimation for Inter-Alia, Consideration And Approval Of Un-Audited Financial Results (Standalone & Consolidated) Of The Company For The Quarter And Half Year Ended 30Th September, 2026",
-   "headline": "Dixon Technologies (India) Ltdhas informed BSE that the meeting of the Board of Directors of the Company is scheduled on 30/10/2026 ,inter alia, to consider and approve the Un-Audited Financial ....",
-   "note": null,
-   "category": "results",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4ac4537e-4a64-4682-a4c5-5255ba8895cf.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-24",
-   "last_bar": "2026-11-20",
-   "reaction": {
-    "date": "2026-10-26",
-    "move_pct": -0.27,
-    "nifty_pct": 0.68,
-    "excess_pct": -0.95,
-    "vol_ratio": 0.85
-   },
-   "score": 100,
-   "reason": "results · −0.9% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "cc5f4786-34b8-4078-bd57-89b3ad960f64",
-   "symbol": "TRENT",
-   "name": "Trent Ltd",
-   "filed": "2026-10-23T16:35",
-   "subject": "Reminder Letter For Transfer Of Equity Shares To The Investor Education And Protection Fund ('IEPF')",
-   "headline": "Reminder letter for transfer of equity shares to the Investor Education and Protection Fund (''IEPF'')",
-   "note": null,
-   "category": "unclassified",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/aeaf0a5d-3d57-41ef-87d1-a10268a57932.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-24",
-   "last_bar": "2026-11-20",
-   "reaction": {
-    "date": "2026-10-26",
-    "move_pct": 0.97,
-    "nifty_pct": 0.68,
-    "excess_pct": 0.29,
-    "vol_ratio": 0.7
-   },
-   "score": 100,
-   "reason": "unclassified · +0.3% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "3edbe0c3-f3ed-4804-92a8-a4bc45e22fb6",
-   "symbol": "BAJFINANCE",
-   "name": "Bajaj Finance Ltd",
-   "filed": "2026-10-23T14:45",
-   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Outcome",
-   "headline": "Transcript of conference call held in respect of Financial Results for the Quarter and Half Year ended 30 September 2026.",
-   "note": null,
-   "category": "investor_meetings",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7873abcb-7f97-487d-a474-028b0a26feea.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-23",
-   "last_bar": "2026-11-20",
-   "reaction": {
-    "date": "2026-10-23",
-    "move_pct": -1.4,
-    "nifty_pct": -0.39,
-    "excess_pct": -1.01,
-    "vol_ratio": 0.71
-   },
-   "score": 100,
-   "reason": "investor meetings · −1.0% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "f9560b59-3651-4e92-8b18-6f23905f96d5",
-   "symbol": "POLYCAB",
-   "name": "Polycab India Ltd",
-   "filed": "2026-10-23T14:32",
-   "subject": "Announcement Under Regulation 30 (LODR) - Analyst(S) / Investor(S) Meet - Intimation",
-   "headline": "Intimation of Institutional Analyst(s)/Investor(s) meet",
-   "note": null,
-   "category": "investor_meetings",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a9743040-8809-46d3-85ca-c6ca01bc322a.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-23",
-   "last_bar": "2026-11-20",
-   "reaction": {
-    "date": "2026-10-23",
-    "move_pct": -3.01,
-    "nifty_pct": -0.39,
-    "excess_pct": -2.63,
-    "vol_ratio": 0.63
-   },
-   "score": 100,
-   "reason": "investor meetings · −2.6% vs Nifty",
-   "boosted": false,
-   "collapsed": true
   }
  ],
  "alerts": [
+  {
+   "symbol": "TCS",
+   "date": "2026-11-23",
+   "kind": "error",
+   "text": "BSE failed, used NSE: HTTPStatusError: Client error '400 Bad Request' for url 'https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=1&strCat=-1&subcategory=-1&strSearch=P&strType=C&strPrevDate=20261024&s"
+  },
   {
    "symbol": "MARUTI",
    "date": "2026-11-20",
@@ -12387,36 +12054,9 @@
    "kind": "filing",
    "id": "16ea0782-d143-468b-901a-3f244a3373ce",
    "text": "fund raise: JPL has today finalised the Issue Price at Rs. 1,119 per Equity Share and has also filed Prospectus dated October 24, 2026 with the Registrar of Companies, Gujarat at Ahmedabad."
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-23",
-   "kind": "filing",
-   "id": "d3016b7e-4efb-458a-95ee-01a85d813dc5",
-   "text": "M&A: Nahar Retail Trading Services Private Limited, a wholly owned subsidiary of the Company, has entered into a binding term sheet dated 22nd October 2026."
-  },
-  {
-   "symbol": "ETERNAL",
-   "date": "2026-10-23",
-   "kind": "price",
-   "text": "+4.2% (+4.6% vs Nifty) · 2.2× volume"
-  },
-  {
-   "symbol": "DIXON",
-   "date": "2026-10-23",
-   "kind": "price",
-   "text": "−3.5% (−3.1% vs Nifty)"
   }
  ],
  "days": [
-  {
-   "symbol": "RELIANCE",
-   "date": "2026-10-23",
-   "move_pct": 0.46,
-   "nifty_pct": -0.39,
-   "excess_pct": 0.85,
-   "vol_ratio": 1.0
-  },
   {
    "symbol": "RELIANCE",
    "date": "2026-10-26",
@@ -12568,14 +12208,6 @@
    "nifty_pct": 1.12,
    "excess_pct": -0.98,
    "vol_ratio": 0.63
-  },
-  {
-   "symbol": "HDFCBANK",
-   "date": "2026-10-23",
-   "move_pct": -0.18,
-   "nifty_pct": -0.39,
-   "excess_pct": 0.21,
-   "vol_ratio": 0.6
   },
   {
    "symbol": "HDFCBANK",
@@ -12731,14 +12363,6 @@
   },
   {
    "symbol": "TCS",
-   "date": "2026-10-23",
-   "move_pct": 0.92,
-   "nifty_pct": -0.39,
-   "excess_pct": 1.31,
-   "vol_ratio": 1.21
-  },
-  {
-   "symbol": "TCS",
    "date": "2026-10-26",
    "move_pct": 0.2,
    "nifty_pct": 0.68,
@@ -12888,14 +12512,6 @@
    "nifty_pct": 1.12,
    "excess_pct": 0.31,
    "vol_ratio": 0.84
-  },
-  {
-   "symbol": "BHARTIARTL",
-   "date": "2026-10-23",
-   "move_pct": -0.15,
-   "nifty_pct": -0.39,
-   "excess_pct": 0.23,
-   "vol_ratio": 1.23
   },
   {
    "symbol": "BHARTIARTL",
@@ -13051,14 +12667,6 @@
   },
   {
    "symbol": "ITC",
-   "date": "2026-10-23",
-   "move_pct": -0.39,
-   "nifty_pct": -0.39,
-   "excess_pct": 0.0,
-   "vol_ratio": 0.84
-  },
-  {
-   "symbol": "ITC",
    "date": "2026-10-26",
    "move_pct": 1.01,
    "nifty_pct": 0.68,
@@ -13208,14 +12816,6 @@
    "nifty_pct": 1.12,
    "excess_pct": -1.75,
    "vol_ratio": 1.3
-  },
-  {
-   "symbol": "LT",
-   "date": "2026-10-23",
-   "move_pct": 0.24,
-   "nifty_pct": -0.39,
-   "excess_pct": 0.63,
-   "vol_ratio": 1.07
   },
   {
    "symbol": "LT",
@@ -13371,14 +12971,6 @@
   },
   {
    "symbol": "SUNPHARMA",
-   "date": "2026-10-23",
-   "move_pct": -0.57,
-   "nifty_pct": -0.39,
-   "excess_pct": -0.18,
-   "vol_ratio": 0.69
-  },
-  {
-   "symbol": "SUNPHARMA",
    "date": "2026-10-26",
    "move_pct": -0.46,
    "nifty_pct": 0.68,
@@ -13528,14 +13120,6 @@
    "nifty_pct": 1.12,
    "excess_pct": -1.92,
    "vol_ratio": 0.82
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-23",
-   "move_pct": 0.54,
-   "nifty_pct": -0.39,
-   "excess_pct": 0.92,
-   "vol_ratio": 0.72
   },
   {
    "symbol": "MARUTI",
@@ -13691,14 +13275,6 @@
   },
   {
    "symbol": "BAJFINANCE",
-   "date": "2026-10-23",
-   "move_pct": -1.4,
-   "nifty_pct": -0.39,
-   "excess_pct": -1.01,
-   "vol_ratio": 0.71
-  },
-  {
-   "symbol": "BAJFINANCE",
    "date": "2026-10-26",
    "move_pct": -1.1,
    "nifty_pct": 0.68,
@@ -13848,14 +13424,6 @@
    "nifty_pct": 1.12,
    "excess_pct": 1.55,
    "vol_ratio": 0.97
-  },
-  {
-   "symbol": "ASIANPAINT",
-   "date": "2026-10-23",
-   "move_pct": 0.97,
-   "nifty_pct": -0.39,
-   "excess_pct": 1.36,
-   "vol_ratio": 1.34
   },
   {
    "symbol": "ASIANPAINT",
@@ -14011,14 +13579,6 @@
   },
   {
    "symbol": "TRENT",
-   "date": "2026-10-23",
-   "move_pct": -1.74,
-   "nifty_pct": -0.39,
-   "excess_pct": -1.35,
-   "vol_ratio": 0.65
-  },
-  {
-   "symbol": "TRENT",
    "date": "2026-10-26",
    "move_pct": 0.97,
    "nifty_pct": 0.68,
@@ -14168,14 +13728,6 @@
    "nifty_pct": 1.12,
    "excess_pct": -0.16,
    "vol_ratio": 1.22
-  },
-  {
-   "symbol": "ETERNAL",
-   "date": "2026-10-23",
-   "move_pct": 4.25,
-   "nifty_pct": -0.39,
-   "excess_pct": 4.64,
-   "vol_ratio": 2.2
   },
   {
    "symbol": "ETERNAL",
@@ -14331,14 +13883,6 @@
   },
   {
    "symbol": "DIXON",
-   "date": "2026-10-23",
-   "move_pct": -3.48,
-   "nifty_pct": -0.39,
-   "excess_pct": -3.09,
-   "vol_ratio": 1.33
-  },
-  {
-   "symbol": "DIXON",
    "date": "2026-10-26",
    "move_pct": -0.27,
    "nifty_pct": 0.68,
@@ -14488,14 +14032,6 @@
    "nifty_pct": 1.12,
    "excess_pct": -0.62,
    "vol_ratio": 0.59
-  },
-  {
-   "symbol": "PERSISTENT",
-   "date": "2026-10-23",
-   "move_pct": -0.23,
-   "nifty_pct": -0.39,
-   "excess_pct": 0.16,
-   "vol_ratio": 1.71
   },
   {
    "symbol": "PERSISTENT",
@@ -14651,14 +14187,6 @@
   },
   {
    "symbol": "POLYCAB",
-   "date": "2026-10-23",
-   "move_pct": -3.01,
-   "nifty_pct": -0.39,
-   "excess_pct": -2.63,
-   "vol_ratio": 0.63
-  },
-  {
-   "symbol": "POLYCAB",
    "date": "2026-10-26",
    "move_pct": 4.02,
    "nifty_pct": 0.68,
@@ -14808,14 +14336,6 @@
    "nifty_pct": 1.12,
    "excess_pct": -0.86,
    "vol_ratio": 1.65
-  },
-  {
-   "symbol": "TATAPOWER",
-   "date": "2026-10-23",
-   "move_pct": -1.53,
-   "nifty_pct": -0.39,
-   "excess_pct": -1.14,
-   "vol_ratio": 1.02
   },
   {
    "symbol": "TATAPOWER",
@@ -14971,14 +14491,6 @@
   },
   {
    "symbol": "IRCTC",
-   "date": "2026-10-23",
-   "move_pct": -2.19,
-   "nifty_pct": -0.39,
-   "excess_pct": -1.81,
-   "vol_ratio": 1.02
-  },
-  {
-   "symbol": "IRCTC",
    "date": "2026-10-26",
    "move_pct": -0.62,
    "nifty_pct": 0.68,
@@ -15128,14 +14640,6 @@
    "nifty_pct": 1.12,
    "excess_pct": -1.53,
    "vol_ratio": 0.47
-  },
-  {
-   "symbol": "CDSL",
-   "date": "2026-10-23",
-   "move_pct": -2.98,
-   "nifty_pct": -0.39,
-   "excess_pct": -2.59,
-   "vol_ratio": 1.5
   },
   {
    "symbol": "CDSL",
@@ -15291,14 +14795,6 @@
   },
   {
    "symbol": "KPITTECH",
-   "date": "2026-10-23",
-   "move_pct": -0.95,
-   "nifty_pct": -0.39,
-   "excess_pct": -0.56,
-   "vol_ratio": 1.51
-  },
-  {
-   "symbol": "KPITTECH",
    "date": "2026-10-26",
    "move_pct": 0.73,
    "nifty_pct": 0.68,
@@ -15448,14 +14944,6 @@
    "nifty_pct": 1.12,
    "excess_pct": -1.79,
    "vol_ratio": 0.86
-  },
-  {
-   "symbol": "DEEPAKNTR",
-   "date": "2026-10-23",
-   "move_pct": -2.73,
-   "nifty_pct": -0.39,
-   "excess_pct": -2.34,
-   "vol_ratio": 0.91
   },
   {
    "symbol": "DEEPAKNTR",
