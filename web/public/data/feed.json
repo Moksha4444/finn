@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-11-24T19:04+05:30",
+ "generated_at": "2026-11-25T04:30+05:30",
  "window": [
-  "2026-10-25",
-  "2026-11-24"
+  "2026-10-26",
+  "2026-11-25"
  ],
  "thresholds": {
   "volume_multiple": 2.0,
@@ -35,10 +35,6 @@
    "name": "Reliance Industries Ltd",
    "sector": "Energy",
    "closes": [
-    [
-     "2026-09-24",
-     1219.2
-    ],
     [
      "2026-09-25",
      1226.0
@@ -202,10 +198,6 @@
    "name": "HDFC Bank Ltd",
    "sector": "Financial Services",
    "closes": [
-    [
-     "2026-09-24",
-     728.9
-    ],
     [
      "2026-09-25",
      735.6
@@ -374,10 +366,6 @@
    "sector": "Information Technology",
    "closes": [
     [
-     "2026-09-24",
-     2087.0
-    ],
-    [
      "2026-09-25",
      2082.0
     ],
@@ -545,10 +533,6 @@
    "sector": "Telecommunication",
    "closes": [
     [
-     "2026-09-24",
-     1795.8
-    ],
-    [
      "2026-09-25",
      1785.4
     ],
@@ -712,10 +696,6 @@
    "sector": "Fast Moving Consumer Goods",
    "closes": [
     [
-     "2026-09-24",
-     268.0
-    ],
-    [
      "2026-09-25",
      269.0
     ],
@@ -878,10 +858,6 @@
    "name": "Larsen & Toubro Ltd",
    "sector": "Industrials",
    "closes": [
-    [
-     "2026-09-24",
-     3858.4
-    ],
     [
      "2026-09-25",
      3876.2
@@ -1050,10 +1026,6 @@
    "sector": "Healthcare",
    "closes": [
     [
-     "2026-09-24",
-     1849.9
-    ],
-    [
      "2026-09-25",
      1852.2
     ],
@@ -1221,10 +1193,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-24",
-     11990.0
-    ],
-    [
      "2026-09-25",
      12065.0
     ],
@@ -1387,10 +1355,6 @@
    "name": "Bajaj Finance Ltd",
    "sector": "Financial Services",
    "closes": [
-    [
-     "2026-09-24",
-     982.0
-    ],
     [
      "2026-09-25",
      996.9
@@ -1559,10 +1523,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-24",
-     2392.7
-    ],
-    [
      "2026-09-25",
      2444.0
     ],
@@ -1730,10 +1690,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-24",
-     2700.0
-    ],
-    [
      "2026-09-25",
      2669.3
     ],
@@ -1896,10 +1852,6 @@
    "name": "Eternal Ltd",
    "sector": "Consumer Discretionary",
    "closes": [
-    [
-     "2026-09-24",
-     335.5
-    ],
     [
      "2026-09-25",
      335.0
@@ -2064,10 +2016,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-24",
-     13299.0
-    ],
-    [
      "2026-09-25",
      13390.0
     ],
@@ -2231,10 +2179,6 @@
    "sector": "Information Technology",
    "closes": [
     [
-     "2026-09-24",
-     5277.0
-    ],
-    [
      "2026-09-25",
      5372.0
     ],
@@ -2397,10 +2341,6 @@
    "name": "Polycab India Ltd",
    "sector": "Industrials",
    "closes": [
-    [
-     "2026-09-24",
-     8366.5
-    ],
     [
      "2026-09-25",
      8408.5
@@ -2569,10 +2509,6 @@
    "sector": "Utilities",
    "closes": [
     [
-     "2026-09-24",
-     363.45
-    ],
-    [
      "2026-09-25",
      367.5
     ],
@@ -2740,10 +2676,6 @@
    "sector": "Consumer Discretionary",
    "closes": [
     [
-     "2026-09-24",
-     461.2
-    ],
-    [
      "2026-09-25",
      458.7
     ],
@@ -2907,10 +2839,6 @@
    "sector": "Financial Services",
    "closes": [
     [
-     "2026-09-24",
-     1320.0
-    ],
-    [
      "2026-09-25",
      1318.0
     ],
@@ -3073,10 +3001,6 @@
    "name": "KPIT Technologies Ltd",
    "sector": "Information Technology",
    "closes": [
-    [
-     "2026-09-24",
-     516.85
-    ],
     [
      "2026-09-25",
      519.4
@@ -3245,10 +3169,6 @@
    "sector": "Commodities",
    "closes": [
     [
-     "2026-09-24",
-     1600.9
-    ],
-    [
      "2026-09-25",
      1587.1
     ],
@@ -3409,10 +3329,6 @@
   }
  },
  "nifty": [
-  [
-   "2026-09-24",
-   23063.1
-  ],
   [
    "2026-09-25",
    23140.5
