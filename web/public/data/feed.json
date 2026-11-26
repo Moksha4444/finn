@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-11-26T17:46+05:30",
+ "generated_at": "2026-11-27T03:47+05:30",
  "window": [
-  "2026-10-27",
-  "2026-11-26"
+  "2026-10-28",
+  "2026-11-27"
  ],
  "thresholds": {
   "volume_multiple": 2.0,
@@ -190,10 +190,6 @@
     [
      "2026-11-25",
      1373.9
-    ],
-    [
-     "2026-11-26",
-     1396.2
     ]
    ],
    "credibility": null
@@ -357,10 +353,6 @@
     [
      "2026-11-25",
      846.2
-    ],
-    [
-     "2026-11-26",
-     862.0
     ]
    ],
    "credibility": {
@@ -528,10 +520,6 @@
     [
      "2026-11-25",
      2517.3
-    ],
-    [
-     "2026-11-26",
-     2640.3
     ]
    ],
    "credibility": {
@@ -699,10 +687,6 @@
     [
      "2026-11-25",
      2117.5
-    ],
-    [
-     "2026-11-26",
-     2102.5
     ]
    ],
    "credibility": null
@@ -866,10 +850,6 @@
     [
      "2026-11-25",
      309.25
-    ],
-    [
-     "2026-11-26",
-     307.0
     ]
    ],
    "credibility": null
@@ -1033,10 +1013,6 @@
     [
      "2026-11-25",
      4156.0
-    ],
-    [
-     "2026-11-26",
-     4132.1
     ]
    ],
    "credibility": {
@@ -1204,10 +1180,6 @@
     [
      "2026-11-25",
      1901.0
-    ],
-    [
-     "2026-11-26",
-     1915.7
     ]
    ],
    "credibility": {
@@ -1375,10 +1347,6 @@
     [
      "2026-11-25",
      14200.0
-    ],
-    [
-     "2026-11-26",
-     14015.0
     ]
    ],
    "credibility": null
@@ -1542,10 +1510,6 @@
     [
      "2026-11-25",
      1131.35
-    ],
-    [
-     "2026-11-26",
-     1097.85
     ]
    ],
    "credibility": {
@@ -1713,10 +1677,6 @@
     [
      "2026-11-25",
      2621.2
-    ],
-    [
-     "2026-11-26",
-     2543.0
     ]
    ],
    "credibility": {
@@ -1884,10 +1844,6 @@
     [
      "2026-11-25",
      3319.6
-    ],
-    [
-     "2026-11-26",
-     3262.6
     ]
    ],
    "credibility": null
@@ -2051,10 +2007,6 @@
     [
      "2026-11-25",
      371.7
-    ],
-    [
-     "2026-11-26",
-     367.7
     ]
    ],
    "credibility": null
@@ -2218,10 +2170,6 @@
     [
      "2026-11-25",
      12978.0
-    ],
-    [
-     "2026-11-26",
-     12718.0
     ]
    ],
    "credibility": null
@@ -2385,10 +2333,6 @@
     [
      "2026-11-25",
      6120.0
-    ],
-    [
-     "2026-11-26",
-     6200.0
     ]
    ],
    "credibility": null
@@ -2552,10 +2496,6 @@
     [
      "2026-11-25",
      7379.0
-    ],
-    [
-     "2026-11-26",
-     7350.0
     ]
    ],
    "credibility": {
@@ -2723,10 +2663,6 @@
     [
      "2026-11-25",
      323.0
-    ],
-    [
-     "2026-11-26",
-     323.5
     ]
    ],
    "credibility": {
@@ -2894,10 +2830,6 @@
     [
      "2026-11-25",
      441.85
-    ],
-    [
-     "2026-11-26",
-     454.2
     ]
    ],
    "credibility": null
@@ -3061,10 +2993,6 @@
     [
      "2026-11-25",
      1413.0
-    ],
-    [
-     "2026-11-26",
-     1441.0
     ]
    ],
    "credibility": null
@@ -3228,10 +3156,6 @@
     [
      "2026-11-25",
      516.0
-    ],
-    [
-     "2026-11-26",
-     522.2
     ]
    ],
    "credibility": {
@@ -3399,10 +3323,6 @@
     [
      "2026-11-25",
      1494.4
-    ],
-    [
-     "2026-11-26",
-     1521.8
     ]
    ],
    "credibility": null
@@ -3564,29 +3484,25 @@
   [
    "2026-11-25",
    25819.25
-  ],
-  [
-   "2026-11-26",
-   25884.5
   ]
  ],
  "items": [
   {
-   "id": "106869612",
+   "id": "4eef5cc4-b266-4040-9edd-44e07e70dd71",
    "symbol": "DIXON",
    "name": "Dixon Technologies (India) Ltd",
    "filed": "2026-11-24T15:04",
-   "subject": "Dixon Technologies (India) Limited has informed the Exchange regarding Appointment of Ms Aruna Jayanthi (DIN: 00817860) as Other of the company w.e.f. November 24, 2026.",
-   "headline": null,
+   "subject": "Announcement under Regulation 30 (LODR)-Change in Management",
+   "headline": "Announcement under Regulation 30 of SEBI LODR- Change in Management (Appointment of Director)",
    "note": null,
    "category": "management_change",
    "tier": "P1",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.in/corporate/DIXON_24112026150148_Reg30DisclosureArunaJayanthi24112026.pdf",
-   "source": "nse",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b67aeb99-3c59-4400-afb3-6fa878acaef4.pdf",
+   "source": "bse",
    "reaction_day": "2026-11-24",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-25",
     "move_pct": -3.08,
@@ -3616,7 +3532,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/79ead256-b47e-41f3-8e17-8b635bb30820.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.83,
@@ -3660,7 +3576,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/73421683-fb93-45b6-9534-28f0b0d8262e.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.83,
@@ -3752,7 +3668,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4dc63132-8d0c-4836-b74b-f289525d6384.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": 3.36,
@@ -3789,7 +3705,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_31102026141138_OutcomeBM31102026_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": -0.87,
@@ -3879,7 +3795,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/880087f6-7ecc-40a9-8cac-de48d4616b25.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.6,
@@ -3969,7 +3885,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_30102026191314_IntimationofPenalty30102026_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": -0.87,
@@ -3984,21 +3900,21 @@
    "collapsed": false
   },
   {
-   "id": "106836523",
+   "id": "096f1e5a-3667-42a5-b4e2-ba8272ee52fc",
    "symbol": "DIXON",
    "name": "Dixon Technologies (India) Ltd",
-   "filed": "2026-10-30T16:07",
-   "subject": "Dixon Technologies (India) Limited has submitted to the Exchange, the financial results for the period ended September 30, 2026.",
-   "headline": null,
+   "filed": "2026-10-30T16:19",
+   "subject": "Results For The Quarter And Half Year Ended 30Th September, 2026",
+   "headline": "Results for the quarter and half year ended 30th September, 20206",
    "note": null,
    "category": "results",
    "tier": "P1",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.in/corporate/DIXON_30102026160547_Outcome30102026.pdf",
-   "source": "nse",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d7b8fffb-7a5f-4efa-9241-482c5d765f1d.pdf",
+   "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.99,
@@ -4006,7 +3922,68 @@
     "excess_pct": 10.31,
     "vol_ratio": 5.95
    },
-   "card_error": "ValueError: No API key was provided. Please pass a valid API key. Learn how to create an API key at https://aistudio.google.com/docs/api-key.",
+   "card": {
+    "type": "results",
+    "basis": "consolidated",
+    "unit": "₹ crore",
+    "note": "EBITDA = revenue from operations − (total expenses − finance costs − D&A): other income, associates and exceptional items excluded",
+    "periods": [
+     "30-Sep-26",
+     "30-Jun-26",
+     "30-Sep-25"
+    ],
+    "lines": [
+     {
+      "name": "Revenue",
+      "value": 21793.64,
+      "qoq_pct": 40.2,
+      "yoy_pct": 46.7,
+      "values": [
+       21793.64,
+       15547.66,
+       14855.04
+      ]
+     },
+     {
+      "name": "EBITDA",
+      "value": 596.82,
+      "qoq_pct": 28.9,
+      "yoy_pct": 6.3,
+      "values": [
+       596.82,
+       463.12,
+       561.33
+      ]
+     },
+     {
+      "name": "PBT",
+      "value": 532.35,
+      "qoq_pct": -38.7,
+      "yoy_pct": -42.4,
+      "values": [
+       532.35,
+       868.98,
+       923.59
+      ]
+     },
+     {
+      "name": "PAT (to owners)",
+      "value": 343.66,
+      "qoq_pct": -48.2,
+      "yoy_pct": -48.7,
+      "values": [
+       343.66,
+       663.42,
+       670.0
+      ]
+     }
+    ],
+    "one_offs": [],
+    "pages": [
+     11
+    ],
+    "model_note": null
+   },
    "score": 450,
    "reason": "Ranked high: results · +12.0% (+10.3% vs Nifty) · 6.0× volume",
    "boosted": true,
@@ -4027,7 +4004,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/658231ad-7203-4355-be99-2a162b722c0c.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 0.95,
@@ -4120,7 +4097,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a59f1b7a-6692-4d45-9886-f842d7faf839.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 2.91,
@@ -4148,7 +4125,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6d04e12f-221f-4d62-925d-0792202a19e7.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 5.44,
@@ -4228,7 +4205,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b891b5ce-4d60-44f6-a01f-1bd507d5de0f.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 5.44,
@@ -4308,7 +4285,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b962e91a-b409-4f5f-a22f-3275c992153a.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 5.44,
@@ -4403,7 +4380,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6ad6c765-6512-49a8-8de9-8bae58b913ca.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 0.76,
@@ -4493,7 +4470,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/741a7974-4bc2-47a3-b638-63131bfd70a0.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.87,
@@ -4521,7 +4498,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c0d52f59-f997-494d-918e-7e0d4d3eda65.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.87,
@@ -4598,96 +4575,6 @@
    "collapsed": false
   },
   {
-   "id": "84f672d2-60a7-4cef-adec-3711a9c76668",
-   "symbol": "LT",
-   "name": "Larsen & Toubro Ltd",
-   "filed": "2026-10-27T17:23",
-   "subject": "Outcome Of Board Meeting Of Larsen & Toubro Limited  Held On October 27, 2026",
-   "headline": "Outcome of Board Meeting of Larsen & Toubro Limited held on October 27,2026",
-   "note": null,
-   "category": "results",
-   "tier": "P1",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/be28659d-c65e-4500-917e-02ef891caee6.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-28",
-    "move_pct": 3.72,
-    "nifty_pct": -0.22,
-    "excess_pct": 3.94,
-    "vol_ratio": 3.2
-   },
-   "card": {
-    "type": "results",
-    "basis": "consolidated",
-    "unit": "₹ crore",
-    "note": "EBITDA = revenue from operations − (total expenses − finance costs − D&A): other income, associates and exceptional items excluded",
-    "periods": [
-     "September 30, 2026",
-     "June 30, 2026",
-     "September 30, 2025"
-    ],
-    "lines": [
-     {
-      "name": "Revenue",
-      "value": 78749.94,
-      "qoq_pct": 15.9,
-      "yoy_pct": 15.8,
-      "values": [
-       78749.94,
-       67941.74,
-       67983.53
-      ]
-     },
-     {
-      "name": "EBITDA",
-      "value": 6844.65,
-      "qoq_pct": 11.9,
-      "yoy_pct": 0.6,
-      "values": [
-       6844.65,
-       6116.48,
-       6806.41
-      ]
-     },
-     {
-      "name": "PBT",
-      "value": 7641.06,
-      "qoq_pct": 10.4,
-      "yoy_pct": 20.6,
-      "values": [
-       7641.06,
-       6922.26,
-       6336.11
-      ]
-     },
-     {
-      "name": "PAT (to owners)",
-      "value": 5202.1,
-      "qoq_pct": 26.2,
-      "yoy_pct": 32.5,
-      "values": [
-       5202.1,
-       4122.85,
-       3926.09
-      ]
-     }
-    ],
-    "one_offs": [],
-    "pages": [
-     11
-    ],
-    "model_note": null
-   },
-   "score": 450,
-   "reason": "Ranked high: results · +3.7% (+3.9% vs Nifty) · 3.2× volume",
-   "boosted": true,
-   "collapsed": false
-  },
-  {
    "id": "d13d3afb-08f4-482b-9b7c-55bd80a4e76a",
    "symbol": "TATAPOWER",
    "name": "Tata Power Company Ltd",
@@ -4702,7 +4589,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9d55161e-7758-49f4-8740-4ad95e6b2ba0.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.83,
@@ -4731,7 +4618,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7a4ac249-057f-4abc-b701-cabc9e2370c8.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.83,
@@ -4760,7 +4647,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/2892bca6-b4be-4496-a6fb-ad849fd94e0a.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.83,
@@ -4788,7 +4675,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/263f0717-d22e-42b2-b518-853172271c8c.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.83,
@@ -4816,7 +4703,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fe431adc-0e1a-48ee-9c2b-b6e39cba04e4.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": 3.14,
@@ -4845,7 +4732,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5dfbdab4-d040-4a99-b694-bbe26f015f14.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": 3.8,
@@ -4874,7 +4761,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4b1ab7e2-a0c4-40d9-8758-64975aea90d9.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": -2.52,
@@ -4903,7 +4790,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_03112026125814_NSEIntimation_PressRelease_finalsd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 5.43,
@@ -4932,7 +4819,7 @@
    "url": null,
    "source": "bse",
    "reaction_day": "2026-11-02",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": -0.43,
@@ -4961,7 +4848,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8e997741-4d35-4188-933a-cf020fb9c816.pdf",
    "source": "bse",
    "reaction_day": "2026-11-02",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.6,
@@ -4990,7 +4877,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_31102026155542_CDSL_InvestorPresentation_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": -0.87,
@@ -5018,7 +4905,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_31102026142410_Press_release_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": -0.87,
@@ -5029,35 +4916,6 @@
    "title": "Consolidated net profit grew 24% YoY to ₹173 crore for Q2 FY27",
    "score": 350,
    "reason": "Ranked high: press release · 3.0× volume",
-   "boosted": true,
-   "collapsed": false
-  },
-  {
-   "id": "106837485",
-   "symbol": "DIXON",
-   "name": "Dixon Technologies (India) Ltd",
-   "filed": "2026-10-30T20:32",
-   "subject": "Dixon Technologies (India) Limited has informed the Exchange about Link of Recording",
-   "headline": null,
-   "note": null,
-   "category": "earnings_call",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://nsearchives.nseindia.in/corporate/DIXON_30102026203021_ConferenceCallRecordingIntimation30102026.pdf",
-   "source": "nse",
-   "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-11-02",
-    "move_pct": 11.99,
-    "nifty_pct": 1.68,
-    "excess_pct": 10.31,
-    "vol_ratio": 5.95
-   },
-   "title": null,
-   "score": 350,
-   "reason": "Ranked high: earnings call · +12.0% (+10.3% vs Nifty) · 6.0× volume",
    "boosted": true,
    "collapsed": false
   },
@@ -5076,7 +4934,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0dc8ebe7-5e2d-4946-85ee-1e536c461a71.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.6,
@@ -5104,7 +4962,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/aacc5fc7-25e5-4901-b682-d9911fe1d21b.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.6,
@@ -5133,7 +4991,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9d4cb3ed-a184-4662-91fc-f4112ce354b7.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.6,
@@ -5147,49 +5005,21 @@
    "collapsed": false
   },
   {
-   "id": "106836561",
+   "id": "573832b2-d25c-4a3e-a3b4-46c15e9b0178",
    "symbol": "DIXON",
    "name": "Dixon Technologies (India) Ltd",
-   "filed": "2026-10-30T16:19",
-   "subject": "Dixon Technologies (India) Limited has informed the Exchange about Investor Presentation",
-   "headline": null,
-   "note": null,
-   "category": "results",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://nsearchives.nseindia.in/corporate/DIXON_30102026161836_OutcomewithPPT30102026.pdf",
-   "source": "nse",
-   "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-11-02",
-    "move_pct": 11.99,
-    "nifty_pct": 1.68,
-    "excess_pct": 10.31,
-    "vol_ratio": 5.95
-   },
-   "score": 350,
-   "reason": "Ranked high: results · +12.0% (+10.3% vs Nifty) · 6.0× volume",
-   "boosted": true,
-   "collapsed": false
-  },
-  {
-   "id": "106836531",
-   "symbol": "DIXON",
-   "name": "Dixon Technologies (India) Ltd",
-   "filed": "2026-10-30T16:10",
-   "subject": "Dixon Technologies (India) Limited has informed the Exchange about change in Management",
-   "headline": null,
+   "filed": "2026-10-30T16:09",
+   "subject": "Announcement under Regulation 30 (LODR)-Change in Management",
+   "headline": "Announcement under Regulation 30 of SEBI LODR- Change in Management",
    "note": "Not a CEO, MD, CFO or Chairman joining or leaving",
    "category": "management_change",
    "tier": "P2",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.in/corporate/DIXON_30102026160939_Outcome30102026.pdf",
-   "source": "nse",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/53529778-f611-4f21-b789-0bc1bf52e7e5.pdf",
+   "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.99,
@@ -5197,7 +5027,7 @@
     "excess_pct": 10.31,
     "vol_ratio": 5.95
    },
-   "title": null,
+   "title": "Appointed Prithvi Vachani Executive Director for five years from 30th October, 2026",
    "card": {
     "type": "management_change",
     "people": [
@@ -5219,6 +5049,34 @@
    "collapsed": false
   },
   {
+   "id": "6019615a-1a68-4f5d-ad22-8e5830dceb28",
+   "symbol": "DIXON",
+   "name": "Dixon Technologies (India) Ltd",
+   "filed": "2026-10-30T16:06",
+   "subject": "Board Meeting Outcome for Outcome Of Board Meeting Held On 30Th October, 2026",
+   "headline": "Board approved un-audited financial results for the quarter and half year ended September 30, 2026",
+   "note": null,
+   "category": "results",
+   "tier": "P2",
+   "classified_by": "llm",
+   "classify_error": null,
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f4cee6de-593c-4f4c-a0b0-368c8d0aa43e.pdf",
+   "source": "bse",
+   "reaction_day": "2026-10-31",
+   "last_bar": "2026-11-25",
+   "reaction": {
+    "date": "2026-11-02",
+    "move_pct": 11.99,
+    "nifty_pct": 1.68,
+    "excess_pct": 10.31,
+    "vol_ratio": 5.95
+   },
+   "score": 350,
+   "reason": "Ranked high: results · +12.0% (+10.3% vs Nifty) · 6.0× volume",
+   "boosted": true,
+   "collapsed": false
+  },
+  {
    "id": "a56e304a-a629-417a-8882-023924df0b88",
    "symbol": "SUNPHARMA",
    "name": "Sun Pharmaceutical Industries Ltd",
@@ -5233,7 +5091,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9b8f28d0-1101-4b12-82d0-e2ef23c8ef6c.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 0.95,
@@ -5262,7 +5120,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/17448e49-e6d5-4616-be82-86a78e83bb8c.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 2.91,
@@ -5290,7 +5148,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5634f899-a008-45ab-b930-2b74cf08e566.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 5.44,
@@ -5318,7 +5176,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/984d68e3-738c-43cf-afd1-756b33f60610.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 5.44,
@@ -5347,7 +5205,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/386aab9b-d99c-44af-ba52-1bd95d49a60c.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 5.44,
@@ -5375,7 +5233,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/cc0c50f8-1d2d-4bbd-95bc-806513fe6062.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 0.76,
@@ -5404,7 +5262,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a27ed780-8c39-4533-a783-817445f5f11d.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 0.76,
@@ -5433,7 +5291,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a933af17-dee7-4d6f-a87c-48a70b3a532f.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 0.76,
@@ -5462,7 +5320,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/67b1b091-294b-47af-aee0-df9fa7211cee.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 0.76,
@@ -5491,7 +5349,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/e20392a9-cbd5-4271-9ad1-450cad3ff835.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 0.76,
@@ -5519,7 +5377,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_28102026180148_Retirement_Ashish_Bhatt_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 4.06,
@@ -5563,7 +5421,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f901b2e2-5991-467d-836f-623b8eefdbb9.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.87,
@@ -5573,62 +5431,6 @@
    },
    "score": 350,
    "reason": "Ranked high: results · +3.9% (+4.1% vs Nifty) · 3.0× volume",
-   "boosted": true,
-   "collapsed": false
-  },
-  {
-   "id": "a73ed781-aabf-4244-bf6c-c44c2668e94f",
-   "symbol": "LT",
-   "name": "Larsen & Toubro Ltd",
-   "filed": "2026-10-27T18:33",
-   "subject": "Analyst Presentation - Q2 / H1 FY27",
-   "headline": "Analyst Presentation - Q2 / H1 FY27",
-   "note": null,
-   "category": "results",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4c027e30-6b95-4915-9843-bd4e4c437bb1.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-28",
-    "move_pct": 3.72,
-    "nifty_pct": -0.22,
-    "excess_pct": 3.94,
-    "vol_ratio": 3.2
-   },
-   "score": 350,
-   "reason": "Ranked high: results · +3.7% (+3.9% vs Nifty) · 3.2× volume",
-   "boosted": true,
-   "collapsed": false
-  },
-  {
-   "id": "ff19303b-925a-4392-9219-6125d7ea71f7",
-   "symbol": "LT",
-   "name": "Larsen & Toubro Ltd",
-   "filed": "2026-10-27T17:14",
-   "subject": "Board Meeting Outcome for Outcome Of Board Meeting Of Larsen & Toubro Limited Held On October 27, 2026",
-   "headline": "Board approved consolidated and standalone financial results for the quarter and half-year ended September 30, 2026",
-   "note": null,
-   "category": "results",
-   "tier": "P2",
-   "classified_by": "llm",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/e0efae36-4554-4d02-8938-9a63b303f9c3.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-28",
-    "move_pct": 3.72,
-    "nifty_pct": -0.22,
-    "excess_pct": 3.94,
-    "vol_ratio": 3.2
-   },
-   "score": 350,
-   "reason": "Ranked high: results · +3.7% (+3.9% vs Nifty) · 3.2× volume",
    "boosted": true,
    "collapsed": false
   },
@@ -5647,18 +5449,12 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/74191bfa-12e0-4cc3-9e25-56875f02c1a5.pdf",
    "source": "bse",
    "reaction_day": "2026-11-26",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-11-26",
-    "move_pct": 1.87,
-    "nifty_pct": 0.25,
-    "excess_pct": 1.61,
-    "vol_ratio": 1.68
-   },
+   "last_bar": "2026-11-25",
+   "reaction": null,
    "title": null,
    "card_error": "ValueError: No API key was provided. Please pass a valid API key. Learn how to create an API key at https://aistudio.google.com/docs/api-key.",
    "score": 300,
-   "reason": "management change · +1.6% vs Nifty",
+   "reason": "management change · Reaction pending",
    "boosted": false,
    "collapsed": false
   },
@@ -5677,7 +5473,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a6d81afd-41a5-496e-b6f3-228f23346f39.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": 1.0,
@@ -5707,7 +5503,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/95153dec-f5c7-4013-90b5-92e3c1d7c92a.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": 1.0,
@@ -5737,7 +5533,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/788c2d34-b575-4343-b984-f1628be0e6c6.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": -2.81,
@@ -5830,7 +5626,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/84c0dbf5-4b55-41b9-ab7b-e20d9fe359a9.pdf",
    "source": "bse",
    "reaction_day": "2026-11-10",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 1.31,
@@ -5867,7 +5663,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/41e7bb57-172f-4858-a5ac-8c15fe653e81.pdf",
    "source": "bse",
    "reaction_day": "2026-11-10",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 1.31,
@@ -5904,7 +5700,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d7ac2233-ec14-4247-a363-92be10e5752c.pdf",
    "source": "bse",
    "reaction_day": "2026-11-08",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": 2.13,
@@ -5933,7 +5729,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c6c189db-e010-4c6e-a997-b50d6d33767a.pdf",
    "source": "bse",
    "reaction_day": "2026-11-07",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": -1.44,
@@ -5986,7 +5782,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7e17b4ed-a5e2-4625-9e2b-2af590350caa.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 2.45,
@@ -6080,7 +5876,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/258dfe1d-7ec3-4563-863f-330be44338eb.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": -0.52,
@@ -6117,7 +5913,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8e05f8c9-956c-4fbc-9e8e-3f6aa4694621.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": -0.52,
@@ -6154,7 +5950,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6ad82347-ac2d-4385-ae80-3cd07c428f69.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 2.82,
@@ -6248,7 +6044,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c3d1ba29-6132-47b7-9f3b-79a294e53189.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 0.54,
@@ -6277,7 +6073,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ead5c0dc-e464-4e53-8006-b861205174a9.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": -0.49,
@@ -6292,183 +6088,46 @@
    "collapsed": false
   },
   {
-   "id": "c737601e-dff8-49ed-8959-263b42e68df0",
-   "symbol": "RELIANCE",
-   "name": "Reliance Industries Ltd",
-   "filed": "2026-10-27T22:11",
-   "subject": "Listing Of Equity Shares Of Jio Platforms Limited",
-   "headline": "Subsidiary Jio Platforms completed equity share allotment for IPO and received listing approval",
-   "note": null,
-   "category": "fund_raise",
-   "tier": "P1",
-   "classified_by": "llm",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/70bfc361-3c9a-45d0-8240-e1b544debd01.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-28",
-    "move_pct": -3.19,
-    "nifty_pct": -0.22,
-    "excess_pct": -2.97,
-    "vol_ratio": 1.46
-   },
-   "title": "Subsidiary Jio Platforms completed share allotment for IPO and received listing approval",
-   "card": {
-    "type": "fund_raise",
-    "instrument": "equity",
-    "size_cr": null,
-    "size_page": null,
-    "dilution_pct": null,
-    "model_note": null
-   },
-   "score": 300,
-   "reason": "fund raise · −3.0% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
-   "id": "ed51c226-e785-4389-a0e9-7160e6eb21fb",
-   "symbol": "MARUTI",
-   "name": "Maruti Suzuki India Ltd",
-   "filed": "2026-10-27T15:32",
-   "subject": "Board Meeting Outcome for  Un-Audited Financial Results For The Quarter Ended On 30Th September 2026",
-   "headline": " Un-audited financial results for the quarter ended on 30th September 2026",
+   "id": "fb491e28-0f0d-42fa-8d83-4fcd48ae1359",
+   "symbol": "ASIANPAINT",
+   "name": "Asian Paints Ltd",
+   "filed": "2026-11-26T20:18",
+   "subject": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "headline": "Pursuant to Regulation 30 of the SEBI(LODR) Regulations 2015, find enclosed the presentation to be made at the Nomura Investment Forum, Japan, denominated in Indian Rupees.",
    "note": null,
    "category": "results",
-   "tier": "P1",
+   "tier": "P2",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1dc3fa06-d8da-447c-ad6d-8d2166fd134c.pdf",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f5876333-cc21-4ae5-9c33-cc08d62aa1f5.pdf",
    "source": "bse",
-   "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-28",
-    "move_pct": 1.13,
-    "nifty_pct": -0.22,
-    "excess_pct": 1.35,
-    "vol_ratio": 1.96
-   },
-   "card": {
-    "type": "results",
-    "basis": "standalone",
-    "unit": "₹ crore",
-    "note": "EBITDA = revenue from operations − (total expenses − finance costs − D&A): other income, associates and exceptional items excluded",
-    "periods": [
-     "September 30, 2026",
-     "June 30, 2026",
-     "September 30, 2025"
-    ],
-    "lines": [
-     {
-      "name": "Revenue",
-      "value": 53340.2,
-      "qoq_pct": 1.7,
-      "yoy_pct": 26.0,
-      "values": [
-       53340.2,
-       52455.1,
-       42332.3
-      ]
-     },
-     {
-      "name": "EBITDA",
-      "value": 4763.3,
-      "qoq_pct": 10.5,
-      "yoy_pct": -6.3,
-      "values": [
-       4763.3,
-       4310.5,
-       5084.8
-      ]
-     },
-     {
-      "name": "PBT",
-      "value": 3165.8,
-      "qoq_pct": -27.1,
-      "yoy_pct": -26.2,
-      "values": [
-       3165.8,
-       4341.3,
-       4290.9
-      ]
-     },
-     {
-      "name": "PAT (to owners)",
-      "value": 2414.9,
-      "qoq_pct": -28.0,
-      "yoy_pct": -26.9,
-      "values": [
-       2414.9,
-       3352.1,
-       3302.8
-      ]
-     }
-    ],
-    "one_offs": [],
-    "pages": [
-     2,
-     3
-    ],
-    "model_note": null
-   },
-   "score": 300,
-   "reason": "results · +1.4% vs Nifty",
+   "reaction_day": "2026-11-27",
+   "last_bar": "2026-11-25",
+   "reaction": null,
+   "score": 200,
+   "reason": "results · Reaction pending",
    "boosted": false,
    "collapsed": false
   },
   {
-   "id": "eee0209e-2a9c-4d1c-91a1-8b1dbc6868a2",
-   "symbol": "HDFCBANK",
-   "name": "HDFC Bank Ltd",
-   "filed": "2026-10-27T08:06",
-   "subject": "Disclosure Under Regulation 30 And Other Applicable Regulations Of The SEBI (Listing Obligations And Disclosure Requirements) Regulations, 2015 - Change In Managing Director And Chief Executive Officer Of The Bank",
-   "headline": "Disclosure under Regulation 30 and other applicable regulations of the SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 - Change in Managing Director and Chief Executive ....",
+   "id": "ae5df8e3-52b5-4257-8cad-b7cc0d34fb4d",
+   "symbol": "SUNPHARMA",
+   "name": "Sun Pharmaceutical Industries Ltd",
+   "filed": "2026-11-26T20:05",
+   "subject": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "headline": "Investor Presentation -Nov 2026",
    "note": null,
-   "category": "management_change",
-   "tier": "P1",
+   "category": "results",
+   "tier": "P2",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/e5b2d06f-fea8-4dea-aa03-84674215a0fd.pdf",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5a9fbc5b-1ebb-4bf3-ad1b-7fd86c520564.pdf",
    "source": "bse",
-   "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-27",
-    "move_pct": -1.14,
-    "nifty_pct": -0.02,
-    "excess_pct": -1.13,
-    "vol_ratio": 1.31
-   },
-   "title": "Anup Bagchi assumed charge as MD and CEO effective 27 October 2026",
-   "card": {
-    "type": "management_change",
-    "people": [
-     {
-      "name": "Anup Bagchi",
-      "change": "appointed",
-      "role": "MD & CEO",
-      "effective": "October 27, 2026",
-      "bio": "Profile not in this filing; see intimation dated October 1, 2026",
-      "bio_page": null,
-      "profile_ref": "intimation dated October 1, 2026"
-     },
-     {
-      "name": "Sashidhar Jagdishan",
-      "change": "retired",
-      "role": "MD & CEO",
-      "effective": "October 26, 2026",
-      "bio": null,
-      "bio_page": null,
-      "profile_ref": "intimation dated October 1, 2026"
-     }
-    ],
-    "model_note": null
-   },
-   "score": 300,
-   "reason": "management change · −1.1% vs Nifty",
+   "reaction_day": "2026-11-27",
+   "last_bar": "2026-11-25",
+   "reaction": null,
+   "score": 200,
+   "reason": "results · Reaction pending",
    "boosted": false,
    "collapsed": false
   },
@@ -6487,7 +6146,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a0055d51-931d-4156-bcda-4e278bc60805.pdf",
    "source": "bse",
    "reaction_day": "2026-11-25",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-25",
     "move_pct": 1.37,
@@ -6516,7 +6175,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/56eb8f42-7196-433c-af67-ea52b2a7bd97.pdf",
    "source": "bse",
    "reaction_day": "2026-11-24",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-25",
     "move_pct": 2.2,
@@ -6545,7 +6204,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6961c994-01be-4b8d-85ac-5c857530ea43.pdf",
    "source": "bse",
    "reaction_day": "2026-11-23",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-23",
     "move_pct": -2.59,
@@ -6574,7 +6233,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/af35c243-2088-4dae-aa78-5a1346d756cd.pdf",
    "source": "bse",
    "reaction_day": "2026-11-18",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-18",
     "move_pct": -1.89,
@@ -6603,7 +6262,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6464f590-90c7-40d8-8093-0e700ab95a88.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": 0.07,
@@ -6632,7 +6291,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_16112026185724_ConcallInvite_Nov19_2026_final_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": 0.41,
@@ -6661,7 +6320,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4c31e194-fe41-4e54-9862-fdda5efccb7b.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": -0.86,
@@ -6690,7 +6349,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/52877bcf-b57f-486c-9c6f-4b29fa2fd203.pdf",
    "source": "bse",
    "reaction_day": "2026-11-16",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-16",
     "move_pct": -0.72,
@@ -6719,7 +6378,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7b9eb8a8-fa88-453b-810f-b55034589aac.pdf",
    "source": "bse",
    "reaction_day": "2026-11-14",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-16",
     "move_pct": 1.55,
@@ -6763,7 +6422,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1ff3e14f-7e97-4074-89c7-049408721c5e.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": 0.48,
@@ -6792,7 +6451,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/85fd0472-5794-49ac-9025-a7b18f17e91d.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": -2.81,
@@ -6820,7 +6479,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6df1f05c-9926-47ce-9896-94c41bdb71ab.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": -1.02,
@@ -6864,7 +6523,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/2b74a7fe-194c-4a61-8cf6-dbba26573f57.pdf",
    "source": "bse",
    "reaction_day": "2026-11-10",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 1.99,
@@ -6893,7 +6552,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8269aea9-54c0-4a24-a615-6dda0ab8f054.pdf",
    "source": "bse",
    "reaction_day": "2026-11-09",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": 1.63,
@@ -6922,7 +6581,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_05112026164633_NSEIntimationTranscript02112026Sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": -0.19,
@@ -6937,21 +6596,21 @@
    "collapsed": false
   },
   {
-   "id": "106847469",
+   "id": "7fa195bb-8195-4bab-bbfd-1bc23fc1d3a8",
    "symbol": "DIXON",
    "name": "Dixon Technologies (India) Ltd",
    "filed": "2026-11-05T16:36",
-   "subject": "Dixon Technologies (India) Limited has informed the Exchange about Transcript",
-   "headline": null,
+   "subject": "Announcement under Regulation 30 (LODR)-Earnings Call Transcript",
+   "headline": "Announcement under Regulation 30 of SEBI LODR- Transcript of the Q2 FY 27 Earnings Conference Call held on 30th October, 2026",
    "note": null,
    "category": "earnings_call",
    "tier": "P2",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.in/corporate/DIXON_05112026163605_EarningCallTranscriptQ2Intimation.pdf",
-   "source": "nse",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/995a3a71-4a1e-4c1f-a29a-6c6747e4ca10.pdf",
+   "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 0.07,
@@ -6980,7 +6639,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5f677c46-d64d-4c66-9851-541120179fe4.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 2.45,
@@ -7008,7 +6667,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/422774be-d5f4-4a17-a483-ffb3b7728020.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 2.45,
@@ -7037,7 +6696,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/e6d9bef6-f458-40de-9c71-9da5d56b6f47.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 2.45,
@@ -7065,7 +6724,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9d0d7935-7fc2-47ba-8da1-19dd5ace72da.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": 1.26,
@@ -7094,7 +6753,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9a4b00d7-4978-4c75-beb2-78403163cb8e.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": 0.18,
@@ -7123,7 +6782,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a7331811-fe14-4c79-896d-f0a9df901335.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": 0.04,
@@ -7152,7 +6811,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ee7e6efe-1f9b-4b5e-bff7-1da18902ffeb.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": -0.8,
@@ -7181,7 +6840,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4a189744-1646-4de4-809b-e936a67b6fe4.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 1.69,
@@ -7210,7 +6869,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1bbe06aa-8721-4e47-b0b1-985a91279ce9.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": -0.01,
@@ -7239,7 +6898,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/32ee21d2-58a3-45c8-83af-c109a9bd080d.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 2.82,
@@ -7268,7 +6927,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ff62231c-b3bd-48d1-a643-8b379a46cb57.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 2.82,
@@ -7296,7 +6955,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9251c692-ccfd-44b9-8720-4a5a42e808ba.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 2.82,
@@ -7324,7 +6983,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d8a69245-c1f1-4bc3-a7c9-9dbc5795aae8.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 0.21,
@@ -7353,7 +7012,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/86cb66bf-7e97-4d77-a803-40ae7750d8f2.pdf",
    "source": "bse",
    "reaction_day": "2026-11-02",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 1.76,
@@ -7382,7 +7041,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b7585ba4-523e-4c05-b037-263a3e803229.pdf",
    "source": "bse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 2.41,
@@ -7411,7 +7070,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/817afcae-2ee4-486a-a3c0-fdbfd7a392e9.pdf",
    "source": "bse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 2.41,
@@ -7440,7 +7099,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b36ff756-1cf7-44a3-9b2c-4583e7e0e792.pdf",
    "source": "bse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 1.04,
@@ -7484,7 +7143,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ef51f1d4-0f28-478d-ba24-ea772334daa8.pdf",
    "source": "bse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 0.32,
@@ -7528,7 +7187,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/13e50739-50e7-4b5a-8dba-ac92ece6d35f.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 1.76,
@@ -7557,7 +7216,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/83b2bead-08c8-4789-a658-7985de0c772f.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 0.78,
@@ -7585,7 +7244,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/95d1017a-3e9d-46db-ba54-ca6ae2c6dfbe.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": -1.32,
@@ -7596,178 +7255,6 @@
    "title": "Crossed EV exports of 50,000 units",
    "score": 200,
    "reason": "press release · −2.4% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
-   "id": "be299086-d70d-4db2-af4b-0307eb15a5d9",
-   "symbol": "ETERNAL",
-   "name": "Eternal Ltd",
-   "filed": "2026-10-27T16:52",
-   "subject": "Announcement under Regulation 30 (LODR)-Earnings Call Transcript",
-   "headline": "Eternal Limited has filed with exchange transcript of earnings conference call conducted on October 21, 2026.",
-   "note": null,
-   "category": "earnings_call",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/64f36e3b-87e9-426e-be3e-515dca4525d2.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-28",
-    "move_pct": -1.51,
-    "nifty_pct": -0.22,
-    "excess_pct": -1.29,
-    "vol_ratio": 0.78
-   },
-   "title": "Transcript of earnings conference call conducted on October 21, 2026",
-   "score": 200,
-   "reason": "earnings call · −1.3% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
-   "id": "dec94a6d-eff4-450a-8e7a-801362952950",
-   "symbol": "MARUTI",
-   "name": "Maruti Suzuki India Ltd",
-   "filed": "2026-10-27T15:44",
-   "subject": "Announcement under Regulation 30 (LODR)-Investor Presentation",
-   "headline": "Investor Presentation on the financial results for the quarter ended on 30th September 2026",
-   "note": null,
-   "category": "results",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f2035228-03c1-4d40-a644-560d2727c2d1.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-28",
-    "move_pct": 1.13,
-    "nifty_pct": -0.22,
-    "excess_pct": 1.35,
-    "vol_ratio": 1.96
-   },
-   "score": 200,
-   "reason": "results · +1.4% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
-   "id": "dd204a46-9e22-497b-9557-2c140aaf030f",
-   "symbol": "MARUTI",
-   "name": "Maruti Suzuki India Ltd",
-   "filed": "2026-10-27T15:39",
-   "subject": "Announcement under Regulation 30 (LODR)-Press Release / Media Release",
-   "headline": "Maruti Suzuki India Limited Financial Results Q2 and H1 FY 2026-27",
-   "note": null,
-   "category": "press_release",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7ec86b0c-ade4-46be-bdb7-bae88ce1dfb8.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-28",
-    "move_pct": 1.13,
-    "nifty_pct": -0.22,
-    "excess_pct": 1.35,
-    "vol_ratio": 1.96
-   },
-   "title": "Posted net profit of INR 24,149 million for Q2 FY 2026-27",
-   "score": 200,
-   "reason": "press release · +1.4% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
-   "id": "75d0117b-f394-4adb-9147-6bfa17243576",
-   "symbol": "MARUTI",
-   "name": "Maruti Suzuki India Ltd",
-   "filed": "2026-10-27T15:27",
-   "subject": " Un-Audited Financial Results For The Quarter Ended On 30Th September 2026",
-   "headline": "Un-audited financial results for the quarter ended on 30th September 2026",
-   "note": null,
-   "category": "results",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fca20bad-7bfe-438f-a526-d9f42ccf0346.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-27",
-    "move_pct": 2.05,
-    "nifty_pct": -0.02,
-    "excess_pct": 2.07,
-    "vol_ratio": 0.91
-   },
-   "score": 200,
-   "reason": "results · +2.1% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
-   "id": "a900e043-39a6-415b-ac5b-b504323657ca",
-   "symbol": "TATAPOWER",
-   "name": "Tata Power Company Ltd",
-   "filed": "2026-10-27T12:18",
-   "subject": "Announcement under Regulation 30 (LODR)-Press Release / Media Release",
-   "headline": "Press release titled \"Tata Power Signs MoU with BPCL to Develop 110 kV Power Infrastructure for its Landmark PRFCCU Project at Mumbai Refinery. \"",
-   "note": null,
-   "category": "press_release",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/77a076e8-3476-462a-9b25-360533cfcd07.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-27",
-    "move_pct": 0.18,
-    "nifty_pct": -0.02,
-    "excess_pct": 0.19,
-    "vol_ratio": 1.33
-   },
-   "title": "Signed MoU with BPCL to develop 110 kV power infrastructure",
-   "score": 200,
-   "reason": "press release · +0.2% vs Nifty",
-   "boosted": false,
-   "collapsed": false
-  },
-  {
-   "id": "23b4e4f8-3d8b-4f89-a385-4bc94ffbf939",
-   "symbol": "LT",
-   "name": "Larsen & Toubro Ltd",
-   "filed": "2026-10-27T10:14",
-   "subject": "Announcement under Regulation 30 (LODR) - Bagging/receiving of order(s) or contract(s)",
-   "headline": "L&T Wins Orders (Major*) for Dhaka Metro",
-   "note": null,
-   "category": "press_release",
-   "tier": "P2",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/115618e0-f718-4b8b-81e1-642618cbe608.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-27",
-    "move_pct": -0.4,
-    "nifty_pct": -0.02,
-    "excess_pct": -0.39,
-    "vol_ratio": 0.77
-   },
-   "title": "Secured major orders for Dhaka Metro Line 1 packages CP09 and CP10",
-   "score": 200,
-   "reason": "press release · −0.4% vs Nifty",
    "boosted": false,
    "collapsed": false
   },
@@ -7786,44 +7273,32 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f08bb53a-9d0a-45fd-8b22-4229350d4720.pdf",
    "source": "bse",
    "reaction_day": "2026-11-26",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-11-26",
-    "move_pct": -1.72,
-    "nifty_pct": 0.25,
-    "excess_pct": -1.97,
-    "vol_ratio": 0.5
-   },
+   "last_bar": "2026-11-25",
+   "reaction": null,
    "score": 100,
-   "reason": "investor meetings · −2.0% vs Nifty",
+   "reason": "investor meetings · Reaction pending",
    "boosted": false,
    "collapsed": true
   },
   {
-   "id": "106871411",
+   "id": "981d5854-f9e7-4d17-9a51-35e9caf58873",
    "symbol": "DIXON",
    "name": "Dixon Technologies (India) Ltd",
    "filed": "2026-11-26T11:22",
-   "subject": "Dixon Technologies (India) Limited has informed the Exchange about Analyst/Institutional Investor Meet",
-   "headline": null,
+   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Outcome",
+   "headline": "Pursuant to the provisions of Regulations 30 and 46 of the SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 read with Para A and Part A of Schedule III of the said ....",
    "note": null,
    "category": "investor_meetings",
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.in/corporate/DIXON_26112026111744_InvestorMeetOutcome26112026.pdf",
-   "source": "nse",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/52ed09c6-75e8-4cfb-a12f-8e9aa7dcaded.pdf",
+   "source": "bse",
    "reaction_day": "2026-11-26",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-11-26",
-    "move_pct": -2.0,
-    "nifty_pct": 0.25,
-    "excess_pct": -2.26,
-    "vol_ratio": 1.07
-   },
+   "last_bar": "2026-11-25",
+   "reaction": null,
    "score": 100,
-   "reason": "investor meetings · −2.3% vs Nifty",
+   "reason": "investor meetings · Reaction pending",
    "boosted": false,
    "collapsed": true
   },
@@ -7842,16 +7317,10 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/29a62fe4-3921-46e1-a81e-5d9129f76c94.pdf",
    "source": "bse",
    "reaction_day": "2026-11-26",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-11-26",
-    "move_pct": -1.72,
-    "nifty_pct": 0.25,
-    "excess_pct": -1.97,
-    "vol_ratio": 0.5
-   },
+   "last_bar": "2026-11-25",
+   "reaction": null,
    "score": 100,
-   "reason": "investor meetings · −2.0% vs Nifty",
+   "reason": "investor meetings · Reaction pending",
    "boosted": false,
    "collapsed": true
   },
@@ -7870,16 +7339,10 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/382a5cb7-2a3d-42ad-bb0e-ba1f7fa27e96.pdf",
    "source": "bse",
    "reaction_day": "2026-11-26",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-11-26",
-    "move_pct": -2.96,
-    "nifty_pct": 0.25,
-    "excess_pct": -3.21,
-    "vol_ratio": 0.78
-   },
+   "last_bar": "2026-11-25",
+   "reaction": null,
    "score": 100,
-   "reason": "investor meetings · −3.2% vs Nifty",
+   "reason": "investor meetings · Reaction pending",
    "boosted": false,
    "collapsed": true
   },
@@ -7898,44 +7361,32 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/59854c76-de00-4260-845d-4dec60857bab.pdf",
    "source": "bse",
    "reaction_day": "2026-11-26",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-11-26",
-    "move_pct": -2.98,
-    "nifty_pct": 0.25,
-    "excess_pct": -3.24,
-    "vol_ratio": 0.83
-   },
+   "last_bar": "2026-11-25",
+   "reaction": null,
    "score": 100,
-   "reason": "investor meetings · −3.2% vs Nifty",
+   "reason": "investor meetings · Reaction pending",
    "boosted": false,
    "collapsed": true
   },
   {
-   "id": "106870505",
+   "id": "0e83e028-97b4-4dc7-8b1f-381798b25b85",
    "symbol": "DIXON",
    "name": "Dixon Technologies (India) Ltd",
    "filed": "2026-11-25T16:39",
-   "subject": "Dixon Technologies (India) Limited has informed the Exchange about Schedule of meet",
-   "headline": null,
+   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Intimation",
+   "headline": "Pursuant to the provisions of Regulations 30 and 46 of the SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 read with Para A of Part A of Schedule III of the said ....",
    "note": null,
-   "category": "earnings_call",
+   "category": "investor_meetings",
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.in/corporate/DIXON_25112026163756_InvestorMeetIntimation25112026.pdf",
-   "source": "nse",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fbd3b5bc-27f4-4acb-bca2-3b1ea57f0d9b.pdf",
+   "source": "bse",
    "reaction_day": "2026-11-26",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-11-26",
-    "move_pct": -2.0,
-    "nifty_pct": 0.25,
-    "excess_pct": -2.26,
-    "vol_ratio": 1.07
-   },
+   "last_bar": "2026-11-25",
+   "reaction": null,
    "score": 100,
-   "reason": "earnings call · −2.3% vs Nifty",
+   "reason": "investor meetings · Reaction pending",
    "boosted": false,
    "collapsed": true
   },
@@ -7954,7 +7405,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f8212d38-80c0-434c-993a-a5a7a13c84d4.pdf",
    "source": "bse",
    "reaction_day": "2026-11-25",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-25",
     "move_pct": 3.27,
@@ -7982,7 +7433,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d1b269ef-0a37-47bc-854a-aff99e44b066.pdf",
    "source": "bse",
    "reaction_day": "2026-11-25",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-25",
     "move_pct": 1.36,
@@ -8010,7 +7461,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/18713bc5-f911-4144-abba-ce951a62052b.pdf",
    "source": "bse",
    "reaction_day": "2026-11-25",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-25",
     "move_pct": 1.37,
@@ -8038,7 +7489,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/30135d23-cbb4-4e12-8dd7-5334957b09d1.pdf",
    "source": "bse",
    "reaction_day": "2026-11-24",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-25",
     "move_pct": 1.58,
@@ -8066,7 +7517,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/990083cd-3c00-47eb-8ffc-d8eb40c3322c.pdf",
    "source": "bse",
    "reaction_day": "2026-11-24",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-25",
     "move_pct": -0.52,
@@ -8094,7 +7545,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1dc4b1bc-18f7-4aad-a61a-6fc2bf9dc0ec.pdf",
    "source": "bse",
    "reaction_day": "2026-11-24",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-25",
     "move_pct": -0.69,
@@ -8108,21 +7559,21 @@
    "collapsed": true
   },
   {
-   "id": "106869094",
+   "id": "9f22a25f-df75-4b64-adf9-146531bd274e",
    "symbol": "DIXON",
    "name": "Dixon Technologies (India) Ltd",
    "filed": "2026-11-23T17:56",
-   "subject": "Dixon Technologies (India) Limited has informed the Exchange about Analyst/Institutional Investor Meet",
-   "headline": null,
+   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Outcome",
+   "headline": "Pursuant to the provisions of Regulations 30 and 46 of the SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 read with Para A and Part A of Schedule III of the said ....",
    "note": null,
    "category": "investor_meetings",
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.in/corporate/DIXON_23112026175353_InvestorMeetOutcome23112026.pdf",
-   "source": "nse",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a7322e4c-db56-440d-b959-598efb0d2ad4.pdf",
+   "source": "bse",
    "reaction_day": "2026-11-24",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-25",
     "move_pct": -3.08,
@@ -8150,7 +7601,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f08028ba-34c7-421f-b1a6-d861d4bd9700.pdf",
    "source": "bse",
    "reaction_day": "2026-11-24",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-25",
     "move_pct": 1.58,
@@ -8178,7 +7629,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/24d59434-af12-4d7e-8c5f-f4d4a92c4905.pdf",
    "source": "bse",
    "reaction_day": "2026-11-24",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-25",
     "move_pct": -1.81,
@@ -8206,7 +7657,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0be22638-c6d1-4e15-bd51-01e7be54ddcb.pdf",
    "source": "bse",
    "reaction_day": "2026-11-23",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-23",
     "move_pct": 2.59,
@@ -8234,7 +7685,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5a6ae83d-a595-41a3-98db-f9270111f00b.pdf",
    "source": "bse",
    "reaction_day": "2026-11-22",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-23",
     "move_pct": -0.01,
@@ -8248,21 +7699,21 @@
    "collapsed": true
   },
   {
-   "id": "106868327",
+   "id": "8e1db404-6eac-478f-b1cb-11715a7205fc",
    "symbol": "DIXON",
    "name": "Dixon Technologies (India) Ltd",
-   "filed": "2026-11-21T20:31",
-   "subject": "Dixon Technologies (India) Limited has informed the Exchange regarding 'Update on Asset Purchase Agreement executed between Dixon Technologies (India) Limited and Vimal Plast (India) Private Limited'.",
-   "headline": null,
+   "filed": "2026-11-21T20:29",
+   "subject": "Announcement Under Regulation 30 Of SEBI LODR-Update",
+   "headline": "Announcement under Regulation 30 of SEBI LODR- Update on Asset Purchase Agreement executed between Dixon Technologies (India) Limited and Vimal Plast (India) Private Limited",
    "note": null,
    "category": "unclassified",
    "tier": "P3",
    "classified_by": "default",
    "classify_error": "ValueError: No API key was provided. Please pass a valid API key. Learn how to create an API key at https://aistudio.google.com/docs/api-key.",
-   "url": "https://nsearchives.nseindia.in/corporate/DIXON_21112026203112_VimalClosingAnnouncement21112026.pdf",
-   "source": "nse",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/20a44726-e8b7-4a23-b0e8-ab8638aff9f7.pdf",
+   "source": "bse",
    "reaction_day": "2026-11-22",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-23",
     "move_pct": 2.06,
@@ -8290,7 +7741,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1fd338f2-022f-47dc-b7a6-504d659ec203.pdf",
    "source": "bse",
    "reaction_day": "2026-11-21",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-23",
     "move_pct": -1.32,
@@ -8318,7 +7769,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8359e2b1-9d38-4a6a-861f-81104a158350.pdf",
    "source": "bse",
    "reaction_day": "2026-11-21",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-23",
     "move_pct": -3.33,
@@ -8346,7 +7797,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/095a423a-3e97-4ac3-a292-08f80bdbf1f5.pdf",
    "source": "bse",
    "reaction_day": "2026-11-21",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-23",
     "move_pct": -1.48,
@@ -8374,7 +7825,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b336ec09-8561-419a-8357-0f69723758a8.pdf",
    "source": "bse",
    "reaction_day": "2026-11-21",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-23",
     "move_pct": -3.44,
@@ -8402,7 +7853,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6ca90438-38d5-48c4-b328-a1a9ab5af663.pdf",
    "source": "bse",
    "reaction_day": "2026-11-21",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-23",
     "move_pct": -0.67,
@@ -8430,7 +7881,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9dd6543f-f49a-43e9-8302-d6c77668ae74.pdf",
    "source": "bse",
    "reaction_day": "2026-11-20",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-20",
     "move_pct": 3.11,
@@ -8444,21 +7895,21 @@
    "collapsed": true
   },
   {
-   "id": "106867205",
+   "id": "57535879-957d-4e76-8623-0def67cb7df1",
    "symbol": "DIXON",
    "name": "Dixon Technologies (India) Ltd",
    "filed": "2026-11-20T12:13",
-   "subject": "Dixon Technologies (India) Limited has informed the Exchange about Outcome of Analyst /Institutional Investor Meet",
-   "headline": null,
+   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Outcome",
+   "headline": "Pursuant to the provisions of Regulations 30 and 46 of the SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 read with Para A and Part A of Schedule III of the said ....",
    "note": null,
    "category": "investor_meetings",
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.in/corporate/DIXON_20112026121311_InvestorMeetOutcome20112026.pdf",
-   "source": "nse",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/68d52f83-69e0-4d96-9cc5-c772d7503218.pdf",
+   "source": "bse",
    "reaction_day": "2026-11-20",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-20",
     "move_pct": 0.51,
@@ -8486,7 +7937,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b95cae6b-fb93-4750-b9d7-d9189b64a54b.pdf",
    "source": "bse",
    "reaction_day": "2026-11-20",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-20",
     "move_pct": 0.51,
@@ -8514,7 +7965,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/3c911ae3-537d-4dad-b536-c6c8337562ee.pdf",
    "source": "bse",
    "reaction_day": "2026-11-20",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-20",
     "move_pct": 0.14,
@@ -8542,7 +7993,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/943a8ed9-8e89-481f-b0d5-dece57330687.pdf",
    "source": "bse",
    "reaction_day": "2026-11-20",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-20",
     "move_pct": 1.43,
@@ -8570,7 +8021,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/82a70838-3f9c-456b-b3f7-655b39e0ece9.pdf",
    "source": "bse",
    "reaction_day": "2026-11-20",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-20",
     "move_pct": 1.43,
@@ -8598,7 +8049,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5032B2DC_353F_4F45_BDF4_0641BBF3C146_104632.pdf",
    "source": "bse",
    "reaction_day": "2026-11-19",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-19",
     "move_pct": 7.58,
@@ -8626,7 +8077,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/cc662964-1403-455d-a7c7-c4f0412e8a21.pdf",
    "source": "bse",
    "reaction_day": "2026-11-19",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-19",
     "move_pct": 0.14,
@@ -8654,7 +8105,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a670cf06-dc92-4bbc-a388-9ec495c70181.pdf",
    "source": "bse",
    "reaction_day": "2026-11-19",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-19",
     "move_pct": 0.56,
@@ -8682,7 +8133,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/eadec632-3d3c-49bd-8f85-6d26d79a4332.pdf",
    "source": "bse",
    "reaction_day": "2026-11-18",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-18",
     "move_pct": -0.29,
@@ -8710,7 +8161,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_17112026182705_ConCallInvite_Nov20_2026_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-11-18",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-18",
     "move_pct": -1.61,
@@ -8738,7 +8189,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5f857401-ae59-416d-9fa3-95705fa2e4d0.pdf",
    "source": "bse",
    "reaction_day": "2026-11-18",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-18",
     "move_pct": -0.83,
@@ -8766,7 +8217,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/500db86f-5139-4f98-8ede-68a0d7a33da0.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": -0.29,
@@ -8794,7 +8245,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/68f10113-f839-4891-994e-312e5df5ebf0.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": -0.86,
@@ -8822,7 +8273,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/3c252309-6a76-41db-b704-e8c0e51c8d14.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": -0.19,
@@ -8850,7 +8301,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fd66e516-a621-4f15-ab01-439c886c14bd.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": -0.87,
@@ -8864,21 +8315,21 @@
    "collapsed": true
   },
   {
-   "id": "106862868",
+   "id": "58a2028b-d9d9-453f-a886-3e9a37203f0e",
    "symbol": "DIXON",
    "name": "Dixon Technologies (India) Ltd",
-   "filed": "2026-11-16T20:14",
-   "subject": "Dixon Technologies (India) Limited has informed the Exchange about execution of an Asset Purchase Agreement between Dixon Technologies (India) Limited and Vimal Plast (India) Private Limited",
-   "headline": null,
+   "filed": "2026-11-16T20:11",
+   "subject": "Announcement under Regulation 30 (LODR)-Memorandum of Understanding /Agreements",
+   "headline": "Announcement under Regulation 30 of SEBI LODR- Dixon Technologies (India) Limited executed an Asset Purchase Agreement with Vimal Plast (India) Private Limited",
    "note": null,
    "category": "unclassified",
    "tier": "P3",
    "classified_by": "default",
    "classify_error": "ValueError: No API key was provided. Please pass a valid API key. Learn how to create an API key at https://aistudio.google.com/docs/api-key.",
-   "url": "https://nsearchives.nseindia.in/corporate/DIXON_16112026201438_Regulation30AnnouncementVimal16112026.pdf",
-   "source": "nse",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7c441734-0d84-47ac-8fef-831908ec674d.pdf",
+   "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": 1.48,
@@ -8906,7 +8357,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c3e0b430-7329-4925-8c6f-a9a1967bc0f9.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": 1.65,
@@ -8934,7 +8385,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f6c95e73-2736-46c0-a70a-5d6a952f58eb.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": -0.71,
@@ -8962,7 +8413,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f81a8e9b-2133-4827-9a7e-7e82fa7ee92b.pdf",
    "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": -3.19,
@@ -8976,21 +8427,21 @@
    "collapsed": true
   },
   {
-   "id": "106862527",
+   "id": "ab98b808-1997-488f-9f33-8fe2a00b3e1d",
    "symbol": "DIXON",
    "name": "Dixon Technologies (India) Ltd",
-   "filed": "2026-11-16T17:44",
-   "subject": "Dixon Technologies (India) Limited has informed the Exchange about Outcome of Analyst or Institutional Investor Meet",
-   "headline": null,
+   "filed": "2026-11-16T17:43",
+   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Outcome",
+   "headline": "Pursuant to the provisions of Regulations 30 and 46 of the SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 read with Para A of Part A of Schedule III of the said ....",
    "note": null,
    "category": "investor_meetings",
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.in/corporate/DIXON_16112026174441_InvestorMeetOutcome16112026.pdf",
-   "source": "nse",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9f32b982-5393-4f42-a661-adcbc5db6d12.pdf",
+   "source": "bse",
    "reaction_day": "2026-11-17",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-17",
     "move_pct": 1.48,
@@ -9018,7 +8469,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a5d2906c-bc39-4fc9-8d6c-821f2f1c8789.pdf",
    "source": "bse",
    "reaction_day": "2026-11-16",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-16",
     "move_pct": 0.65,
@@ -9046,7 +8497,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a68bf781-d41a-4320-a9f5-2d8d4c8a08a3.pdf",
    "source": "bse",
    "reaction_day": "2026-11-15",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-16",
     "move_pct": 2.26,
@@ -9074,7 +8525,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/3f614a9e-94b0-42ef-8145-ba0055ba7be5.pdf",
    "source": "bse",
    "reaction_day": "2026-11-14",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-16",
     "move_pct": 0.38,
@@ -9102,7 +8553,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/549cc510-62f9-4022-b62b-58e3e72ad671.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": 0.33,
@@ -9130,7 +8581,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/95651ec6-7981-473a-9005-26a5d06d478c.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": -2.81,
@@ -9158,7 +8609,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ce3cb1dd-0d97-4fd3-8c15-78b958145ad4.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": -0.47,
@@ -9186,7 +8637,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/55f9d4f5-8638-4669-abdb-7cc4127221fc.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": 0.0,
@@ -9214,7 +8665,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f7320672-e51f-4047-b49e-e53cbe71a0ad.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": -1.08,
@@ -9242,7 +8693,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/df35ab63-de36-4daf-b7c4-04c5d2fba0b9.pdf",
    "source": "bse",
    "reaction_day": "2026-11-13",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-13",
     "move_pct": -1.08,
@@ -9270,7 +8721,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1570c4a2-da85-4152-8c92-38fc6ab69878.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.83,
@@ -9298,7 +8749,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d01ef203-cd61-4f19-b88b-7a373979e5b5.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": 0.71,
@@ -9326,7 +8777,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/19833a7e-2123-409e-990d-b9c1bfd1a543.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -1.22,
@@ -9354,7 +8805,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5abe6ad6-2eb7-432c-85f4-20e44db0cb5d.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.83,
@@ -9382,7 +8833,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/884ef8c7-e105-4c95-afca-41f6e592da02.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.83,
@@ -9410,7 +8861,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ae574f7a-4573-459b-9090-59d84bf2d02a.pdf",
    "source": "bse",
    "reaction_day": "2026-11-12",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-12",
     "move_pct": -0.62,
@@ -9438,7 +8889,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/bf144841-4cb9-4339-9a20-fef1c4b313e2.pdf",
    "source": "bse",
    "reaction_day": "2026-11-11",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 0.0,
@@ -9466,7 +8917,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/141afdbd-5245-4bad-9f7f-0528decee21a.pdf",
    "source": "bse",
    "reaction_day": "2026-11-11",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 0.0,
@@ -9494,7 +8945,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_09112026180719_ConCallInvite_Nov19_2026_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-10",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 3.76,
@@ -9522,7 +8973,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_09112026180456_ConCallInvite_Nov18_2026_Sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-10",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 3.76,
@@ -9550,7 +9001,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8a988798-8c55-42be-a6ce-6cb97abd6d5c.pdf",
    "source": "bse",
    "reaction_day": "2026-11-10",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 1.63,
@@ -9578,7 +9029,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_09112026180247_ConCallInvite_Nov17_2026_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-10",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 3.76,
@@ -9606,7 +9057,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_09112026175741_ConCallInvite_Nov13_2026_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-10",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": 3.76,
@@ -9634,7 +9085,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c0a1bde0-4d57-46c0-ac73-940d5ff093d7.pdf",
    "source": "bse",
    "reaction_day": "2026-11-10",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-11",
     "move_pct": -0.13,
@@ -9662,7 +9113,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/bca602f2-cf50-4964-8641-a88186d2b914.pdf",
    "source": "bse",
    "reaction_day": "2026-11-09",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": 1.31,
@@ -9690,7 +9141,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/88c1f74a-5faf-4951-bd1c-87ac9c742fd0.pdf",
    "source": "bse",
    "reaction_day": "2026-11-08",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": -2.11,
@@ -9718,7 +9169,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/703B45EC_657C_437B_B91E_78E37D0B453F_144749.pdf",
    "source": "bse",
    "reaction_day": "2026-11-07",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": 0.35,
@@ -9746,7 +9197,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0926e958-96d9-4537-ae2b-188dfe3eb1d1.pdf",
    "source": "bse",
    "reaction_day": "2026-11-07",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": 1.26,
@@ -9774,7 +9225,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/72c96165-b9ed-4b62-ac86-80cc440b32ff.pdf",
    "source": "bse",
    "reaction_day": "2026-11-07",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": -0.49,
@@ -9802,7 +9253,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/dd885c0b-f490-4da2-9fcc-a0ef6cfb76a3.pdf",
    "source": "bse",
    "reaction_day": "2026-11-07",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": -1.44,
@@ -9830,7 +9281,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ddc90afe-51c7-4e86-984c-dbb5d641c44e.pdf",
    "source": "bse",
    "reaction_day": "2026-11-07",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": -1.44,
@@ -9858,7 +9309,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/bab324f6-6fab-42fc-8b79-a3881f4fb7c7.pdf",
    "source": "bse",
    "reaction_day": "2026-11-07",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": 0.33,
@@ -9886,7 +9337,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c0ebd50a-d1d2-4c02-8be7-cf5e771bb8ff.pdf",
    "source": "bse",
    "reaction_day": "2026-11-07",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": -1.67,
@@ -9914,7 +9365,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9e23e65f-ffbd-4e61-be8c-a57227966831.pdf",
    "source": "bse",
    "reaction_day": "2026-11-07",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-09",
     "move_pct": 1.63,
@@ -9942,7 +9393,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/82e352f2-9e9d-4073-af20-2f36da07dd99.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 2.45,
@@ -9970,7 +9421,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/74915aaa-1875-4cc4-af7c-1684eabee116.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 2.45,
@@ -9998,7 +9449,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/11b1a994-4cb5-4dc8-98ea-73923446674c.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 0.79,
@@ -10026,7 +9477,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/73a8c540-4229-4137-8e2b-5aae04fa0a35.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": -0.92,
@@ -10054,7 +9505,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/55c20e61-aebc-4717-b79a-065bec64e10b.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 2.45,
@@ -10082,7 +9533,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c260f50a-c5cb-45e9-a568-a0732046d11b.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 2.45,
@@ -10110,7 +9561,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/191d3534-ded0-412c-9b3e-a8fbe7c38d5a.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 1.66,
@@ -10124,21 +9575,21 @@
    "collapsed": true
   },
   {
-   "id": "106847697",
+   "id": "5030ef0e-7f6e-4c7f-814f-ca9dd2d4d7bb",
    "symbol": "DIXON",
    "name": "Dixon Technologies (India) Ltd",
-   "filed": "2026-11-05T17:16",
-   "subject": "Dixon Technologies (India) Limited has informed the Exchange regarding allotment of 37750 securities pursuant to ESOP/ESPS at its meeting held on November 05, 2026",
-   "headline": null,
+   "filed": "2026-11-05T17:19",
+   "subject": "Announcement under Regulation 30 (LODR)-Allotment of ESOP / ESPS",
+   "headline": "The Company has allotted 37,750 equity shares under DIXON ESOP 2020 on 05th November 2026.",
    "note": null,
    "category": "unclassified",
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.in/corporate/DIXON_05112026171618_Reg30ESOPAllotmentNov.pdf",
-   "source": "nse",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/bdab8a75-541a-4c8e-bd67-a4c1e81d0a22.pdf",
+   "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 0.07,
@@ -10166,7 +9617,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/50d58706-f181-4522-8799-b05f65780ce8.pdf",
    "source": "bse",
    "reaction_day": "2026-11-06",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-06",
     "move_pct": 1.69,
@@ -10194,7 +9645,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/af15e069-bce2-4b71-a4aa-808def873510.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": 1.71,
@@ -10222,7 +9673,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/dfc259d1-be1e-465f-a9da-e6eb390c5353.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": -0.52,
@@ -10250,7 +9701,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/3eba3f7a-167e-4bd6-8c15-ea13bdefd1e5.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": -0.52,
@@ -10278,7 +9729,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1a1e858a-92de-4d39-9433-a8d3d62ccd22.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": 2.68,
@@ -10306,7 +9757,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1b59d36e-54d8-422a-8308-ff536357d314.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": -0.52,
@@ -10334,7 +9785,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7d087a4f-5077-43f5-a2d8-af2847be1303.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": -0.52,
@@ -10362,7 +9813,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/041ecd16-8df5-45cd-90bb-d4bd2fa6cf9b.pdf",
    "source": "bse",
    "reaction_day": "2026-11-05",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-05",
     "move_pct": -0.52,
@@ -10390,7 +9841,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a2e82696-5059-47a4-9c36-8399f022f4f0.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": 2.47,
@@ -10418,7 +9869,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8e3b4c06-ccd5-4aac-a57b-0abf323713d5.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": 2.23,
@@ -10446,7 +9897,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c2694b22-e5e8-41af-b6f4-e820ee6cf481.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": 0.13,
@@ -10474,7 +9925,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6b5ac8ab-73ab-44fe-824a-d794314fe3cd.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": 0.04,
@@ -10502,7 +9953,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/878869fb-5e51-4867-b640-2120edd34b6c.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": -2.52,
@@ -10516,21 +9967,21 @@
    "collapsed": true
   },
   {
-   "id": "106842234",
+   "id": "c1839d86-64fb-4058-9623-040b8fb53fe3",
    "symbol": "DIXON",
    "name": "Dixon Technologies (India) Ltd",
    "filed": "2026-11-03T17:30",
-   "subject": "Dixon Technologies (India) Limited has informed the Exchange regarding 'Change in Corporate Office Address of RTA with effect from 01st December 2026'.",
-   "headline": null,
+   "subject": "Announcement Under Regulation 30 Of SEBI LODR- Intimation Regarding Change In The Corporate Office Of The Registrar And Share Transfer Agent (RTA) Of The Company",
+   "headline": "Announcement under Regulation 30 of SEBI LODR- Intimation regarding change in the Corporate Office of the Registrar and Share Transfer Agent (RTA) of the Company with effect from 1st December, 2026",
    "note": null,
    "category": "unclassified",
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.in/corporate/DIXON_03112026172946_Regulation30DisclosureRTAAddress.pdf",
-   "source": "nse",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d219f169-7be4-4d16-9697-1251e8767e69.pdf",
+   "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": 0.16,
@@ -10558,7 +10009,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6c644005-9bd2-42f5-b61b-556e8c885e2d.pdf",
    "source": "bse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": 1.19,
@@ -10586,7 +10037,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_03112026152936_ConCallInvite_Nov06_2026_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-04",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-04",
     "move_pct": 0.29,
@@ -10600,21 +10051,21 @@
    "collapsed": true
   },
   {
-   "id": "106841276",
+   "id": "c20a4206-4700-4f69-a5ef-fd9ae96107fd",
    "symbol": "DIXON",
    "name": "Dixon Technologies (India) Ltd",
-   "filed": "2026-11-03T11:24",
-   "subject": "Dixon Technologies (India) Limited has informed the Exchange about Outcome of Analyst or Institutional Investor Meet",
-   "headline": null,
+   "filed": "2026-11-03T11:22",
+   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Outcome",
+   "headline": "Pursuant to the provisions of Regulations 30 and 46 of the SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 read with Para A of Part A of Schedule III of the said ....",
    "note": null,
    "category": "investor_meetings",
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.in/corporate/DIXON_03112026112356_InvestorMeetOutcome031102026.pdf",
-   "source": "nse",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/12486329-18b7-4e94-a0e6-4b851e757235.pdf",
+   "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": -0.4,
@@ -10642,7 +10093,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5f21f715-4d81-4470-9e3b-2ca076cf4e22.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 1.1,
@@ -10670,7 +10121,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_02112026174345_NSEIntimation_Concall_02Nov2026_sd.pdf",
    "source": "nse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 5.43,
@@ -10698,7 +10149,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/82194fd1-e0aa-4dc7-9dfe-bc5d4bf73b04.pdf",
    "source": "bse",
    "reaction_day": "2026-11-03",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-03",
     "move_pct": 0.18,
@@ -10726,7 +10177,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/773ac0af-b53b-4ef9-9866-32dac67c2935.pdf",
    "source": "bse",
    "reaction_day": "2026-11-02",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 0.96,
@@ -10754,7 +10205,7 @@
    "url": "https://nsearchives.nseindia.in/corporate/CDSL_01112026143902_Newspaper_31102026_Final_Signed.pdf",
    "source": "nse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": -0.87,
@@ -10782,7 +10233,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/e87d46d8-c447-4fc2-9b82-a95a8a922b0f.pdf",
    "source": "bse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": -0.43,
@@ -10796,21 +10247,21 @@
    "collapsed": true
   },
   {
-   "id": "106838529",
+   "id": "7bdce317-b2e3-4c9b-86de-a59235d0e9f1",
    "symbol": "DIXON",
    "name": "Dixon Technologies (India) Ltd",
-   "filed": "2026-10-31T19:32",
-   "subject": "Dixon Technologies (India) Limited has informed the Exchange about copy of newspaper publication of Unaudited Financial Results (standalone & consolidated) of the Company for the quarter and half year ended 30th September, 2026",
-   "headline": null,
+   "filed": "2026-10-31T19:34",
+   "subject": "Announcement under Regulation 30 (LODR)-Newspaper Publication",
+   "headline": "Announcement under Regulation 30 of SEBI LODR- Copy of Newspaper publication of Un-audited Financial Results (Standalone & Consolidated) of the Company for the quarter and half year ended ....",
    "note": null,
    "category": "results",
    "tier": "P3",
    "classified_by": "rule",
    "classify_error": null,
-   "url": "https://nsearchives.nseindia.in/corporate/DIXON_31102026192630_NewspaperAdvertisement31101026.pdf",
-   "source": "nse",
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/2336e442-6dfb-4af9-81c4-09a8770d2c94.pdf",
+   "source": "bse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.99,
@@ -10838,7 +10289,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9ce2ef60-0b4f-44dc-a3a0-435c1066af80.pdf",
    "source": "bse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": -0.43,
@@ -10866,7 +10317,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0f665e67-b13f-4624-9278-3f4183d817eb.pdf",
    "source": "bse",
    "reaction_day": "2026-11-01",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 11.6,
@@ -10894,7 +10345,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ff271f28-80be-4329-a556-8ecc1cc7684f.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 0.82,
@@ -10904,6 +10355,34 @@
    },
    "score": 100,
    "reason": "litigation · −0.9% vs Nifty",
+   "boosted": false,
+   "collapsed": true
+  },
+  {
+   "id": "491a2b6d-04d1-46b9-a9d6-cbb68f0d0120",
+   "symbol": "DIXON",
+   "name": "Dixon Technologies (India) Ltd",
+   "filed": "2026-10-30T20:32",
+   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Outcome",
+   "headline": "Audio recording of the Conference Call held for Q2 Results of FY 2027",
+   "note": null,
+   "category": "investor_meetings",
+   "tier": "P3",
+   "classified_by": "rule",
+   "classify_error": null,
+   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/082ec2fb-f975-4058-aadb-d27d3e69a02d.pdf",
+   "source": "bse",
+   "reaction_day": "2026-10-31",
+   "last_bar": "2026-11-25",
+   "reaction": {
+    "date": "2026-11-02",
+    "move_pct": 11.99,
+    "nifty_pct": 1.68,
+    "excess_pct": 10.31,
+    "vol_ratio": 5.95
+   },
+   "score": 100,
+   "reason": "investor meetings · +10.3% vs Nifty",
    "boosted": false,
    "collapsed": true
   },
@@ -10922,7 +10401,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5e1a8352-6166-444c-848a-29299a80a8d1.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": -0.43,
@@ -10950,7 +10429,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/21b018cf-36f2-48de-9bef-0fd35ec94607.pdf",
    "source": "bse",
    "reaction_day": "2026-10-31",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-11-02",
     "move_pct": 0.78,
@@ -10978,7 +10457,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8c1e7a04-f30c-4229-8189-88b576aab720.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 0.95,
@@ -11006,7 +10485,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/500d7b1a-2dd6-4bec-b711-ea723571ad36.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 0.08,
@@ -11034,7 +10513,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/20d73044-2322-4d46-883f-67bff54a3b50.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 0.02,
@@ -11062,7 +10541,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/38dab330-ca6e-4311-9679-7b47cebb7993.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 1.39,
@@ -11090,7 +10569,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4463a62c-65c7-4641-8d1f-e6b9325f005b.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": 0.78,
@@ -11118,7 +10597,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ec12024a-306f-4e5e-b516-cfda480e7093.pdf",
    "source": "bse",
    "reaction_day": "2026-10-30",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-30",
     "move_pct": -2.47,
@@ -11146,7 +10625,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/af0f8622-1854-4424-96bf-3e22856f1470.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 1.23,
@@ -11174,7 +10653,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/bc9fc5d1-9c04-4a88-b807-79d27dd63697.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 0.81,
@@ -11202,7 +10681,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/177db96b-825d-4e30-8988-d4cbba3cf92d.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": -1.59,
@@ -11230,7 +10709,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/498df898-abfc-4569-b288-56622aa74bef.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 0.94,
@@ -11258,7 +10737,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/dfa80ddb-f524-419d-b71e-d3c606e27c93.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 1.23,
@@ -11286,7 +10765,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/26cdd582-7e95-4019-88b5-fdff3d5e60e1.pdf",
    "source": "bse",
    "reaction_day": "2026-10-29",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-29",
     "move_pct": 0.85,
@@ -11314,7 +10793,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/31980a61-8b0b-4f0e-8ec3-b3fea61c7ada.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.87,
@@ -11342,7 +10821,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/86d68230-8e70-43c7-abb0-ebaf541aeaa8.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.87,
@@ -11370,7 +10849,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d6ee0e49-1938-4648-a9e4-d6979352fe8e.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.87,
@@ -11398,7 +10877,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/2c2c299b-f7bf-4edd-b15e-cedb0a5a14a8.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 3.87,
@@ -11426,7 +10905,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/d7008597-6ddd-4192-ab30-da3d6832abd9.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": -1.45,
@@ -11454,7 +10933,7 @@
    "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fb1e1ced-406b-42d5-96b7-8fda705bdb16.pdf",
    "source": "bse",
    "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
+   "last_bar": "2026-11-25",
    "reaction": {
     "date": "2026-10-28",
     "move_pct": 1.13,
@@ -11466,341 +10945,9 @@
    "reason": "results · +1.4% vs Nifty",
    "boosted": false,
    "collapsed": true
-  },
-  {
-   "id": "19d277c1-25e8-493a-9f8d-be8df0f3b012",
-   "symbol": "LT",
-   "name": "Larsen & Toubro Ltd",
-   "filed": "2026-10-27T22:09",
-   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Outcome",
-   "headline": "Audio recording of Q2 / H1 FY 27 Earning Call",
-   "note": null,
-   "category": "investor_meetings",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0e4c11c6-4c96-42c0-ac94-b2cb928c4f4f.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-28",
-    "move_pct": 3.72,
-    "nifty_pct": -0.22,
-    "excess_pct": 3.94,
-    "vol_ratio": 3.2
-   },
-   "score": 100,
-   "reason": "investor meetings · +3.9% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "f567b375-6095-450c-ac90-15bcd62e5b39",
-   "symbol": "MARUTI",
-   "name": "Maruti Suzuki India Ltd",
-   "filed": "2026-10-27T20:30",
-   "subject": "Audio Recording",
-   "headline": "Audio Recording of the investors'' call held on 27th October 2026",
-   "note": null,
-   "category": "earnings_call",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f59fa177-7b03-4b3d-96d2-aeff1847bcb4.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-28",
-    "move_pct": 1.13,
-    "nifty_pct": -0.22,
-    "excess_pct": 1.35,
-    "vol_ratio": 1.96
-   },
-   "score": 100,
-   "reason": "earnings call · +1.4% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "3dbdf4e9-0f9c-405e-bc2d-5601a79a1e98",
-   "symbol": "KPITTECH",
-   "name": "KPIT Technologies Ltd",
-   "filed": "2026-10-27T19:53",
-   "subject": "Announcement Under Regulations 30 Of SEBI LODR - Grant Of Options To Eligible Employees",
-   "headline": "Company granted 54,100 options under the RSU Plan 2022",
-   "note": null,
-   "category": "unclassified",
-   "tier": "P3",
-   "classified_by": "llm",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fe0fd731-b8f8-4196-a639-066291bf6ef0.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-28",
-    "move_pct": 3.87,
-    "nifty_pct": -0.22,
-    "excess_pct": 4.1,
-    "vol_ratio": 2.98
-   },
-   "score": 100,
-   "reason": "unclassified · +4.1% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "e70ee0c0-22ad-4428-a23a-2da1f60f735f",
-   "symbol": "RELIANCE",
-   "name": "Reliance Industries Ltd",
-   "filed": "2026-10-27T19:15",
-   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Intimation",
-   "headline": "The meeting of the Board of Directors of the Company is scheduled on October 30, 2026, inter alia, to consider and approve:\r\na. the standalone and consolidated unaudited financial results ....",
-   "note": null,
-   "category": "investor_meetings",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/abf880ad-357c-4ff9-b6d7-83c1dcf59cba.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-28",
-    "move_pct": -3.19,
-    "nifty_pct": -0.22,
-    "excess_pct": -2.97,
-    "vol_ratio": 1.46
-   },
-   "score": 100,
-   "reason": "investor meetings · −3.0% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "d8dc0c7b-ad03-42fb-a6cb-c907e219a6d7",
-   "symbol": "RELIANCE",
-   "name": "Reliance Industries Ltd",
-   "filed": "2026-10-27T19:06",
-   "subject": "Board Meeting Intimation for Considering And Approving The Standalone And Consolidated Unaudited Financial Results For The Quarter And Half Year Ended September 30, 2026 And Raising Of Funds By Way Of Issuance Of Debentures",
-   "headline": "Reliance Industries Ltdhas informed BSE that the meeting of the Board of Directors of the Company is scheduled on 30/10/2026 ,inter alia, to consider and approve a. the standalone and consolidated ....",
-   "note": null,
-   "category": "results",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/5670a3e4-4e3c-489d-9160-455cb124704f.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-28",
-    "move_pct": -3.19,
-    "nifty_pct": -0.22,
-    "excess_pct": -2.97,
-    "vol_ratio": 1.46
-   },
-   "score": 100,
-   "reason": "results · −3.0% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "757969fc-1b60-4ab9-884f-258a81e89ee9",
-   "symbol": "POLYCAB",
-   "name": "Polycab India Ltd",
-   "filed": "2026-10-27T19:01",
-   "subject": "Announcement Under Regulation 30 (LODR) - Analyst(S) / Investor(S) Meet - Intimation",
-   "headline": "Intimation of Institutional Analyst(s)/Investor(s) meet",
-   "note": null,
-   "category": "investor_meetings",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/cafe2036-e51b-413a-80cd-65e331d170be.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-28",
-    "move_pct": -0.49,
-    "nifty_pct": -0.22,
-    "excess_pct": -0.27,
-    "vol_ratio": 0.57
-   },
-   "score": 100,
-   "reason": "investor meetings · −0.3% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "106830528",
-   "symbol": "CDSL",
-   "name": "Central Depository Services (India) Ltd",
-   "filed": "2026-10-27T17:32",
-   "subject": "CDSL has informed the Exchange about Schedule of Conference Call to be held on Monday, November 02, 2026.",
-   "headline": null,
-   "note": null,
-   "category": "earnings_call",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://nsearchives.nseindia.in/corporate/CDSL_27102026172744_NSEIntimation_Concall_02112026_Signed.pdf",
-   "source": "nse",
-   "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-28",
-    "move_pct": 0.82,
-    "nifty_pct": -0.22,
-    "excess_pct": 1.04,
-    "vol_ratio": 0.77
-   },
-   "score": 100,
-   "reason": "earnings call · +1.0% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "2bba2482-9bd6-4eca-b1e2-41fcd6dfc803",
-   "symbol": "TATAPOWER",
-   "name": "Tata Power Company Ltd",
-   "filed": "2026-10-27T16:45",
-   "subject": "Announcement under Regulation 30 (LODR)-Newspaper Publication",
-   "headline": "Company published newspaper advertisement regarding issue of duplicate securities",
-   "note": null,
-   "category": "unclassified",
-   "tier": "P3",
-   "classified_by": "llm",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/edbc5f7a-bd4a-43c2-94d0-0e4cc9f24b9e.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-28",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-28",
-    "move_pct": -1.21,
-    "nifty_pct": -0.22,
-    "excess_pct": -0.99,
-    "vol_ratio": 0.49
-   },
-   "score": 100,
-   "reason": "unclassified · −1.0% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "4ce4e5d8-5d84-49b0-a012-c59cd5b33987",
-   "symbol": "TATAPOWER",
-   "name": "Tata Power Company Ltd",
-   "filed": "2026-10-27T15:00",
-   "subject": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Intimation",
-   "headline": "Intimation of Schedule of Analyst/Institutional Investor Meet.",
-   "note": null,
-   "category": "investor_meetings",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/03e4a1f0-302f-4029-8996-9cd1f254f916.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-27",
-    "move_pct": 0.18,
-    "nifty_pct": -0.02,
-    "excess_pct": 0.19,
-    "vol_ratio": 1.33
-   },
-   "score": 100,
-   "reason": "investor meetings · +0.2% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "a696c982-b6cc-4d41-9fe9-ef50f17b2a0f",
-   "symbol": "LT",
-   "name": "Larsen & Toubro Ltd",
-   "filed": "2026-10-27T13:26",
-   "subject": "Announcement under Regulation 30 (LODR)-Allotment",
-   "headline": "Allotment of Shares",
-   "note": "Employee stock allotment",
-   "category": "fund_raise",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6e5c35b1-1012-4947-bf92-558cefc37ca6.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-27",
-    "move_pct": -0.4,
-    "nifty_pct": -0.02,
-    "excess_pct": -0.39,
-    "vol_ratio": 0.77
-   },
-   "score": 100,
-   "reason": "fund raise · −0.4% vs Nifty",
-   "boosted": false,
-   "collapsed": true
-  },
-  {
-   "id": "94026a0a-352e-4135-aee7-a8b1a54a4349",
-   "symbol": "MARUTI",
-   "name": "Maruti Suzuki India Ltd",
-   "filed": "2026-10-27T13:18",
-   "subject": "Announcement under Regulation 30 (LODR)-Acquisition",
-   "headline": "Incorporation of Wholly Owned Subsidiary",
-   "note": "Subsidiary housekeeping (set-up, strike-off, guarantee or letter of comfort), not a deal",
-   "category": "unclassified",
-   "tier": "P3",
-   "classified_by": "rule",
-   "classify_error": null,
-   "url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9ec6c385-b23c-49cd-9d07-b09dc86c3df7.pdf",
-   "source": "bse",
-   "reaction_day": "2026-10-27",
-   "last_bar": "2026-11-26",
-   "reaction": {
-    "date": "2026-10-27",
-    "move_pct": 2.05,
-    "nifty_pct": -0.02,
-    "excess_pct": 2.07,
-    "vol_ratio": 0.91
-   },
-   "score": 100,
-   "reason": "unclassified · +2.1% vs Nifty",
-   "boosted": false,
-   "collapsed": true
   }
  ],
  "alerts": [
-  {
-   "symbol": "TCS",
-   "date": "2026-11-26",
-   "kind": "price",
-   "text": "+4.9% (+4.6% vs Nifty)"
-  },
-  {
-   "symbol": "BAJFINANCE",
-   "date": "2026-11-26",
-   "kind": "price",
-   "text": "−3.0% (−3.2% vs Nifty)"
-  },
-  {
-   "symbol": "ASIANPAINT",
-   "date": "2026-11-26",
-   "kind": "price",
-   "text": "−3.0% (−3.2% vs Nifty)"
-  },
-  {
-   "symbol": "DIXON",
-   "date": "2026-11-26",
-   "kind": "error",
-   "text": "BSE failed, used NSE: HTTPStatusError: Client error '400 Bad Request' for url 'https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=1&strCat=-1&subcategory=-1&strSearch=P&strType=C&strPrevDate=20261027&s"
-  },
   {
    "symbol": "HDFCBANK",
    "date": "2026-11-25",
@@ -11848,8 +10995,8 @@
    "symbol": "DIXON",
    "date": "2026-11-24",
    "kind": "filing",
-   "id": "106869612",
-   "text": "management change: Dixon Technologies (India) Limited has informed the Exchange regarding Appointment of Ms Aruna Jayanthi (DIN: 00817860) as Other of the company w.e.f. November 24, 2026."
+   "id": "4eef5cc4-b266-4040-9edd-44e07e70dd71",
+   "text": "management change: Announcement under Regulation 30 of SEBI LODR- Change in Management (Appointment of Director)"
   },
   {
    "symbol": "TCS",
@@ -12230,8 +11377,8 @@
    "symbol": "DIXON",
    "date": "2026-10-30",
    "kind": "filing",
-   "id": "106836523",
-   "text": "results: Dixon Technologies (India) Limited has submitted to the Exchange, the financial results for the period ended September 30, 2026."
+   "id": "096f1e5a-3667-42a5-b4e2-ba8272ee52fc",
+   "text": "results: Results for the quarter and half year ended 30th September, 20206"
   },
   {
    "symbol": "POLYCAB",
@@ -12330,51 +11477,9 @@
    "date": "2026-10-28",
    "kind": "price",
    "text": "+4.0% (+4.2% vs Nifty)"
-  },
-  {
-   "symbol": "RELIANCE",
-   "date": "2026-10-27",
-   "kind": "filing",
-   "id": "c737601e-dff8-49ed-8959-263b42e68df0",
-   "text": "fund raise: Subsidiary Jio Platforms completed equity share allotment for IPO and received listing approval"
-  },
-  {
-   "symbol": "HDFCBANK",
-   "date": "2026-10-27",
-   "kind": "filing",
-   "id": "eee0209e-2a9c-4d1c-91a1-8b1dbc6868a2",
-   "text": "management change: Disclosure under Regulation 30 and other applicable regulations of the SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 - Change in Managing Director and Chief Executive ...."
-  },
-  {
-   "symbol": "BHARTIARTL",
-   "date": "2026-10-27",
-   "kind": "price",
-   "text": "+3.2% (+3.2% vs Nifty)"
-  },
-  {
-   "symbol": "LT",
-   "date": "2026-10-27",
-   "kind": "filing",
-   "id": "84f672d2-60a7-4cef-adec-3711a9c76668",
-   "text": "results: Outcome of Board Meeting of Larsen & Toubro Limited held on October 27,2026"
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-27",
-   "kind": "filing",
-   "id": "ed51c226-e785-4389-a0e9-7160e6eb21fb",
-   "text": "results:  Un-audited financial results for the quarter ended on 30th September 2026"
   }
  ],
  "days": [
-  {
-   "symbol": "RELIANCE",
-   "date": "2026-10-27",
-   "move_pct": -0.47,
-   "nifty_pct": -0.02,
-   "excess_pct": -0.45,
-   "vol_ratio": 0.87
-  },
   {
    "symbol": "RELIANCE",
    "date": "2026-10-28",
@@ -12526,22 +11631,6 @@
    "nifty_pct": 1.85,
    "excess_pct": -0.16,
    "vol_ratio": 0.89
-  },
-  {
-   "symbol": "RELIANCE",
-   "date": "2026-11-26",
-   "move_pct": 1.62,
-   "nifty_pct": 0.25,
-   "excess_pct": 1.37,
-   "vol_ratio": 0.93
-  },
-  {
-   "symbol": "HDFCBANK",
-   "date": "2026-10-27",
-   "move_pct": -1.14,
-   "nifty_pct": -0.02,
-   "excess_pct": -1.13,
-   "vol_ratio": 1.31
   },
   {
    "symbol": "HDFCBANK",
@@ -12696,22 +11785,6 @@
    "vol_ratio": 1.18
   },
   {
-   "symbol": "HDFCBANK",
-   "date": "2026-11-26",
-   "move_pct": 1.87,
-   "nifty_pct": 0.25,
-   "excess_pct": 1.61,
-   "vol_ratio": 1.68
-  },
-  {
-   "symbol": "TCS",
-   "date": "2026-10-27",
-   "move_pct": -1.5,
-   "nifty_pct": -0.02,
-   "excess_pct": -1.49,
-   "vol_ratio": 0.72
-  },
-  {
    "symbol": "TCS",
    "date": "2026-10-28",
    "move_pct": -1.48,
@@ -12862,22 +11935,6 @@
    "nifty_pct": 1.85,
    "excess_pct": 0.48,
    "vol_ratio": 1.42
-  },
-  {
-   "symbol": "TCS",
-   "date": "2026-11-26",
-   "move_pct": 4.89,
-   "nifty_pct": 0.25,
-   "excess_pct": 4.63,
-   "vol_ratio": 1.56
-  },
-  {
-   "symbol": "BHARTIARTL",
-   "date": "2026-10-27",
-   "move_pct": 3.2,
-   "nifty_pct": -0.02,
-   "excess_pct": 3.21,
-   "vol_ratio": 1.58
   },
   {
    "symbol": "BHARTIARTL",
@@ -13032,22 +12089,6 @@
    "vol_ratio": 0.8
   },
   {
-   "symbol": "BHARTIARTL",
-   "date": "2026-11-26",
-   "move_pct": -0.71,
-   "nifty_pct": 0.25,
-   "excess_pct": -0.96,
-   "vol_ratio": 0.44
-  },
-  {
-   "symbol": "ITC",
-   "date": "2026-10-27",
-   "move_pct": -0.19,
-   "nifty_pct": -0.02,
-   "excess_pct": -0.18,
-   "vol_ratio": 1.29
-  },
-  {
    "symbol": "ITC",
    "date": "2026-10-28",
    "move_pct": -0.19,
@@ -13198,22 +12239,6 @@
    "nifty_pct": 1.85,
    "excess_pct": 0.89,
    "vol_ratio": 1.79
-  },
-  {
-   "symbol": "ITC",
-   "date": "2026-11-26",
-   "move_pct": -0.73,
-   "nifty_pct": 0.25,
-   "excess_pct": -0.98,
-   "vol_ratio": 0.71
-  },
-  {
-   "symbol": "LT",
-   "date": "2026-10-27",
-   "move_pct": -0.4,
-   "nifty_pct": -0.02,
-   "excess_pct": -0.39,
-   "vol_ratio": 0.77
   },
   {
    "symbol": "LT",
@@ -13368,22 +12393,6 @@
    "vol_ratio": 0.57
   },
   {
-   "symbol": "LT",
-   "date": "2026-11-26",
-   "move_pct": -0.58,
-   "nifty_pct": 0.25,
-   "excess_pct": -0.83,
-   "vol_ratio": 0.52
-  },
-  {
-   "symbol": "SUNPHARMA",
-   "date": "2026-10-27",
-   "move_pct": 0.64,
-   "nifty_pct": -0.02,
-   "excess_pct": 0.66,
-   "vol_ratio": 1.0
-  },
-  {
    "symbol": "SUNPHARMA",
    "date": "2026-10-28",
    "move_pct": 0.36,
@@ -13534,22 +12543,6 @@
    "nifty_pct": 1.85,
    "excess_pct": 0.35,
    "vol_ratio": 1.0
-  },
-  {
-   "symbol": "SUNPHARMA",
-   "date": "2026-11-26",
-   "move_pct": 0.77,
-   "nifty_pct": 0.25,
-   "excess_pct": 0.52,
-   "vol_ratio": 0.96
-  },
-  {
-   "symbol": "MARUTI",
-   "date": "2026-10-27",
-   "move_pct": 2.05,
-   "nifty_pct": -0.02,
-   "excess_pct": 2.07,
-   "vol_ratio": 0.91
   },
   {
    "symbol": "MARUTI",
@@ -13704,22 +12697,6 @@
    "vol_ratio": 1.0
   },
   {
-   "symbol": "MARUTI",
-   "date": "2026-11-26",
-   "move_pct": -1.3,
-   "nifty_pct": 0.25,
-   "excess_pct": -1.56,
-   "vol_ratio": 0.61
-  },
-  {
-   "symbol": "BAJFINANCE",
-   "date": "2026-10-27",
-   "move_pct": -0.73,
-   "nifty_pct": -0.02,
-   "excess_pct": -0.71,
-   "vol_ratio": 0.75
-  },
-  {
    "symbol": "BAJFINANCE",
    "date": "2026-10-28",
    "move_pct": 0.58,
@@ -13870,22 +12847,6 @@
    "nifty_pct": 1.85,
    "excess_pct": 1.42,
    "vol_ratio": 1.06
-  },
-  {
-   "symbol": "BAJFINANCE",
-   "date": "2026-11-26",
-   "move_pct": -2.96,
-   "nifty_pct": 0.25,
-   "excess_pct": -3.21,
-   "vol_ratio": 0.78
-  },
-  {
-   "symbol": "ASIANPAINT",
-   "date": "2026-10-27",
-   "move_pct": -1.94,
-   "nifty_pct": -0.02,
-   "excess_pct": -1.92,
-   "vol_ratio": 1.55
   },
   {
    "symbol": "ASIANPAINT",
@@ -14040,22 +13001,6 @@
    "vol_ratio": 0.67
   },
   {
-   "symbol": "ASIANPAINT",
-   "date": "2026-11-26",
-   "move_pct": -2.98,
-   "nifty_pct": 0.25,
-   "excess_pct": -3.24,
-   "vol_ratio": 0.83
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-10-27",
-   "move_pct": 2.42,
-   "nifty_pct": -0.02,
-   "excess_pct": 2.43,
-   "vol_ratio": 0.45
-  },
-  {
    "symbol": "TRENT",
    "date": "2026-10-28",
    "move_pct": 3.31,
@@ -14206,22 +13151,6 @@
    "nifty_pct": 1.85,
    "excess_pct": 1.63,
    "vol_ratio": 1.84
-  },
-  {
-   "symbol": "TRENT",
-   "date": "2026-11-26",
-   "move_pct": -1.72,
-   "nifty_pct": 0.25,
-   "excess_pct": -1.97,
-   "vol_ratio": 0.5
-  },
-  {
-   "symbol": "ETERNAL",
-   "date": "2026-10-27",
-   "move_pct": 1.67,
-   "nifty_pct": -0.02,
-   "excess_pct": 1.69,
-   "vol_ratio": 1.03
   },
   {
    "symbol": "ETERNAL",
@@ -14376,22 +13305,6 @@
    "vol_ratio": 1.24
   },
   {
-   "symbol": "ETERNAL",
-   "date": "2026-11-26",
-   "move_pct": -1.08,
-   "nifty_pct": 0.25,
-   "excess_pct": -1.33,
-   "vol_ratio": 1.04
-  },
-  {
-   "symbol": "DIXON",
-   "date": "2026-10-27",
-   "move_pct": 0.65,
-   "nifty_pct": -0.02,
-   "excess_pct": 0.66,
-   "vol_ratio": 1.1
-  },
-  {
    "symbol": "DIXON",
    "date": "2026-10-28",
    "move_pct": 1.49,
@@ -14542,22 +13455,6 @@
    "nifty_pct": 1.85,
    "excess_pct": -4.93,
    "vol_ratio": 1.34
-  },
-  {
-   "symbol": "DIXON",
-   "date": "2026-11-26",
-   "move_pct": -2.0,
-   "nifty_pct": 0.25,
-   "excess_pct": -2.26,
-   "vol_ratio": 1.07
-  },
-  {
-   "symbol": "PERSISTENT",
-   "date": "2026-10-27",
-   "move_pct": -0.3,
-   "nifty_pct": -0.02,
-   "excess_pct": -0.28,
-   "vol_ratio": 1.28
   },
   {
    "symbol": "PERSISTENT",
@@ -14712,22 +13609,6 @@
    "vol_ratio": 0.78
   },
   {
-   "symbol": "PERSISTENT",
-   "date": "2026-11-26",
-   "move_pct": 1.31,
-   "nifty_pct": 0.25,
-   "excess_pct": 1.05,
-   "vol_ratio": 0.79
-  },
-  {
-   "symbol": "POLYCAB",
-   "date": "2026-10-27",
-   "move_pct": -0.27,
-   "nifty_pct": -0.02,
-   "excess_pct": -0.26,
-   "vol_ratio": 0.67
-  },
-  {
    "symbol": "POLYCAB",
    "date": "2026-10-28",
    "move_pct": -0.49,
@@ -14878,22 +13759,6 @@
    "nifty_pct": 1.85,
    "excess_pct": -2.54,
    "vol_ratio": 1.4
-  },
-  {
-   "symbol": "POLYCAB",
-   "date": "2026-11-26",
-   "move_pct": -0.39,
-   "nifty_pct": 0.25,
-   "excess_pct": -0.65,
-   "vol_ratio": 1.39
-  },
-  {
-   "symbol": "TATAPOWER",
-   "date": "2026-10-27",
-   "move_pct": 0.18,
-   "nifty_pct": -0.02,
-   "excess_pct": 0.19,
-   "vol_ratio": 1.33
   },
   {
    "symbol": "TATAPOWER",
@@ -15048,22 +13913,6 @@
    "vol_ratio": 1.47
   },
   {
-   "symbol": "TATAPOWER",
-   "date": "2026-11-26",
-   "move_pct": 0.15,
-   "nifty_pct": 0.25,
-   "excess_pct": -0.1,
-   "vol_ratio": 0.71
-  },
-  {
-   "symbol": "IRCTC",
-   "date": "2026-10-27",
-   "move_pct": 2.41,
-   "nifty_pct": -0.02,
-   "excess_pct": 2.42,
-   "vol_ratio": 1.12
-  },
-  {
    "symbol": "IRCTC",
    "date": "2026-10-28",
    "move_pct": -1.45,
@@ -15214,22 +14063,6 @@
    "nifty_pct": 1.85,
    "excess_pct": -3.05,
    "vol_ratio": 1.12
-  },
-  {
-   "symbol": "IRCTC",
-   "date": "2026-11-26",
-   "move_pct": 2.8,
-   "nifty_pct": 0.25,
-   "excess_pct": 2.54,
-   "vol_ratio": 0.86
-  },
-  {
-   "symbol": "CDSL",
-   "date": "2026-10-27",
-   "move_pct": 2.17,
-   "nifty_pct": -0.02,
-   "excess_pct": 2.19,
-   "vol_ratio": 0.91
   },
   {
    "symbol": "CDSL",
@@ -15384,22 +14217,6 @@
    "vol_ratio": 0.59
   },
   {
-   "symbol": "CDSL",
-   "date": "2026-11-26",
-   "move_pct": 1.98,
-   "nifty_pct": 0.25,
-   "excess_pct": 1.73,
-   "vol_ratio": 1.11
-  },
-  {
-   "symbol": "KPITTECH",
-   "date": "2026-10-27",
-   "move_pct": -0.87,
-   "nifty_pct": -0.02,
-   "excess_pct": -0.85,
-   "vol_ratio": 1.27
-  },
-  {
    "symbol": "KPITTECH",
    "date": "2026-10-28",
    "move_pct": 3.87,
@@ -15552,22 +14369,6 @@
    "vol_ratio": 0.53
   },
   {
-   "symbol": "KPITTECH",
-   "date": "2026-11-26",
-   "move_pct": 1.2,
-   "nifty_pct": 0.25,
-   "excess_pct": 0.95,
-   "vol_ratio": 0.44
-  },
-  {
-   "symbol": "DEEPAKNTR",
-   "date": "2026-10-27",
-   "move_pct": -0.76,
-   "nifty_pct": -0.02,
-   "excess_pct": -0.75,
-   "vol_ratio": 1.6
-  },
-  {
    "symbol": "DEEPAKNTR",
    "date": "2026-10-28",
    "move_pct": 3.97,
@@ -15718,14 +14519,6 @@
    "nifty_pct": 1.85,
    "excess_pct": -3.59,
    "vol_ratio": 0.33
-  },
-  {
-   "symbol": "DEEPAKNTR",
-   "date": "2026-11-26",
-   "move_pct": 1.83,
-   "nifty_pct": 0.25,
-   "excess_pct": 1.58,
-   "vol_ratio": 0.25
   }
  ],
  "failed": []
